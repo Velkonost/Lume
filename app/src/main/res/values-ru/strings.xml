@@ -20,5 +20,20 @@
     <string name="incorrectly_introduce_login_or_password">Неправильно введен логин или пароль!</string>
     <string name="btn_ok">Хорошо</string>
 
+    <string name="view_navigation_open">Открыть</string>
+    <string name="view_navigation_close">Закрыть</string>
+
+
+    <string name="menu_item_profile">Профиль</string>
+    <string name="menu_item_contacts">Контакты</string>
+    <string name="menu_item_messages">Сообщения</string>
+    <string name="menu_item_boards">Доски</string>
+    <string name="menu_item_logout">Выход</string>
+    <string name="menu_item_settings">Настройки</string>
+    <string name="menu_item_reminder">Напоминание</string>
+
+
+    <string name="search_title">Поиск</string>
+
 
 </resources>

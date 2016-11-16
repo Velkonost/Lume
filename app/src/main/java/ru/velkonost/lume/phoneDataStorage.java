@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import static android.content.Context.MODE_PRIVATE;
 import static ru.velkonost.lume.Constants.APP_PREFERENCES;
 
-class PhoneDataStorage {
+public class PhoneDataStorage {
 
     private static SharedPreferences mSharedPreferences;
 

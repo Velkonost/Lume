@@ -140,6 +140,7 @@ public class RegistrationActivity extends Activity {
                         saveText(RegistrationActivity.this, ID, id);
                         Intent profileIntent = new Intent(RegistrationActivity.this, ProfileActivity.class);
                         startActivity(profileIntent);
+                        finish();
                         break;
                     case 101:
                         inititializeAlertDialog(RegistrationActivity.this,

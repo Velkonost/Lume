@@ -127,6 +127,7 @@ public class LoginActivity extends Activity{
                         saveText(LoginActivity.this, ID, id);
                         Intent profileIntent = new Intent(LoginActivity.this, ProfileActivity.class);
                         startActivity(profileIntent);
+                        finish();
                         break;
                     case 201:
                         inititializeAlertDialog(LoginActivity.this,

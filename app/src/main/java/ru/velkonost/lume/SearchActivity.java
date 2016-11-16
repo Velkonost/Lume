@@ -3,24 +3,21 @@ package ru.velkonost.lume;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,13 +27,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import static ru.velkonost.lume.Constants.AVATAR;
-import static ru.velkonost.lume.Constants.BIRTHDAY;
+import static ru.velkonost.lume.Constants.CITY;
+import static ru.velkonost.lume.Constants.COUNTRY;
 import static ru.velkonost.lume.Constants.EQUALS;
-import static ru.velkonost.lume.Constants.GET_DATA;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
@@ -47,34 +45,36 @@ import static ru.velkonost.lume.Constants.STUDY;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
-import static ru.velkonost.lume.Constants.URL.SERVER_GET_DATA_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
+import static ru.velkonost.lume.Constants.URL.SERVER_SEARCH_METHOD;
+import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
-import static ru.velkonost.lume.Constants.WORK_EMAIL;
 import static ru.velkonost.lume.ImageManager.fetchImage;
 import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.PhoneDataStorage.saveText;
 
-public class ProfileActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
 
-    private static final int LAYOUT = R.layout.activity_myprofile;
+    private static final int LAYOUT = R.layout.activity_search;
 
     private Intent nextIntent;
-
-    private int screenH;
-    private int screenW;
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
 
-    private ImageView userAvatar;
-    private TextView userName;
+    private String whatSearch;
+
+    private Map <String, Map<String, String> > usersData;
+    private Map <String, String> depUserInfo; // depositoryUserInfo
+    private ArrayList<String> ids;
 
     private GetData mGetData;
-    private Map<String, String> userData;
+
+    LinearLayout linLayout;
+    LayoutInflater ltInflater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,51 +82,23 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        screenH = displayMetrics.heightPixels;
-        screenW = displayMetrics.widthPixels;
-
-        userData = new HashMap<>();
         mGetData = new GetData();
 
         initToolbar();
         initNavigationView();
 
-        userData.put(ID, loadText(ProfileActivity.this, ID));
+        linLayout = (LinearLayout) findViewById(R.id.searchContainer);
+        ltInflater = getLayoutInflater();
 
-        final LinearLayout linLayout = (LinearLayout) findViewById(R.id.profileContainer);
-        final LayoutInflater ltInflater = getLayoutInflater();
-        final View viewAvatar = ltInflater.inflate(R.layout.item_profile_photo, linLayout, false);
+        usersData = new HashMap<>();
+        ids = new ArrayList<String>();
 
-        userAvatar = (ImageView) viewAvatar.findViewById(R.id.imageAvatar);
-        userName = (TextView) viewAvatar.findViewById(R.id.userName);
+        whatSearch = loadText(SearchActivity.this, SEARCH);
+
+        TextView textView = (TextView) findViewById(R.id.toSearch);
+        textView.setText(whatSearch);
 
         mGetData.execute();
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(screenW / 2,
-                        screenH / 2);
-                param.gravity = Gravity.CENTER;
-                param.setMargins(0, 0, 0, 0);
-                userAvatar.setLayoutParams(param);
-
-
-                userName.setText(userData.get(NAME) + " " + userData.get(SURNAME));
-
-                viewAvatar.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT)); //width, height
-
-
-                linLayout.addView(viewAvatar);
-
-                initRequiredInfo(linLayout, ltInflater);
-            }
-        }, 2000);
     }
 
 
@@ -158,7 +130,7 @@ public class ProfileActivity extends AppCompatActivity {
                 drawerLayout.closeDrawers();
                 switch (menuItem.getItemId()) {
                     case R.id.navigationProfile:
-                        nextIntent = new Intent(ProfileActivity.this, ProfileActivity.class);
+                        nextIntent = new Intent(SearchActivity.this, ProfileActivity.class);
                         break;
                     case R.id.navigationContacts:
                         break;
@@ -171,29 +143,14 @@ public class ProfileActivity extends AppCompatActivity {
                     case R.id.navigationSettings:
                         break;
                     case R.id.navigationLogout:
-                        deleteText(ProfileActivity.this, ID);
-                        nextIntent = new Intent(ProfileActivity.this, WelcomeActivity.class);
+                        deleteText(SearchActivity.this, ID);
+                        nextIntent = new Intent(SearchActivity.this, WelcomeActivity.class);
                         break;
                 }
                 startActivity(nextIntent);
                 return true;
             }
         });
-
-//        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.navigationHeader);
-
-//        Button btnSearch = (Button) linearLayout.findViewById(R.id.startSearch);
-//        btnSearch.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                EditText search = (EditText) findViewById(R.id.textSearch);
-//                String toSearch = search.getText().toString();
-//                saveText(ProfileActivity.this, SEARCH, toSearch);
-//                Log.i("SEARCH", toSearch);
-//                nextIntent = new Intent(ProfileActivity.this, SearchActivity.class);
-//            }
-//        });
-
     }
 
     public void goToSearch(View view) {
@@ -201,7 +158,7 @@ public class ProfileActivity extends AppCompatActivity {
             case R.id.btnStartSearch:
                 EditText search = (EditText) findViewById(R.id.textSearch);
                 String toSearch = search.getText().toString();
-                saveText(ProfileActivity.this, SEARCH, toSearch);
+                saveText(SearchActivity.this, SEARCH, toSearch);
 
                 nextIntent = new Intent(this, SearchActivity.class);
                 break;
@@ -210,23 +167,9 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
     }
 
-    private void initRequiredInfo(LinearLayout linLayout, LayoutInflater ltInflater) {
-
-        View ReqInfo = ltInflater.inflate(R.layout.item_one_line_block, linLayout, false); //required info
-        TextView ReqInfoName = (TextView) ReqInfo.findViewById(R.id.titleCardProfile);
-        ReqInfoName.setText(userData.get(NAME) + "  " + userData.get(SURNAME));
-
-        ReqInfo.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT)); //width, height
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        params.gravity = Gravity.CENTER;
-        ReqInfoName.setLayoutParams(params);
-
-        linLayout.addView(ReqInfo);
-
+    public void openUserProfile(View view) {
+        saveText(SearchActivity.this, USER_ID, String.valueOf(view.getId()));
+        startActivity(new Intent(this, UserProfileActivity.class));
     }
 
 
@@ -234,9 +177,9 @@ public class ProfileActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Object... strings) {
             String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
-                    + SERVER_GET_DATA_METHOD;
+                    + SERVER_SEARCH_METHOD;
 
-            @SuppressWarnings("WrongThread") String params = ID + EQUALS + userData.get(ID);
+            @SuppressWarnings("WrongThread") String params = SEARCH + EQUALS + whatSearch;
 
             byte[] data;
             InputStream is;
@@ -284,42 +227,65 @@ public class ProfileActivity extends AppCompatActivity {
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
 
-
-
-            int resultCode;
             JSONObject dataJsonObj;
 
             try {
                 dataJsonObj = new JSONObject(strJson);
-                resultCode = Integer.parseInt(dataJsonObj.getString(GET_DATA));
+                JSONArray idsJSON = dataJsonObj.getJSONArray("ids");
 
-                switch (resultCode){
-                    case 300:
-                        userData.put(LOGIN, dataJsonObj.getString(LOGIN));
-                        userData.put(NAME, dataJsonObj.getString(NAME));
-                        userData.put(SURNAME, dataJsonObj.getString(SURNAME));
-                        userData.put(WORK_EMAIL, dataJsonObj.getString(WORK_EMAIL));
-                        userData.put(Constants.COUNTRY, dataJsonObj.getString(Constants.COUNTRY));
-                        userData.put(Constants.CITY, dataJsonObj.getString(Constants.CITY));
-                        userData.put(AVATAR, dataJsonObj.getString(AVATAR));
-                        userData.put(BIRTHDAY, dataJsonObj.getString(BIRTHDAY));
-                        userData.put(STUDY, dataJsonObj.getString(STUDY));
-                        userData.put(WORK, dataJsonObj.getString(WORK));
+                for (int i = 0; i < idsJSON.length(); i++){
+                    ids.add(idsJSON.getString(i));
+                }
 
-//                        mDownloadImageTask.execute();
+                for (int i = 0; i < idsJSON.length(); i++) {
+                    JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
 
-                        String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
-                                + SERVER_AVATAR + SLASH + userData.get(AVATAR) + SLASH + userData.get(ID) + PNG;
+                    View userView = ltInflater.inflate(R.layout.item_search_block, linLayout, false);
+                    View rl = userView.findViewById(R.id.relativeLayoutSearch);
+                    rl.setId(Integer.parseInt(userInfo.getString(ID)));
 
-                        fetchImage(avatarURL, userAvatar);
-                        break;
-//                    case 301:
-//                        inititializeAlertDialog(ProfileActivity.this,
-//                                getResources().getString(R.string.authorization_error),
-//                                getResources().getString(R.string.incorrectly_introduce_login_or_password),
-//                                getResources().getString(R.string.btn_ok));
-//                        break;
+                    ImageView userAvatar = (ImageView) userView.findViewById(R.id.userAvatar);
+                    ImageView userWithoutName = (ImageView) userView.findViewById(R.id.userWithoutName);
 
+                    TextView userName = (TextView) userView.findViewById(R.id.userName);
+                    TextView userPlace = (TextView) userView.findViewById(R.id.livingPlace);
+                    TextView userWork = (TextView) userView.findViewById(R.id.workingPlace);
+
+                    TextView userId = (TextView) userView.findViewById(R.id.userId);
+
+                    String sUserName = userInfo.getString(NAME).length() == 0
+                            ? userInfo.getString(LOGIN)
+                            : userInfo.getString(SURNAME).length() == 0
+                            ? userInfo.getString(LOGIN)
+                            :userInfo.getString(NAME) + " " +  userInfo.getString(SURNAME);
+
+                    String sUserPlace = userInfo.getString(COUNTRY).length() != 0
+                            ? userInfo.getString(CITY).length() != 0
+                            ? userInfo.getString(COUNTRY) + ", " + userInfo.getString(CITY)
+                            : "" : "";
+
+                    String sUserWork = userInfo.getString(WORK).length() != 0
+                            ? userInfo.getString(WORK)
+                            : userInfo.getString(STUDY).length() != 0
+                            ? userInfo.getString(STUDY)
+                            : "";
+
+                    if (sUserName.equals(userInfo.getString(LOGIN)))
+                        userWithoutName.setImageResource(R.drawable.withoutname);
+
+
+                    userName.setText(sUserName);
+                    userPlace.setText(sUserPlace);
+                    userWork.setText(sUserWork);
+
+                    userId.setText(userInfo.getString(ID));
+
+                    String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
+                            + SERVER_AVATAR + SLASH + userInfo.getString(AVATAR) + SLASH + userInfo.getString(ID) + PNG;
+
+                    fetchImage(avatarURL, userAvatar);
+
+                    linLayout.addView(userView);
                 }
 
             } catch (JSONException e) {
@@ -327,4 +293,5 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
     }
+
 }

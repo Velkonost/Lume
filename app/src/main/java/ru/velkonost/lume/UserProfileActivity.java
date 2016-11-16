@@ -1,5 +1,6 @@
 package ru.velkonost.lume;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -7,7 +8,6 @@ import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -58,8 +58,7 @@ import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.PhoneDataStorage.saveText;
 
-public class ProfileActivity extends AppCompatActivity {
-
+public class UserProfileActivity extends Activity{
     private static final int LAYOUT = R.layout.activity_myprofile;
 
     private Intent nextIntent;
@@ -93,7 +92,7 @@ public class ProfileActivity extends AppCompatActivity {
         initToolbar();
         initNavigationView();
 
-        userData.put(ID, loadText(ProfileActivity.this, ID));
+        userData.put(ID, loadText(UserProfileActivity.this, ID));
 
         final LinearLayout linLayout = (LinearLayout) findViewById(R.id.profileContainer);
         final LayoutInflater ltInflater = getLayoutInflater();
@@ -158,7 +157,7 @@ public class ProfileActivity extends AppCompatActivity {
                 drawerLayout.closeDrawers();
                 switch (menuItem.getItemId()) {
                     case R.id.navigationProfile:
-                        nextIntent = new Intent(ProfileActivity.this, ProfileActivity.class);
+                        nextIntent = new Intent(UserProfileActivity.this, ProfileActivity.class);
                         break;
                     case R.id.navigationContacts:
                         break;
@@ -171,8 +170,8 @@ public class ProfileActivity extends AppCompatActivity {
                     case R.id.navigationSettings:
                         break;
                     case R.id.navigationLogout:
-                        deleteText(ProfileActivity.this, ID);
-                        nextIntent = new Intent(ProfileActivity.this, WelcomeActivity.class);
+                        deleteText(UserProfileActivity.this, ID);
+                        nextIntent = new Intent(UserProfileActivity.this, WelcomeActivity.class);
                         break;
                 }
                 startActivity(nextIntent);
@@ -201,7 +200,7 @@ public class ProfileActivity extends AppCompatActivity {
             case R.id.btnStartSearch:
                 EditText search = (EditText) findViewById(R.id.textSearch);
                 String toSearch = search.getText().toString();
-                saveText(ProfileActivity.this, SEARCH, toSearch);
+                saveText(UserProfileActivity.this, SEARCH, toSearch);
 
                 nextIntent = new Intent(this, SearchActivity.class);
                 break;
@@ -328,3 +327,4 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 }
+
