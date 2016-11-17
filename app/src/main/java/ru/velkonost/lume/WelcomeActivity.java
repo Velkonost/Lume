@@ -28,18 +28,31 @@ public class WelcomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
 
+        /**
+         * Запускает проверку при создании активности.
+         * {@link WelcomeActivity#checkCookieId()}
+         */
         checkCookieId();
     }
 
     /**
-     * Функция служит обработчкиком событий для кнопок {@link WelcomeActivity#LAYOUT}
-     * @param view
+     * Функция служит обработчкиком событий для кнопок
+     * {@link WelcomeActivity#LAYOUT}
+     * @param view Нажатая кнопка
      */
     public void chooseWayToEnter(View view) {
         switch (view.getId()) {
+            /**
+             * Если нажата кнопка регистрации - переходим в активность с регистрацией
+             * {@link RegistrationActivity}
+             */
             case R.id.btnRegistrationWelcome:
                 mIntentNext = new Intent(this, RegistrationActivity.class);
                 break;
+            /**
+             * Если нажата кнопка входа - переходим в активность со входом
+             * {@link LoginActivity}
+             */
             case R.id.btnLoginWelcome:
                 mIntentNext = new Intent(this, LoginActivity.class);
                 break;
@@ -55,6 +68,12 @@ public class WelcomeActivity extends Activity {
      */
     public void checkCookieId() {
         String cookieId = loadText(WelcomeActivity.this, ID);
+
+        /**
+         * Проверяет на наличие своеобразных "cookie" пользователя.
+         * В случае положительного ответа переходим на профиль пользователя.
+         * {@link ProfileActivity}
+         */
         if(cookieId.length() != 0){
             Intent profileIntent = new Intent(this, ProfileActivity.class);
             startActivity(profileIntent);

@@ -28,8 +28,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.CITY;
@@ -67,14 +65,12 @@ public class SearchActivity extends AppCompatActivity {
 
     private String whatSearch;
 
-    private Map <String, Map<String, String> > usersData;
-    private Map <String, String> depUserInfo; // depositoryUserInfo
     private ArrayList<String> ids;
 
     private GetData mGetData;
 
-    LinearLayout linLayout;
-    LayoutInflater ltInflater;
+    private LinearLayout linLayout;
+    private LayoutInflater ltInflater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +86,6 @@ public class SearchActivity extends AppCompatActivity {
         linLayout = (LinearLayout) findViewById(R.id.searchContainer);
         ltInflater = getLayoutInflater();
 
-        usersData = new HashMap<>();
         ids = new ArrayList<String>();
 
         whatSearch = loadText(SearchActivity.this, SEARCH);
@@ -257,7 +252,7 @@ public class SearchActivity extends AppCompatActivity {
                             ? userInfo.getString(LOGIN)
                             : userInfo.getString(SURNAME).length() == 0
                             ? userInfo.getString(LOGIN)
-                            :userInfo.getString(NAME) + " " +  userInfo.getString(SURNAME);
+                            : userInfo.getString(NAME) + " " +  userInfo.getString(SURNAME);
 
                     String sUserPlace = userInfo.getString(COUNTRY).length() != 0
                             ? userInfo.getString(CITY).length() != 0

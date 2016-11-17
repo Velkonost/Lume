@@ -9,13 +9,13 @@
     <string name="registration">Регистрация</string>
     <string name="logIn">Вход</string>
 
-
+    <string name="server_error">Ошибка на сервере!</string>
     <string name="authorization_error">Ошибка авторизации!</string>
     <string name="registration_error">Ошибка регистрации!</string>
     <string name="not_coincide_passwords">Пароли не совпадают!</string>
     <string name="email_already_exist">Данный email уже существует!</string>
     <string name="login_already_exist">Данный логин уже занят!</string>
-
+    <string name="relogin">Пожалуйста, зайдите позднее.</string>
 
     <string name="incorrectly_introduce_login_or_password">Неправильно введен логин или пароль!</string>
     <string name="btn_ok">Хорошо</string>
@@ -31,6 +31,13 @@
     <string name="menu_item_logout">Выход</string>
     <string name="menu_item_settings">Настройки</string>
     <string name="menu_item_reminder">Напоминание</string>
+
+
+    <string name="profile_title_place_living">Место жительства</string>
+    <string name="profile_title_birthday">День рождения</string>
+    <string name="profile_title_place_study">Обучение</string>
+    <string name="profile_title_place_work">Место работы</string>
+    <string name="profile_title_working_email">Email для связи</string>
 
 
     <string name="search_title">Поиск</string>

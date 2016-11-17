@@ -1,5 +1,10 @@
 package ru.velkonost.lume;
 
+
+/**
+ * @author Velkonost
+ * Класс, предназначенный для хранения основных констант, используемых в коде приложения.
+ * */
 public class Constants {
 
     public static final String EQUALS = "=";
@@ -27,13 +32,14 @@ public class Constants {
 
     public static final String GET_DATA = "getdata";
 
-
+    /** Класс констант, относящихся исключительно к построению URL */
     public static class URL {
         public static final String SERVER_PROTOCOL = "http://";
         public static final String SERVER_HOST = "vh156342.eurodir.ru";
         public static final String SERVER_ACCOUNT_SCRIPT = "/account";
         public static final String SERVER_RESOURCE = "/resource";
         public static final String SERVER_AVATAR = "/avatar";
+
         public static final String SERVER_LOGIN_METHOD = "/login";
         public static final String SERVER_GET_DATA_METHOD = "/getData";
         public static final String SERVER_SEARCH_METHOD = "/search";
@@ -45,7 +51,10 @@ public class Constants {
     public static final String PNG = ".png";
     public static final String ZERO = "0";
 
-
+    /**
+     *  Название файла, с которым приложения осуществляет взаимодействие
+     * {@link PhoneDataStorage}
+     * */
     public static final String APP_PREFERENCES = "UserSettings";
 
     public static final int TAB_ONE = 0;
