@@ -13,12 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,8 +31,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BIRTHDAY;
@@ -113,9 +109,10 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private GetData mGetData;
     /**
-     * Свойство - хранилище данных о данном пользователе
+     * Свойство - идентификатор данного пользователя
      */
-    private Map<String, String> userData;
+    private String userId;
+
     private View viewAvatar;
     private View viewUserPlaceLiving;
     private View viewUserBirthday;
@@ -123,6 +120,7 @@ public class ProfileActivity extends AppCompatActivity {
     private View viewUserPlaceWork;
     private View viewUserWorkingEmail;
     private View viewUserPlaceStudyAndWork;
+    private View viewUserInteraction;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -130,12 +128,6 @@ public class ProfileActivity extends AppCompatActivity {
     private LinearLayout linLayout;
     private LayoutInflater ltInflater;
 
-
-    private Button toggleButtonPrimary;
-    private ActionMode actionMode;
-    private Button toggleButtonFloating;
-    private Button toggleButtonOff;
-    private ActionMode.Callback actionModeCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +142,6 @@ public class ProfileActivity extends AppCompatActivity {
         screenH = displayMetrics.heightPixels;
         screenW = displayMetrics.widthPixels;
 
-        userData = new HashMap<>();
         mGetData = new GetData();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -162,8 +153,7 @@ public class ProfileActivity extends AppCompatActivity {
          * Получение id пользователя, помещение в хранилище.
          * {@link PhoneDataStorage#loadText(Context, String)}
          **/
-        userData.put(ID, loadText(ProfileActivity.this, ID));
-        Log.i("ID", userData.get(ID));
+        userId = loadText(ProfileActivity.this, ID);
 
         /**
          * Условный контейнер, в который помещаются все view-элементы, созданные программно.
@@ -311,7 +301,7 @@ public class ProfileActivity extends AppCompatActivity {
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = ID + EQUALS + userData.get(ID);
+            @SuppressWarnings("WrongThread") String params = ID + EQUALS + userId;
 
             byte[] data;
             InputStream is;
@@ -412,16 +402,17 @@ public class ProfileActivity extends AppCompatActivity {
 //                        userData.put(LOGIN, dataJsonObj.getString(LOGIN));
 //                        userData.put(NAME, dataJsonObj.getString(NAME));
 //                        userData.put(SURNAME, dataJsonObj.getString(SURNAME));
-                        userData.put(WORK_EMAIL, dataJsonObj.getString(WORK_EMAIL));
-                        userData.put(COUNTRY, dataJsonObj.getString(COUNTRY));
-                        userData.put(Constants.CITY, dataJsonObj.getString(Constants.CITY));
-                        userData.put(AVATAR, dataJsonObj.getString(AVATAR));
-                        userData.put(BIRTHDAY, dataJsonObj.getString(BIRTHDAY));
-                        userData.put(STUDY, dataJsonObj.getString(STUDY));
-                        userData.put(WORK, dataJsonObj.getString(WORK));
+//                        userData.put(WORK_EMAIL, dataJsonObj.getString(WORK_EMAIL));
+//                        userData.put(COUNTRY, dataJsonObj.getString(COUNTRY));
+//                        userData.put(Constants.CITY, dataJsonObj.getString(Constants.CITY));
+//                        userData.put(AVATAR, dataJsonObj.getString(AVATAR));
+//                        userData.put(BIRTHDAY, dataJsonObj.getString(BIRTHDAY));
+//                        userData.put(STUDY, dataJsonObj.getString(STUDY));
+//                        userData.put(WORK, dataJsonObj.getString(WORK));
 
                         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
-                                + SERVER_AVATAR + SLASH + userData.get(AVATAR) + SLASH + userData.get(ID) + PNG;
+                                + SERVER_AVATAR + SLASH + dataJsonObj.getString(AVATAR)
+                                + SLASH + userId + PNG;
 
                         viewAvatar = ltInflater.inflate(R.layout.item_profile_photo, linLayout, false);
 
@@ -541,7 +532,26 @@ public class ProfileActivity extends AppCompatActivity {
                         }
 
 
-
+//                        viewUserInteraction = ltInflater
+//                                .inflate(R.layout.item_profile_interaction, linLayout, false);
+//
+//                        final CircularProgressButton circularButton1 = (CircularProgressButton) viewUserInteraction.findViewById(R.id.circularButton1);
+//
+//                        circularButton1.setIndeterminateProgressMode(true);
+//
+//                        linLayout.addView(viewUserInteraction);
+//                        circularButton1.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                if (circularButton1.getProgress() == 0) {
+//                                    circularButton1.setProgress(50);
+//                                } else if (circularButton1.getProgress() == 100) {
+//                                    circularButton1.setProgress(0);
+//                                } else {
+//                                    circularButton1.setProgress(100);
+//                                }
+//                            }
+//                        });
 
 
                         break;

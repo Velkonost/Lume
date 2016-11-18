@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:card="http://schemas.android.com/apk/res-auto"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="12dp"
+              android:layout_marginRight="12dp"
+              android:id="@+id/item_profile_interaction">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/cardViewUserInteraction"
+        card:cardElevation="2dp"
+        card:cardUseCompatPadding="true"
+        card:cardBackgroundColor="@color/colorWhite"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:id="@+id/linearLayoutUserInteraction">
+
+            <com.dd.CircularProgressButton
+                android:id="@+id/circularButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/cpb_white"
+                android:textSize="18sp"
+                app:cpb_cornerRadius="48dp"
+                app:cpb_iconComplete="@mipmap/ic_checkbox_marked_circle_outline"
+                app:cpb_iconError="@mipmap/ic_alert_outline"
+                app:cpb_textIdle="Upload"
+                android:layout_weight="1"/>
+
+            <com.dd.CircularProgressButton
+                android:id="@+id/circularButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/cpb_white"
+                android:textSize="18sp"
+                app:cpb_cornerRadius="48dp"
+                app:cpb_iconComplete="@mipmap/ic_checkbox_marked_circle_outline"
+                app:cpb_iconError="@mipmap/ic_alert_outline"
+                app:cpb_textIdle="Upload"
+                android:layout_weight="1"/>
+
+
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+</LinearLayout>
