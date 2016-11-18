@@ -80,7 +80,7 @@ import static ru.velkonost.lume.PhoneDataStorage.saveText;
  */
 public class ProfileActivity extends AppCompatActivity {
 
-    private static final int LAYOUT = R.layout.activity_myprofile;
+    private static final int LAYOUT = R.layout.activity_profile;
 
     /**
      * Свойство - следующая активность.
@@ -105,8 +105,9 @@ public class ProfileActivity extends AppCompatActivity {
      * Свойство - описание верхней панели инструментов приложения.
      */
     private Toolbar toolbar;
+
     /**
-     * Свойство - описание боковой панели навигации.
+     * Свойство - описание {@link ProfileActivity#LAYOUT}.
      */
     private DrawerLayout drawerLayout;
 
@@ -146,7 +147,7 @@ public class ProfileActivity extends AppCompatActivity {
      * Положительный ответ означает, что {@link ProfileActivity#userId} уже добавлял в контакты
      * {@link ProfileActivity#profileId}
      * */
-    private boolean isContact;
+    protected boolean isContact;
 
     /**
      * Условный контейнер, в который помещаются все view-элементы, созданные программно.
@@ -262,7 +263,7 @@ public class ProfileActivity extends AppCompatActivity {
      * Рисует боковую панель навигации.
      **/
     private void initNavigationView() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_myprofile);
+        drawerLayout = (DrawerLayout) findViewById(R.id.activity_profile);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.view_navigation_open, R.string.view_navigation_close);
@@ -289,6 +290,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     /** Переход на контакты данного пользователя */
                     case R.id.navigationContacts:
+                        nextIntent = new Intent(ProfileActivity.this, ContactsActivity.class);
                         break;
 
                     /** Переход на страницу напоминаний, созданных данным пользователем */

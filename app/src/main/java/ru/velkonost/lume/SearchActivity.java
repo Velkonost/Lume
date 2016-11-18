@@ -60,16 +60,26 @@ public class SearchActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_search;
 
+    /**
+     * Свойство - следующая активность.
+     */
     private Intent nextIntent;
 
+    /**
+     * Свойство - описание верхней панели инструментов приложения.
+     */
     private Toolbar toolbar;
+
+    /**
+     * Свойство - описание {@link SearchActivity#LAYOUT}
+     */
     private DrawerLayout drawerLayout;
 
     private String whatSearch;
 
     private ArrayList<String> ids;
 
-    private GetData mGetData;
+    protected GetData mGetData;
 
     private LinearLayout linLayout;
     private LayoutInflater ltInflater;
@@ -113,7 +123,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void initNavigationView() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_myprofile);
+        drawerLayout = (DrawerLayout) findViewById(R.id.activity_search);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.view_navigation_open, R.string.view_navigation_close);
@@ -130,6 +140,7 @@ public class SearchActivity extends AppCompatActivity {
                         nextIntent = new Intent(SearchActivity.this, ProfileActivity.class);
                         break;
                     case R.id.navigationContacts:
+                        nextIntent = new Intent(SearchActivity.this, ContactsActivity.class);
                         break;
                     case R.id.navigationReminder:
                         break;
