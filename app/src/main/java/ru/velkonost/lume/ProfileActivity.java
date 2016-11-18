@@ -34,21 +34,27 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static ru.velkonost.lume.Constants.ADD_CONTACT;
+import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BIRTHDAY;
 import static ru.velkonost.lume.Constants.CITY;
+import static ru.velkonost.lume.Constants.CONTACT;
 import static ru.velkonost.lume.Constants.COUNTRY;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.GET_DATA;
+import static ru.velkonost.lume.Constants.GET_ID;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.PNG;
 import static ru.velkonost.lume.Constants.SEARCH;
+import static ru.velkonost.lume.Constants.SEND_ID;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.STUDY;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
+import static ru.velkonost.lume.Constants.URL.SERVER_ADD_CONTACT_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_DATA_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
@@ -111,10 +117,17 @@ public class ProfileActivity extends AppCompatActivity {
      * Свойство - экзмепляр класса {@link GetData}
      */
     private GetData mGetData;
+
+
+
+    private AddContact mAddContact;
+
     /**
      * Свойство - идентификатор данного пользователя
      */
     private String userId;
+    private String profileId;
+    private boolean isContact;
 
     private View viewAvatar;
     private View viewUserPlaceLiving;
@@ -146,6 +159,7 @@ public class ProfileActivity extends AppCompatActivity {
         screenW = displayMetrics.widthPixels;
 
         mGetData = new GetData();
+        mAddContact = new AddContact();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
@@ -156,9 +170,10 @@ public class ProfileActivity extends AppCompatActivity {
          * Получение id пользователя, помещение в хранилище.
          * {@link PhoneDataStorage#loadText(Context, String)}
          **/
-        userId =  loadText(ProfileActivity.this, USER_ID).length() == 0
-                ? loadText(ProfileActivity.this, ID)
-                : loadText(ProfileActivity.this, USER_ID);
+        userId = loadText(ProfileActivity.this, ID);
+        profileId = loadText(ProfileActivity.this, USER_ID).length() != 0
+                ? loadText(ProfileActivity.this, USER_ID)
+                : userId;
 
 
         /**
@@ -166,7 +181,6 @@ public class ProfileActivity extends AppCompatActivity {
          **/
         linLayout = (LinearLayout) findViewById(R.id.profileContainer);
         ltInflater = getLayoutInflater();
-
 
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
@@ -214,8 +228,6 @@ public class ProfileActivity extends AppCompatActivity {
                     /** Переход на профиль данного пользователя */
                     case R.id.navigationProfile:
                         nextIntent = new Intent(ProfileActivity.this, ProfileActivity.class);
-//                        nextIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                        finish();
                         break;
                     /** Переход на контакты данного пользователя */
                     case R.id.navigationContacts:
@@ -316,7 +328,8 @@ public class ProfileActivity extends AppCompatActivity {
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = ID + EQUALS + userId;
+            @SuppressWarnings("WrongThread") String params = ID + EQUALS + userId
+                    + AMPERSAND + USER_ID + EQUALS + profileId;
 
             byte[] data;
             InputStream is;
@@ -414,20 +427,10 @@ public class ProfileActivity extends AppCompatActivity {
                          * Добавление в хранилище.
                          * {@link ProfileActivity#userData}
                          */
-//                        userData.put(LOGIN, dataJsonObj.getString(LOGIN));
-//                        userData.put(NAME, dataJsonObj.getString(NAME));
-//                        userData.put(SURNAME, dataJsonObj.getString(SURNAME));
-//                        userData.put(WORK_EMAIL, dataJsonObj.getString(WORK_EMAIL));
-//                        userData.put(COUNTRY, dataJsonObj.getString(COUNTRY));
-//                        userData.put(Constants.CITY, dataJsonObj.getString(Constants.CITY));
-//                        userData.put(AVATAR, dataJsonObj.getString(AVATAR));
-//                        userData.put(BIRTHDAY, dataJsonObj.getString(BIRTHDAY));
-//                        userData.put(STUDY, dataJsonObj.getString(STUDY));
-//                        userData.put(WORK, dataJsonObj.getString(WORK));
 
                         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
                                 + SERVER_AVATAR + SLASH + dataJsonObj.getString(AVATAR)
-                                + SLASH + userId + PNG;
+                                + SLASH + profileId + PNG;
 
                         viewAvatar = ltInflater.inflate(R.layout.item_profile_photo, linLayout, false);
 
@@ -462,14 +465,37 @@ public class ProfileActivity extends AppCompatActivity {
                         /////////////////////////////
 
 
-                        if (!loadText(ProfileActivity.this, USER_ID).equals("")) {
+                        if (!profileId.equals(userId)) {
                             viewUserInteraction = ltInflater
                                     .inflate(R.layout.item_profile_interaction, linLayout, false);
+
                             Button btnAddIntoContacts = (Button) viewUserInteraction
                                     .findViewById(R.id.btnAddToContacts);
                             Button btnSendMessages = (Button) viewUserInteraction
                                     .findViewById(R.id.btnSendMessage);
+
+                            isContact = dataJsonObj.getBoolean(CONTACT);
+                            if (isContact)
+                                btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
+
                             linLayout.addView(viewUserInteraction);
+
+                            btnAddIntoContacts.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    mAddContact = new AddContact();
+                                    mAddContact.execute();
+                                    Button btnAddIntoContacts = (Button) viewUserInteraction
+                                            .findViewById(R.id.btnAddToContacts);
+
+//                                    btnAddIntoContacts.setBackgroundColor(getResources().getColor(R.color.colorBlack));
+                                    if (isContact)
+                                        btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
+//                                    btnAddIntoContacts.setClickable(false);
+                                    else
+                                        btnAddIntoContacts.setText(R.string.user_add_into_contacts);
+                                }
+                            });
                         }
 
                         viewUserPlaceLiving = ltInflater.inflate(R.layout.item_profile_place_living, linLayout, false);
@@ -558,7 +584,6 @@ public class ProfileActivity extends AppCompatActivity {
                         }
 
 
-
                         break;
                     case 301:
                         /**
@@ -578,4 +603,122 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    private class AddContact extends AsyncTask<Object, Object, String> {
+
+
+        @Override
+        protected String doInBackground(Object... strings) {
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
+                    + SERVER_ADD_CONTACT_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = SEND_ID + EQUALS + userId
+                    + AMPERSAND + GET_ID + EQUALS + profileId;
+
+            byte[] data;
+            InputStream is;
+            BufferedReader reader;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+
+            try {
+                /**
+                 * Устанавливает соединение.
+                 */
+                URL url = new URL(dataURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                /**
+                 * Выставляет необходимые параметры.
+                 */
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
+                /**
+                 * Формирует тело запроса.
+                 */
+                httpURLConnection.setRequestProperty("Content-Length", ""
+                        + Integer.toString(params.getBytes().length));
+                OutputStream os = httpURLConnection.getOutputStream();
+                data = params.getBytes("UTF-8");
+                os.write(data);
+
+                /** Соединяемся */
+                httpURLConnection.connect();
+
+                /**
+                 * Получение кода состояния.
+                 */
+                int responseCode = httpURLConnection.getResponseCode();
+                Log.i("Data", String.valueOf(responseCode));
+
+                /**
+                 * Получение данных из потока в виде JSON-объекта.
+                 */
+                is = httpURLConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                reader = new BufferedReader(new InputStreamReader(is));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
+                }
+
+                resultJson = buffer.toString();
+                Log.i("RESULT", resultJson);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /**
+             * Свойство - код ответа от методов сервера.
+             *
+             * ВНИМАНИЕ!
+             *
+             * Этот параметр не имеет никакого отношения к кодам состояния.
+             * Он формируется на сервере в зависимости от результата проведения обработки данных.
+             *
+             **/
+            int resultCode;
+
+            /** Свойство - полученный JSON–объект*/
+            JSONObject dataJsonObj;
+
+            try {
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+                resultCode = Integer.parseInt(dataJsonObj.getString(ADD_CONTACT));
+
+                Log.i("CONTACT", String.valueOf(resultCode));
+                switch (resultCode) {
+                    case 401:
+                        isContact = false;
+                        break;
+                    case 400:
+                        isContact = true;
+                        break;
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.i("CONTACT", "XUI");
+            }
+        }
+    }
 }

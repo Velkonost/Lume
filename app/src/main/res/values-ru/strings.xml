@@ -40,6 +40,7 @@
     <string name="profile_title_working_email">Email для связи</string>
 
     <string name="user_add_into_contacts">Добавить в контакты</string>
+    <string name="user_remove_from_contacts">Удалить из контактов</string>
     <string name="user_send_message">Отправить сообщение</string>
 
     <string name="search_title">Поиск</string>

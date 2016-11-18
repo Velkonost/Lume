@@ -17,6 +17,8 @@ public class Constants {
     public static final String ID = "id";
 
     public static final String USER_ID = "user_id";
+    public static final String SEND_ID = "send_id";
+    public static final String GET_ID = "get_id";
 
     public static final String SEARCH = "search";
 
@@ -29,8 +31,10 @@ public class Constants {
     public static final String BIRTHDAY = "birthday";
     public static final String STUDY = "study";
     public static final String WORK = "work";
+    public static final String CONTACT = "contact";
 
     public static final String GET_DATA = "getdata";
+    public static final String ADD_CONTACT = "addContact";
 
     /** Класс констант, относящихся исключительно к построению URL */
     public static class URL {
@@ -41,9 +45,12 @@ public class Constants {
         public static final String SERVER_AVATAR = "/avatar";
 
         public static final String SERVER_LOGIN_METHOD = "/login";
-        public static final String SERVER_GET_DATA_METHOD = "/getData";
-        public static final String SERVER_SEARCH_METHOD = "/search";
         public static final String SERVER_REGISTRATION_METHOD = "/registration";
+        public static final String SERVER_GET_DATA_METHOD = "/getData";
+        public static final String SERVER_ADD_CONTACT_METHOD = "/addContact";
+        public static final String SERVER_SEARCH_METHOD = "/search";
+
+
 
     }
 
@@ -56,12 +63,4 @@ public class Constants {
      * {@link PhoneDataStorage}
      * */
     public static final String APP_PREFERENCES = "UserSettings";
-
-    public static final int TAB_ONE = 0;
-    public static final int TAB_TWO = 1;
-    public static final int TAB_THREE = 2;
-
-
-
-
 }
