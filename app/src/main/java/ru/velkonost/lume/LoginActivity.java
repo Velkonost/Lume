@@ -182,6 +182,9 @@ public class LoginActivity extends Activity{
                  * Обработка полученного кода ответа.
                  */
                 switch (resultCode){
+                    /**
+                     * В случае успешного выполнения.
+                     **/
                     case 200:
                         /**
                          * Получение id вошедшего пользователя, запись его в файл на устройстве.
@@ -197,6 +200,9 @@ public class LoginActivity extends Activity{
                         changeActivityCompat(LoginActivity.this, profileIntent);
                         finish();
                         break;
+                    /**
+                     * Неправильно введен логин или пароль.
+                     **/
                     case 201:
                         /**
                          * Формирование уведомления об ошибке.

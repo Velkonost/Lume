@@ -47,14 +47,18 @@ public class RegistrationActivity extends Activity {
 
     /** Cвойство - введенный пользователем логин */
     private EditText inputLogin;
+
     /** Cвойство - введенный пользователем пароль */
     private EditText inputPassword;
+
     /** Cвойство - введенный пользователем повтор пароля */
     private EditText inputRepeatPassword;
+
     /** Cвойство - введенный пользователем email */
     private EditText inputEmail;
+
     /** Cвойство - кнопка подтверждения отправления данных на сервер */
-    private Button btnRegistrationCommit;
+    protected Button btnRegistrationCommit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +79,7 @@ public class RegistrationActivity extends Activity {
         btnRegistrationCommit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 /**
                  * Если поля заполнены и повтор пароля введен правильно,
                  * тогда запускается параллельый поток,
@@ -88,6 +93,7 @@ public class RegistrationActivity extends Activity {
                             equals(inputRepeatPassword.getText().toString()))
                         new SignUp().execute();
                     else
+
                     /**
                      * Иначе формируется уведомление об ошибке.
                      */
@@ -105,6 +111,7 @@ public class RegistrationActivity extends Activity {
     class SignUp extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
+
             /**
              * Формирование адреса, по которому необходимо обратиться.
              **/
@@ -127,6 +134,7 @@ public class RegistrationActivity extends Activity {
             String resultJson = "";
 
             try {
+
                 /**
                  * Устанавливает соединение.
                  */
@@ -162,7 +170,7 @@ public class RegistrationActivity extends Activity {
                  * Получение данных из потока в виде JSON-объекта.
                  */
                 is = httpURLConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 reader = new BufferedReader(new InputStreamReader(is));
 
                 String line;
@@ -196,6 +204,7 @@ public class RegistrationActivity extends Activity {
             JSONObject dataJsonObj;
 
             try {
+
                 /**
                  * Получение JSON-объекта по строке.
                  */
@@ -206,7 +215,12 @@ public class RegistrationActivity extends Activity {
                  * Обработка полученного кода ответа.
                  */
                 switch (resultCode) {
+
+                    /**
+                     * В случае успешного выполнения.
+                     **/
                     case 100:
+
                         /**
                          * Получение id вошедшего пользователя, запись его в файл на устройстве.
                          */
@@ -221,7 +235,12 @@ public class RegistrationActivity extends Activity {
                         changeActivityCompat(RegistrationActivity.this, profileIntent);
                         finish();
                         break;
+
+                    /**
+                     * Email уже занят.
+                     **/
                     case 101:
+
                         /**
                          * Формирование уведомления об ошибке.
                          */
@@ -230,7 +249,12 @@ public class RegistrationActivity extends Activity {
                                 getResources().getString(R.string.email_already_exist),
                                 getResources().getString(R.string.btn_ok));
                         break;
+
+                    /**
+                     * Логин уже занят.
+                     **/
                     case 102:
+
                         /**
                          * Формирование уведомления об ошибке.
                          */
@@ -240,7 +264,6 @@ public class RegistrationActivity extends Activity {
                                 getResources().getString(R.string.btn_ok));
                         break;
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }

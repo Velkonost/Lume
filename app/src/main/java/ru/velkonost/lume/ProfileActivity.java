@@ -44,6 +44,7 @@ import static ru.velkonost.lume.Constants.COUNTRY;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.GET_DATA;
 import static ru.velkonost.lume.Constants.GET_ID;
+import static ru.velkonost.lume.Constants.HYPHEN;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
@@ -82,73 +83,112 @@ public class ProfileActivity extends AppCompatActivity {
     private static final int LAYOUT = R.layout.activity_myprofile;
 
     /**
-     * Свойство - следующая активность
+     * Свойство - следующая активность.
      */
     private Intent nextIntent;
 
     /**
-     * Свойство - высота экрана устройства
+     * Свойство - высота экрана устройства.
      */
     private int screenH;
     /**
-     * Свойство - ширина экрана устройства
+     * Свойство - ширина экрана устройства.
      */
     private int screenW;
 
     /**
-     * Свойство - описание верхней панели инструментов приложения
+    * Свойство - опинсание view-элемента, служащего для обновления страницы.
+    **/
+    protected SwipeRefreshLayout mSwipeRefreshLayout;
+
+    /**
+     * Свойство - описание верхней панели инструментов приложения.
      */
     private Toolbar toolbar;
     /**
-     * Свойство - описание боковой панели навигации
+     * Свойство - описание боковой панели навигации.
      */
     private DrawerLayout drawerLayout;
 
     /**
-     * Свойство - view-элемент для размещения аватара пользователя
+     * Свойство - view-элемент для размещения аватара пользователя.
      */
-    private ImageView userAvatar;
+    protected ImageView userAvatar;
     /**
-     * Свойство - view-элемент для размещения полного имени пользователя
+     * Свойство - view-элемент для размещения полного имени пользователя.
      */
-    private TextView userName;
+    protected TextView userName;
 
     /**
      * Свойство - экзмепляр класса {@link GetData}
      */
-    private GetData mGetData;
+    protected GetData mGetData;
 
-
-
+    /**
+     * Свойство - экземпляр класса {@link AddContact}
+     * */
     private AddContact mAddContact;
 
     /**
-     * Свойство - идентификатор данного пользователя
+     * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
      */
     private String userId;
+
+    /**
+     * Свойство - идентификатор пользователя, которому принадлежит открытый профиль.
+     * */
     private String profileId;
+
+    /**
+     * Свойство - состояние между
+     * {@link ProfileActivity#userId} и {@link ProfileActivity#profileId}
+     *
+     * Положительный ответ означает, что {@link ProfileActivity#userId} уже добавлял в контакты
+     * {@link ProfileActivity#profileId}
+     * */
     private boolean isContact;
 
-    private View viewAvatar;
-    private View viewUserPlaceLiving;
-    private View viewUserBirthday;
-    private View viewUserPlaceStudy;
-    private View viewUserPlaceWork;
-    private View viewUserWorkingEmail;
-    private View viewUserPlaceStudyAndWork;
-    private View viewUserInteraction;
-
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-
-
+    /**
+     * Условный контейнер, в который помещаются все view-элементы, созданные программно.
+     **/
     private LinearLayout linLayout;
     private LayoutInflater ltInflater;
+
+    /**
+     * Свойства - view-элементы отдельных частей страницы профиля,
+     *      которые в дальнейшем могут быть добавлены в условный контейнер.
+     * {@link ProfileActivity#linLayout}
+     **/
+    protected View viewAvatar; /** Свойство - аватар пользователя */
+    protected View viewUserPlaceLiving; /** Свойство - место проживания пользователя */
+    protected View viewUserBirthday; /** Свойство - дата рождения пользователя */
+    private View viewUserPlaceStudy; /** Свойство - место обучения пользователя */
+    private View viewUserPlaceWork; /** Свойство - текущее место работы пользователя */
+    /**
+     * Свойство - email, который пользователь данного профиля готов
+     *          предоставить другим пользователя для связи с ним.
+     **/
+    protected View viewUserWorkingEmail;
+    /**
+     * Свойство - места обучения и работы пользователя.
+     * {@link ProfileActivity#viewUserPlaceStudy} и {@link ProfileActivity#viewUserPlaceWork},
+     *      "склеенные" вместе.
+     **/
+    protected View viewUserPlaceStudyAndWork;
+    /**
+     * Свойство - модуль для взаимодействия пользователя,
+     *      авторизованного на данном устройстве
+     *      и пользователя открытого на текущий момент аккаунта.
+     **/
+    private View viewUserInteraction;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         /** Установка темы по умолчанию */
         setTheme(R.style.AppDefault);
+
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
 
@@ -158,8 +198,12 @@ public class ProfileActivity extends AppCompatActivity {
         screenH = displayMetrics.heightPixels;
         screenW = displayMetrics.widthPixels;
 
+        /** Инициализация экземпляров классов */
         mGetData = new GetData();
         mAddContact = new AddContact();
+
+        linLayout = (LinearLayout) findViewById(R.id.profileContainer);
+        ltInflater = getLayoutInflater();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
@@ -167,33 +211,42 @@ public class ProfileActivity extends AppCompatActivity {
         initNavigationView(); /** Инициализация */
 
         /**
-         * Получение id пользователя, помещение в хранилище.
+         * Получение id пользователя.
          * {@link PhoneDataStorage#loadText(Context, String)}
          **/
         userId = loadText(ProfileActivity.this, ID);
+
+        /**
+         * Проверка:
+         * Принадлежит открытый профиль пользователю,
+         *      авторизованному на данном устройстве или нет?
+         * */
         profileId = loadText(ProfileActivity.this, USER_ID).length() != 0
                 ? loadText(ProfileActivity.this, USER_ID)
                 : userId;
 
-
         /**
-         * Условный контейнер, в который помещаются все view-элементы, созданные программно.
-         **/
-        linLayout = (LinearLayout) findViewById(R.id.profileContainer);
-        ltInflater = getLayoutInflater();
-
-
+         *  Установка цветной палитры,
+         *  цвета которой будут заменять друг друга в зависимости от прогресса.
+         * */
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorBlue, R.color.colorGreen,
                 R.color.colorYellow, R.color.colorRed);
 
-
+        /** Ставит обработчик событий */
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
+
             public void onRefresh() {
+                /** Выполнение происходит с задержкой в 2.5 секунды */
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * */
                         changeActivityCompat(ProfileActivity.this);
                     }
                 }, 2500);
@@ -221,31 +274,42 @@ public class ProfileActivity extends AppCompatActivity {
          **/
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @SuppressWarnings("NullableProblems")
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 drawerLayout.closeDrawers();
+
+                /** Инициализируем намерение на следующую активность */
                 switch (menuItem.getItemId()) {
+
                     /** Переход на профиль данного пользователя */
                     case R.id.navigationProfile:
                         nextIntent = new Intent(ProfileActivity.this, ProfileActivity.class);
                         break;
+
                     /** Переход на контакты данного пользователя */
                     case R.id.navigationContacts:
                         break;
+
                     /** Переход на страницу напоминаний, созданных данным пользователем */
                     case R.id.navigationReminder:
                         break;
+
                     /** Переход на страницу сообщений данного пользователя */
                     case R.id.navigationMessages:
                         break;
+
                     /** Переход на страницу досок карточной версии канбан-системы */
                     case R.id.navigationBoards:
                         break;
+
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
                     case R.id.navigationSettings:
                         break;
+
                     /**
                      * Завершение сессии даного пользователя на данном устройстве.
+                     * Удаляем всю информацию об авторизованном пользователе.
                      * Переход на страницу приветствия {@link WelcomeActivity}
                      **/
                     case R.id.navigationLogout:
@@ -253,30 +317,41 @@ public class ProfileActivity extends AppCompatActivity {
                         nextIntent = new Intent(ProfileActivity.this, WelcomeActivity.class);
                         break;
                 }
+
+                /**
+                 * Удаляет информацию о владельце открытого профиля.
+                 * */
                 deleteText(ProfileActivity.this, USER_ID);
+
                 /**
                  * Переход на следующую активность.
                  * {@link Initializations#changeActivityCompat(Activity, Intent)}
                  * */
                 changeActivityCompat(ProfileActivity.this, nextIntent);
+
+                /** Если был осуществлен выход из аккаунты, то закрываем активность профиля */
                 if (loadText(ProfileActivity.this, ID).equals(""))
                     finish();
+
                 return true;
             }
         });
     }
 
     /**
-     * Обработчки событий для кнопки поиска
+     * Обработчки событий для кнопки поиска.
      */
     public void goToSearch(View view) {
         switch (view.getId()) {
             case R.id.btnStartSearch:
+
                 /** Получение данных, по которым пользователь хочет найти информацию */
                 EditText search = (EditText) findViewById(R.id.textSearch);
                 String toSearch = search.getText().toString();
+
                 /** Сохранение этих данных в файл на данном устройстве */
                 saveText(ProfileActivity.this, SEARCH, toSearch);
+
                 /**
                  * Переход на страницу поиска, где выоводится результат.
                  * {@link SearchActivity}
@@ -284,34 +359,39 @@ public class ProfileActivity extends AppCompatActivity {
                 nextIntent = new Intent(this, SearchActivity.class);
                 break;
         }
+
         /**
          * Переход на следующую активность.
          * {@link Initializations#changeActivityCompat(Activity, Intent)}
-         * */
+         **/
         changeActivityCompat(ProfileActivity.this, nextIntent);
     }
 
-
+    /**
+     * Форматирование даты из вида, полученного с сервер - YYYY-MM-DD
+     *                в вид, необходимый для отображения - DD-MM-YYYY
+     * */
     public String formatDate(String dateInStr) {
+
         String day, month, year;
-        day = new StringBuilder()
-                .append(dateInStr.charAt(dateInStr.length() - 2))
-                .append(dateInStr.charAt(dateInStr.length() - 1))
-                .toString();
-        month = new StringBuilder()
-                .append(dateInStr.charAt(dateInStr.length() - 5))
-                .append(dateInStr.charAt(dateInStr.length() - 4))
-                .toString();
-        year = new StringBuilder()
-                .append(dateInStr.charAt(dateInStr.length() - 10))
-                .append(dateInStr.charAt(dateInStr.length() - 9))
-                .append(dateInStr.charAt(dateInStr.length() - 8))
-                .append(dateInStr.charAt(dateInStr.length() - 7))
-                .toString();
 
-        return new StringBuilder(day).append("-").append(month).append("-").append(year).toString();
+        /** Разделяем строку на три ключевый строки */
+        day = String.valueOf(dateInStr.charAt(dateInStr.length() - 2)) +
+                dateInStr.charAt(dateInStr.length() - 1);
+
+        month = String.valueOf(dateInStr.charAt(dateInStr.length() - 5)) +
+                dateInStr.charAt(dateInStr.length() - 4);
+
+        year = String.valueOf(dateInStr.charAt(dateInStr.length() - 10)) +
+                dateInStr.charAt(dateInStr.length() - 9) +
+                dateInStr.charAt(dateInStr.length() - 8) +
+                dateInStr.charAt(dateInStr.length() - 7);
+
+        /** Соединяем все воедино */
+        return day +
+                HYPHEN + month +
+                HYPHEN + year;
     }
-
 
     /**
      * Класс для получения данных о пользователе с сервера.
@@ -340,6 +420,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
             try {
+
                 /**
                  * Устанавливает соединение.
                  */
@@ -375,7 +456,7 @@ public class ProfileActivity extends AppCompatActivity {
                  * Получение данных из потока в виде JSON-объекта.
                  */
                 is = httpURLConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 reader = new BufferedReader(new InputStreamReader(is));
 
                 String line;
@@ -384,7 +465,6 @@ public class ProfileActivity extends AppCompatActivity {
                 }
 
                 resultJson = buffer.toString();
-                Log.i("RESULT", resultJson);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -411,6 +491,7 @@ public class ProfileActivity extends AppCompatActivity {
             JSONObject dataJsonObj;
 
             try {
+
                 /**
                  * Получение JSON-объекта по строке.
                  */
@@ -421,13 +502,10 @@ public class ProfileActivity extends AppCompatActivity {
                  * Обработка полученного кода ответа.
                  */
                 switch (resultCode) {
+                    /** В случае успешного выполнения */
                     case 300:
-                        /**
-                         * Получение данных пользователя.
-                         * Добавление в хранилище.
-                         * {@link ProfileActivity#userData}
-                         */
 
+                        /** Формирование адреса, по которому хранится аватар владельца открытого профиля */
                         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
                                 + SERVER_AVATAR + SLASH + dataJsonObj.getString(AVATAR)
                                 + SLASH + profileId + PNG;
@@ -437,6 +515,7 @@ public class ProfileActivity extends AppCompatActivity {
                         userAvatar = (ImageView) viewAvatar.findViewById(R.id.imageAvatar);
                         userName = (TextView) viewAvatar.findViewById(R.id.userName);
 
+                        /** Картинка, обозначающая, что пользователь не указал свое имя и фамилию */
                         ImageView userWithoutName = (ImageView) viewAvatar.findViewById(R.id.userWithoutName);
 
                         /** Задает параметры для аватара пользователя */
@@ -446,7 +525,12 @@ public class ProfileActivity extends AppCompatActivity {
                         param.setMargins(0, 0, 0, 0);
                         userAvatar.setLayoutParams(param);
 
-                        /** Устанавливает полученные значения */
+                        /**
+                         * Установка имени владельца открытого профиля.
+                         *
+                         * Если имя и фамилия не найдены,
+                         * то устанавливается логин + показывается иконка {@link userWithoutName}
+                         **/
                         String sUserName = dataJsonObj.getString(NAME).length() == 0
                                 ? dataJsonObj.getString(LOGIN)
                                 : dataJsonObj.getString(SURNAME).length() == 0
@@ -457,51 +541,68 @@ public class ProfileActivity extends AppCompatActivity {
                         if (sUserName.equals(dataJsonObj.getString(LOGIN)))
                             userWithoutName.setImageResource(R.drawable.withoutname);
 
-
+                        /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                         linLayout.addView(viewAvatar);
 
+                        /**
+                         * Загрузка аватара пользователя
+                         * {@link ImageManager#fetchImage(String, ImageView)}
+                         **/
                         fetchImage(avatarURL, userAvatar);
 
-                        /////////////////////////////
 
-
+                        /**
+                         * Если профиль не принадлежит авторизованному пользователю,
+                         *      то добавляем модуль взаимодействия.
+                         **/
                         if (!profileId.equals(userId)) {
                             viewUserInteraction = ltInflater
                                     .inflate(R.layout.item_profile_interaction, linLayout, false);
 
+                            /** Кнопка добавления/удаления владельца профиля из контактов авторизованного пользоавателя */
                             Button btnAddIntoContacts = (Button) viewUserInteraction
                                     .findViewById(R.id.btnAddToContacts);
+
+                            /** Кнопка открытия диалога между авторизованным пользователем и владельцем открытого профиля */
                             Button btnSendMessages = (Button) viewUserInteraction
                                     .findViewById(R.id.btnSendMessage);
 
+                            /**
+                             * Проверка, добавил ли {@link ProfileActivity#userId}
+                             *         в контакты {@link ProfileActivity#profileId}
+                             * */
                             isContact = dataJsonObj.getBoolean(CONTACT);
                             if (isContact)
                                 btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
 
-                            linLayout.addView(viewUserInteraction);
 
+                            /** Создает обработчик событий */
                             btnAddIntoContacts.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
+
+                                    /** Открытие нового потока */
                                     mAddContact = new AddContact();
                                     mAddContact.execute();
-                                    Button btnAddIntoContacts = (Button) viewUserInteraction
-                                            .findViewById(R.id.btnAddToContacts);
 
-//                                    btnAddIntoContacts.setBackgroundColor(getResources().getColor(R.color.colorBlack));
-                                    if (isContact)
-                                        btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
-//                                    btnAddIntoContacts.setClickable(false);
-                                    else
-                                        btnAddIntoContacts.setText(R.string.user_add_into_contacts);
                                 }
                             });
+
+                            /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
+                            linLayout.addView(viewUserInteraction);
+
+
                         }
 
+                        /**
+                         * Формирование места жительства владельца открытого профиля.
+                         **/
                         viewUserPlaceLiving = ltInflater.inflate(R.layout.item_profile_place_living, linLayout, false);
                         TextView userPlaceLiving = (TextView) viewUserPlaceLiving.findViewById(R.id.descriptionCardPlaceLiving);
 
-
+                        /**
+                         * Формируется место проживания из имеющихся данных.
+                         **/
                         String sUserPlaceLiving = dataJsonObj.getString(CITY).length() != 0
                                 ? dataJsonObj.getString(COUNTRY).length() != 0
                                 ? dataJsonObj.getString(CITY) + ", " + dataJsonObj.getString(COUNTRY)
@@ -510,45 +611,70 @@ public class ProfileActivity extends AppCompatActivity {
 
                         userPlaceLiving.setText(sUserPlaceLiving);
 
+                        /**
+                         * Если данные введены, то добавляем элемент в контейнер.
+                         **/
                         if (!sUserPlaceLiving.equals(""))
                             linLayout.addView(viewUserPlaceLiving);
 
 
+
+                        /** Формирование даты рождения владельца открытого профиля */
                         viewUserBirthday = ltInflater.inflate(R.layout.item_profile_birthday, linLayout, false);
                         TextView userBirthday = (TextView) viewUserBirthday.findViewById(R.id.descriptionCardBirthday);
 
                         String sUserBirthday = dataJsonObj.getString(BIRTHDAY).length() != 0
                                 ? dataJsonObj.getString(BIRTHDAY)
                                 : "";
+
+                        /**
+                         * Форматирование даты.
+                         * {@link ProfileActivity#formatDate(String)}
+                         **/
                         String formattedUserBirthday = formatDate(sUserBirthday);
                         userBirthday.setText(formattedUserBirthday);
+
+                        /** Если владелец открытого профиля указывал дату своего рождения */
                         if (!formattedUserBirthday.equals("00-00-0000"))
                             linLayout.addView(viewUserBirthday);
 
 
+
+                        /** Формирование места учебы пользователя */
                         String sUserPlaceStudy = dataJsonObj.getString(STUDY).length() != 0
                                 ? dataJsonObj.getString(STUDY)
                                 : "";
+
+                        /** Формирование текущего места работы пользователя */
                         String sUserPlaceWork = dataJsonObj.getString(WORK).length() != 0
                                 ? dataJsonObj.getString(WORK)
                                 : "";
 
-
+                        /** Если указано только место работы */
                         if (sUserPlaceStudy.equals("") && !sUserPlaceWork.equals("")) {
+
                             viewUserPlaceWork = ltInflater.inflate(R.layout.item_profile_place_work, linLayout, false);
                             TextView userPlaceWork = (TextView) viewUserPlaceWork.findViewById(R.id.descriptionCardPlaceWork);
                             userPlaceWork.setText(sUserPlaceWork);
 
+                            /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserPlaceWork);
                         }
+
+                        /** Если указано только место учебы */
                         if (sUserPlaceWork.equals("") && !sUserPlaceStudy.equals("")) {
+
                             viewUserPlaceStudy = ltInflater.inflate(R.layout.item_profile_place_study, linLayout, false);
                             TextView userPlaceStudy = (TextView) viewUserPlaceStudy.findViewById(R.id.descriptionCardPlaceStudy);
                             userPlaceStudy.setText(sUserPlaceStudy);
 
+                            /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserPlaceStudy);
                         }
+
+                        /** Если указаны место работы и место учебы */
                         if (!sUserPlaceStudy.equals("") && !sUserPlaceWork.equals("")) {
+
                             viewUserPlaceStudyAndWork = ltInflater
                                     .inflate(R.layout.item_profile_place_study_and_work,
                                             linLayout, false);
@@ -561,15 +687,16 @@ public class ProfileActivity extends AppCompatActivity {
                                     findViewById(R.id.descriptionCardPlaceWork);
                             userPlaceWork.setText(sUserPlaceWork);
 
+                            /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserPlaceStudyAndWork);
                         }
 
-
+                        /** Формирование рабочего email пользователя */
                         String sUserWorkingEmail = dataJsonObj.getString(WORK_EMAIL).length() != 0
                                 ? dataJsonObj.getString(WORK_EMAIL)
                                 : "";
 
-
+                        /** Если владелец открытого профиля указал рабочий email */
                         if (!sUserWorkingEmail.equals("")) {
 
                             viewUserWorkingEmail = ltInflater
@@ -579,12 +706,15 @@ public class ProfileActivity extends AppCompatActivity {
                                     .findViewById(R.id.descriptionCardWorkingEmail);
                             userWorkingEmail.setText(sUserWorkingEmail);
 
+                            /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserWorkingEmail);
 
                         }
 
-
                         break;
+                    /**
+                     * Произошла неожиданная ошибка.
+                     **/
                     case 301:
                         /**
                          * Формирование уведомления об ошибке.
@@ -594,17 +724,17 @@ public class ProfileActivity extends AppCompatActivity {
                                 getResources().getString(R.string.relogin),
                                 getResources().getString(R.string.btn_ok));
                         break;
-
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    /**
+     * Класс для изменения списка контактов пользователя, авторизованного на данном устройстве.
+     **/
     private class AddContact extends AsyncTask<Object, Object, String> {
-
 
         @Override
         protected String doInBackground(Object... strings) {
@@ -627,8 +757,8 @@ public class ProfileActivity extends AppCompatActivity {
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
 
-
             try {
+
                 /**
                  * Устанавливает соединение.
                  */
@@ -664,7 +794,7 @@ public class ProfileActivity extends AppCompatActivity {
                  * Получение данных из потока в виде JSON-объекта.
                  */
                 is = httpURLConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 reader = new BufferedReader(new InputStreamReader(is));
 
                 String line;
@@ -673,7 +803,6 @@ public class ProfileActivity extends AppCompatActivity {
                 }
 
                 resultJson = buffer.toString();
-                Log.i("RESULT", resultJson);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -705,19 +834,29 @@ public class ProfileActivity extends AppCompatActivity {
                 dataJsonObj = new JSONObject(strJson);
                 resultCode = Integer.parseInt(dataJsonObj.getString(ADD_CONTACT));
 
-                Log.i("CONTACT", String.valueOf(resultCode));
+                Button btnAddIntoContacts = (Button) viewUserInteraction
+                        .findViewById(R.id.btnAddToContacts);
+
                 switch (resultCode) {
+
+                    /**
+                     * Владелец открытого профиля удален из контактов пользователя,
+                     *                          авторизованного на данном устройвстве.
+                     **/
                     case 401:
-                        isContact = false;
+                        btnAddIntoContacts.setText(R.string.user_add_into_contacts);
                         break;
+
+                    /**
+                     * Владелец открытого профиля добавлен в контакты пользователя,
+                     *                          авторизованного на данном устройвстве.
+                     **/
                     case 400:
-                        isContact = true;
+                        btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
                         break;
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
-                Log.i("CONTACT", "XUI");
             }
         }
     }
