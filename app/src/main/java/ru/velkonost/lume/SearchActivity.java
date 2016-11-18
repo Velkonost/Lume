@@ -1,5 +1,6 @@
 package ru.velkonost.lume;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -50,6 +51,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_SEARCH_METHOD;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.ImageManager.fetchImage;
+import static ru.velkonost.lume.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.PhoneDataStorage.saveText;
@@ -142,7 +144,13 @@ public class SearchActivity extends AppCompatActivity {
                         nextIntent = new Intent(SearchActivity.this, WelcomeActivity.class);
                         break;
                 }
-                startActivity(nextIntent);
+                deleteText(SearchActivity.this, USER_ID);
+                deleteText(SearchActivity.this, SEARCH);
+                /**
+                 * Переход на следующую активность.
+                 * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                 * */
+                changeActivityCompat(SearchActivity.this, nextIntent);
                 return true;
             }
         });
@@ -158,13 +166,22 @@ public class SearchActivity extends AppCompatActivity {
                 nextIntent = new Intent(this, SearchActivity.class);
                 break;
         }
-        startActivity(nextIntent);
+        /**
+         * Переход на следующую активность.
+         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+         * */
+        changeActivityCompat(SearchActivity.this, nextIntent);
         finish();
     }
 
     public void openUserProfile(View view) {
         saveText(SearchActivity.this, USER_ID, String.valueOf(view.getId()));
-        startActivity(new Intent(this, UserProfileActivity.class));
+
+        /**
+         * Переход в профиль выбранного пользователя.
+         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+         * */
+        changeActivityCompat(SearchActivity.this, new Intent(this, ProfileActivity.class));
     }
 
 
@@ -229,10 +246,11 @@ public class SearchActivity extends AppCompatActivity {
                 JSONArray idsJSON = dataJsonObj.getJSONArray("ids");
 
                 for (int i = 0; i < idsJSON.length(); i++){
-                    ids.add(idsJSON.getString(i));
+                    if (!idsJSON.getString(i).equals(loadText(SearchActivity.this, ID)))
+                        ids.add(idsJSON.getString(i));
                 }
 
-                for (int i = 0; i < idsJSON.length(); i++) {
+                for (int i = 0; i < ids.size(); i++) {
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
 
                     View userView = ltInflater.inflate(R.layout.item_search_block, linLayout, false);

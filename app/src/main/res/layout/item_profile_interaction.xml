@@ -25,30 +25,23 @@
             android:padding="16dp"
             android:id="@+id/linearLayoutUserInteraction">
 
-            <com.dd.CircularProgressButton
-                android:id="@+id/circularButton1"
+           <Button
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:id="@+id/btnAddToContacts"
+               android:layout_weight="1"
+               android:padding="3dp"
+               android:background="@drawable/roundcorner"
+               android:layout_margin="5dp"
+               android:text="@string/user_add_into_contacts"/>
+            <Button
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textColor="@color/cpb_white"
-                android:textSize="18sp"
-                app:cpb_cornerRadius="48dp"
-                app:cpb_iconComplete="@mipmap/ic_checkbox_marked_circle_outline"
-                app:cpb_iconError="@mipmap/ic_alert_outline"
-                app:cpb_textIdle="Upload"
-                android:layout_weight="1"/>
-
-            <com.dd.CircularProgressButton
-                android:id="@+id/circularButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textColor="@color/cpb_white"
-                android:textSize="18sp"
-                app:cpb_cornerRadius="48dp"
-                app:cpb_iconComplete="@mipmap/ic_checkbox_marked_circle_outline"
-                app:cpb_iconError="@mipmap/ic_alert_outline"
-                app:cpb_textIdle="Upload"
-                android:layout_weight="1"/>
-
+                android:layout_height="wrap_content"
+                android:id="@+id/btnSendMessage"
+                android:layout_weight="5"
+                android:background="@drawable/roundcorner"
+                android:layout_margin="5dp"
+                android:text="@string/user_send_message"/>
 
 
         </LinearLayout>

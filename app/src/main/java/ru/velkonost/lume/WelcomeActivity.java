@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
 
 
@@ -50,14 +51,15 @@ public class WelcomeActivity extends Activity {
                 mIntentNext = new Intent(this, RegistrationActivity.class);
                 break;
             /**
-             * Если нажата кнопка входа - переходим в активность со входом
+             * Если нажата кнопка входа - переходим в активность со входом.
              * {@link LoginActivity}
+             * {@link Initializations#changeActivityCompat(Activity, Intent)}
              */
             case R.id.btnLoginWelcome:
                 mIntentNext = new Intent(this, LoginActivity.class);
                 break;
         }
-        startActivity(mIntentNext);
+        changeActivityCompat(WelcomeActivity.this, mIntentNext);
         finish();
     }
 
@@ -73,10 +75,11 @@ public class WelcomeActivity extends Activity {
          * Проверяет на наличие своеобразных "cookie" пользователя.
          * В случае положительного ответа переходим на профиль пользователя.
          * {@link ProfileActivity}
+         * {@link Initializations#changeActivityCompat(Activity, Intent)}
          */
         if(cookieId.length() != 0){
             Intent profileIntent = new Intent(this, ProfileActivity.class);
-            startActivity(profileIntent);
+            changeActivityCompat(WelcomeActivity.this, profileIntent);
             finish();
         }
     }

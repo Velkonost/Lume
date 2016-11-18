@@ -30,6 +30,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_REGISTRATION_METHOD;
+import static ru.velkonost.lume.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
 import static ru.velkonost.lume.PhoneDataStorage.saveText;
 
@@ -214,9 +215,10 @@ public class RegistrationActivity extends Activity {
 
                         /**
                          * Переход на новую активность - профиль вошедшего пользователя.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
                          */
                         Intent profileIntent = new Intent(RegistrationActivity.this, ProfileActivity.class);
-                        startActivity(profileIntent);
+                        changeActivityCompat(RegistrationActivity.this, profileIntent);
                         finish();
                         break;
                     case 101:

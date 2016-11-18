@@ -1,5 +1,6 @@
 package ru.velkonost.lume;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,12 +54,13 @@ import static ru.velkonost.lume.Constants.URL.SERVER_GET_DATA_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
+import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
 import static ru.velkonost.lume.ImageManager.fetchImage;
+import static ru.velkonost.lume.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Initializations.initToolbar;
 import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
-import static ru.velkonost.lume.Initializations.recreateActivityCompat;
 import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.PhoneDataStorage.saveText;
@@ -153,7 +156,10 @@ public class ProfileActivity extends AppCompatActivity {
          * Получение id пользователя, помещение в хранилище.
          * {@link PhoneDataStorage#loadText(Context, String)}
          **/
-        userId = loadText(ProfileActivity.this, ID);
+        userId =  loadText(ProfileActivity.this, USER_ID).length() == 0
+                ? loadText(ProfileActivity.this, ID)
+                : loadText(ProfileActivity.this, USER_ID);
+
 
         /**
          * Условный контейнер, в который помещаются все view-элементы, созданные программно.
@@ -174,7 +180,7 @@ public class ProfileActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        recreateActivityCompat(ProfileActivity.this);
+                        changeActivityCompat(ProfileActivity.this);
                     }
                 }, 2500);
             }
@@ -208,6 +214,8 @@ public class ProfileActivity extends AppCompatActivity {
                     /** Переход на профиль данного пользователя */
                     case R.id.navigationProfile:
                         nextIntent = new Intent(ProfileActivity.this, ProfileActivity.class);
+//                        nextIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                        finish();
                         break;
                     /** Переход на контакты данного пользователя */
                     case R.id.navigationContacts:
@@ -229,12 +237,16 @@ public class ProfileActivity extends AppCompatActivity {
                      * Переход на страницу приветствия {@link WelcomeActivity}
                      **/
                     case R.id.navigationLogout:
-                        Log.i("ID", loadText(ProfileActivity.this, ID));
                         deleteText(ProfileActivity.this, ID);
                         nextIntent = new Intent(ProfileActivity.this, WelcomeActivity.class);
                         break;
                 }
-                startActivity(nextIntent);
+                deleteText(ProfileActivity.this, USER_ID);
+                /**
+                 * Переход на следующую активность.
+                 * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                 * */
+                changeActivityCompat(ProfileActivity.this, nextIntent);
                 if (loadText(ProfileActivity.this, ID).equals(""))
                     finish();
                 return true;
@@ -260,8 +272,11 @@ public class ProfileActivity extends AppCompatActivity {
                 nextIntent = new Intent(this, SearchActivity.class);
                 break;
         }
-        startActivity(nextIntent);
-        finish();
+        /**
+         * Переход на следующую активность.
+         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+         * */
+        changeActivityCompat(ProfileActivity.this, nextIntent);
     }
 
 
@@ -446,6 +461,17 @@ public class ProfileActivity extends AppCompatActivity {
 
                         /////////////////////////////
 
+
+                        if (!loadText(ProfileActivity.this, USER_ID).equals("")) {
+                            viewUserInteraction = ltInflater
+                                    .inflate(R.layout.item_profile_interaction, linLayout, false);
+                            Button btnAddIntoContacts = (Button) viewUserInteraction
+                                    .findViewById(R.id.btnAddToContacts);
+                            Button btnSendMessages = (Button) viewUserInteraction
+                                    .findViewById(R.id.btnSendMessage);
+                            linLayout.addView(viewUserInteraction);
+                        }
+
                         viewUserPlaceLiving = ltInflater.inflate(R.layout.item_profile_place_living, linLayout, false);
                         TextView userPlaceLiving = (TextView) viewUserPlaceLiving.findViewById(R.id.descriptionCardPlaceLiving);
 
@@ -531,27 +557,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                         }
 
-
-//                        viewUserInteraction = ltInflater
-//                                .inflate(R.layout.item_profile_interaction, linLayout, false);
-//
-//                        final CircularProgressButton circularButton1 = (CircularProgressButton) viewUserInteraction.findViewById(R.id.circularButton1);
-//
-//                        circularButton1.setIndeterminateProgressMode(true);
-//
-//                        linLayout.addView(viewUserInteraction);
-//                        circularButton1.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                if (circularButton1.getProgress() == 0) {
-//                                    circularButton1.setProgress(50);
-//                                } else if (circularButton1.getProgress() == 100) {
-//                                    circularButton1.setProgress(0);
-//                                } else {
-//                                    circularButton1.setProgress(100);
-//                                }
-//                            }
-//                        });
 
 
                         break;
