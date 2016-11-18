@@ -4,18 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,6 +61,7 @@ import static ru.velkonost.lume.Constants.WORK_EMAIL;
 import static ru.velkonost.lume.ImageManager.fetchImage;
 import static ru.velkonost.lume.Initializations.initToolbar;
 import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
+import static ru.velkonost.lume.Initializations.recreateActivityCompat;
 import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.PhoneDataStorage.saveText;
@@ -72,27 +76,45 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_myprofile;
 
-    /** Свойство - следующая активность */
+    /**
+     * Свойство - следующая активность
+     */
     private Intent nextIntent;
 
-    /** Свойство - высота экрана устройства */
+    /**
+     * Свойство - высота экрана устройства
+     */
     private int screenH;
-    /** Свойство - ширина экрана устройства */
+    /**
+     * Свойство - ширина экрана устройства
+     */
     private int screenW;
 
-    /** Свойство - описание верхней панели инструментов приложения */
+    /**
+     * Свойство - описание верхней панели инструментов приложения
+     */
     private Toolbar toolbar;
-    /** Свойство - описание боковой панели навигации */
+    /**
+     * Свойство - описание боковой панели навигации
+     */
     private DrawerLayout drawerLayout;
 
-    /** Свойство - view-элемент для размещения аватара пользователя */
+    /**
+     * Свойство - view-элемент для размещения аватара пользователя
+     */
     private ImageView userAvatar;
-    /** Свойство - view-элемент для размещения полного имени пользователя */
+    /**
+     * Свойство - view-элемент для размещения полного имени пользователя
+     */
     private TextView userName;
 
-    /** Свойство - экзмепляр класса {@link GetData} */
+    /**
+     * Свойство - экзмепляр класса {@link GetData}
+     */
     private GetData mGetData;
-    /** Свойство - хранилище данных о данном пользователе */
+    /**
+     * Свойство - хранилище данных о данном пользователе
+     */
     private Map<String, String> userData;
     private View viewAvatar;
     private View viewUserPlaceLiving;
@@ -102,9 +124,18 @@ public class ProfileActivity extends AppCompatActivity {
     private View viewUserWorkingEmail;
     private View viewUserPlaceStudyAndWork;
 
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
 
     private LinearLayout linLayout;
     private LayoutInflater ltInflater;
+
+
+    private Button toggleButtonPrimary;
+    private ActionMode actionMode;
+    private Button toggleButtonFloating;
+    private Button toggleButtonOff;
+    private ActionMode.Callback actionModeCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,9 +171,29 @@ public class ProfileActivity extends AppCompatActivity {
         linLayout = (LinearLayout) findViewById(R.id.profileContainer);
         ltInflater = getLayoutInflater();
 
+
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorBlue, R.color.colorGreen,
+                R.color.colorYellow, R.color.colorRed);
+
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        recreateActivityCompat(ProfileActivity.this);
+                    }
+                }, 2500);
+            }
+        });
+
         /** Обращаемся к серверу */
         mGetData.execute();
     }
+
 
     /**
      * Рисует боковую панель навигации.
@@ -201,7 +252,9 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    /** Обработчки событий для кнопки поиска */
+    /**
+     * Обработчки событий для кнопки поиска
+     */
     public void goToSearch(View view) {
         switch (view.getId()) {
             case R.id.btnStartSearch:
@@ -221,26 +274,8 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
     }
 
-    private void initRequiredInfo(LinearLayout linLayout, LayoutInflater ltInflater) {
 
-        View ReqInfo = ltInflater.inflate(R.layout.item_one_line_block, linLayout, false); //required info
-        TextView ReqInfoName = (TextView) ReqInfo.findViewById(R.id.titleCardProfile);
-        ReqInfoName.setText(userData.get(NAME) + "  " + userData.get(SURNAME));
-
-        ReqInfo.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT)); //width, height
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        params.gravity = Gravity.CENTER;
-        ReqInfoName.setLayoutParams(params);
-
-        linLayout.addView(ReqInfo);
-
-    }
-
-    public String formatDate(String dateInStr){
+    public String formatDate(String dateInStr) {
         String day, month, year;
         day = new StringBuilder()
                 .append(dateInStr.charAt(dateInStr.length() - 2))
@@ -259,6 +294,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         return new StringBuilder(day).append("-").append(month).append("-").append(year).toString();
     }
+
 
     /**
      * Класс для получения данных о пользователе с сервера.
@@ -338,6 +374,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             return resultJson;
         }
+
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
 
@@ -365,7 +402,7 @@ public class ProfileActivity extends AppCompatActivity {
                 /**
                  * Обработка полученного кода ответа.
                  */
-                switch (resultCode){
+                switch (resultCode) {
                     case 300:
                         /**
                          * Получение данных пользователя.
@@ -405,7 +442,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 ? dataJsonObj.getString(LOGIN)
                                 : dataJsonObj.getString(SURNAME).length() == 0
                                 ? dataJsonObj.getString(LOGIN)
-                                : dataJsonObj.getString(NAME) + " " +  dataJsonObj.getString(SURNAME);
+                                : dataJsonObj.getString(NAME) + " " + dataJsonObj.getString(SURNAME);
                         userName.setText(sUserName);
 
                         if (sUserName.equals(dataJsonObj.getString(LOGIN)))
@@ -434,8 +471,7 @@ public class ProfileActivity extends AppCompatActivity {
                             linLayout.addView(viewUserPlaceLiving);
 
 
-
-                        viewUserBirthday  = ltInflater.inflate(R.layout.item_profile_birthday, linLayout, false);
+                        viewUserBirthday = ltInflater.inflate(R.layout.item_profile_birthday, linLayout, false);
                         TextView userBirthday = (TextView) viewUserBirthday.findViewById(R.id.descriptionCardBirthday);
 
                         String sUserBirthday = dataJsonObj.getString(BIRTHDAY).length() != 0
@@ -455,21 +491,21 @@ public class ProfileActivity extends AppCompatActivity {
                                 : "";
 
 
-                        if (sUserPlaceStudy.equals("") && !sUserPlaceWork.equals("")){
+                        if (sUserPlaceStudy.equals("") && !sUserPlaceWork.equals("")) {
                             viewUserPlaceWork = ltInflater.inflate(R.layout.item_profile_place_work, linLayout, false);
                             TextView userPlaceWork = (TextView) viewUserPlaceWork.findViewById(R.id.descriptionCardPlaceWork);
                             userPlaceWork.setText(sUserPlaceWork);
 
                             linLayout.addView(viewUserPlaceWork);
                         }
-                        if (sUserPlaceWork.equals("") && !sUserPlaceStudy.equals("")){
+                        if (sUserPlaceWork.equals("") && !sUserPlaceStudy.equals("")) {
                             viewUserPlaceStudy = ltInflater.inflate(R.layout.item_profile_place_study, linLayout, false);
                             TextView userPlaceStudy = (TextView) viewUserPlaceStudy.findViewById(R.id.descriptionCardPlaceStudy);
                             userPlaceStudy.setText(sUserPlaceStudy);
 
                             linLayout.addView(viewUserPlaceStudy);
                         }
-                        if (!sUserPlaceStudy.equals("") && !sUserPlaceWork.equals("")){
+                        if (!sUserPlaceStudy.equals("") && !sUserPlaceWork.equals("")) {
                             viewUserPlaceStudyAndWork = ltInflater
                                     .inflate(R.layout.item_profile_place_study_and_work,
                                             linLayout, false);
@@ -490,41 +526,23 @@ public class ProfileActivity extends AppCompatActivity {
                                 ? dataJsonObj.getString(WORK_EMAIL)
                                 : "";
 
+
                         if (!sUserWorkingEmail.equals("")) {
 
                             viewUserWorkingEmail = ltInflater
                                     .inflate(R.layout.item_profile_working_email, linLayout, false);
 
-                            TextView userWorkingEmail = (TextView) viewUserWorkingEmail
+                            final TextView userWorkingEmail = (TextView) viewUserWorkingEmail
                                     .findViewById(R.id.descriptionCardWorkingEmail);
-
                             userWorkingEmail.setText(sUserWorkingEmail);
 
                             linLayout.addView(viewUserWorkingEmail);
+
                         }
 
 
 
 
-
-
-
-                        /** Отображает view-элемент */
-
-
-//                        initRequiredInfo(linLayout, ltInflater);
-
-
-
-                        /**
-                         * Формирование адреса, по которому необходимо обратиться,
-                         *      чтобы получить аватар пользователя.
-                         */
-
-
-                        /**
-                         * Установка аватара пользователя.
-                         */
 
                         break;
                     case 301:
@@ -544,4 +562,5 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
     }
+
 }
