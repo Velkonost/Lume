@@ -13,7 +13,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,12 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -62,6 +56,7 @@ import static ru.velkonost.lume.Initializations.initToolbar;
 import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.PhoneDataStorage.saveText;
+import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
  * @author Velkonost
@@ -316,64 +311,18 @@ public class ContactsActivity extends AppCompatActivity {
              */
             @SuppressWarnings("WrongThread") String params = ID + EQUALS + userId;
 
-            byte[] data;
-            InputStream is;
-            BufferedReader reader;
-
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
 
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
             try {
-
-                /**
-                 * Устанавливает соединение.
-                 */
-                URL url = new URL(dataURL);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-
-                /**
-                 * Выставляет необходимые параметры.
-                 */
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-
-                /**
-                 * Формирует тело запроса.
-                 */
-                httpURLConnection.setRequestProperty("Content-Length", ""
-                        + Integer.toString(params.getBytes().length));
-                OutputStream os = httpURLConnection.getOutputStream();
-                data = params.getBytes("UTF-8");
-                os.write(data);
-
-                /** Соединяемся */
-                httpURLConnection.connect();
-
-                /**
-                 * Получение кода состояния.
-                 */
-                int responseCode = httpURLConnection.getResponseCode();
-                Log.i("Data", String.valueOf(responseCode));
-
-                /**
-                 * Получение данных из потока в виде JSON-объекта.
-                 */
-                is = httpURLConnection.getInputStream();
-                StringBuilder buffer = new StringBuilder();
-                reader = new BufferedReader(new InputStreamReader(is));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-
-                resultJson = buffer.toString();
-
-            } catch (Exception e) {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return resultJson;
         }
         protected void onPostExecute(String strJson) {

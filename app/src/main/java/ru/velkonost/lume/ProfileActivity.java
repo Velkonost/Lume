@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -27,12 +26,7 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.IOException;
 
 import static ru.velkonost.lume.Constants.ADD_CONTACT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
@@ -71,6 +65,7 @@ import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
 import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.PhoneDataStorage.saveText;
+import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
  * @author Velkonost
@@ -392,15 +387,16 @@ public class ProfileActivity extends AppCompatActivity {
 
         /** Соединяем все воедино */
         return day
-                +
-                HYPHEN + month
+                + HYPHEN + month
                 + HYPHEN + year;
     }
 
-
+    /**
+     * При полном закрытии активности удаляем информацию о владельце открытого профиля.
+     **/
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onStop() {
+        super.onStop();
         deleteText(ProfileActivity.this, USER_ID);
     }
 
@@ -423,61 +419,16 @@ public class ProfileActivity extends AppCompatActivity {
             @SuppressWarnings("WrongThread") String params = ID + EQUALS + userId
                     + AMPERSAND + USER_ID + EQUALS + profileId;
 
-            byte[] data;
-            InputStream is;
-            BufferedReader reader;
-
             /** Свойство - код ответа, полученный от сервера */
             String resultJson = "";
 
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
             try {
-
-                /**
-                 * Устанавливает соединение.
-                 */
-                URL url = new URL(dataURL);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-
-                /**
-                 * Выставляет необходимые параметры.
-                 */
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-
-                /**
-                 * Формирует тело запроса.
-                 */
-                httpURLConnection.setRequestProperty("Content-Length", ""
-                        + Integer.toString(params.getBytes().length));
-                OutputStream os = httpURLConnection.getOutputStream();
-                data = params.getBytes("UTF-8");
-                os.write(data);
-
-                /** Соединяемся */
-                httpURLConnection.connect();
-
-                /**
-                 * Получение кода состояния.
-                 */
-                int responseCode = httpURLConnection.getResponseCode();
-                Log.i("Data", String.valueOf(responseCode));
-
-                /**
-                 * Получение данных из потока в виде JSON-объекта.
-                 */
-                is = httpURLConnection.getInputStream();
-                StringBuilder buffer = new StringBuilder();
-                reader = new BufferedReader(new InputStreamReader(is));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-
-                resultJson = buffer.toString();
-
-            } catch (Exception e) {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
@@ -761,63 +712,19 @@ public class ProfileActivity extends AppCompatActivity {
             @SuppressWarnings("WrongThread") String params = SEND_ID + EQUALS + userId
                     + AMPERSAND + GET_ID + EQUALS + profileId;
 
-            byte[] data;
-            InputStream is;
-            BufferedReader reader;
-
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
 
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
             try {
-
-                /**
-                 * Устанавливает соединение.
-                 */
-                URL url = new URL(dataURL);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-
-                /**
-                 * Выставляет необходимые параметры.
-                 */
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-
-                /**
-                 * Формирует тело запроса.
-                 */
-                httpURLConnection.setRequestProperty("Content-Length", ""
-                        + Integer.toString(params.getBytes().length));
-                OutputStream os = httpURLConnection.getOutputStream();
-                data = params.getBytes("UTF-8");
-                os.write(data);
-
-                /** Соединяемся */
-                httpURLConnection.connect();
-
-                /**
-                 * Получение кода состояния.
-                 */
-                int responseCode = httpURLConnection.getResponseCode();
-                Log.i("Data", String.valueOf(responseCode));
-
-                /**
-                 * Получение данных из потока в виде JSON-объекта.
-                 */
-                is = httpURLConnection.getInputStream();
-                StringBuilder buffer = new StringBuilder();
-                reader = new BufferedReader(new InputStreamReader(is));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-
-                resultJson = buffer.toString();
-
-            } catch (Exception e) {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
+
             return resultJson;
         }
 

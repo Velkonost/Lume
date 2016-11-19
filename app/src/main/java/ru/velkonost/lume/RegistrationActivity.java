@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,12 +11,7 @@ import android.widget.EditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.IOException;
 
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.EMAIL;
@@ -33,6 +27,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_REGISTRATION_METHOD;
 import static ru.velkonost.lume.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
 import static ru.velkonost.lume.PhoneDataStorage.saveText;
+import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 
 /**
@@ -126,64 +121,19 @@ public class RegistrationActivity extends Activity {
                     + EQUALS + inputPassword.getText().toString() + AMPERSAND
                     + EMAIL + EQUALS + inputEmail.getText().toString();
 
-            byte[] data;
-            InputStream is;
-            BufferedReader reader;
-
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
 
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
             try {
-
-                /**
-                 * Устанавливает соединение.
-                 */
-                URL url = new URL(registrationURL);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-
-                /**
-                 * Выставляет необходимые параметры.
-                 */
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-
-                /**
-                 * Формирует тело запроса.
-                 */
-                httpURLConnection.setRequestProperty("Content-Length", ""
-                        + Integer.toString(params.getBytes().length));
-                OutputStream os = httpURLConnection.getOutputStream();
-                data = params.getBytes("UTF-8");
-                os.write(data);
-
-                /** Соединяемся */
-                httpURLConnection.connect();
-
-                /**
-                 * Получение кода состояния.
-                 */
-                int responseCode = httpURLConnection.getResponseCode();
-                Log.i("Data", String.valueOf(responseCode));
-
-                /**
-                 * Получение данных из потока в виде JSON-объекта.
-                 */
-                is = httpURLConnection.getInputStream();
-                StringBuilder buffer = new StringBuilder();
-                reader = new BufferedReader(new InputStreamReader(is));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-
-                resultJson = buffer.toString();
-                Log.i("RESULT", resultJson);
-
-            } catch (Exception e) {
+                resultJson = getJSON(registrationURL, params);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
+
             return resultJson;
         }
         protected void onPostExecute(String strJson) {
