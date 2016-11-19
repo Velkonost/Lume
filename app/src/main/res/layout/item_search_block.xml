@@ -72,11 +72,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/workingPlace"
                     android:text="School 92"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/userId"
-                    android:visibility="invisible"/>
             </LinearLayout>
 
         </RelativeLayout>

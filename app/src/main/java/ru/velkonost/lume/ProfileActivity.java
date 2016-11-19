@@ -127,7 +127,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     /**
      * Свойство - экземпляр класса {@link AddContact}
-     * */
+     **/
     private AddContact mAddContact;
 
     /**
@@ -322,7 +322,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                 /**
                  * Удаляет информацию о владельце открытого профиля.
-                 * */
+                 * {@link PhoneDataStorage#deleteText(Context, String)}
+                 **/
                 deleteText(ProfileActivity.this, USER_ID);
 
                 /**
@@ -331,7 +332,7 @@ public class ProfileActivity extends AppCompatActivity {
                  * */
                 changeActivityCompat(ProfileActivity.this, nextIntent);
 
-                /** Если был осуществлен выход из аккаунты, то закрываем активность профиля */
+                /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(ProfileActivity.this, ID).equals(""))
                     finish();
 
@@ -341,7 +342,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     /**
-     * Обработчки событий для кнопки поиска.
+     * Обработчик событий для кнопки поиска.
      */
     public void goToSearch(View view) {
         switch (view.getId()) {
@@ -372,7 +373,7 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * Форматирование даты из вида, полученного с сервер - YYYY-MM-DD
      *                в вид, необходимый для отображения - DD-MM-YYYY
-     * */
+     **/
     public String formatDate(String dateInStr) {
 
         String day, month, year;
@@ -401,6 +402,7 @@ public class ProfileActivity extends AppCompatActivity {
     private class GetData extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
+
             /**
              * Формирование адреса, по которому необходимо обратиться.
              **/
@@ -419,7 +421,6 @@ public class ProfileActivity extends AppCompatActivity {
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
-
 
             try {
 

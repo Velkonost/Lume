@@ -70,5 +70,4 @@ public class Initializations {
         a.startActivity(nextIntent);
         a.overridePendingTransition(0, 0);
     }
-
 }
