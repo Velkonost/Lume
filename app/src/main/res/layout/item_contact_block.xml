@@ -4,21 +4,15 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginTop="5dp"
-              android:layout_marginBottom="5dp"
-              android:layout_marginLeft="12dp"
-              android:layout_marginRight="12dp"
-              android:id="@+id/item_search_block">
+              android:id="@+id/item_contact_block">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/cardViewSearch"
-        card:cardElevation="2dp"
+        android:id="@+id/cardViewContact"
         card:cardUseCompatPadding="true"
         card:cardBackgroundColor="@color/colorWhite"
-        android:layout_marginRight="5dp"
-        android:layout_marginLeft="5dp">
+        card:cardElevation="0dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -27,13 +21,10 @@
             android:padding="16dp"
             android:id="@+id/relativeLayoutSearch"
             android:onClick="openUserProfile">
-
-
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:id="@+id/userAvatar"/>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,7 +34,8 @@
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 android:layout_alignTop="@+id/userAvatar"
-                android:layout_toEndOf="@+id/userAvatar"/>
+                android:layout_toEndOf="@+id/userAvatar"
+                android:text="Artme Klimenko"/>
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -63,15 +55,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/livingPlace"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/workingPlace"/>
+                    android:id="@+id/livingPlace"
+                    android:text="Name"/>
             </LinearLayout>
-
         </RelativeLayout>
-
     </android.support.v7.widget.CardView>
-
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorBlack"
+        android:id="@+id/blackLine"/>
 </LinearLayout>
