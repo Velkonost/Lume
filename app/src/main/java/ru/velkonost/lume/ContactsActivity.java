@@ -196,6 +196,12 @@ public class ContactsActivity extends AppCompatActivity {
                 }
 
                 /**
+                 * Удаляет информацию о владельце открытого профиля.
+                 * {@link PhoneDataStorage#deleteText(Context, String)}
+                 **/
+                deleteText(ContactsActivity.this, USER_ID);
+
+                /**
                  * Переход на следующую активность.
                  * {@link Initializations#changeActivityCompat(Activity, Intent)}
                  * */
@@ -306,8 +312,6 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
 
-
-
     /**
      * Класс для получения данных о пользователе с сервера.
      **/
@@ -408,6 +412,17 @@ public class ContactsActivity extends AppCompatActivity {
                     ids.add(idsJSON.getString(i));
                 }
 
+                ArrayList<String> contactsList = new ArrayList();
+                for (int i = 0; i < ids.size(); i++){
+                    JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
+                    contactsList.add(
+                            userInfo.getString(NAME).length() != 0
+                            ? userInfo.getString(SURNAME).length() != 0
+                            ? userInfo.getString(NAME) + " " + userInfo.getString(SURNAME)
+                            : userInfo.getString(LOGIN) : userInfo.getString(LOGIN)
+                    );
+                }
+                Log.i("LIST", String.valueOf(contactsList));
                 /**
                  * Составление view-элементов с краткой информацией о пользователях
                  */
