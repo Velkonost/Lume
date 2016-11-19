@@ -59,6 +59,13 @@ import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.PhoneDataStorage.saveText;
 
+
+/**
+ * @author Velkonost
+ *
+ * Класс, описывающий процесс поиска пользователей.
+ *
+ */
 public class SearchActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_search;

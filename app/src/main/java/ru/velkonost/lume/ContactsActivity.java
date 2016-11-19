@@ -62,6 +62,12 @@ import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.PhoneDataStorage.saveText;
 
+/**
+ * @author Velkonost
+ *
+ * Класс, состояние страницы контактов авторизованного пользователя.
+ *
+ */
 public class ContactsActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_contact;
