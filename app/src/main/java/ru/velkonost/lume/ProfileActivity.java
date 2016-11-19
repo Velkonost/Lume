@@ -419,7 +419,7 @@ public class ProfileActivity extends AppCompatActivity {
             InputStream is;
             BufferedReader reader;
 
-            /** Свойство - код ответа, полученных от сервера */
+            /** Свойство - код ответа, полученный от сервера */
             String resultJson = "";
 
             try {

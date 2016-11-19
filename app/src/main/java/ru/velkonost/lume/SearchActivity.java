@@ -425,7 +425,8 @@ public class SearchActivity extends AppCompatActivity {
 
                     /** Формирование адреса, по которому лежит аватар пользователя */
                     String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
-                            + SERVER_AVATAR + SLASH + userInfo.getString(AVATAR) + SLASH + userInfo.getString(ID) + PNG;
+                            + SERVER_AVATAR + SLASH + userInfo.getString(AVATAR)
+                            + SLASH + userInfo.getString(ID) + PNG;
 
                     /**
                      *  Загрузка и установка аватара.

@@ -50,6 +50,7 @@ public class Constants {
         public static final String SERVER_GET_DATA_METHOD = "/getData";
         public static final String SERVER_ADD_CONTACT_METHOD = "/addContact";
         public static final String SERVER_SEARCH_METHOD = "/search";
+        public static final String SERVER_GET_CONTACTS_METHOD = "/getContacts";
 
 
 
