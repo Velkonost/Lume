@@ -396,6 +396,13 @@ public class ProfileActivity extends AppCompatActivity {
                 HYPHEN + year;
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        deleteText(ProfileActivity.this, USER_ID);
+    }
+
     /**
      * Класс для получения данных о пользователе с сервера.
      **/
