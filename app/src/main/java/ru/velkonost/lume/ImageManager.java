@@ -2,6 +2,12 @@ package ru.velkonost.lume;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.Xfermode;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -17,9 +23,11 @@ import java.net.URL;
 /**
  * @author Velkonost
  *
- * Класс, обеспечивающий два метода,
- * которые позволяют устанавливать изображение в указанный ImageView,
- * скачанное по заданному URL
+ * Класс, отвечающий за работу с картинками.
+ *
+ * Позволяет скачивать и устанавливать картинки из интернета.
+ *
+ * Позволяет делать форму отображения круглой.
  * */
 public class ImageManager {
     private final static String TAG = "ImageManager";
@@ -133,5 +141,92 @@ public class ImageManager {
                 conn.disconnect();
         }
         return bitmap;
+    }
+
+
+    /**
+     * Функция приводит переданную картинку к заданному масштабу.
+     *
+     * @param source Переданная картинка.
+     * @param size Требуемое значение для одной из сторон картинки.
+     * @return Возвращает готовую картинку.
+     */
+    public static Bitmap scaleTo(Bitmap source, int size) {
+
+        /**
+         * Получаем размеры переданной картинки.
+         **/
+        int destWidth = source.getWidth();
+        int destHeight = source.getHeight();
+
+        /**
+         * Приводим размеры в соответствии заданным параметрам.
+         **/
+        destHeight = destHeight * size / destWidth;
+        destWidth = size;
+
+        /**
+         * Если высота оказалась меньше, чем нужно.
+         **/
+        if (destHeight < size) {
+            destWidth = destWidth * size / destHeight;
+            destHeight = size;
+        }
+
+        /**
+         * Рисуем картинку.
+         **/
+        Bitmap destBitmap = Bitmap.createBitmap(destWidth, destHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(destBitmap);
+        canvas.drawBitmap(source,
+                new Rect(0, 0, source.getWidth(), source.getHeight()),
+                new Rect(0, 0, destWidth, destHeight),
+                new Paint(Paint.ANTI_ALIAS_FLAG));
+
+        return destBitmap;
+    }
+
+    /**
+     * Данный способ основан на применении специального режима комбинирования двух изображений.
+     *
+     * Этот специальный режим позволяет создать маску из второго изображения, задав прозрачность нужных пикселей.
+     *
+     * @param source Картинка, с которой необходимо работать.
+     * @param radius Радиус, который должна приобрести картинка.
+     * @return Возвращает готовую картинку.
+     */
+    public static Bitmap getCircleMaskedBitmap(Bitmap source, int radius) {
+        /** Если картинка не передана */
+        if (source == null) {
+            return null;
+        }
+
+        /** Задаем диаметр в зависимости от радиуса */
+        int diam = radius << 1;
+
+        /** Масштабируем картинку */
+        Bitmap scaledBitmap = scaleTo(source, diam);
+
+
+        Bitmap targetBitmap = Bitmap.createBitmap(diam, diam, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(targetBitmap);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        final Rect rect = new Rect(0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight());
+
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+
+        canvas.drawCircle(radius, radius, radius, paint);
+
+        /**
+         *  С помощью объекта Paint задается режим преобразования пикселей с помощью метода setXfermode.
+         *  {@link Paint#setXfermode(Xfermode)}
+         */
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(scaledBitmap, rect, rect, paint);
+
+        return targetBitmap;
     }
 }

@@ -4,11 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -64,6 +59,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.ImageManager.fetchImage;
+import static ru.velkonost.lume.ImageManager.getCircleMaskedBitmap;
 import static ru.velkonost.lume.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Initializations.initToolbar;
 import static ru.velkonost.lume.PhoneDataStorage.deleteText;
@@ -104,6 +100,14 @@ public class ContactsActivity extends AppCompatActivity {
      * Идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
      **/
     private ArrayList<String> ids;
+
+    /**
+     * Контакты авторизованного пользователя.
+     *
+     * Ключ - идентификатор пользователя.
+     * Значение - его полное имя или логин.
+     **/
+    private Map <String, String> contacts;
 
     /**
      * Условный контейнер, в который помещаются все view-элементы, созданные программно.
@@ -272,49 +276,9 @@ public class ContactsActivity extends AppCompatActivity {
         changeActivityCompat(ContactsActivity.this, new Intent(this, ProfileActivity.class));
     }
 
-    public static Bitmap scaleTo(Bitmap source, int size) {
-        int destWidth = source.getWidth();
 
-        int destHeight = source.getHeight();
 
-        destHeight = destHeight * size / destWidth;
-        destWidth = size;
 
-        if (destHeight < size) {
-            destWidth = destWidth * size / destHeight;
-            destHeight = size;
-        }
-
-        Bitmap destBitmap = Bitmap.createBitmap(destWidth, destHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(destBitmap);
-        canvas.drawBitmap(source, new Rect(0, 0, source.getWidth(), source.getHeight()), new Rect(0, 0, destWidth, destHeight), new Paint(Paint.ANTI_ALIAS_FLAG));
-        return destBitmap;
-    }
-
-    public static Bitmap getCircleMaskedBitmapUsingPorterDuff(Bitmap source, int radius) {
-        if (source == null) {
-            return null;
-        }
-
-        int diam = radius << 1;
-        Bitmap scaledBitmap = scaleTo(source, diam);
-
-        Bitmap targetBitmap = Bitmap.createBitmap(diam, diam, Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(targetBitmap);
-
-        final int color = 0xff424242;
-        final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        final Rect rect = new Rect(0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight());
-
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-
-        canvas.drawCircle(radius, radius, radius, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(scaledBitmap, rect, rect, paint);
-        return targetBitmap;
-    }
 
 
     public static <K, V extends Comparable<? super V>> Map<K, V>
@@ -457,7 +421,7 @@ public class ContactsActivity extends AppCompatActivity {
 
 
 
-                Map <String, String> contacts = new HashMap<>();
+                contacts = new HashMap<>();
 
                 for (int i = 0; i < ids.size(); i++){
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
@@ -471,24 +435,15 @@ public class ContactsActivity extends AppCompatActivity {
                 }
 
                 Comparator<String> comparator = new ValueComparator<>((HashMap<String, String>) contacts);
-                TreeMap<String, String> result = new TreeMap<>(comparator);
-                result.putAll(contacts);
+                TreeMap<String, String> sortedContacts = new TreeMap<>(comparator);
+                sortedContacts.putAll(contacts);
 
                 ids = new ArrayList<>();
-                Log.i("LIST", String.valueOf(result));
-                for (String key : result.keySet()) {
+
+                for (String key : sortedContacts.keySet()) {
                     ids.add(key);
                 }
                 Collections.reverse(ids);
-
-                Log.i("LIST", String.valueOf(ids));
-
-//                int c = 0;
-//                for (int i = 0; i < ids.size(); i++){
-//                    JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
-//                    if (userInfo.getString())
-//                }
-
 
                 /**
                  * Составление view-элементов с краткой информацией о пользователях
@@ -549,7 +504,7 @@ public class ContactsActivity extends AppCompatActivity {
                      * */
                     fetchImage(avatarURL, userAvatar);
                     Bitmap bitmap = ((BitmapDrawable)userAvatar.getDrawable()).getBitmap();
-                    userAvatar.setImageBitmap(getCircleMaskedBitmapUsingPorterDuff(bitmap, 25));
+                    userAvatar.setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
 
                     /** Добавление элемента в контейнер {@link SearchActivity#linLayout} */
                     linLayout.addView(userView);
