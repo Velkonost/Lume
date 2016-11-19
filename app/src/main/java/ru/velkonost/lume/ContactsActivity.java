@@ -4,11 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,6 +33,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.EQUALS;
@@ -56,12 +56,19 @@ import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.ImageManager.fetchImage;
+import static ru.velkonost.lume.ImageManager.getCircleMaskedBitmap;
 import static ru.velkonost.lume.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Initializations.initToolbar;
 import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.PhoneDataStorage.saveText;
 
+/**
+ * @author Velkonost
+ *
+ * Класс, состояние страницы контактов авторизованного пользователя.
+ *
+ */
 public class ContactsActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_contact;
@@ -92,6 +99,14 @@ public class ContactsActivity extends AppCompatActivity {
     private ArrayList<String> ids;
 
     /**
+     * Контакты авторизованного пользователя.
+     *
+     * Ключ - идентификатор пользователя.
+     * Значение - его полное имя или логин.
+     **/
+    private Map <String, String> contacts;
+
+    /**
      * Условный контейнер, в который помещаются все view-элементы, созданные программно.
      **/
     private LinearLayout linLayout;
@@ -104,12 +119,15 @@ public class ContactsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /** Установка темы по умолчанию */
         setTheme(R.style.AppDefault);
+
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
 
         mGetData = new GetData();
         ids = new ArrayList<>();
+        contacts = new HashMap<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -190,6 +208,12 @@ public class ContactsActivity extends AppCompatActivity {
                 }
 
                 /**
+                 * Удаляет информацию о владельце открытого профиля.
+                 * {@link PhoneDataStorage#deleteText(Context, String)}
+                 **/
+                deleteText(ContactsActivity.this, USER_ID);
+
+                /**
                  * Переход на следующую активность.
                  * {@link Initializations#changeActivityCompat(Activity, Intent)}
                  * */
@@ -251,56 +275,29 @@ public class ContactsActivity extends AppCompatActivity {
          * */
         changeActivityCompat(ContactsActivity.this, new Intent(this, ProfileActivity.class));
     }
-    public static Bitmap scaleTo(Bitmap source, int size)
-    {
-        int destWidth = source.getWidth();
 
-        int destHeight = source.getHeight();
 
-        destHeight = destHeight * size / destWidth;
-        destWidth = size;
+    /**
+     * Сортирует Map по значению.
+     *
+     * @param <K> Тип ключа.
+     * @param <V> Тип значения.
+     */
+    class ValueComparator<K, V extends Comparable<V>> implements Comparator<K>{
 
-        if (destHeight < size)
-        {
-            destWidth = destWidth * size / destHeight;
-            destHeight = size;
+        HashMap<K, V> map = new HashMap<>();
+
+        /** Конструктор */
+        public ValueComparator(HashMap<K, V> map){
+            this.map.putAll(map);
         }
 
-        Bitmap destBitmap = Bitmap.createBitmap(destWidth, destHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(destBitmap);
-        canvas.drawBitmap(source, new Rect(0, 0, source.getWidth(), source.getHeight()), new Rect(0, 0, destWidth, destHeight), new Paint(Paint.ANTI_ALIAS_FLAG));
-        return destBitmap;
-    }
-
-    public static Bitmap getCircleMaskedBitmapUsingPorterDuff(Bitmap source, int radius)
-    {
-        if (source == null)
-        {
-            return null;
+        /** Сортировка по значению сверху вниз */
+        @Override
+        public int compare(K s1, K s2) {
+            return -map.get(s1).compareTo(map.get(s2));
         }
-
-        int diam = radius << 1;
-        Bitmap scaledBitmap = scaleTo(source, diam);
-
-        Bitmap targetBitmap = Bitmap.createBitmap(diam, diam, Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(targetBitmap);
-
-        final int color = 0xff424242;
-        final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        final Rect rect = new Rect(0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight());
-
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-
-        canvas.drawCircle(radius, radius, radius, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(scaledBitmap, rect, rect, paint);
-        return targetBitmap;
     }
-
-
-
 
     /**
      * Класс для получения данных о пользователе с сервера.
@@ -403,6 +400,42 @@ public class ContactsActivity extends AppCompatActivity {
                 }
 
                 /**
+                 * Заполнение Map{@link contacts} для последующей сортировки контактов.
+                 *
+                 * По умолчанию, идентификатору контакта соответствует его полное имя.
+                 *
+                 * Если такогого не имеется, то устанавливает взамен логин.
+                 **/
+                for (int i = 0; i < ids.size(); i++){
+                    JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
+                    contacts.put(
+                            ids.get(i),
+                            userInfo.getString(NAME).length() != 0
+                                    ? userInfo.getString(SURNAME).length() != 0
+                                    ? userInfo.getString(NAME) + " " + userInfo.getString(SURNAME)
+                                    : userInfo.getString(LOGIN) : userInfo.getString(LOGIN)
+                    );
+                }
+
+                /** Создание и инициализация Comparator{@link ValueComparator} */
+                Comparator<String> comparator = new ValueComparator<>((HashMap<String, String>) contacts);
+
+                /** Помещает отсортированную Map */
+                TreeMap<String, String> sortedContacts = new TreeMap<>(comparator);
+                sortedContacts.putAll(contacts);
+
+                /** "Обнуляет" хранилище идентификаторов */
+                ids = new ArrayList<>();
+
+                /** Заполняет хранилище идентификаторов */
+                for (String key : sortedContacts.keySet()) {
+                    ids.add(key);
+                }
+
+                /** "Поворачивает" хранилище идентификаторов */
+                Collections.reverse(ids);
+
+                /**
                  * Составление view-элементов с краткой информацией о пользователях
                  */
                 for (int i = 0; i < ids.size(); i++) {
@@ -461,7 +494,7 @@ public class ContactsActivity extends AppCompatActivity {
                      * */
                     fetchImage(avatarURL, userAvatar);
                     Bitmap bitmap = ((BitmapDrawable)userAvatar.getDrawable()).getBitmap();
-                    userAvatar.setImageBitmap(getCircleMaskedBitmapUsingPorterDuff(bitmap, 25));
+                    userAvatar.setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
 
                     /** Добавление элемента в контейнер {@link SearchActivity#linLayout} */
                     linLayout.addView(userView);
@@ -472,6 +505,4 @@ public class ContactsActivity extends AppCompatActivity {
             }
         }
     }
-
-
 }
