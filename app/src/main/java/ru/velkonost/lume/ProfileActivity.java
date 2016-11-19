@@ -391,9 +391,10 @@ public class ProfileActivity extends AppCompatActivity {
                 dateInStr.charAt(dateInStr.length() - 7);
 
         /** Соединяем все воедино */
-        return day +
-                HYPHEN + month +
-                HYPHEN + year;
+        return day
+                +
+                HYPHEN + month
+                + HYPHEN + year;
     }
 
 
