@@ -3,6 +3,13 @@ package ru.velkonost.lume;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -57,7 +64,7 @@ import static ru.velkonost.lume.PhoneDataStorage.saveText;
 
 public class ContactsActivity extends AppCompatActivity {
 
-    private static final int LAYOUT = R.layout.activity_search;
+    private static final int LAYOUT = R.layout.activity_contact;
 
     /**
      * Свойство - следующая активность.
@@ -116,7 +123,7 @@ public class ContactsActivity extends AppCompatActivity {
          **/
         userId = loadText(ContactsActivity.this, ID);
 
-        linLayout = (LinearLayout) findViewById(R.id.searchContainer);
+        linLayout = (LinearLayout) findViewById(R.id.contactsContainer);
         ltInflater = getLayoutInflater();
 
         mGetData.execute();
@@ -126,7 +133,7 @@ public class ContactsActivity extends AppCompatActivity {
      * Рисует боковую панель навигации.
      **/
     private void initNavigationView() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_search);
+        drawerLayout = (DrawerLayout) findViewById(R.id.activity_contact);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.view_navigation_open, R.string.view_navigation_close);
@@ -244,6 +251,56 @@ public class ContactsActivity extends AppCompatActivity {
          * */
         changeActivityCompat(ContactsActivity.this, new Intent(this, ProfileActivity.class));
     }
+    public static Bitmap scaleTo(Bitmap source, int size)
+    {
+        int destWidth = source.getWidth();
+
+        int destHeight = source.getHeight();
+
+        destHeight = destHeight * size / destWidth;
+        destWidth = size;
+
+        if (destHeight < size)
+        {
+            destWidth = destWidth * size / destHeight;
+            destHeight = size;
+        }
+
+        Bitmap destBitmap = Bitmap.createBitmap(destWidth, destHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(destBitmap);
+        canvas.drawBitmap(source, new Rect(0, 0, source.getWidth(), source.getHeight()), new Rect(0, 0, destWidth, destHeight), new Paint(Paint.ANTI_ALIAS_FLAG));
+        return destBitmap;
+    }
+
+    public static Bitmap getCircleMaskedBitmapUsingPorterDuff(Bitmap source, int radius)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        int diam = radius << 1;
+        Bitmap scaledBitmap = scaleTo(source, diam);
+
+        Bitmap targetBitmap = Bitmap.createBitmap(diam, diam, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(targetBitmap);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        final Rect rect = new Rect(0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight());
+
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+
+        canvas.drawCircle(radius, radius, radius, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(scaledBitmap, rect, rect, paint);
+        return targetBitmap;
+    }
+
+
+
 
     /**
      * Класс для получения данных о пользователе с сервера.
@@ -386,12 +443,12 @@ public class ContactsActivity extends AppCompatActivity {
                             ? userInfo.getString(LOGIN)
                             : userInfo.getString(NAME) + " " +  userInfo.getString(SURNAME);
 
-
-
                     if (sUserName.equals(userInfo.getString(LOGIN)))
                         userWithoutName.setImageResource(R.drawable.withoutname);
                     else
                         userLogin.setText(userInfo.getString(LOGIN));
+
+                    userName.setText(sUserName);
 
                     /** Формирование адреса, по которому лежит аватар пользователя */
                     String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
@@ -403,6 +460,8 @@ public class ContactsActivity extends AppCompatActivity {
                      *  {@link ImageManager#fetchImage(String, ImageView)}
                      * */
                     fetchImage(avatarURL, userAvatar);
+                    Bitmap bitmap = ((BitmapDrawable)userAvatar.getDrawable()).getBitmap();
+                    userAvatar.setImageBitmap(getCircleMaskedBitmapUsingPorterDuff(bitmap, 25));
 
                     /** Добавление элемента в контейнер {@link SearchActivity#linLayout} */
                     linLayout.addView(userView);
