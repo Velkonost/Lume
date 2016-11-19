@@ -221,8 +221,7 @@ public class ContactsActivity extends AppCompatActivity {
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(ContactsActivity.this, ID).equals(""))
-                    finish();
-
+                    finishAffinity();
                 return true;
             }
         });

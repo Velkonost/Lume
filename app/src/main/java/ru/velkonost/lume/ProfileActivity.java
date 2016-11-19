@@ -334,7 +334,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(ProfileActivity.this, ID).equals(""))
-                    finish();
+                    finishAffinity();
 
                 return true;
             }
