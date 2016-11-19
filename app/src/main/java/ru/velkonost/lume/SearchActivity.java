@@ -108,7 +108,9 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /** Установка темы по умолчанию */
         setTheme(R.style.AppDefault);
+
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
 

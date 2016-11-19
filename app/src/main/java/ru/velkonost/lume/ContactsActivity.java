@@ -36,9 +36,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -122,12 +119,15 @@ public class ContactsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /** Установка темы по умолчанию */
         setTheme(R.style.AppDefault);
+
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
 
         mGetData = new GetData();
         ids = new ArrayList<>();
+        contacts = new HashMap<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -277,45 +277,25 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-    public static <K, V extends Comparable<? super V>> Map<K, V>
-    sortByValue(Map<K, V> map )
-    {
-        List<Map.Entry<K, V>> list =
-                new LinkedList<>(map.entrySet());
-        Collections.sort( list, new Comparator<Map.Entry<K, V>>()
-        {
-            @Override
-            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2)
-            {
-                return (o1.getValue()).compareTo( o2.getValue() );
-            }
-        } );
-
-        Map<K, V> result = new LinkedHashMap<>();
-        for (Map.Entry<K, V> entry : list)
-        {
-            result.put(entry.getKey(), entry.getValue());
-        }
-        return result;
-    }
-
-
-    // a comparator using generic type
+    /**
+     * Сортирует Map по значению.
+     *
+     * @param <K> Тип ключа.
+     * @param <V> Тип значения.
+     */
     class ValueComparator<K, V extends Comparable<V>> implements Comparator<K>{
 
-        HashMap<K, V> map = new HashMap<K, V>();
+        HashMap<K, V> map = new HashMap<>();
 
+        /** Конструктор */
         public ValueComparator(HashMap<K, V> map){
             this.map.putAll(map);
         }
 
+        /** Сортировка по значению сверху вниз */
         @Override
         public int compare(K s1, K s2) {
-            return -map.get(s1).compareTo(map.get(s2));//descending order
+            return -map.get(s1).compareTo(map.get(s2));
         }
     }
 
@@ -419,10 +399,13 @@ public class ContactsActivity extends AppCompatActivity {
                     ids.add(idsJSON.getString(i));
                 }
 
-
-
-                contacts = new HashMap<>();
-
+                /**
+                 * Заполнение Map{@link contacts} для последующей сортировки контактов.
+                 *
+                 * По умолчанию, идентификатору контакта соответствует его полное имя.
+                 *
+                 * Если такогого не имеется, то устанавливает взамен логин.
+                 **/
                 for (int i = 0; i < ids.size(); i++){
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
                     contacts.put(
@@ -434,15 +417,22 @@ public class ContactsActivity extends AppCompatActivity {
                     );
                 }
 
+                /** Создание и инициализация Comparator{@link ValueComparator} */
                 Comparator<String> comparator = new ValueComparator<>((HashMap<String, String>) contacts);
+
+                /** Помещает отсортированную Map */
                 TreeMap<String, String> sortedContacts = new TreeMap<>(comparator);
                 sortedContacts.putAll(contacts);
 
+                /** "Обнуляет" хранилище идентификаторов */
                 ids = new ArrayList<>();
 
+                /** Заполняет хранилище идентификаторов */
                 for (String key : sortedContacts.keySet()) {
                     ids.add(key);
                 }
+
+                /** "Поворачивает" хранилище идентификаторов */
                 Collections.reverse(ids);
 
                 /**
@@ -515,6 +505,4 @@ public class ContactsActivity extends AppCompatActivity {
             }
         }
     }
-
-
 }
