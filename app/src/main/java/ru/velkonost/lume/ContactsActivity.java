@@ -38,6 +38,14 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.EQUALS;
@@ -263,8 +271,8 @@ public class ContactsActivity extends AppCompatActivity {
          * */
         changeActivityCompat(ContactsActivity.this, new Intent(this, ProfileActivity.class));
     }
-    public static Bitmap scaleTo(Bitmap source, int size)
-    {
+
+    public static Bitmap scaleTo(Bitmap source, int size) {
         int destWidth = source.getWidth();
 
         int destHeight = source.getHeight();
@@ -272,8 +280,7 @@ public class ContactsActivity extends AppCompatActivity {
         destHeight = destHeight * size / destWidth;
         destWidth = size;
 
-        if (destHeight < size)
-        {
+        if (destHeight < size) {
             destWidth = destWidth * size / destHeight;
             destHeight = size;
         }
@@ -284,10 +291,8 @@ public class ContactsActivity extends AppCompatActivity {
         return destBitmap;
     }
 
-    public static Bitmap getCircleMaskedBitmapUsingPorterDuff(Bitmap source, int radius)
-    {
-        if (source == null)
-        {
+    public static Bitmap getCircleMaskedBitmapUsingPorterDuff(Bitmap source, int radius) {
+        if (source == null) {
             return null;
         }
 
@@ -311,6 +316,44 @@ public class ContactsActivity extends AppCompatActivity {
         return targetBitmap;
     }
 
+
+    public static <K, V extends Comparable<? super V>> Map<K, V>
+    sortByValue(Map<K, V> map )
+    {
+        List<Map.Entry<K, V>> list =
+                new LinkedList<>(map.entrySet());
+        Collections.sort( list, new Comparator<Map.Entry<K, V>>()
+        {
+            @Override
+            public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2)
+            {
+                return (o1.getValue()).compareTo( o2.getValue() );
+            }
+        } );
+
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list)
+        {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
+
+
+    // a comparator using generic type
+    class ValueComparator<K, V extends Comparable<V>> implements Comparator<K>{
+
+        HashMap<K, V> map = new HashMap<K, V>();
+
+        public ValueComparator(HashMap<K, V> map){
+            this.map.putAll(map);
+        }
+
+        @Override
+        public int compare(K s1, K s2) {
+            return -map.get(s1).compareTo(map.get(s2));//descending order
+        }
+    }
 
     /**
      * Класс для получения данных о пользователе с сервера.
@@ -412,17 +455,39 @@ public class ContactsActivity extends AppCompatActivity {
                     ids.add(idsJSON.getString(i));
                 }
 
-                ArrayList<String> contactsList = new ArrayList();
+
+
+                Map <String, String> contacts = new HashMap<>();
+
                 for (int i = 0; i < ids.size(); i++){
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
-                    contactsList.add(
+                    contacts.put(
+                            ids.get(i),
                             userInfo.getString(NAME).length() != 0
-                            ? userInfo.getString(SURNAME).length() != 0
-                            ? userInfo.getString(NAME) + " " + userInfo.getString(SURNAME)
-                            : userInfo.getString(LOGIN) : userInfo.getString(LOGIN)
+                                    ? userInfo.getString(SURNAME).length() != 0
+                                    ? userInfo.getString(NAME) + " " + userInfo.getString(SURNAME)
+                                    : userInfo.getString(LOGIN) : userInfo.getString(LOGIN)
                     );
                 }
-                Log.i("LIST", String.valueOf(contactsList));
+
+
+                Log.i("LIST", String.valueOf(contacts));
+
+//                sortByValue(contacts);
+
+
+                Comparator<String> comparator = new ValueComparator<String, String>((HashMap<String, String>) contacts);
+                TreeMap<String, String> result = new TreeMap<String, String>(comparator);
+                result.putAll(contacts);
+                Log.i("LIST", String.valueOf(result));
+
+//                int c = 0;
+//                for (int i = 0; i < ids.size(); i++){
+//                    JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
+//                    if (userInfo.getString())
+//                }
+
+
                 /**
                  * Составление view-элементов с краткой информацией о пользователях
                  */
