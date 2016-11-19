@@ -470,16 +470,18 @@ public class ContactsActivity extends AppCompatActivity {
                     );
                 }
 
-
-                Log.i("LIST", String.valueOf(contacts));
-
-//                sortByValue(contacts);
-
-
-                Comparator<String> comparator = new ValueComparator<String, String>((HashMap<String, String>) contacts);
-                TreeMap<String, String> result = new TreeMap<String, String>(comparator);
+                Comparator<String> comparator = new ValueComparator<>((HashMap<String, String>) contacts);
+                TreeMap<String, String> result = new TreeMap<>(comparator);
                 result.putAll(contacts);
+
+                ids = new ArrayList<>();
                 Log.i("LIST", String.valueOf(result));
+                for (String key : result.keySet()) {
+                    ids.add(key);
+                }
+                Collections.reverse(ids);
+
+                Log.i("LIST", String.valueOf(ids));
 
 //                int c = 0;
 //                for (int i = 0; i < ids.size(); i++){
