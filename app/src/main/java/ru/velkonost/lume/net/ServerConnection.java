@@ -1,6 +1,9 @@
 package ru.velkonost.lume.net;
 
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -26,6 +29,20 @@ public class ServerConnection {
 
     /** Свойство - код ответа, полученных от сервера */
     private static String resultJson = "";
+
+    /**
+     * Проверка интернет-соединения.
+     **/
+    public static boolean isOnline(Context context)
+    {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        if (netInfo != null && netInfo.isConnectedOrConnecting())
+            return true;
+        return false;
+    }
 
     public static String getJSON(String sUrl, String params) throws IOException {
 
