@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.Button;
 
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.net.ServerConnection.hasConnection;
 
 
 /**
@@ -29,11 +33,47 @@ public class WelcomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
 
+
         /**
-         * Запускает проверку при создании активности.
+         * Проверяет интернет-соединение на данном устройстве.
+         * {@link WelcomeActivity#checkConnection()}
+         **/
+        checkConnection();
+
+
+//        checkCookieId();
+    }
+
+    /**
+     * Проверяет отсутствие интернет-соединения.
+     * Показывает соответствующее уведомление.
+     * {@link Initializations#inititializeAlertDialog(Context, String, String, String)}
+     */
+    private void checkConnection(){
+
+        /**
+         * При отсутствии интернет-соединения появляется соответствующее уведомление.
+         */
+        if (!hasConnection(this)) {
+            inititializeAlertDialog(WelcomeActivity.this,
+                    getResources().getString(R.string.connection_error),
+                    getResources().getString(R.string.no_connection),
+                    getResources().getString(R.string.btn_ok));
+
+            Button btnLogin = (Button) findViewById(R.id.btnLoginWelcome);
+            btnLogin.setBackgroundColor(ContextCompat.getColor(this, R.color.colorRed));
+            btnLogin.setClickable(false);
+
+            Button btnRegistration = (Button) findViewById(R.id.btnRegistrationWelcome);
+            btnRegistration.setBackgroundColor(ContextCompat.getColor(this, R.color.colorRed));
+            btnRegistration.setClickable(false);
+        }
+
+        /**
+         * Запускает проверку при создании активности, если имеется интернет-соединение.
          * {@link WelcomeActivity#checkCookieId()}
          */
-        checkCookieId();
+        else checkCookieId();
     }
 
     /**
@@ -63,12 +103,13 @@ public class WelcomeActivity extends Activity {
         finish();
     }
 
+
     /**
      * Функция служит для проверки того, заходил ли пользователь с этого устройства ранее.
      * При положительном ответе перебрасывает на профиль пользователя
      * {@link PhoneDataStorage#loadText(Context, String)}
      */
-    public void checkCookieId() {
+    private void checkCookieId() {
         String cookieId = loadText(WelcomeActivity.this, ID);
 
         /**

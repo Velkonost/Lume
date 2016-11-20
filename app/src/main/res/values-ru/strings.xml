@@ -12,9 +12,12 @@
     <string name="server_error">Ошибка на сервере!</string>
     <string name="authorization_error">Ошибка авторизации!</string>
     <string name="registration_error">Ошибка регистрации!</string>
+    <string name="connection_error">Ошибка соединения!</string>
+
     <string name="not_coincide_passwords">Пароли не совпадают!</string>
     <string name="email_already_exist">Данный email уже существует!</string>
     <string name="login_already_exist">Данный логин уже занят!</string>
+    <string name="no_connection">Отсутствует интернет-соединение!</string>
     <string name="relogin">Пожалуйста, зайдите позднее.</string>
 
     <string name="incorrectly_introduce_login_or_password">Неправильно введен логин или пароль!</string>

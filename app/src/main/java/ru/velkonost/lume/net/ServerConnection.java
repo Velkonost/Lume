@@ -33,7 +33,7 @@ public class ServerConnection {
     /**
      * Проверка интернет-соединения.
      **/
-    public static boolean isOnline(Context context)
+    public static boolean hasConnection(Context context)
     {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
