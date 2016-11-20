@@ -3,6 +3,7 @@ package ru.velkonost.lume;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static ru.velkonost.lume.Constants.ADD_CONTACT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
@@ -364,6 +366,31 @@ public class ProfileActivity extends AppCompatActivity {
          **/
         changeActivityCompat(ProfileActivity.this, nextIntent);
     }
+
+    private MaterialSearchView searchView;
+
+    private void initSearch() {
+        searchView = (MaterialSearchView) findViewById(R.id.search_view);
+        searchView.setEllipsize(true);
+
+        //реализуем поиск по всем персонам и избранному
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String searchResult = Constants.URL.SEARCH_PERSONS + query;
+                new PersonTask().execute(searchResult);
+                String searchDB = "SELECT * FROM " + Database.TABLE_NAME + " WHERE " + Database.COLUMN_TITLE_PERSON + " LIKE \"%" + query + "%\" ORDER BY " +
+                        Database.COLUMN_TITLE_PERSON;
+                Cursor cursor = sqLiteDatabase.rawQuery(searchDB, null);
+                favourite = new ArrayList<>();
+                while (cursor.moveToNext()) {
+                    int idPerson = cursor.getInt(cursor.getColumnIndex(Database.COLUMN_ID_PERSON));
+                    new FavourTask().execute(Constants.URL.GET_PERSONS_INTRO + idPerson);
+                }
+                cursor.close();
+                searchView.clearFocus();
+                return true;
+            }
 
     /**
      * Форматирование даты из вида, полученного с сервер - YYYY-MM-DD

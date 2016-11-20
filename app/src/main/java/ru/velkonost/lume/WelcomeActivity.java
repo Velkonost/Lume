@@ -53,6 +53,7 @@ public class WelcomeActivity extends Activity {
 
         /**
          * При отсутствии интернет-соединения появляется соответствующее уведомление.
+         * {@link ru.velkonost.lume.net.ServerConnection#hasConnection(Context)}
          */
         if (!hasConnection(this)) {
             inititializeAlertDialog(WelcomeActivity.this,
@@ -60,6 +61,9 @@ public class WelcomeActivity extends Activity {
                     getResources().getString(R.string.no_connection),
                     getResources().getString(R.string.btn_ok));
 
+            /**
+             * Закрашивает кнопки, делает некликабельными.
+             */
             Button btnLogin = (Button) findViewById(R.id.btnLoginWelcome);
             btnLogin.setBackgroundColor(ContextCompat.getColor(this, R.color.colorRed));
             btnLogin.setClickable(false);

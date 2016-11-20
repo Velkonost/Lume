@@ -5,14 +5,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
 public class Initializations {
-
-    private static ViewPager viewPager;
 
     public static void inititializeAlertDialog(Context context, String header,
                                                String description, String btnName){
