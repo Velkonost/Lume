@@ -5,9 +5,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
+
+import static ru.velkonost.lume.Constants.SEARCH;
+import static ru.velkonost.lume.PhoneDataStorage.saveText;
 
 public class Initializations {
 
@@ -28,7 +34,7 @@ public class Initializations {
         alert.show();
     }
 
-    public static void initToolbar(Toolbar toolbar, int title) {
+    public static void initToolbar(AppCompatActivity activity, Toolbar toolbar, int title) {
 
         toolbar.setTitle(title);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -39,6 +45,8 @@ public class Initializations {
         });
 
         toolbar.inflateMenu(R.menu.menu);
+
+        activity.setSupportActionBar(toolbar);
     }
 
     public static final void changeActivityCompat(final Activity a) {
@@ -66,5 +74,43 @@ public class Initializations {
 
         a.startActivity(nextIntent);
         a.overridePendingTransition(0, 0);
+    }
+
+    public static void initSearch(final Activity activity, MaterialSearchView searchView) {
+
+        searchView.setEllipsize(true);
+        //реализуем поиск по всем персонам и избранному
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Intent nextIntent;
+
+                /**
+                 * Получение данных, по которым пользователь хочет найти информацию.
+                 * Сохранение этих данных в файл на данном устройстве.
+                 **/
+                saveText(activity, SEARCH, query);
+
+                /**
+                 * Переход на страницу поиска, где выоводится результат.
+                 * {@link SearchActivity}
+                 **/
+                nextIntent = new Intent(activity, SearchActivity.class);
+
+                /**
+                 * Переход на следующую активность.
+                 * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                 **/
+                changeActivityCompat(activity, nextIntent);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+        });
     }
 }

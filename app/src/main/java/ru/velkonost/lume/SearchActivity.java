@@ -12,12 +12,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +50,7 @@ import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.ImageManager.fetchImage;
 import static ru.velkonost.lume.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.Initializations.initSearch;
 import static ru.velkonost.lume.Initializations.initToolbar;
 import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
@@ -101,6 +104,12 @@ public class SearchActivity extends AppCompatActivity {
      */
     protected GetData mGetData;
 
+    /**
+     * Свойство - строка поиска.
+     * {@link MaterialSearchView}
+     */
+    private MaterialSearchView searchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /** Установка темы по умолчанию */
@@ -115,8 +124,16 @@ public class SearchActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(toolbar, R.string.app_name); /** Инициализация */
+        initToolbar(SearchActivity.this, toolbar, R.string.app_name); /** Инициализация */
         initNavigationView(); /** Инициализация */
+
+        /**
+         * Инициализируем строку поиска.
+         * {@link MaterialSearchView}
+         * {@link Initializations#initSearch(Activity, MaterialSearchView)}
+         **/
+        searchView = (MaterialSearchView) findViewById(R.id.search_view);
+        initSearch(this, searchView);
 
         linLayout = (LinearLayout) findViewById(R.id.searchContainer);
         ltInflater = getLayoutInflater();
@@ -210,34 +227,41 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Обработчик событий для кнопки поиска.
-     */
-    public void goToSearch(View view) {
-        switch (view.getId()) {
-            case R.id.btnStartSearch:
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-                /** Получение данных, по которым пользователь хочет найти информацию */
-                EditText search = (EditText) findViewById(R.id.textSearch);
-                String toSearch = search.getText().toString();
-
-                /** Сохранение этих данных в файл на данном устройстве */
-                saveText(SearchActivity.this, SEARCH, toSearch);
-
-                /**
-                 * Переход на страницу поиска, где выоводится результат.
-                 * {@link SearchActivity}
-                 **/
-                nextIntent = new Intent(this, SearchActivity.class);
-                break;
-        }
+        getMenuInflater().inflate(R.menu.menu, menu);
 
         /**
-         * Переход на следующую активность.
-         * {@link Initializations#changeActivityCompat(Activity, Intent)}
-         * */
-        changeActivityCompat(SearchActivity.this, nextIntent);
-        finish();
+         * Устанавливает меню для строки поиска.
+         */
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView.setMenuItem(item);
+
+        /**
+         * Вешает слушателя для открытия строки по нажатию.
+         */
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown () {
+                searchView.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onSearchViewClosed() {
+            }
+        });
+        return true;
+    }
+
+    /**
+     * При нажатии на кнопку "Назад" поиск закрывется.
+     */
+    @Override
+    public void onBackPressed() {
+        if (searchView.isSearchOpen())
+            searchView.closeSearch();
+        else
+            super.onBackPressed();
     }
 
     /**

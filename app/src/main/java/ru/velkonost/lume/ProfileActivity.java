@@ -3,7 +3,6 @@ package ru.velkonost.lume;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,19 +15,20 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static ru.velkonost.lume.Constants.ADD_CONTACT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
@@ -45,7 +45,6 @@ import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.PNG;
-import static ru.velkonost.lume.Constants.SEARCH;
 import static ru.velkonost.lume.Constants.SEND_ID;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.STUDY;
@@ -62,11 +61,11 @@ import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
 import static ru.velkonost.lume.ImageManager.fetchImage;
 import static ru.velkonost.lume.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.Initializations.initSearch;
 import static ru.velkonost.lume.Initializations.initToolbar;
 import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
 import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
-import static ru.velkonost.lume.PhoneDataStorage.saveText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
@@ -180,6 +179,12 @@ public class ProfileActivity extends AppCompatActivity {
      **/
     private View viewUserInteraction;
 
+    /**
+     * Свойство - строка поиска.
+     * {@link MaterialSearchView}
+     */
+    private MaterialSearchView searchView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,8 +210,16 @@ public class ProfileActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(toolbar, R.string.app_name); /** Инициализация */
+        initToolbar(ProfileActivity.this, toolbar, R.string.app_name); /** Инициализация */
         initNavigationView(); /** Инициализация */
+
+        /**
+         * Инициализируем строку поиска.
+         * {@link MaterialSearchView}
+         * {@link Initializations#initSearch(Activity, MaterialSearchView)}
+         **/
+        searchView = (MaterialSearchView) findViewById(R.id.search_view);
+        initSearch(this, searchView);
 
         /**
          * Получение id пользователя.
@@ -338,59 +351,42 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Обработчик событий для кнопки поиска.
-     */
-    public void goToSearch(View view) {
-        switch (view.getId()) {
-            case R.id.btnStartSearch:
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-                /** Получение данных, по которым пользователь хочет найти информацию */
-                EditText search = (EditText) findViewById(R.id.textSearch);
-                String toSearch = search.getText().toString();
-
-                /** Сохранение этих данных в файл на данном устройстве */
-                saveText(ProfileActivity.this, SEARCH, toSearch);
-
-                /**
-                 * Переход на страницу поиска, где выоводится результат.
-                 * {@link SearchActivity}
-                 **/
-                nextIntent = new Intent(this, SearchActivity.class);
-                break;
-        }
+        getMenuInflater().inflate(R.menu.menu, menu);
 
         /**
-         * Переход на следующую активность.
-         * {@link Initializations#changeActivityCompat(Activity, Intent)}
-         **/
-        changeActivityCompat(ProfileActivity.this, nextIntent);
+         * Устанавливает меню для строки поиска.
+         */
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView.setMenuItem(item);
+
+        /**
+         * Вешает слушателя для открытия строки по нажатию.
+         */
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown () {
+                searchView.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onSearchViewClosed() {
+            }
+        });
+        return true;
     }
 
-    private MaterialSearchView searchView;
-
-    private void initSearch() {
-        searchView = (MaterialSearchView) findViewById(R.id.search_view);
-        searchView.setEllipsize(true);
-
-        //реализуем поиск по всем персонам и избранному
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                String searchResult = Constants.URL.SEARCH_PERSONS + query;
-                new PersonTask().execute(searchResult);
-                String searchDB = "SELECT * FROM " + Database.TABLE_NAME + " WHERE " + Database.COLUMN_TITLE_PERSON + " LIKE \"%" + query + "%\" ORDER BY " +
-                        Database.COLUMN_TITLE_PERSON;
-                Cursor cursor = sqLiteDatabase.rawQuery(searchDB, null);
-                favourite = new ArrayList<>();
-                while (cursor.moveToNext()) {
-                    int idPerson = cursor.getInt(cursor.getColumnIndex(Database.COLUMN_ID_PERSON));
-                    new FavourTask().execute(Constants.URL.GET_PERSONS_INTRO + idPerson);
-                }
-                cursor.close();
-                searchView.clearFocus();
-                return true;
-            }
+    /**
+     * При нажатии на кнопку "Назад" поиск закрывется.
+     */
+    @Override
+    public void onBackPressed() {
+        if (searchView.isSearchOpen())
+            searchView.closeSearch();
+        else
+            super.onBackPressed();
+    }
 
     /**
      * Форматирование даты из вида, полученного с сервер - YYYY-MM-DD

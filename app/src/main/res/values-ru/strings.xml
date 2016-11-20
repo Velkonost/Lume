@@ -12,7 +12,7 @@
     <string name="server_error">Ошибка на сервере!</string>
     <string name="authorization_error">Ошибка авторизации!</string>
     <string name="registration_error">Ошибка регистрации!</string>
-    <string name="connection_error">Ошибка соединения!</string>
+    <string name="connection_error">Ошибка!</string>
 
     <string name="not_coincide_passwords">Пароли не совпадают!</string>
     <string name="email_already_exist">Данный email уже существует!</string>
