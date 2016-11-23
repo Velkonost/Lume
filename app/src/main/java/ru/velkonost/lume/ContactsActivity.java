@@ -3,8 +3,6 @@ package ru.velkonost.lume;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,9 +15,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -35,23 +31,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import ru.velkonost.lume.fragments.ContactsFragment;
+
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
-import static ru.velkonost.lume.Constants.PNG;
-import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
-import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_CONTACTS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
-import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Constants.USER_ID;
-import static ru.velkonost.lume.ImageManager.fetchImage;
-import static ru.velkonost.lume.ImageManager.getCircleMaskedBitmap;
 import static ru.velkonost.lume.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Initializations.initSearch;
 import static ru.velkonost.lume.Initializations.initToolbar;
@@ -119,6 +111,8 @@ public class ContactsActivity extends AppCompatActivity {
      * {@link MaterialSearchView}
      */
     private MaterialSearchView searchView;
+    private ArrayList mContacts;
+    private ContactsFragment mContactsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,8 +146,8 @@ public class ContactsActivity extends AppCompatActivity {
          **/
         userId = loadText(ContactsActivity.this, ID);
 
-        linLayout = (LinearLayout) findViewById(R.id.contactsContainer);
-        ltInflater = getLayoutInflater();
+//        linLayout = (LinearLayout) findViewById(R.id.contactsContainer);
+//        ltInflater = getLayoutInflater();
 
         mGetData.execute();
     }
@@ -379,6 +373,7 @@ public class ContactsActivity extends AppCompatActivity {
                  **/
                 for (int i = 0; i < ids.size(); i++){
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
+
                     contacts.put(
                             ids.get(i),
                             userInfo.getString(NAME).length() != 0
@@ -417,60 +412,64 @@ public class ContactsActivity extends AppCompatActivity {
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
 
 
-                    View userView = ltInflater.inflate(R.layout.item_contact_block, linLayout, false);
-                    View rl = userView.findViewById(R.id.relativeLayoutContact);
+                    mContacts.add(new Contact(userInfo.getString(ID), userInfo.getString(NAME),
+                            userInfo.getString(SURNAME), userInfo.getString(LOGIN),
+                            Integer.parseInt(userInfo.getString(AVATAR))));
+//
+//                    View userView = ltInflater.inflate(R.layout.item_contact_block, linLayout, false);
+//                    View rl = userView.findViewById(R.id.relativeLayoutContact);
+//
+//                    /**
+//                     * Установление идентификатора пользователя,
+//                     * чтобы при нажатии на элемент проще было понять, профиль какого пользователя необходимо открыть.
+//                     */
+//                    rl.setId(Integer.parseInt(userInfo.getString(ID)));
+//
+//                    ImageView userAvatar = (ImageView) userView.findViewById(R.id.userAvatar); /** Аватар пользователя */
+//
+//                    /** Иконка, указывающая, что пользователь еще не указал свое польное имя */
+//                    ImageView userWithoutName = (ImageView) userView.findViewById(R.id.userWithoutName);
+//
+//                    /** Полное имя пользователя, иначе его логин */
+//                    TextView userName = (TextView) userView.findViewById(R.id.userName);
+//                    TextView userLogin = (TextView) userView.findViewById(R.id.userLogin);
+//
+//                    /**
+//                     * Установка имени владельца открытого профиля.
+//                     *
+//                     * Если имя и фамилия не найдены,
+//                     * то устанавливается логин + показывается иконка {@link userWithoutName}
+//                     **/
+//                    String sUserName = userInfo.getString(NAME).length() == 0
+//                            ? userInfo.getString(LOGIN)
+//                            : userInfo.getString(SURNAME).length() == 0
+//                            ? userInfo.getString(LOGIN)
+//                            : userInfo.getString(NAME) + " " +  userInfo.getString(SURNAME);
+//
+//                    if (sUserName.equals(userInfo.getString(LOGIN)))
+//                        userWithoutName.setImageResource(R.drawable.withoutname);
+//                    else
+//                        userLogin.setText(userInfo.getString(LOGIN));
+//
+//                    userName.setText(sUserName);
 
-                    /**
-                     * Установление идентификатора пользователя,
-                     * чтобы при нажатии на элемент проще было понять, профиль какого пользователя необходимо открыть.
-                     */
-                    rl.setId(Integer.parseInt(userInfo.getString(ID)));
-
-                    ImageView userAvatar = (ImageView) userView.findViewById(R.id.userAvatar); /** Аватар пользователя */
-
-                    /** Иконка, указывающая, что пользователь еще не указал свое польное имя */
-                    ImageView userWithoutName = (ImageView) userView.findViewById(R.id.userWithoutName);
-
-                    /** Полное имя пользователя, иначе его логин */
-                    TextView userName = (TextView) userView.findViewById(R.id.userName);
-                    TextView userLogin = (TextView) userView.findViewById(R.id.userLogin);
-
-                    /**
-                     * Установка имени владельца открытого профиля.
-                     *
-                     * Если имя и фамилия не найдены,
-                     * то устанавливается логин + показывается иконка {@link userWithoutName}
-                     **/
-                    String sUserName = userInfo.getString(NAME).length() == 0
-                            ? userInfo.getString(LOGIN)
-                            : userInfo.getString(SURNAME).length() == 0
-                            ? userInfo.getString(LOGIN)
-                            : userInfo.getString(NAME) + " " +  userInfo.getString(SURNAME);
-
-                    if (sUserName.equals(userInfo.getString(LOGIN)))
-                        userWithoutName.setImageResource(R.drawable.withoutname);
-                    else
-                        userLogin.setText(userInfo.getString(LOGIN));
-
-                    userName.setText(sUserName);
-
-                    /** Формирование адреса, по которому лежит аватар пользователя */
-                    String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
-                            + SERVER_AVATAR + SLASH + userInfo.getString(AVATAR)
-                            + SLASH + userInfo.getString(ID) + PNG;
-
-                    /**
-                     *  Загрузка и установка аватара.
-                     *  {@link ImageManager#fetchImage(String, ImageView)}
-                     * */
-                    fetchImage(avatarURL, userAvatar);
-                    Bitmap bitmap = ((BitmapDrawable)userAvatar.getDrawable()).getBitmap();
-                    userAvatar.setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
-
-                    /** Добавление элемента в контейнер {@link SearchActivity#linLayout} */
-                    linLayout.addView(userView);
+//                    /** Формирование адреса, по которому лежит аватар пользователя */
+//                    String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
+//                            + SERVER_AVATAR + SLASH + userInfo.getString(AVATAR)
+//                            + SLASH + userInfo.getString(ID) + PNG;
+//
+//                    /**
+//                     *  Загрузка и установка аватара.
+//                     *  {@link ImageManager#fetchImage(String, ImageView)}
+//                     * */
+//                    fetchImage(avatarURL, userAvatar);
+//                    Bitmap bitmap = ((BitmapDrawable)userAvatar.getDrawable()).getBitmap();
+//                    userAvatar.setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
+//
+//                    /** Добавление элемента в контейнер {@link SearchActivity#linLayout} */
+//                    linLayout.addView(userView);
                 }
-
+                mContactsFragment.setContacts(mContacts);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
