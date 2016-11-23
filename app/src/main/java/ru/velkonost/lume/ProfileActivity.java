@@ -3,27 +3,25 @@ package ru.velkonost.lume;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,11 +59,11 @@ import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
 import static ru.velkonost.lume.ImageManager.fetchImage;
 import static ru.velkonost.lume.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Initializations.initSearch;
 import static ru.velkonost.lume.Initializations.initToolbar;
 import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
 import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.R.id.userWithoutName;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
@@ -82,15 +80,6 @@ public class ProfileActivity extends AppCompatActivity {
      * Свойство - следующая активность.
      */
     private Intent nextIntent;
-
-    /**
-     * Свойство - высота экрана устройства.
-     */
-    private int screenH;
-    /**
-     * Свойство - ширина экрана устройства.
-     */
-    private int screenW;
 
     /**
     * Свойство - опинсание view-элемента, служащего для обновления страницы.
@@ -111,10 +100,6 @@ public class ProfileActivity extends AppCompatActivity {
      * Свойство - view-элемент для размещения аватара пользователя.
      */
     protected ImageView userAvatar;
-    /**
-     * Свойство - view-элемент для размещения полного имени пользователя.
-     */
-    protected TextView userName;
 
     /**
      * Свойство - экзмепляр класса {@link GetData}
@@ -156,7 +141,6 @@ public class ProfileActivity extends AppCompatActivity {
      *      которые в дальнейшем могут быть добавлены в условный контейнер.
      * {@link ProfileActivity#linLayout}
      **/
-    protected View viewAvatar; /** Свойство - аватар пользователя */
     protected View viewUserPlaceLiving; /** Свойство - место проживания пользователя */
     protected View viewUserBirthday; /** Свойство - дата рождения пользователя */
     private View viewUserPlaceStudy; /** Свойство - место обучения пользователя */
@@ -172,18 +156,8 @@ public class ProfileActivity extends AppCompatActivity {
      *      "склеенные" вместе.
      **/
     protected View viewUserPlaceStudyAndWork;
-    /**
-     * Свойство - модуль для взаимодействия пользователя,
-     *      авторизованного на данном устройстве
-     *      и пользователя открытого на текущий момент аккаунта.
-     **/
-    private View viewUserInteraction;
 
-    /**
-     * Свойство - строка поиска.
-     * {@link MaterialSearchView}
-     */
-    private MaterialSearchView searchView;
+    CollapsingToolbarLayout collapsingToolbar;
 
 
     @Override
@@ -194,12 +168,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
-
-        /** Вычисляет размеры экрана устройства */
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        screenH = displayMetrics.heightPixels;
-        screenW = displayMetrics.widthPixels;
 
         /** Инициализация экземпляров классов */
         mGetData = new GetData();
@@ -212,14 +180,6 @@ public class ProfileActivity extends AppCompatActivity {
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(ProfileActivity.this, toolbar, R.string.app_name); /** Инициализация */
         initNavigationView(); /** Инициализация */
-
-        /**
-         * Инициализируем строку поиска.
-         * {@link MaterialSearchView}
-         * {@link Initializations#initSearch(Activity, MaterialSearchView)}
-         **/
-        searchView = (MaterialSearchView) findViewById(R.id.search_view);
-        initSearch(this, searchView);
 
         /**
          * Получение id пользователя.
@@ -240,30 +200,42 @@ public class ProfileActivity extends AppCompatActivity {
          *  Установка цветной палитры,
          *  цвета которой будут заменять друг друга в зависимости от прогресса.
          * */
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorBlue, R.color.colorGreen,
-                R.color.colorYellow, R.color.colorRed);
+//        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
+//        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorBlue, R.color.colorGreen,
+//                R.color.colorYellow, R.color.colorRed);
 
-        /** Ставит обработчик событий */
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//        /** Ставит обработчик событий */
+//        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//
+//            public void onRefresh() {
+//                /** Выполнение происходит с задержкой в 2.5 секунды */
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                        /**
+//                         * Обновляет страницу.
+//                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+//                         * */
+//                        changeActivityCompat(ProfileActivity.this);
+//                    }
+//                }, 2500);
+//            }
+//        });
+
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                R.drawable.noavatar);
+
+        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
-
-            public void onRefresh() {
-                /** Выполнение происходит с задержкой в 2.5 секунды */
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        /**
-                         * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
-                         * */
-                        changeActivityCompat(ProfileActivity.this);
-                    }
-                }, 2500);
+            public void onGenerated(Palette palette) {
+                int mutedColor = getResources().getColor(R.color.colorPrimary);
+                collapsingToolbar.setContentScrimColor(mutedColor);
             }
         });
-
         /** Обращаемся к серверу */
         mGetData.execute();
     }
@@ -349,43 +321,6 @@ public class ProfileActivity extends AppCompatActivity {
                 return true;
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu, menu);
-
-        /**
-         * Устанавливает меню для строки поиска.
-         */
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
-
-        /**
-         * Вешает слушателя для открытия строки по нажатию.
-         */
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown () {
-                searchView.setVisibility(View.VISIBLE);
-            }
-            @Override
-            public void onSearchViewClosed() {
-            }
-        });
-        return true;
-    }
-
-    /**
-     * При нажатии на кнопку "Назад" поиск закрывется.
-     */
-    @Override
-    public void onBackPressed() {
-        if (searchView.isSearchOpen())
-            searchView.closeSearch();
-        else
-            super.onBackPressed();
     }
 
     /**
@@ -495,20 +430,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 + SERVER_AVATAR + SLASH + dataJsonObj.getString(AVATAR)
                                 + SLASH + profileId + PNG;
 
-                        viewAvatar = ltInflater.inflate(R.layout.item_profile_photo, linLayout, false);
-
-                        userAvatar = (ImageView) viewAvatar.findViewById(R.id.imageAvatar);
-                        userName = (TextView) viewAvatar.findViewById(R.id.userName);
-
-                        /** Картинка, обозначающая, что пользователь не указал свое имя и фамилию */
-                        ImageView userWithoutName = (ImageView) viewAvatar.findViewById(R.id.userWithoutName);
-
-                        /** Задает параметры для аватара пользователя */
-                        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(screenW / 2,
-                                screenH / 2);
-                        param.gravity = Gravity.CENTER;
-                        param.setMargins(0, 0, 0, 0);
-                        userAvatar.setLayoutParams(param);
+                        userAvatar = (ImageView) findViewById(R.id.imageAvatar);
 
                         /**
                          * Установка имени владельца открытого профиля.
@@ -521,13 +443,8 @@ public class ProfileActivity extends AppCompatActivity {
                                 : dataJsonObj.getString(SURNAME).length() == 0
                                 ? dataJsonObj.getString(LOGIN)
                                 : dataJsonObj.getString(NAME) + " " + dataJsonObj.getString(SURNAME);
-                        userName.setText(sUserName);
 
-                        if (sUserName.equals(dataJsonObj.getString(LOGIN)))
-                            userWithoutName.setImageResource(R.drawable.withoutname);
-
-                        /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
-                        linLayout.addView(viewAvatar);
+                        collapsingToolbar.setTitle(sUserName);
 
                         /**
                          * Загрузка аватара пользователя
@@ -541,16 +458,15 @@ public class ProfileActivity extends AppCompatActivity {
                          *      то добавляем модуль взаимодействия.
                          **/
                         if (!profileId.equals(userId)) {
-                            viewUserInteraction = ltInflater
-                                    .inflate(R.layout.item_profile_interaction, linLayout, false);
 
                             /** Кнопка добавления/удаления владельца профиля из контактов авторизованного пользоавателя */
-                            Button btnAddIntoContacts = (Button) viewUserInteraction
-                                    .findViewById(R.id.btnAddToContacts);
+                            FloatingActionButton btnAddIntoContacts = (FloatingActionButton) findViewById(R.id.btnAddIntoContacts);
 
                             /** Кнопка открытия диалога между авторизованным пользователем и владельцем открытого профиля */
-                            Button btnSendMessages = (Button) viewUserInteraction
-                                    .findViewById(R.id.btnSendMessage);
+                            FloatingActionButton btnSendMessage = (FloatingActionButton) findViewById(R.id.btnSendMessage);
+
+                            btnAddIntoContacts.setVisibility(View.VISIBLE);
+                            btnSendMessage.setVisibility(View.VISIBLE);
 
                             /**
                              * Проверка, добавил ли {@link ProfileActivity#userId}
@@ -558,7 +474,7 @@ public class ProfileActivity extends AppCompatActivity {
                              * */
                             isContact = dataJsonObj.getBoolean(CONTACT);
                             if (isContact)
-                                btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
+                                btnAddIntoContacts.setImageResource(R.mipmap.ic_account_multiple_minus);
 
 
                             /** Создает обработчик событий */
@@ -572,9 +488,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                                 }
                             });
-
-                            /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
-                            linLayout.addView(viewUserInteraction);
 
 
                         }
@@ -775,8 +688,9 @@ public class ProfileActivity extends AppCompatActivity {
                 dataJsonObj = new JSONObject(strJson);
                 resultCode = Integer.parseInt(dataJsonObj.getString(ADD_CONTACT));
 
-                Button btnAddIntoContacts = (Button) viewUserInteraction
-                        .findViewById(R.id.btnAddToContacts);
+
+                FloatingActionButton btnAddIntoContacts = (FloatingActionButton)
+                        findViewById(R.id.btnAddIntoContacts);
 
                 switch (resultCode) {
 
@@ -785,7 +699,7 @@ public class ProfileActivity extends AppCompatActivity {
                      *                          авторизованного на данном устройвстве.
                      **/
                     case 401:
-                        btnAddIntoContacts.setText(R.string.user_add_into_contacts);
+                        btnAddIntoContacts.setImageResource(R.mipmap.ic_account_multiple_plus);
                         break;
 
                     /**
@@ -793,7 +707,7 @@ public class ProfileActivity extends AppCompatActivity {
                      *                          авторизованного на данном устройвстве.
                      **/
                     case 400:
-                        btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
+                        btnAddIntoContacts.setImageResource(R.mipmap.ic_account_multiple_minus);
                         break;
                 }
             } catch (JSONException e) {
