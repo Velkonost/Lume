@@ -3,19 +3,22 @@ package ru.velkonost.lume;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -61,7 +64,6 @@ import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
 import static ru.velkonost.lume.ImageManager.fetchImage;
 import static ru.velkonost.lume.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Initializations.initSearch;
 import static ru.velkonost.lume.Initializations.initToolbar;
 import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
 import static ru.velkonost.lume.PhoneDataStorage.deleteText;
@@ -186,6 +188,9 @@ public class ProfileActivity extends AppCompatActivity {
     private MaterialSearchView searchView;
 
 
+    CollapsingToolbarLayout collapsingToolbar;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -218,8 +223,8 @@ public class ProfileActivity extends AppCompatActivity {
          * {@link MaterialSearchView}
          * {@link Initializations#initSearch(Activity, MaterialSearchView)}
          **/
-        searchView = (MaterialSearchView) findViewById(R.id.search_view);
-        initSearch(this, searchView);
+//        searchView = (MaterialSearchView) findViewById(R.id.search_view);
+//        initSearch(this, searchView);
 
         /**
          * Получение id пользователя.
@@ -264,6 +269,20 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                R.drawable.noavatar);
+
+        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                int mutedColor = getResources().getColor(R.color.colorPrimary);
+                collapsingToolbar.setContentScrimColor(mutedColor);
+            }
+        });
+
+        collapsingToolbar.setTitle("TEST");
         /** Обращаемся к серверу */
         mGetData.execute();
     }
@@ -305,6 +324,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     /** Переход на страницу напоминаний, созданных данным пользователем */
                     case R.id.navigationReminder:
+                        nextIntent = new Intent(ProfileActivity.this, TestActivity.class);
                         break;
 
                     /** Переход на страницу сообщений данного пользователя */
@@ -351,31 +371,31 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu, menu);
-
-        /**
-         * Устанавливает меню для строки поиска.
-         */
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
-
-        /**
-         * Вешает слушателя для открытия строки по нажатию.
-         */
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown () {
-                searchView.setVisibility(View.VISIBLE);
-            }
-            @Override
-            public void onSearchViewClosed() {
-            }
-        });
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//
+//        getMenuInflater().inflate(R.menu.menu, menu);
+//
+//        /**
+//         * Устанавливает меню для строки поиска.
+//         */
+//        MenuItem item = menu.findItem(R.id.action_search);
+//        searchView.setMenuItem(item);
+//
+//        /**
+//         * Вешает слушателя для открытия строки по нажатию.
+//         */
+//        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+//            @Override
+//            public void onSearchViewShown () {
+//                searchView.setVisibility(View.VISIBLE);
+//            }
+//            @Override
+//            public void onSearchViewClosed() {
+//            }
+//        });
+//        return true;
+//    }
 
     /**
      * При нажатии на кнопку "Назад" поиск закрывется.
