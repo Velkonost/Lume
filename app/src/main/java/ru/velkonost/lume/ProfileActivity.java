@@ -7,8 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,11 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,7 +36,6 @@ import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BIRTHDAY;
 import static ru.velkonost.lume.Constants.CITY;
-import static ru.velkonost.lume.Constants.CONTACT;
 import static ru.velkonost.lume.Constants.COUNTRY;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.GET_DATA;
@@ -245,29 +242,29 @@ public class ProfileActivity extends AppCompatActivity {
          *  Установка цветной палитры,
          *  цвета которой будут заменять друг друга в зависимости от прогресса.
          * */
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorBlue, R.color.colorGreen,
-                R.color.colorYellow, R.color.colorRed);
+//        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
+//        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorBlue, R.color.colorGreen,
+//                R.color.colorYellow, R.color.colorRed);
 
-        /** Ставит обработчик событий */
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-
-            public void onRefresh() {
-                /** Выполнение происходит с задержкой в 2.5 секунды */
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        /**
-                         * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
-                         * */
-                        changeActivityCompat(ProfileActivity.this);
-                    }
-                }, 2500);
-            }
-        });
+//        /** Ставит обработчик событий */
+//        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//
+//            public void onRefresh() {
+//                /** Выполнение происходит с задержкой в 2.5 секунды */
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                        /**
+//                         * Обновляет страницу.
+//                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+//                         * */
+//                        changeActivityCompat(ProfileActivity.this);
+//                    }
+//                }, 2500);
+//            }
+//        });
 
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
@@ -281,8 +278,6 @@ public class ProfileActivity extends AppCompatActivity {
                 collapsingToolbar.setContentScrimColor(mutedColor);
             }
         });
-
-        collapsingToolbar.setTitle("TEST");
         /** Обращаемся к серверу */
         mGetData.execute();
     }
@@ -397,16 +392,16 @@ public class ProfileActivity extends AppCompatActivity {
 //        return true;
 //    }
 
-    /**
-     * При нажатии на кнопку "Назад" поиск закрывется.
-     */
-    @Override
-    public void onBackPressed() {
-        if (searchView.isSearchOpen())
-            searchView.closeSearch();
-        else
-            super.onBackPressed();
-    }
+//    /**
+//     * При нажатии на кнопку "Назад" поиск закрывется.
+//     */
+//    @Override
+//    public void onBackPressed() {
+//        if (searchView.isSearchOpen())
+//            searchView.closeSearch();
+//        else
+//            super.onBackPressed();
+//    }
 
     /**
      * Форматирование даты из вида, полученного с сервер - YYYY-MM-DD
@@ -517,18 +512,18 @@ public class ProfileActivity extends AppCompatActivity {
 
                         viewAvatar = ltInflater.inflate(R.layout.item_profile_photo, linLayout, false);
 
-                        userAvatar = (ImageView) viewAvatar.findViewById(R.id.imageAvatar);
-                        userName = (TextView) viewAvatar.findViewById(R.id.userName);
+                        userAvatar = (ImageView) findViewById(R.id.imageAvatar);
+//                        userName = (TextView) viewAvatar.findViewById(R.id.userName);
 
                         /** Картинка, обозначающая, что пользователь не указал свое имя и фамилию */
                         ImageView userWithoutName = (ImageView) viewAvatar.findViewById(R.id.userWithoutName);
 
                         /** Задает параметры для аватара пользователя */
-                        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(screenW / 2,
-                                screenH / 2);
-                        param.gravity = Gravity.CENTER;
-                        param.setMargins(0, 0, 0, 0);
-                        userAvatar.setLayoutParams(param);
+//                        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(screenW / 2,
+//                                screenH / 2);
+//                        param.gravity = Gravity.CENTER;
+//                        param.setMargins(0, 0, 0, 0);
+//                        userAvatar.setLayoutParams(param);
 
                         /**
                          * Установка имени владельца открытого профиля.
@@ -541,7 +536,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 : dataJsonObj.getString(SURNAME).length() == 0
                                 ? dataJsonObj.getString(LOGIN)
                                 : dataJsonObj.getString(NAME) + " " + dataJsonObj.getString(SURNAME);
-                        userName.setText(sUserName);
+                        collapsingToolbar.setTitle(sUserName);
 
                         if (sUserName.equals(dataJsonObj.getString(LOGIN)))
                             userWithoutName.setImageResource(R.drawable.withoutname);
@@ -561,40 +556,45 @@ public class ProfileActivity extends AppCompatActivity {
                          *      то добавляем модуль взаимодействия.
                          **/
                         if (!profileId.equals(userId)) {
-                            viewUserInteraction = ltInflater
-                                    .inflate(R.layout.item_profile_interaction, linLayout, false);
+                            FloatingActionButton fab1 = (FloatingActionButton) findViewById(R.id.fab);
+                            FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
 
-                            /** Кнопка добавления/удаления владельца профиля из контактов авторизованного пользоавателя */
-                            Button btnAddIntoContacts = (Button) viewUserInteraction
-                                    .findViewById(R.id.btnAddToContacts);
-
-                            /** Кнопка открытия диалога между авторизованным пользователем и владельцем открытого профиля */
-                            Button btnSendMessages = (Button) viewUserInteraction
-                                    .findViewById(R.id.btnSendMessage);
-
-                            /**
-                             * Проверка, добавил ли {@link ProfileActivity#userId}
-                             *         в контакты {@link ProfileActivity#profileId}
-                             * */
-                            isContact = dataJsonObj.getBoolean(CONTACT);
-                            if (isContact)
-                                btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
-
-
-                            /** Создает обработчик событий */
-                            btnAddIntoContacts.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-
-                                    /** Открытие нового потока */
-                                    mAddContact = new AddContact();
-                                    mAddContact.execute();
-
-                                }
-                            });
-
-                            /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
-                            linLayout.addView(viewUserInteraction);
+                            fab1.setVisibility(View.VISIBLE);
+                            fab2.setVisibility(View.VISIBLE);
+//                            viewUserInteraction = ltInflater
+//                                    .inflate(R.layout.item_profile_interaction, linLayout, false);
+//
+//                            /** Кнопка добавления/удаления владельца профиля из контактов авторизованного пользоавателя */
+//                            Button btnAddIntoContacts = (Button) viewUserInteraction
+//                                    .findViewById(R.id.btnAddToContacts);
+//
+//                            /** Кнопка открытия диалога между авторизованным пользователем и владельцем открытого профиля */
+//                            Button btnSendMessages = (Button) viewUserInteraction
+//                                    .findViewById(R.id.btnSendMessage);
+//
+//                            /**
+//                             * Проверка, добавил ли {@link ProfileActivity#userId}
+//                             *         в контакты {@link ProfileActivity#profileId}
+//                             * */
+//                            isContact = dataJsonObj.getBoolean(CONTACT);
+//                            if (isContact)
+//                                btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
+//
+//
+//                            /** Создает обработчик событий */
+//                            btnAddIntoContacts.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//
+//                                    /** Открытие нового потока */
+//                                    mAddContact = new AddContact();
+//                                    mAddContact.execute();
+//
+//                                }
+//                            });
+//
+//                            /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
+//                            linLayout.addView(viewUserInteraction);
 
 
                         }
@@ -795,9 +795,10 @@ public class ProfileActivity extends AppCompatActivity {
                 dataJsonObj = new JSONObject(strJson);
                 resultCode = Integer.parseInt(dataJsonObj.getString(ADD_CONTACT));
 
-                Button btnAddIntoContacts = (Button) viewUserInteraction
-                        .findViewById(R.id.btnAddToContacts);
+//                Button btnAddIntoContacts = (Button) viewUserInteraction
+//                        .findViewById(R.id.btnAddToContacts);
 
+                FloatingActionButton btnAddIntoContacts = (FloatingActionButton) findViewById(R.id.fab);
                 switch (resultCode) {
 
                     /**
@@ -805,7 +806,8 @@ public class ProfileActivity extends AppCompatActivity {
                      *                          авторизованного на данном устройвстве.
                      **/
                     case 401:
-                        btnAddIntoContacts.setText(R.string.user_add_into_contacts);
+//                        btnAddIntoContacts.setText(R.string.user_add_into_contacts);
+                        btnAddIntoContacts.setImageResource(R.mipmap.ic_account_multiple_plus);
                         break;
 
                     /**
@@ -813,7 +815,8 @@ public class ProfileActivity extends AppCompatActivity {
                      *                          авторизованного на данном устройвстве.
                      **/
                     case 400:
-                        btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
+//                        btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
+                        btnAddIntoContacts.setImageResource(R.mipmap.ic_account_multiple_minus);
                         break;
                 }
             } catch (JSONException e) {
