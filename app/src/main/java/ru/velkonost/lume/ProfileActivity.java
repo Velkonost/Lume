@@ -65,6 +65,7 @@ import static ru.velkonost.lume.Initializations.initToolbar;
 import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
 import static ru.velkonost.lume.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.R.id.userWithoutName;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
@@ -464,13 +465,13 @@ public class ProfileActivity extends AppCompatActivity {
                                 + SERVER_AVATAR + SLASH + dataJsonObj.getString(AVATAR)
                                 + SLASH + profileId + PNG;
 
-                        viewAvatar = ltInflater.inflate(R.layout.item_profile_photo, linLayout, false);
+//                        viewAvatar = ltInflater.inflate(R.layout.item_profile_photo, linLayout, false);
 
                         userAvatar = (ImageView) findViewById(R.id.imageAvatar);
 //                        userName = (TextView) viewAvatar.findViewById(R.id.userName);
 
                         /** Картинка, обозначающая, что пользователь не указал свое имя и фамилию */
-                        ImageView userWithoutName = (ImageView) viewAvatar.findViewById(R.id.userWithoutName);
+//                        ImageView userWithoutName = (ImageView) viewAvatar.findViewById(userWithoutName);
 
                         /** Задает параметры для аватара пользователя */
 //                        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(screenW / 2,
@@ -492,11 +493,11 @@ public class ProfileActivity extends AppCompatActivity {
                                 : dataJsonObj.getString(NAME) + " " + dataJsonObj.getString(SURNAME);
                         collapsingToolbar.setTitle(sUserName);
 
-                        if (sUserName.equals(dataJsonObj.getString(LOGIN)))
-                            userWithoutName.setImageResource(R.drawable.withoutname);
+//                        if (sUserName.equals(dataJsonObj.getString(LOGIN)))
+//                            userWithoutName.setImageResource(R.drawable.withoutname);
 
-                        /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
-                        linLayout.addView(viewAvatar);
+//                        /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
+//                        linLayout.addView(viewAvatar);
 
                         /**
                          * Загрузка аватара пользователя
