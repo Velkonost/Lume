@@ -24,14 +24,17 @@
                 app:expandedTitleMarginBottom="32dp"
                 app:expandedTitleMarginEnd="64dp"
                 app:expandedTitleMarginStart="48dp"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
-            <ImageView
-                android:id="@+id/imageAvatar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:fitsSystemWindows="true"
-                app:layout_collapseMode="parallax"/>
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded.Shadow">
+                <ImageView
+                    android:id="@+id/imageAvatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:fitsSystemWindows="true"
+                    app:layout_collapseMode="parallax"/>
+
+
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"

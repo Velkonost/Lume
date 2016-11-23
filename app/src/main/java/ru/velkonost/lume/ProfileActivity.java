@@ -216,14 +216,6 @@ public class ProfileActivity extends AppCompatActivity {
         initNavigationView(); /** Инициализация */
 
         /**
-         * Инициализируем строку поиска.
-         * {@link MaterialSearchView}
-         * {@link Initializations#initSearch(Activity, MaterialSearchView)}
-         **/
-//        searchView = (MaterialSearchView) findViewById(R.id.search_view);
-//        initSearch(this, searchView);
-
-        /**
          * Получение id пользователя.
          * {@link PhoneDataStorage#loadText(Context, String)}
          **/
@@ -319,7 +311,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                     /** Переход на страницу напоминаний, созданных данным пользователем */
                     case R.id.navigationReminder:
-                        nextIntent = new Intent(ProfileActivity.this, TestActivity.class);
                         break;
 
                     /** Переход на страницу сообщений данного пользователя */
@@ -365,43 +356,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//
-//        getMenuInflater().inflate(R.menu.menu, menu);
-//
-//        /**
-//         * Устанавливает меню для строки поиска.
-//         */
-//        MenuItem item = menu.findItem(R.id.action_search);
-//        searchView.setMenuItem(item);
-//
-//        /**
-//         * Вешает слушателя для открытия строки по нажатию.
-//         */
-//        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-//            @Override
-//            public void onSearchViewShown () {
-//                searchView.setVisibility(View.VISIBLE);
-//            }
-//            @Override
-//            public void onSearchViewClosed() {
-//            }
-//        });
-//        return true;
-//    }
-
-//    /**
-//     * При нажатии на кнопку "Назад" поиск закрывется.
-//     */
-//    @Override
-//    public void onBackPressed() {
-//        if (searchView.isSearchOpen())
-//            searchView.closeSearch();
-//        else
-//            super.onBackPressed();
-//    }
 
     /**
      * Форматирование даты из вида, полученного с сервер - YYYY-MM-DD
