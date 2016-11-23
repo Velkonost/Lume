@@ -64,14 +64,14 @@
             </LinearLayout>
             </android.support.v4.widget.NestedScrollView>
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
+            android:id="@+id/btnSendMessage"
             app:layout_anchor="@+id/appbarlayout"
             app:layout_anchorGravity="bottom|end"
             style="@style/FabStyle"
             android:src="@mipmap/ic_email_outline"
             android:visibility="invisible"/>
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab2"
+            android:id="@+id/btnAddIntoContacts"
             app:layout_anchor="@+id/appbarlayout"
             android:layout_margin="60dp"
             app:layout_anchorGravity="bottom|end"

@@ -499,11 +499,11 @@ public class ProfileActivity extends AppCompatActivity {
                          *      то добавляем модуль взаимодействия.
                          **/
                         if (!profileId.equals(userId)) {
-                            FloatingActionButton fab1 = (FloatingActionButton) findViewById(R.id.fab);
-                            FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
+                            FloatingActionButton btnAddIntoContacts = (FloatingActionButton) findViewById(R.id.btnAddIntoContacts);
+                            FloatingActionButton btnSendMessage = (FloatingActionButton) findViewById(R.id.btnSendMessage);
 
-                            fab1.setVisibility(View.VISIBLE);
-                            fab2.setVisibility(View.VISIBLE);
+                            btnAddIntoContacts.setVisibility(View.VISIBLE);
+                            btnSendMessage.setVisibility(View.VISIBLE);
 //                            viewUserInteraction = ltInflater
 //                                    .inflate(R.layout.item_profile_interaction, linLayout, false);
 //
@@ -521,7 +521,7 @@ public class ProfileActivity extends AppCompatActivity {
                              * */
                             isContact = dataJsonObj.getBoolean(CONTACT);
                             if (isContact)
-                                btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
+                                btnAddIntoContacts.setImageResource(R.mipmap.ic_account_multiple_minus);
 
 
                             /** Создает обработчик событий */
@@ -741,7 +741,7 @@ public class ProfileActivity extends AppCompatActivity {
 //                Button btnAddIntoContacts = (Button) viewUserInteraction
 //                        .findViewById(R.id.btnAddToContacts);
 
-                FloatingActionButton btnAddIntoContacts = (FloatingActionButton) findViewById(R.id.fab);
+                FloatingActionButton btnAddIntoContacts = (FloatingActionButton) findViewById(R.id.btnAddIntoContacts);
                 switch (resultCode) {
 
                     /**
