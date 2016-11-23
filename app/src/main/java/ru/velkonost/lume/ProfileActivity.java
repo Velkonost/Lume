@@ -36,6 +36,7 @@ import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BIRTHDAY;
 import static ru.velkonost.lume.Constants.CITY;
+import static ru.velkonost.lume.Constants.CONTACT;
 import static ru.velkonost.lume.Constants.COUNTRY;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.GET_DATA;
@@ -465,20 +466,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 + SERVER_AVATAR + SLASH + dataJsonObj.getString(AVATAR)
                                 + SLASH + profileId + PNG;
 
-//                        viewAvatar = ltInflater.inflate(R.layout.item_profile_photo, linLayout, false);
-
                         userAvatar = (ImageView) findViewById(R.id.imageAvatar);
-//                        userName = (TextView) viewAvatar.findViewById(R.id.userName);
-
-                        /** Картинка, обозначающая, что пользователь не указал свое имя и фамилию */
-//                        ImageView userWithoutName = (ImageView) viewAvatar.findViewById(userWithoutName);
-
-                        /** Задает параметры для аватара пользователя */
-//                        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(screenW / 2,
-//                                screenH / 2);
-//                        param.gravity = Gravity.CENTER;
-//                        param.setMargins(0, 0, 0, 0);
-//                        userAvatar.setLayoutParams(param);
 
                         /**
                          * Установка имени владельца открытого профиля.
@@ -527,26 +515,26 @@ public class ProfileActivity extends AppCompatActivity {
 //                            Button btnSendMessages = (Button) viewUserInteraction
 //                                    .findViewById(R.id.btnSendMessage);
 //
-//                            /**
-//                             * Проверка, добавил ли {@link ProfileActivity#userId}
-//                             *         в контакты {@link ProfileActivity#profileId}
-//                             * */
-//                            isContact = dataJsonObj.getBoolean(CONTACT);
-//                            if (isContact)
-//                                btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
-//
-//
-//                            /** Создает обработчик событий */
-//                            btnAddIntoContacts.setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View view) {
-//
-//                                    /** Открытие нового потока */
-//                                    mAddContact = new AddContact();
-//                                    mAddContact.execute();
-//
-//                                }
-//                            });
+                            /**
+                             * Проверка, добавил ли {@link ProfileActivity#userId}
+                             *         в контакты {@link ProfileActivity#profileId}
+                             * */
+                            isContact = dataJsonObj.getBoolean(CONTACT);
+                            if (isContact)
+                                btnAddIntoContacts.setText(R.string.user_remove_from_contacts);
+
+
+                            /** Создает обработчик событий */
+                            btnAddIntoContacts.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                    /** Открытие нового потока */
+                                    mAddContact = new AddContact();
+                                    mAddContact.execute();
+
+                                }
+                            });
 //
 //                            /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
 //                            linLayout.addView(viewUserInteraction);
