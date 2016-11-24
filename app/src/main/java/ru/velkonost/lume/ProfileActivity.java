@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import static ru.velkonost.lume.Constants.ADD_CONTACT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
@@ -119,7 +121,7 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * Свойство - идентификатор пользователя, которому принадлежит открытый профиль.
      * */
-    private String profileId;
+    private Serializable profileId;
 
     /**
      * Свойство - состояние между
@@ -187,15 +189,22 @@ public class ProfileActivity extends AppCompatActivity {
          **/
         userId = loadText(ProfileActivity.this, ID);
 
+        Intent intent = getIntent();
+
         /**
          * Проверка:
          * Принадлежит открытый профиль пользователю,
          *      авторизованному на данном устройстве или нет?
          * */
-        profileId = loadText(ProfileActivity.this, USER_ID).length() != 0
-                ? loadText(ProfileActivity.this, USER_ID)
+//        profileId = loadText(ProfileActivity.this, USER_ID).length() != 0
+//                ? loadText(ProfileActivity.this, USER_ID)
+//                : userId;
+
+        profileId = intent.getIntExtra(ID, 0) != 0
+                ? intent.getIntExtra(ID, 0)
                 : userId;
 
+        Log.i("PID", String.valueOf(profileId));
         /**
          *  Установка цветной палитры,
          *  цвета которой будут заменять друг друга в зависимости от прогресса.

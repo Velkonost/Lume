@@ -46,7 +46,7 @@
     <string name="user_remove_from_contacts">Удалить из контактов</string>
     <string name="user_send_message">Отправить сообщение</string>
 
-    <string name="search_title">Поиск</string>
+    <string name="search_title">Поиск новых контактов...</string>
 
 
 </resources>

@@ -38,26 +38,14 @@
                     android:hint="@string/search_title"/>
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewContacts"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-        <!--<ScrollView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_marginTop="60dp"-->
-            <!--android:layout_marginBottom="10dp"-->
-            <!--&gt;-->
-            <!--<LinearLayout-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:orientation="vertical"-->
-                <!--android:id="@+id/contactsContainer">-->
-            <!--</LinearLayout>-->
-        <!--</ScrollView>-->
-
+            android:id="@+id/llcontact"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:orientation="vertical"
+            app:layout_anchor="@id/appbarlayout"
+            app:layout_anchorGravity="bottom"/>
 
 
     </android.support.design.widget.CoordinatorLayout>

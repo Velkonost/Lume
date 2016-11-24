@@ -1,6 +1,7 @@
 package ru.velkonost.lume.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,8 +16,10 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import java.util.List;
 
 import ru.velkonost.lume.Contact;
+import ru.velkonost.lume.ProfileActivity;
 import ru.velkonost.lume.R;
 
+import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.PNG;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
@@ -69,8 +72,20 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 + SLASH + item.getId() + PNG;
 
         fetchImage(avatarURL, holder.userAvatar);
-
         holder.mRelativeLayout.setId(Integer.parseInt(item.getId()));
+
+        holder.mRelativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ProfileActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(ID, view.getId());
+                context.startActivity(intent);
+
+            }
+        });
+
+
     }
 
     @NonNull
@@ -89,6 +104,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     }
 
     class ContactViewHolder extends RecyclerView.ViewHolder {
+
         RelativeLayout mRelativeLayout;
         String id;
         TextView userName;
@@ -112,10 +128,12 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
 //        @Override
 //        public void onClick(View v) {
+//            Log.i("PUCK", id);
 //            Intent intent = new Intent(context, ProfileActivity.class);
 //            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //            intent.putExtra(ID, id);
 //            context.startActivity(intent);
+//
 //        }
     }
 }
