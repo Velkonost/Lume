@@ -58,13 +58,7 @@
             <!--</LinearLayout>-->
         <!--</ScrollView>-->
 
-        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-            android:id="@+id/recycleView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:fastScrollThumbColor="@color/colorPrimaryDark"
-            app:fastScrollPopupBgColor="@color/colorPrimary"
-            app:fastScrollPopupTextColor="@android:color/white"/>
+
 
     </android.support.design.widget.CoordinatorLayout>
 

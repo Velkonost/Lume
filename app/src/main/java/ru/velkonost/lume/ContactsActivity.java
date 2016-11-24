@@ -7,10 +7,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -111,7 +114,7 @@ public class ContactsActivity extends AppCompatActivity {
      * {@link MaterialSearchView}
      */
     private MaterialSearchView searchView;
-    private ArrayList mContacts;
+    private List<Contact> mContacts;
     private ContactsFragment mContactsFragment;
 
     @Override
@@ -148,6 +151,8 @@ public class ContactsActivity extends AppCompatActivity {
 
 //        linLayout = (LinearLayout) findViewById(R.id.contactsContainer);
 //        ltInflater = getLayoutInflater();
+
+        mContacts = new ArrayList<>();
 
         mGetData.execute();
     }
@@ -411,7 +416,6 @@ public class ContactsActivity extends AppCompatActivity {
                      */
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
 
-
                     mContacts.add(new Contact(userInfo.getString(ID), userInfo.getString(NAME),
                             userInfo.getString(SURNAME), userInfo.getString(LOGIN),
                             Integer.parseInt(userInfo.getString(AVATAR))));
@@ -469,7 +473,12 @@ public class ContactsActivity extends AppCompatActivity {
 //                    /** Добавление элемента в контейнер {@link SearchActivity#linLayout} */
 //                    linLayout.addView(userView);
                 }
-                mContactsFragment.setContacts(mContacts);
+//                mContactsFragment.setContacts(mContacts);
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                mContactsFragment =  ContactsFragment.getInstance(ContactsActivity.this, mContacts);
+                ft.replace(R.id.activity_contact, mContactsFragment);
+                ft.commit();
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

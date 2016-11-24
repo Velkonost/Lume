@@ -1,10 +1,11 @@
 package ru.velkonost.lume.fragments;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,20 +19,20 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.ContactListAdapter;
 
 public class ContactsFragment extends Fragment {
-    private static final int LAYOUT = R.layout.activity_contact;
+    private static final int LAYOUT = R.layout.fragment_contact;
 
     private List<Contact> mContacts;
     private ContactListAdapter adapter;
     protected View view;
     protected Context context;
 
-    public static ContactsFragment getInstance(Context context, List<Contact> favourite) {
+    public static ContactsFragment getInstance(Context context, List<Contact> contacts) {
         Bundle args = new Bundle();
         ContactsFragment fragment = new ContactsFragment();
 
         fragment.setArguments(args);
         fragment.setContext(context);
-        fragment.setContacts(favourite);
+        fragment.setContacts(contacts);
 //        fragment.setTitle(context.getString(R.string.best));
 //        fragment.setAnnounce(context.getString(R.string.best));
 //        fragment.setBirth(context.getString(R.string.best));
@@ -49,7 +50,7 @@ public class ContactsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         adapter = new ContactListAdapter(getActivity(), mContacts);
         recyclerView.setAdapter(adapter);
-
+        Log.i("SSS", String.valueOf(adapter));
         return view;
     }
 
