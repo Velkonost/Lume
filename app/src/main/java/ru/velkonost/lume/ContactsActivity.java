@@ -418,61 +418,8 @@ public class ContactsActivity extends AppCompatActivity {
                     mContacts.add(new Contact(userInfo.getString(ID), userInfo.getString(NAME),
                             userInfo.getString(SURNAME), userInfo.getString(LOGIN),
                             Integer.parseInt(userInfo.getString(AVATAR))));
-//
-//                    View userView = ltInflater.inflate(R.layout.item_contact_block, linLayout, false);
-//                    View rl = userView.findViewById(R.id.relativeLayoutContact);
-//
-//                    /**
-//                     * Установление идентификатора пользователя,
-//                     * чтобы при нажатии на элемент проще было понять, профиль какого пользователя необходимо открыть.
-//                     */
-//                    rl.setId(Integer.parseInt(userInfo.getString(ID)));
-//
-//                    ImageView userAvatar = (ImageView) userView.findViewById(R.id.userAvatar); /** Аватар пользователя */
-//
-//                    /** Иконка, указывающая, что пользователь еще не указал свое польное имя */
-//                    ImageView userWithoutName = (ImageView) userView.findViewById(R.id.userWithoutName);
-//
-//                    /** Полное имя пользователя, иначе его логин */
-//                    TextView userName = (TextView) userView.findViewById(R.id.userName);
-//                    TextView userLogin = (TextView) userView.findViewById(R.id.userLogin);
-//
-//                    /**
-//                     * Установка имени владельца открытого профиля.
-//                     *
-//                     * Если имя и фамилия не найдены,
-//                     * то устанавливается логин + показывается иконка {@link userWithoutName}
-//                     **/
-//                    String sUserName = userInfo.getString(NAME).length() == 0
-//                            ? userInfo.getString(LOGIN)
-//                            : userInfo.getString(SURNAME).length() == 0
-//                            ? userInfo.getString(LOGIN)
-//                            : userInfo.getString(NAME) + " " +  userInfo.getString(SURNAME);
-//
-//                    if (sUserName.equals(userInfo.getString(LOGIN)))
-//                        userWithoutName.setImageResource(R.drawable.withoutname);
-//                    else
-//                        userLogin.setText(userInfo.getString(LOGIN));
-//
-//                    userName.setText(sUserName);
-
-//                    /** Формирование адреса, по которому лежит аватар пользователя */
-//                    String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
-//                            + SERVER_AVATAR + SLASH + userInfo.getString(AVATAR)
-//                            + SLASH + userInfo.getString(ID) + PNG;
-//
-//                    /**
-//                     *  Загрузка и установка аватара.
-//                     *  {@link ImageManager#fetchImage(String, ImageView)}
-//                     * */
-//                    fetchImage(avatarURL, userAvatar);
-//                    Bitmap bitmap = ((BitmapDrawable)userAvatar.getDrawable()).getBitmap();
-//                    userAvatar.setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
-//
-//                    /** Добавление элемента в контейнер {@link SearchActivity#linLayout} */
-//                    linLayout.addView(userView);
                 }
-//                mContactsFragment.setContacts(mContacts);
+
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 mContactsFragment =  ContactsFragment.getInstance(ContactsActivity.this, mContacts);
                 ft.add(R.id.llcontact, mContactsFragment);

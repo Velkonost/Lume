@@ -5,12 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.List;
 
@@ -33,10 +31,6 @@ public class ContactsFragment extends Fragment {
         fragment.setArguments(args);
         fragment.setContext(context);
         fragment.setContacts(contacts);
-//        fragment.setTitle(context.getString(R.string.best));
-//        fragment.setAnnounce(context.getString(R.string.best));
-//        fragment.setBirth(context.getString(R.string.best));
-//        fragment.setDeath(context.getString(R.string.best));
 
         return fragment;
     }
@@ -46,15 +40,14 @@ public class ContactsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
 
-        FastScrollRecyclerView recyclerView = (FastScrollRecyclerView) view.findViewById(R.id.recycleView);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycleViewContact);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         adapter = new ContactListAdapter(getActivity(), mContacts);
         recyclerView.setAdapter(adapter);
-        Log.i("SSS", String.valueOf(adapter));
         return view;
     }
 
-    public void refreshFavourite (List<Contact> mContacts) {
+    public void refreshContacts (List<Contact> mContacts) {
         adapter.setData(mContacts);
         adapter.notifyDataSetChanged();
     }
