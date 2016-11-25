@@ -128,7 +128,7 @@ public class ContactsActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(ContactsActivity.this, toolbar, R.string.app_name); /** Инициализация */
+        initToolbar(ContactsActivity.this, toolbar, R.string.menu_item_contacts); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
         /**

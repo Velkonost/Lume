@@ -135,8 +135,16 @@ public class SearchActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
+        /**
+         * Получение данных, которые вводил пользователь.
+         * {@link PhoneDataStorage#loadText(Context, String)}
+         **/
+        Intent intent = getIntent();
+        whatSearch = intent.getStringExtra(SEARCH);
+        whatSearch = getResources().getString(R.string.search) + " " + whatSearch;
+
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(SearchActivity.this, toolbar, R.string.app_name); /** Инициализация */
+        initToolbar(SearchActivity.this, toolbar, whatSearch); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
         /**
@@ -147,14 +155,6 @@ public class SearchActivity extends AppCompatActivity {
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
         initSearch(this, searchView);
 
-        /**
-         * Получение данных, которые вводил пользователь.
-         * {@link PhoneDataStorage#loadText(Context, String)}
-         **/
-        whatSearch = loadText(SearchActivity.this, SEARCH);
-
-//        TextView textView = (TextView) findViewById(R.id.toSearch);
-//        textView.setText(whatSearch);
         mSearchContacts = new ArrayList<>();
 
         mGetData.execute();
@@ -415,5 +415,4 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
     }
-
 }
