@@ -4,30 +4,15 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginTop="5dp"
-              android:layout_marginBottom="5dp"
-              android:layout_marginLeft="12dp"
-              android:layout_marginRight="12dp"
               android:id="@+id/item_search_block">
 
-    <android.support.v7.widget.CardView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/cardViewSearch"
-        card:cardElevation="2dp"
-        card:cardUseCompatPadding="true"
-        card:cardBackgroundColor="@color/colorWhite"
-        android:layout_marginRight="5dp"
-        android:layout_marginLeft="5dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:id="@+id/relativeLayoutSearch"
-            android:onClick="openUserProfile">
-
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:id="@+id/relativeLayoutSearch"
+        android:background="@color/colorWhite">
 
             <ImageView
                 android:layout_width="100dp"
@@ -44,6 +29,14 @@
                 android:paddingLeft="10dp"
                 android:layout_alignTop="@+id/userAvatar"
                 android:layout_toEndOf="@+id/userAvatar"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/userLogin"
+                android:textSize="10pt"
+                android:layout_alignTop="@+id/userAvatar"
+                android:layout_toEndOf="@+id/userName"
+                android:layout_marginStart="34dp"/>
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -71,7 +64,11 @@
             </LinearLayout>
 
         </RelativeLayout>
-
-    </android.support.v7.widget.CardView>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorBlack"
+        android:id="@+id/blackLine"
+        android:layout_gravity="bottom"/>
 
 </LinearLayout>

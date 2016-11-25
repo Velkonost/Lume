@@ -1,25 +1,20 @@
-package ru.velkonost.lume;
+package ru.velkonost.lume.Activities;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -32,32 +27,33 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import ru.velkonost.lume.Managers.Initializations;
+import ru.velkonost.lume.Managers.PhoneDataStorage;
+import ru.velkonost.lume.Managers.ValueComparator;
+import ru.velkonost.lume.R;
+import ru.velkonost.lume.descriptions.Contact;
+import ru.velkonost.lume.fragments.ContactsFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
-import static ru.velkonost.lume.Constants.PNG;
-import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
-import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_CONTACTS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
-import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Constants.USER_ID;
-import static ru.velkonost.lume.ImageManager.fetchImage;
-import static ru.velkonost.lume.ImageManager.getCircleMaskedBitmap;
-import static ru.velkonost.lume.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Initializations.initSearch;
-import static ru.velkonost.lume.Initializations.initToolbar;
-import static ru.velkonost.lume.PhoneDataStorage.deleteText;
-import static ru.velkonost.lume.PhoneDataStorage.loadText;
-import static ru.velkonost.lume.PhoneDataStorage.saveText;
+import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.Managers.Initializations.initSearch;
+import static ru.velkonost.lume.Managers.Initializations.initToolbar;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
@@ -104,12 +100,6 @@ public class ContactsActivity extends AppCompatActivity {
     private Map <String, String> contacts;
 
     /**
-     * Условный контейнер, в который помещаются все view-элементы, созданные программно.
-     **/
-    private LinearLayout linLayout;
-    private LayoutInflater ltInflater;
-
-    /**
      * Свойство - экзмепляр класса {@link GetData}
      */
     protected GetData mGetData;
@@ -119,6 +109,9 @@ public class ContactsActivity extends AppCompatActivity {
      * {@link MaterialSearchView}
      */
     private MaterialSearchView searchView;
+
+    private List<Contact> mContacts;
+    ContactsFragment mContactsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +128,7 @@ public class ContactsActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(ContactsActivity.this, toolbar, R.string.app_name); /** Инициализация */
+        initToolbar(ContactsActivity.this, toolbar, R.string.menu_item_contacts); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
         /**
@@ -152,8 +145,7 @@ public class ContactsActivity extends AppCompatActivity {
          **/
         userId = loadText(ContactsActivity.this, ID);
 
-        linLayout = (LinearLayout) findViewById(R.id.contactsContainer);
-        ltInflater = getLayoutInflater();
+        mContacts = new ArrayList<>();
 
         mGetData.execute();
     }
@@ -276,47 +268,6 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
     /**
-     * Обработчик нажатий по view-элементам,
-     * каждый из которых отображает краткую информацию о конкретном пользователе.
-     **/
-    public void openUserProfile(View view) {
-
-        /**
-         * Сохраняет идентификатор пользователя, чей профиль намеревается открыть.
-         **/
-        saveText(ContactsActivity.this, USER_ID, String.valueOf(view.getId()));
-
-        /**
-         * Переход в профиль выбранного пользователя.
-         * {@link Initializations#changeActivityCompat(Activity, Intent)}
-         * */
-        changeActivityCompat(ContactsActivity.this, new Intent(this, ProfileActivity.class));
-    }
-
-
-    /**
-     * Сортирует Map по значению.
-     *
-     * @param <K> Тип ключа.
-     * @param <V> Тип значения.
-     */
-    class ValueComparator<K, V extends Comparable<V>> implements Comparator<K>{
-
-        HashMap<K, V> map = new HashMap<>();
-
-        /** Конструктор */
-        public ValueComparator(HashMap<K, V> map){
-            this.map.putAll(map);
-        }
-
-        /** Сортировка по значению сверху вниз */
-        @Override
-        public int compare(K s1, K s2) {
-            return -map.get(s1).compareTo(map.get(s2));
-        }
-    }
-
-    /**
      * Класс для получения данных о пользователе с сервера.
      **/
     private class GetData extends AsyncTask<Object, Object, String> {
@@ -373,12 +324,13 @@ public class ContactsActivity extends AppCompatActivity {
                 /**
                  * Заполнение Map{@link contacts} для последующей сортировки контактов.
                  *
-                 * По умолчанию, идентификатору контакта соответствует его полное имя.
+                 * По умолчанию идентификатору контакта соответствует его полное имя.
                  *
                  * Если такогого не имеется, то устанавливает взамен логин.
                  **/
                 for (int i = 0; i < ids.size(); i++){
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
+
                     contacts.put(
                             ids.get(i),
                             userInfo.getString(NAME).length() != 0
@@ -416,60 +368,15 @@ public class ContactsActivity extends AppCompatActivity {
                      */
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
 
-
-                    View userView = ltInflater.inflate(R.layout.item_contact_block, linLayout, false);
-                    View rl = userView.findViewById(R.id.relativeLayoutContact);
-
-                    /**
-                     * Установление идентификатора пользователя,
-                     * чтобы при нажатии на элемент проще было понять, профиль какого пользователя необходимо открыть.
-                     */
-                    rl.setId(Integer.parseInt(userInfo.getString(ID)));
-
-                    ImageView userAvatar = (ImageView) userView.findViewById(R.id.userAvatar); /** Аватар пользователя */
-
-                    /** Иконка, указывающая, что пользователь еще не указал свое польное имя */
-                    ImageView userWithoutName = (ImageView) userView.findViewById(R.id.userWithoutName);
-
-                    /** Полное имя пользователя, иначе его логин */
-                    TextView userName = (TextView) userView.findViewById(R.id.userName);
-                    TextView userLogin = (TextView) userView.findViewById(R.id.userLogin);
-
-                    /**
-                     * Установка имени владельца открытого профиля.
-                     *
-                     * Если имя и фамилия не найдены,
-                     * то устанавливается логин + показывается иконка {@link userWithoutName}
-                     **/
-                    String sUserName = userInfo.getString(NAME).length() == 0
-                            ? userInfo.getString(LOGIN)
-                            : userInfo.getString(SURNAME).length() == 0
-                            ? userInfo.getString(LOGIN)
-                            : userInfo.getString(NAME) + " " +  userInfo.getString(SURNAME);
-
-                    if (sUserName.equals(userInfo.getString(LOGIN)))
-                        userWithoutName.setImageResource(R.drawable.withoutname);
-                    else
-                        userLogin.setText(userInfo.getString(LOGIN));
-
-                    userName.setText(sUserName);
-
-                    /** Формирование адреса, по которому лежит аватар пользователя */
-                    String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
-                            + SERVER_AVATAR + SLASH + userInfo.getString(AVATAR)
-                            + SLASH + userInfo.getString(ID) + PNG;
-
-                    /**
-                     *  Загрузка и установка аватара.
-                     *  {@link ImageManager#fetchImage(String, ImageView)}
-                     * */
-                    fetchImage(avatarURL, userAvatar);
-                    Bitmap bitmap = ((BitmapDrawable)userAvatar.getDrawable()).getBitmap();
-                    userAvatar.setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
-
-                    /** Добавление элемента в контейнер {@link SearchActivity#linLayout} */
-                    linLayout.addView(userView);
+                    mContacts.add(new Contact(userInfo.getString(ID), userInfo.getString(NAME),
+                            userInfo.getString(SURNAME), userInfo.getString(LOGIN),
+                            Integer.parseInt(userInfo.getString(AVATAR))));
                 }
+
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                mContactsFragment =  ContactsFragment.getInstance(ContactsActivity.this, mContacts);
+                ft.add(R.id.llcontact, mContactsFragment);
+                ft.commit();
 
             } catch (JSONException e) {
                 e.printStackTrace();

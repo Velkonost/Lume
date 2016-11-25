@@ -1,4 +1,4 @@
-package ru.velkonost.lume;
+package ru.velkonost.lume.Activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,10 +8,14 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 
+import ru.velkonost.lume.Managers.Initializations;
+import ru.velkonost.lume.Managers.PhoneDataStorage;
+import ru.velkonost.lume.R;
+
 import static ru.velkonost.lume.Constants.ID;
-import static ru.velkonost.lume.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
-import static ru.velkonost.lume.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialog;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.net.ServerConnection.hasConnection;
 
 

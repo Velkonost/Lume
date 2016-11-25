@@ -1,6 +1,8 @@
 package ru.velkonost.lume;
 
 
+import ru.velkonost.lume.Managers.PhoneDataStorage;
+
 /**
  * @author Velkonost
  * Класс, предназначенный для хранения основных констант, используемых в коде приложения.
@@ -16,6 +18,7 @@ public class Constants {
     public static final String PASSWORD = "password";
     public static final String EMAIL = "email";
     public static final String ID = "id";
+    public static final String IDS = "ids";
 
     public static final String USER_ID = "user_id";
     public static final String SEND_ID = "send_id";

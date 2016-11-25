@@ -1,4 +1,4 @@
-package ru.velkonost.lume;
+package ru.velkonost.lume.Activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.Serializable;
+
+import ru.velkonost.lume.Managers.ImageManager;
+import ru.velkonost.lume.Managers.Initializations;
+import ru.velkonost.lume.Managers.PhoneDataStorage;
+import ru.velkonost.lume.R;
 
 import static ru.velkonost.lume.Constants.ADD_CONTACT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
@@ -57,13 +64,12 @@ import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
-import static ru.velkonost.lume.ImageManager.fetchImage;
-import static ru.velkonost.lume.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Initializations.initToolbar;
-import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
-import static ru.velkonost.lume.PhoneDataStorage.deleteText;
-import static ru.velkonost.lume.PhoneDataStorage.loadText;
-import static ru.velkonost.lume.R.id.userWithoutName;
+import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
+import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.Managers.Initializations.initToolbar;
+import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialog;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
@@ -119,7 +125,7 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * Свойство - идентификатор пользователя, которому принадлежит открытый профиль.
      * */
-    private String profileId;
+    private Serializable profileId;
 
     /**
      * Свойство - состояние между
@@ -187,15 +193,22 @@ public class ProfileActivity extends AppCompatActivity {
          **/
         userId = loadText(ProfileActivity.this, ID);
 
+        Intent intent = getIntent();
+
         /**
          * Проверка:
          * Принадлежит открытый профиль пользователю,
          *      авторизованному на данном устройстве или нет?
          * */
-        profileId = loadText(ProfileActivity.this, USER_ID).length() != 0
-                ? loadText(ProfileActivity.this, USER_ID)
+//        profileId = loadText(ProfileActivity.this, USER_ID).length() != 0
+//                ? loadText(ProfileActivity.this, USER_ID)
+//                : userId;
+
+        profileId = intent.getIntExtra(ID, 0) != 0
+                ? intent.getIntExtra(ID, 0)
                 : userId;
 
+        Log.i("PID", String.valueOf(profileId));
         /**
          *  Установка цветной палитры,
          *  цвета которой будут заменять друг друга в зависимости от прогресса.

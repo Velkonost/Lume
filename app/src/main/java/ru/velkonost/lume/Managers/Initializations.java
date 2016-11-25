@@ -1,4 +1,4 @@
-package ru.velkonost.lume;
+package ru.velkonost.lume.Managers;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,8 +12,10 @@ import android.view.MenuItem;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import ru.velkonost.lume.Activities.SearchActivity;
+import ru.velkonost.lume.R;
+
 import static ru.velkonost.lume.Constants.SEARCH;
-import static ru.velkonost.lume.PhoneDataStorage.saveText;
 
 public class Initializations {
 
@@ -35,6 +37,21 @@ public class Initializations {
     }
 
     public static void initToolbar(AppCompatActivity activity, Toolbar toolbar, int title) {
+
+        toolbar.setTitle(title);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                return false;
+            }
+        });
+
+        toolbar.inflateMenu(R.menu.menu);
+
+        activity.setSupportActionBar(toolbar);
+    }
+
+    public static void initToolbar(AppCompatActivity activity, Toolbar toolbar, String title) {
 
         toolbar.setTitle(title);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -90,13 +107,20 @@ public class Initializations {
                  * Получение данных, по которым пользователь хочет найти информацию.
                  * Сохранение этих данных в файл на данном устройстве.
                  **/
-                saveText(activity, SEARCH, query);
+//                saveText(activity, SEARCH, query);
 
                 /**
                  * Переход на страницу поиска, где выоводится результат.
                  * {@link SearchActivity}
                  **/
                 nextIntent = new Intent(activity, SearchActivity.class);
+
+                /**
+                 * Получение данных, по которым пользователь хочет найти информацию.
+                 * Сохранение этих данных в файл на данном устройстве.
+                 **/
+                nextIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                nextIntent.putExtra(SEARCH, query);
 
                 /**
                  * Переход на следующую активность.

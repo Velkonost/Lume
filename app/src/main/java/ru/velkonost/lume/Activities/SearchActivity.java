@@ -1,4 +1,4 @@
-package ru.velkonost.lume;
+package ru.velkonost.lume.Activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,17 +7,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -27,34 +24,43 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import ru.velkonost.lume.Managers.Initializations;
+import ru.velkonost.lume.Managers.PhoneDataStorage;
+import ru.velkonost.lume.Managers.ValueComparator;
+import ru.velkonost.lume.R;
+import ru.velkonost.lume.descriptions.SearchContact;
+import ru.velkonost.lume.fragments.SearchFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.CITY;
 import static ru.velkonost.lume.Constants.COUNTRY;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.IDS;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
-import static ru.velkonost.lume.Constants.PNG;
 import static ru.velkonost.lume.Constants.SEARCH;
-import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.STUDY;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
-import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
-import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Constants.URL.SERVER_SEARCH_METHOD;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
-import static ru.velkonost.lume.ImageManager.fetchImage;
-import static ru.velkonost.lume.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Initializations.initSearch;
-import static ru.velkonost.lume.Initializations.initToolbar;
-import static ru.velkonost.lume.PhoneDataStorage.deleteText;
-import static ru.velkonost.lume.PhoneDataStorage.loadText;
-import static ru.velkonost.lume.PhoneDataStorage.saveText;
+import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.Managers.Initializations.initSearch;
+import static ru.velkonost.lume.Managers.Initializations.initToolbar;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.saveText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 
@@ -84,12 +90,6 @@ public class SearchActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
 
     /**
-     * Условный контейнер, в который помещаются все view-элементы, созданные программно.
-     **/
-    private LinearLayout linLayout;
-    private LayoutInflater ltInflater;
-
-    /**
      * Свойство - информация, по которой собирается искать пользователь.
      **/
     private String whatSearch;
@@ -98,6 +98,14 @@ public class SearchActivity extends AppCompatActivity {
      * Идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
      **/
     private ArrayList<String> ids;
+
+    /**
+     * Найденные контакты.
+     *
+     * Ключ - идентификатор пользователя.
+     * Значение - его полное имя или логин.
+     **/
+    private Map<String, String> searchContacts;
 
     /**
      * Свойство - экзмепляр класса {@link GetData}
@@ -110,6 +118,9 @@ public class SearchActivity extends AppCompatActivity {
      */
     private MaterialSearchView searchView;
 
+    private List<SearchContact> mSearchContacts;
+    SearchFragment mSearchFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /** Установка темы по умолчанию */
@@ -120,11 +131,20 @@ public class SearchActivity extends AppCompatActivity {
 
         mGetData = new GetData();
         ids = new ArrayList<>();
+        searchContacts = new HashMap<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
+        /**
+         * Получение данных, которые вводил пользователь.
+         * {@link PhoneDataStorage#loadText(Context, String)}
+         **/
+        Intent intent = getIntent();
+        whatSearch = intent.getStringExtra(SEARCH);
+        whatSearch = getResources().getString(R.string.search) + " " + whatSearch;
+
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(SearchActivity.this, toolbar, R.string.app_name); /** Инициализация */
+        initToolbar(SearchActivity.this, toolbar, whatSearch); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
         /**
@@ -135,17 +155,7 @@ public class SearchActivity extends AppCompatActivity {
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
         initSearch(this, searchView);
 
-        linLayout = (LinearLayout) findViewById(R.id.searchContainer);
-        ltInflater = getLayoutInflater();
-
-        /**
-         * Получение данных, которые вводил пользователь.
-         * {@link PhoneDataStorage#loadText(Context, String)}
-         **/
-        whatSearch = loadText(SearchActivity.this, SEARCH);
-
-        TextView textView = (TextView) findViewById(R.id.toSearch);
-        textView.setText(whatSearch);
+        mSearchContacts = new ArrayList<>();
 
         mGetData.execute();
     }
@@ -331,7 +341,7 @@ public class SearchActivity extends AppCompatActivity {
                 /**
                  * Получение идентификаторов найденных пользователей.
                  */
-                JSONArray idsJSON = dataJsonObj.getJSONArray("ids");
+                JSONArray idsJSON = dataJsonObj.getJSONArray(IDS);
 
                 /**
                  * Исключение возможности пользователя найти свой же профиль.
@@ -340,6 +350,43 @@ public class SearchActivity extends AppCompatActivity {
                     if (!idsJSON.getString(i).equals(loadText(SearchActivity.this, ID)))
                         ids.add(idsJSON.getString(i));
                 }
+
+                /**
+                 * Заполнение Map{@link searchContacts} для последующей сортировки контактов.
+                 *
+                 * По умолчанию идентификатору контакта соответствует его полное имя.
+                 *
+                 * Если такогого не имеется, то устанавливает взамен логин.
+                 **/
+                for (int i = 0; i < ids.size(); i++){
+                    JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
+
+                    searchContacts.put(
+                            ids.get(i),
+                            userInfo.getString(NAME).length() != 0
+                                    ? userInfo.getString(SURNAME).length() != 0
+                                    ? userInfo.getString(NAME) + " " + userInfo.getString(SURNAME)
+                                    : userInfo.getString(LOGIN) : userInfo.getString(LOGIN)
+                    );
+                }
+
+                /** Создание и инициализация Comparator{@link ValueComparator} */
+                Comparator<String> comparator = new ValueComparator<>((HashMap<String, String>) searchContacts);
+
+                /** Помещает отсортированную Map */
+                TreeMap<String, String> sortedContacts = new TreeMap<>(comparator);
+                sortedContacts.putAll(searchContacts);
+
+                /** "Обнуляет" хранилище идентификаторов */
+                ids = new ArrayList<>();
+
+                /** Заполняет хранилище идентификаторов */
+                for (String key : sortedContacts.keySet()) {
+                    ids.add(key);
+                }
+
+                /** "Поворачивает" хранилище идентификаторов */
+                Collections.reverse(ids);
 
                 /**
                  * Составление view-элементов с краткой информацией о пользователях
@@ -351,78 +398,21 @@ public class SearchActivity extends AppCompatActivity {
                      */
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
 
-
-                    View userView = ltInflater.inflate(R.layout.item_search_block, linLayout, false);
-                    View rl = userView.findViewById(R.id.relativeLayoutSearch);
-
-                    /**
-                     * Установление идентификатора пользователя,
-                     * чтобы при нажатии на элемент проще было понять, профиль какого пользователя необходимо открыть.
-                     */
-                    rl.setId(Integer.parseInt(userInfo.getString(ID)));
-
-                    ImageView userAvatar = (ImageView) userView.findViewById(R.id.userAvatar); /** Аватар пользователя */
-
-                    /** Иконка, указывающая, что пользователь еще не указал свое польное имя */
-                    ImageView userWithoutName = (ImageView) userView.findViewById(R.id.userWithoutName);
-
-                    TextView userName = (TextView) userView.findViewById(R.id.userName); /** Полное имя пользователя, иначе его логин */
-                    TextView userPlace = (TextView) userView.findViewById(R.id.livingPlace); /** Место проживания пользователя */
-                    TextView userWork = (TextView) userView.findViewById(R.id.workingPlace); /** Текущее место работы пользователя */
-
-                    /**
-                     * Установка имени владельца открытого профиля.
-                     *
-                     * Если имя и фамилия не найдены,
-                     * то устанавливается логин + показывается иконка {@link userWithoutName}
-                     **/
-                    String sUserName = userInfo.getString(NAME).length() == 0
-                            ? userInfo.getString(LOGIN)
-                            : userInfo.getString(SURNAME).length() == 0
-                            ? userInfo.getString(LOGIN)
-                            : userInfo.getString(NAME) + " " +  userInfo.getString(SURNAME);
-
-                    /**
-                     * Формируется место проживания из имеющихся данных.
-                     **/
-                    String sUserPlace = userInfo.getString(COUNTRY).length() != 0
-                            ? userInfo.getString(CITY).length() != 0
-                            ? userInfo.getString(COUNTRY) + ", " + userInfo.getString(CITY)
-                            : "" : "";
-
-                    /** Формирование текущего места работы пользователя */
-                    String sUserWork = userInfo.getString(WORK).length() != 0
-                            ? userInfo.getString(WORK)
-                            : userInfo.getString(STUDY).length() != 0
-                            ? userInfo.getString(STUDY)
-                            : "";
-
-                    if (sUserName.equals(userInfo.getString(LOGIN)))
-                        userWithoutName.setImageResource(R.drawable.withoutname);
-
-                    userName.setText(sUserName);
-                    userPlace.setText(sUserPlace);
-                    userWork.setText(sUserWork);
-
-                    /** Формирование адреса, по которому лежит аватар пользователя */
-                    String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
-                            + SERVER_AVATAR + SLASH + userInfo.getString(AVATAR)
-                            + SLASH + userInfo.getString(ID) + PNG;
-
-                    /**
-                     *  Загрузка и установка аватара.
-                     *  {@link ImageManager#fetchImage(String, ImageView)}
-                     * */
-                    fetchImage(avatarURL, userAvatar);
-
-                    /** Добавление элемента в контейнер {@link SearchActivity#linLayout} */
-                    linLayout.addView(userView);
+                    mSearchContacts.add(new SearchContact(userInfo.getString(ID), userInfo.getString(NAME),
+                            userInfo.getString(SURNAME), userInfo.getString(LOGIN),
+                            userInfo.getString(CITY), userInfo.getString(COUNTRY),
+                            userInfo.getString(STUDY), userInfo.getString(WORK),
+                            Integer.parseInt(userInfo.getString(AVATAR))));
                 }
+
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                mSearchFragment =  SearchFragment.getInstance(SearchActivity.this, mSearchContacts);
+                ft.add(R.id.llsearch, mSearchFragment);
+                ft.commit();
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     }
-
 }
