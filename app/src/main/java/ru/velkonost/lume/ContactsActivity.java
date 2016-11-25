@@ -12,11 +12,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -33,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import ru.velkonost.lume.descriptions.Contact;
 import ru.velkonost.lume.fragments.ContactsFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;
@@ -98,12 +97,6 @@ public class ContactsActivity extends AppCompatActivity {
     private Map <String, String> contacts;
 
     /**
-     * Условный контейнер, в который помещаются все view-элементы, созданные программно.
-     **/
-    private LinearLayout linLayout;
-    private LayoutInflater ltInflater;
-
-    /**
      * Свойство - экзмепляр класса {@link GetData}
      */
     protected GetData mGetData;
@@ -113,8 +106,9 @@ public class ContactsActivity extends AppCompatActivity {
      * {@link MaterialSearchView}
      */
     private MaterialSearchView searchView;
+
     private List<Contact> mContacts;
-    private ContactsFragment mContactsFragment;
+    ContactsFragment mContactsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

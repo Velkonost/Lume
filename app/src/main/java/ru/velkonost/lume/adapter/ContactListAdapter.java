@@ -15,7 +15,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.List;
 
-import ru.velkonost.lume.Contact;
+import ru.velkonost.lume.descriptions.Contact;
 import ru.velkonost.lume.ProfileActivity;
 import ru.velkonost.lume.R;
 
@@ -91,7 +91,9 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     @NonNull
     @Override
     public String getSectionName(int position) {
-        return String.valueOf(data.get(position).getId().charAt(0));
+        if (data.get(position).getName().length() == 0)
+            return String.valueOf(data.get(position).getLogin().charAt(0));
+        return String.valueOf(data.get(position).getName().charAt(0));
     }
 
     @Override
@@ -115,8 +117,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         ContactViewHolder(View itemView) {
             super(itemView);
 
-//            itemView.setOnClickListener(this);
-
             mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayoutContact);
 
             userName = (TextView) itemView.findViewById(R.id.userName);
@@ -125,15 +125,5 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             userAvatar = (ImageView) itemView.findViewById(R.id.userAvatar);
 
         }
-
-//        @Override
-//        public void onClick(View v) {
-//            Log.i("PUCK", id);
-//            Intent intent = new Intent(context, ProfileActivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            intent.putExtra(ID, id);
-//            context.startActivity(intent);
-//
-//        }
     }
 }

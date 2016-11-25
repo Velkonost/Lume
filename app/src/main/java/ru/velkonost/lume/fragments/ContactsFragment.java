@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
+
 import java.util.List;
 
-import ru.velkonost.lume.Contact;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.ContactListAdapter;
+import ru.velkonost.lume.descriptions.Contact;
 
 public class ContactsFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_contact;
@@ -40,7 +42,7 @@ public class ContactsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycleViewContact);
+        FastScrollRecyclerView recyclerView = (FastScrollRecyclerView) view.findViewById(R.id.recycleViewContact);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         adapter = new ContactListAdapter(getActivity(), mContacts);
         recyclerView.setAdapter(adapter);
