@@ -1,4 +1,4 @@
-package ru.velkonost.lume;
+package ru.velkonost.lume.Activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,28 +26,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.velkonost.lume.descriptions.Contact;
-import ru.velkonost.lume.fragments.ContactsFragment;
+import ru.velkonost.lume.Managers.Initializations;
+import ru.velkonost.lume.Managers.PhoneDataStorage;
+import ru.velkonost.lume.R;
+import ru.velkonost.lume.descriptions.SearchContact;
+import ru.velkonost.lume.fragments.SearchFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;
+import static ru.velkonost.lume.Constants.CITY;
+import static ru.velkonost.lume.Constants.COUNTRY;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.IDS;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.SEARCH;
+import static ru.velkonost.lume.Constants.STUDY;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SEARCH_METHOD;
 import static ru.velkonost.lume.Constants.USER_ID;
-import static ru.velkonost.lume.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Initializations.initSearch;
-import static ru.velkonost.lume.Initializations.initToolbar;
-import static ru.velkonost.lume.PhoneDataStorage.deleteText;
-import static ru.velkonost.lume.PhoneDataStorage.loadText;
-import static ru.velkonost.lume.PhoneDataStorage.saveText;
+import static ru.velkonost.lume.Constants.WORK;
+import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.Managers.Initializations.initSearch;
+import static ru.velkonost.lume.Managers.Initializations.initToolbar;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.saveText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 
@@ -97,8 +104,8 @@ public class SearchActivity extends AppCompatActivity {
      */
     private MaterialSearchView searchView;
 
-    private List<Contact> mContacts;
-    ContactsFragment mContactsFragment;
+    private List<SearchContact> mSearchContacts;
+    SearchFragment mSearchFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +140,7 @@ public class SearchActivity extends AppCompatActivity {
 
 //        TextView textView = (TextView) findViewById(R.id.toSearch);
 //        textView.setText(whatSearch);
+        mSearchContacts = new ArrayList<>();
 
         mGetData.execute();
     }
@@ -338,81 +346,16 @@ public class SearchActivity extends AppCompatActivity {
                      */
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
 
-
-//                    View userView = ltInflater.inflate(R.layout.item_search_block, linLayout, false);
-//                    View rl = userView.findViewById(R.id.relativeLayoutSearch);
-//
-//                    /**
-//                     * Установление идентификатора пользователя,
-//                     * чтобы при нажатии на элемент проще было понять, профиль какого пользователя необходимо открыть.
-//                     */
-//                    rl.setId(Integer.parseInt(userInfo.getString(ID)));
-//
-//                    ImageView userAvatar = (ImageView) userView.findViewById(R.id.userAvatar); /** Аватар пользователя */
-//
-//                    /** Иконка, указывающая, что пользователь еще не указал свое польное имя */
-//                    ImageView userWithoutName = (ImageView) userView.findViewById(R.id.userWithoutName);
-//
-//                    TextView userName = (TextView) userView.findViewById(R.id.userName); /** Полное имя пользователя, иначе его логин */
-//                    TextView userPlace = (TextView) userView.findViewById(R.id.livingPlace); /** Место проживания пользователя */
-//                    TextView userWork = (TextView) userView.findViewById(R.id.workingPlace); /** Текущее место работы пользователя */
-//
-//                    /**
-//                     * Установка имени владельца открытого профиля.
-//                     *
-//                     * Если имя и фамилия не найдены,
-//                     * то устанавливается логин + показывается иконка {@link userWithoutName}
-//                     **/
-//                    String sUserName = userInfo.getString(NAME).length() == 0
-//                            ? userInfo.getString(LOGIN)
-//                            : userInfo.getString(SURNAME).length() == 0
-//                            ? userInfo.getString(LOGIN)
-//                            : userInfo.getString(NAME) + " " +  userInfo.getString(SURNAME);
-//
-//                    /**
-//                     * Формируется место проживания из имеющихся данных.
-//                     **/
-//                    String sUserPlace = userInfo.getString(COUNTRY).length() != 0
-//                            ? userInfo.getString(CITY).length() != 0
-//                            ? userInfo.getString(COUNTRY) + ", " + userInfo.getString(CITY)
-//                            : "" : "";
-//
-//                    /** Формирование текущего места работы пользователя */
-//                    String sUserWork = userInfo.getString(WORK).length() != 0
-//                            ? userInfo.getString(WORK)
-//                            : userInfo.getString(STUDY).length() != 0
-//                            ? userInfo.getString(STUDY)
-//                            : "";
-//
-//                    if (sUserName.equals(userInfo.getString(LOGIN)))
-//                        userWithoutName.setImageResource(R.drawable.withoutname);
-//
-//                    userName.setText(sUserName);
-//                    userPlace.setText(sUserPlace);
-//                    userWork.setText(sUserWork);
-//
-//                    /** Формирование адреса, по которому лежит аватар пользователя */
-//                    String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
-//                            + SERVER_AVATAR + SLASH + userInfo.getString(AVATAR)
-//                            + SLASH + userInfo.getString(ID) + PNG;
-//
-//                    /**
-//                     *  Загрузка и установка аватара.
-//                     *  {@link ImageManager#fetchImage(String, ImageView)}
-//                     * */
-//                    fetchImage(avatarURL, userAvatar);
-//
-//                    /** Добавление элемента в контейнер {@link SearchActivity#linLayout} */
-//                    linLayout.addView(userView);
-
-                    mContacts.add(new Contact(userInfo.getString(ID), userInfo.getString(NAME),
+                    mSearchContacts.add(new SearchContact(userInfo.getString(ID), userInfo.getString(NAME),
                             userInfo.getString(SURNAME), userInfo.getString(LOGIN),
+                            userInfo.getString(CITY), userInfo.getString(COUNTRY),
+                            userInfo.getString(STUDY), userInfo.getString(WORK),
                             Integer.parseInt(userInfo.getString(AVATAR))));
                 }
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                mContactsFragment =  ContactsFragment.getInstance(SearchActivity.this, mContacts);
-                ft.add(R.id.llsearch, mContactsFragment);
+                mSearchFragment =  SearchFragment.getInstance(SearchActivity.this, mSearchContacts);
+                ft.add(R.id.llsearch, mSearchFragment);
                 ft.commit();
 
             } catch (JSONException e) {

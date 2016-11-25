@@ -1,4 +1,4 @@
-package ru.velkonost.lume;
+package ru.velkonost.lume.Activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -30,6 +30,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.Serializable;
 
+import ru.velkonost.lume.Managers.ImageManager;
+import ru.velkonost.lume.Managers.Initializations;
+import ru.velkonost.lume.Managers.PhoneDataStorage;
+import ru.velkonost.lume.R;
+
 import static ru.velkonost.lume.Constants.ADD_CONTACT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
@@ -59,13 +64,12 @@ import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
-import static ru.velkonost.lume.ImageManager.fetchImage;
-import static ru.velkonost.lume.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Initializations.initToolbar;
-import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
-import static ru.velkonost.lume.PhoneDataStorage.deleteText;
-import static ru.velkonost.lume.PhoneDataStorage.loadText;
-import static ru.velkonost.lume.R.id.userWithoutName;
+import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
+import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.Managers.Initializations.initToolbar;
+import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialog;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**

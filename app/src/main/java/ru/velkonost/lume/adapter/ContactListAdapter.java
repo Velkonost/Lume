@@ -16,7 +16,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import java.util.List;
 
 import ru.velkonost.lume.descriptions.Contact;
-import ru.velkonost.lume.ProfileActivity;
+import ru.velkonost.lume.Activities.ProfileActivity;
 import ru.velkonost.lume.R;
 
 import static ru.velkonost.lume.Constants.ID;
@@ -26,7 +26,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
-import static ru.velkonost.lume.ImageManager.fetchImage;
+import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
 
 
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder>

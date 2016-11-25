@@ -14,20 +14,21 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import java.util.List;
 
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.adapter.ContactListAdapter;
-import ru.velkonost.lume.descriptions.Contact;
+import ru.velkonost.lume.adapter.SearchListAdapter;
+import ru.velkonost.lume.descriptions.SearchContact;
 
-public class ContactsFragment extends Fragment {
-    private static final int LAYOUT = R.layout.fragment_contact;
+public class SearchFragment extends Fragment{
 
-    private List<Contact> mContacts;
-    private ContactListAdapter adapter;
+    private static final int LAYOUT = R.layout.fragment_search;
+
+    private List<SearchContact> mContacts;
+    private SearchListAdapter adapter;
     protected View view;
     protected Context context;
 
-    public static ContactsFragment getInstance(Context context, List<Contact> contacts) {
+    public static SearchFragment getInstance(Context context, List<SearchContact> contacts) {
         Bundle args = new Bundle();
-        ContactsFragment fragment = new ContactsFragment();
+        SearchFragment fragment = new SearchFragment();
 
         fragment.setArguments(args);
         fragment.setContext(context);
@@ -42,21 +43,21 @@ public class ContactsFragment extends Fragment {
         view = inflater.inflate(LAYOUT, container, false);
 
         FastScrollRecyclerView recyclerView = (FastScrollRecyclerView)
-                view.findViewById(R.id.recycleViewContact);
+                view.findViewById(R.id.recycleViewSearch);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        adapter = new ContactListAdapter(getActivity(), mContacts);
+        adapter = new SearchListAdapter(getActivity(), mContacts);
         recyclerView.setAdapter(adapter);
         return view;
     }
 
-    public void refreshContacts (List<Contact> mContacts) {
+    public void refreshContacts (List<SearchContact> mContacts) {
         adapter.setData(mContacts);
         adapter.notifyDataSetChanged();
     }
 
     public void setContext (Context context) {this.context = context;}
 
-    public void setContacts(List<Contact> mContacts) {
+    public void setContacts(List<SearchContact> mContacts) {
         this.mContacts = mContacts;
     }
 }

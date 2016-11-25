@@ -1,6 +1,8 @@
 package ru.velkonost.lume;
 
 
+import ru.velkonost.lume.Managers.PhoneDataStorage;
+
 /**
  * @author Velkonost
  * Класс, предназначенный для хранения основных констант, используемых в коде приложения.

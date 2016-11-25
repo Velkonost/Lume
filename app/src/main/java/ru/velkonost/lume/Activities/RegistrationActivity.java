@@ -1,4 +1,4 @@
-package ru.velkonost.lume;
+package ru.velkonost.lume.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,6 +13,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import ru.velkonost.lume.Managers.Initializations;
+import ru.velkonost.lume.R;
+
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.EMAIL;
 import static ru.velkonost.lume.Constants.EQUALS;
@@ -24,9 +27,9 @@ import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_REGISTRATION_METHOD;
-import static ru.velkonost.lume.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Initializations.inititializeAlertDialog;
-import static ru.velkonost.lume.PhoneDataStorage.saveText;
+import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialog;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.saveText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 

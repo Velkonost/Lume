@@ -12,7 +12,6 @@
         android:orientation="horizontal"
         android:padding="16dp"
         android:id="@+id/relativeLayoutSearch"
-        android:onClick="openUserProfile"
         android:background="@color/colorWhite">
 
             <ImageView
@@ -30,6 +29,14 @@
                 android:paddingLeft="10dp"
                 android:layout_alignTop="@+id/userAvatar"
                 android:layout_toEndOf="@+id/userAvatar"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/userLogin"
+                android:textSize="10pt"
+                android:layout_alignTop="@+id/userAvatar"
+                android:layout_toEndOf="@+id/userName"
+                android:layout_marginStart="34dp"/>
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"

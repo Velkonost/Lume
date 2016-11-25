@@ -1,4 +1,4 @@
-package ru.velkonost.lume;
+package ru.velkonost.lume.Activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,6 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import ru.velkonost.lume.Managers.Initializations;
+import ru.velkonost.lume.Managers.PhoneDataStorage;
+import ru.velkonost.lume.Managers.ValueComparator;
+import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Contact;
 import ru.velkonost.lume.fragments.ContactsFragment;
 
@@ -45,12 +49,11 @@ import static ru.velkonost.lume.Constants.URL.SERVER_GET_CONTACTS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.USER_ID;
-import static ru.velkonost.lume.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Initializations.initSearch;
-import static ru.velkonost.lume.Initializations.initToolbar;
-import static ru.velkonost.lume.PhoneDataStorage.deleteText;
-import static ru.velkonost.lume.PhoneDataStorage.loadText;
-import static ru.velkonost.lume.PhoneDataStorage.saveText;
+import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.Managers.Initializations.initSearch;
+import static ru.velkonost.lume.Managers.Initializations.initToolbar;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
@@ -141,9 +144,6 @@ public class ContactsActivity extends AppCompatActivity {
          * {@link PhoneDataStorage#loadText(Context, String)}
          **/
         userId = loadText(ContactsActivity.this, ID);
-
-//        linLayout = (LinearLayout) findViewById(R.id.contactsContainer);
-//        ltInflater = getLayoutInflater();
 
         mContacts = new ArrayList<>();
 
@@ -265,47 +265,6 @@ public class ContactsActivity extends AppCompatActivity {
             searchView.closeSearch();
         else
             super.onBackPressed();
-    }
-
-    /**
-     * Обработчик нажатий по view-элементам,
-     * каждый из которых отображает краткую информацию о конкретном пользователе.
-     **/
-    public void openUserProfile(View view) {
-
-        /**
-         * Сохраняет идентификатор пользователя, чей профиль намеревается открыть.
-         **/
-        saveText(ContactsActivity.this, USER_ID, String.valueOf(view.getId()));
-
-        /**
-         * Переход в профиль выбранного пользователя.
-         * {@link Initializations#changeActivityCompat(Activity, Intent)}
-         * */
-        changeActivityCompat(ContactsActivity.this, new Intent(this, ProfileActivity.class));
-    }
-
-
-    /**
-     * Сортирует Map по значению.
-     *
-     * @param <K> Тип ключа.
-     * @param <V> Тип значения.
-     */
-    class ValueComparator<K, V extends Comparable<V>> implements Comparator<K>{
-
-        HashMap<K, V> map = new HashMap<>();
-
-        /** Конструктор */
-        public ValueComparator(HashMap<K, V> map){
-            this.map.putAll(map);
-        }
-
-        /** Сортировка по значению сверху вниз */
-        @Override
-        public int compare(K s1, K s2) {
-            return -map.get(s1).compareTo(map.get(s2));
-        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package ru.velkonost.lume;
+package ru.velkonost.lume.Managers;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import ru.velkonost.lume.R;
 
 
 /**

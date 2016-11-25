@@ -1,4 +1,4 @@
-package ru.velkonost.lume;
+package ru.velkonost.lume.Managers;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,8 +12,11 @@ import android.view.MenuItem;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import ru.velkonost.lume.R;
+import ru.velkonost.lume.Activities.SearchActivity;
+
 import static ru.velkonost.lume.Constants.SEARCH;
-import static ru.velkonost.lume.PhoneDataStorage.saveText;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.saveText;
 
 public class Initializations {
 
