@@ -24,10 +24,16 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
+import ru.velkonost.lume.Managers.ValueComparator;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.SearchContact;
 import ru.velkonost.lume.fragments.SearchFragment;
@@ -94,6 +100,14 @@ public class SearchActivity extends AppCompatActivity {
     private ArrayList<String> ids;
 
     /**
+     * Найденные контакты.
+     *
+     * Ключ - идентификатор пользователя.
+     * Значение - его полное имя или логин.
+     **/
+    private Map<String, String> searchContacts;
+
+    /**
      * Свойство - экзмепляр класса {@link GetData}
      */
     protected GetData mGetData;
@@ -117,6 +131,7 @@ public class SearchActivity extends AppCompatActivity {
 
         mGetData = new GetData();
         ids = new ArrayList<>();
+        searchContacts = new HashMap<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -335,6 +350,43 @@ public class SearchActivity extends AppCompatActivity {
                     if (!idsJSON.getString(i).equals(loadText(SearchActivity.this, ID)))
                         ids.add(idsJSON.getString(i));
                 }
+
+                /**
+                 * Заполнение Map{@link searchContacts} для последующей сортировки контактов.
+                 *
+                 * По умолчанию идентификатору контакта соответствует его полное имя.
+                 *
+                 * Если такогого не имеется, то устанавливает взамен логин.
+                 **/
+                for (int i = 0; i < ids.size(); i++){
+                    JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
+
+                    searchContacts.put(
+                            ids.get(i),
+                            userInfo.getString(NAME).length() != 0
+                                    ? userInfo.getString(SURNAME).length() != 0
+                                    ? userInfo.getString(NAME) + " " + userInfo.getString(SURNAME)
+                                    : userInfo.getString(LOGIN) : userInfo.getString(LOGIN)
+                    );
+                }
+
+                /** Создание и инициализация Comparator{@link ValueComparator} */
+                Comparator<String> comparator = new ValueComparator<>((HashMap<String, String>) searchContacts);
+
+                /** Помещает отсортированную Map */
+                TreeMap<String, String> sortedContacts = new TreeMap<>(comparator);
+                sortedContacts.putAll(searchContacts);
+
+                /** "Обнуляет" хранилище идентификаторов */
+                ids = new ArrayList<>();
+
+                /** Заполняет хранилище идентификаторов */
+                for (String key : sortedContacts.keySet()) {
+                    ids.add(key);
+                }
+
+                /** "Поворачивает" хранилище идентификаторов */
+                Collections.reverse(ids);
 
                 /**
                  * Составление view-элементов с краткой информацией о пользователях
