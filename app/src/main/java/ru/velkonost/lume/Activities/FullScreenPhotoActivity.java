@@ -16,7 +16,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.NAME;
-import static ru.velkonost.lume.Constants.PNG;
+import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
@@ -46,7 +46,7 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
 
         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
                 + SERVER_AVATAR + SLASH + userAvatar
-                + SLASH + profileId + PNG;
+                + SLASH + profileId + JPG;
 
 //        fetchImage(avatarURL, imageView);
 //        imageView.setScaleType(ImageView.ScaleType.FIT_XY);

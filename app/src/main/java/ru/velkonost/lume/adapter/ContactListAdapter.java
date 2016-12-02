@@ -20,7 +20,7 @@ import ru.velkonost.lume.Activities.ProfileActivity;
 import ru.velkonost.lume.R;
 
 import static ru.velkonost.lume.Constants.ID;
-import static ru.velkonost.lume.Constants.PNG;
+import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
@@ -69,7 +69,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         /** Формирование адреса, по которому лежит аватар пользователя */
         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
                 + SERVER_AVATAR + SLASH + item.getAvatar()
-                + SLASH + item.getId() + PNG;
+                + SLASH + item.getId() + JPG;
 
         fetchImage(avatarURL, holder.userAvatar);
         holder.mRelativeLayout.setId(Integer.parseInt(item.getId()));

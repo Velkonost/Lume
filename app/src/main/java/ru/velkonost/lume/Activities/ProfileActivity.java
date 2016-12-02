@@ -33,6 +33,9 @@ import com.kosalgeek.android.photoutil.CameraPhoto;
 import com.kosalgeek.android.photoutil.GalleryPhoto;
 import com.kosalgeek.android.photoutil.ImageBase64;
 import com.kosalgeek.android.photoutil.ImageLoader;
+import com.kosalgeek.asynctask.AsyncResponse;
+import com.kosalgeek.asynctask.EachExceptionsHandler;
+import com.kosalgeek.asynctask.PostResponseAsyncTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,7 +67,7 @@ import static ru.velkonost.lume.Constants.HYPHEN;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
-import static ru.velkonost.lume.Constants.PNG;
+import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.SEND_ID;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.STUDY;
@@ -76,6 +79,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_GET_DATA_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
+import static ru.velkonost.lume.Constants.URL.SERVER_UPLOAD_IMAGE_METHOD;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
@@ -465,7 +469,7 @@ public class ProfileActivity extends AppCompatActivity {
                         /** Формирование адреса, по которому хранится аватар владельца открытого профиля */
                         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
                                 + SERVER_AVATAR + SLASH + dataJsonObj.getString(AVATAR)
-                                + SLASH + profileId + PNG;
+                                + SLASH + profileId + JPG;
 
                         userAvatar = (ImageView) findViewById(R.id.imageAvatar);
 
@@ -533,9 +537,12 @@ public class ProfileActivity extends AppCompatActivity {
                                                                     }
                                                                     ProfileActivity.this.startActivity(fullScreenIntent);
                                                                     break;
+
                                                                 case 1:
+                                                                    Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
                                                                     //Из галереи
-                                                                    startActivityForResult(galleryPhoto.openGalleryIntent(), GALLERY_REQUEST);
+                                                                    startActivityForResult(intent, GALLERY_REQUEST);
                                                                     break;
                                                                 case 2:
                                                                     try {
@@ -746,8 +753,7 @@ public class ProfileActivity extends AppCompatActivity {
             if (requestCode == GALLERY_REQUEST) {//Из галереи
                 Uri uri = data.getData();
                 galleryPhoto.setPhotoUri(uri);
-                String photoPath = galleryPhoto.getPath();
-                selectedPhoto = photoPath; //Получаем путь
+                selectedPhoto = galleryPhoto.getPath(); //Получаем путь
 
                 //Загружаем на сервер
                 try {
@@ -757,38 +763,44 @@ public class ProfileActivity extends AppCompatActivity {
                     HashMap<String, String> postData = new HashMap<String, String>();
 
                     postData.put("image", encodedImage);
+                    postData.put("id", userId);
 
-                    PostResponseAsyncTask task = new PostResponseAsyncTask(getActivity(), postData, new AsyncResponse() {
+                    PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, new AsyncResponse() {
                         @Override
                         public void processFinish(String s) {
-                            if (s.contains("success")) {
-                                Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                            if (s.contains("500")) {
+                                Toast.makeText(ProfileActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                changeActivityCompat(ProfileActivity.this);
                             } else {
-                                Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ProfileActivity.this, "Error", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
 
-                    task.execute("http://94.251.109.165/upload_img.php?login=" + info_login + "&pass=" + logandpass.getString(app_password, ""));
+                    task.execute(
+                            SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
+                                    + SERVER_UPLOAD_IMAGE_METHOD
+                    );
+
                     task.setEachExceptionsHandler(new EachExceptionsHandler() {
                         @Override
                         public void handleIOException(IOException e) {
-                            Toast.makeText(getActivity(), "Error with connect", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, "Error with connect", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void handleMalformedURLException(MalformedURLException e) {
-                            Toast.makeText(getActivity(), "Error with url", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, "Error with url", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void handleProtocolException(ProtocolException e) {
-                            Toast.makeText(getActivity(), "Error with protocol", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, "Error with protocol", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
-                            Toast.makeText(getActivity(), "Error with encode", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, "Error with encode", Toast.LENGTH_SHORT).show();
                         }
                     });
 

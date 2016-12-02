@@ -54,13 +54,14 @@ public class Constants {
         public static final String SERVER_ADD_CONTACT_METHOD = "/addContact";
         public static final String SERVER_SEARCH_METHOD = "/search";
         public static final String SERVER_GET_CONTACTS_METHOD = "/getContacts";
+        public static final String SERVER_UPLOAD_IMAGE_METHOD = "/editImage";
 
 
 
     }
 
     public static final String SLASH = "/";
-    public static final String PNG = ".png";
+    public static final String JPG = ".jpg";
     public static final String ZERO = "0";
 
     /**
