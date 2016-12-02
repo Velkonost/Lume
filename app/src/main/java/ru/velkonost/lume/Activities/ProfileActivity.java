@@ -65,9 +65,9 @@ import static ru.velkonost.lume.Constants.GET_DATA;
 import static ru.velkonost.lume.Constants.GET_ID;
 import static ru.velkonost.lume.Constants.HYPHEN;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
-import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.SEND_ID;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.STUDY;
@@ -808,7 +808,61 @@ public class ProfileActivity extends AppCompatActivity {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
+            } else if(requestCode==CAMERA_REQUEST) {
+                //С камеры
+                selectedPhoto = cameraPhoto.getPhotoPath();//Получаем путь
+                //Загружаем на сервер
+                try {
+                    Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
+                    String encodedImage = ImageBase64.encode(bitmap);
 
+                    HashMap<String, String> postData = new HashMap<String, String>();
+
+                    postData.put("image", encodedImage);
+                    postData.put("id", userId);
+
+                    PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, new AsyncResponse() {
+                        @Override
+                        public void processFinish(String s) {
+                            if (s.contains("500")) {
+                                Toast.makeText(ProfileActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                changeActivityCompat(ProfileActivity.this);
+                            } else {
+                                Toast.makeText(ProfileActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                    task.execute(
+                            SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
+                                    + SERVER_UPLOAD_IMAGE_METHOD
+                    );
+                    task.setEachExceptionsHandler(new EachExceptionsHandler() {
+                        @Override
+                        public void handleIOException(IOException e) {
+                            Toast.makeText(ProfileActivity.this, "Error with connect", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void handleMalformedURLException(MalformedURLException e) {
+                            Toast.makeText(ProfileActivity.this, "Error with url", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void handleProtocolException(ProtocolException e) {
+                            Toast.makeText(ProfileActivity.this, "Error with protocol", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
+                            Toast.makeText(ProfileActivity.this, "Error with encode", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
