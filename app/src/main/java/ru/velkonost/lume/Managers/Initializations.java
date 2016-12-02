@@ -36,6 +36,7 @@ public class Initializations {
         alert.show();
     }
 
+
     public static void initToolbar(AppCompatActivity activity, Toolbar toolbar, int title) {
 
         toolbar.setTitle(title);

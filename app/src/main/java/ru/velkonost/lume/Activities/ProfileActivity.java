@@ -1,10 +1,14 @@
 package ru.velkonost.lume.Activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -23,12 +27,23 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.kosalgeek.android.photoutil.CameraPhoto;
+import com.kosalgeek.android.photoutil.GalleryPhoto;
+import com.kosalgeek.android.photoutil.ImageBase64;
+import com.kosalgeek.android.photoutil.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.util.HashMap;
 
 import ru.velkonost.lume.Managers.ImageManager;
 import ru.velkonost.lume.Managers.Initializations;
@@ -166,6 +181,14 @@ public class ProfileActivity extends AppCompatActivity {
     CollapsingToolbarLayout collapsingToolbar;
 
 
+
+    private CameraPhoto cameraPhoto;
+    private GalleryPhoto galleryPhoto;
+    final int GALLERY_REQUEST = 22131;
+    final int CAMERA_REQUEST = 13323;
+    private String selectedPhoto;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -178,6 +201,10 @@ public class ProfileActivity extends AppCompatActivity {
         /** Инициализация экземпляров классов */
         mGetData = new GetData();
         mAddContact = new AddContact();
+
+        galleryPhoto = new GalleryPhoto(this);
+        cameraPhoto = new CameraPhoto(this);
+
 
         linLayout = (LinearLayout) findViewById(R.id.profileContainer);
         ltInflater = getLayoutInflater();
@@ -200,10 +227,6 @@ public class ProfileActivity extends AppCompatActivity {
          * Принадлежит открытый профиль пользователю,
          *      авторизованному на данном устройстве или нет?
          * */
-//        profileId = loadText(ProfileActivity.this, USER_ID).length() != 0
-//                ? loadText(ProfileActivity.this, USER_ID)
-//                : userId;
-
         profileId = intent.getIntExtra(ID, 0) != 0
                 ? intent.getIntExtra(ID, 0)
                 : userId;
@@ -253,7 +276,6 @@ public class ProfileActivity extends AppCompatActivity {
         mGetData.execute();
     }
 
-
     /**
      * Рисует боковую панель навигации.
      **/
@@ -302,6 +324,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
                     case R.id.navigationSettings:
+//                        nextIntent = new Intent(ProfileActivity.this, SettingsActivity.class);
                         break;
 
                     /**
@@ -335,6 +358,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
+
 
     /**
      * Форматирование даты из вида, полученного с сервер - YYYY-MM-DD
@@ -421,7 +445,7 @@ public class ProfileActivity extends AppCompatActivity {
             int resultCode;
 
             /** Свойство - полученный JSON–объект*/
-            JSONObject dataJsonObj;
+            final JSONObject dataJsonObj;
 
             try {
 
@@ -451,7 +475,7 @@ public class ProfileActivity extends AppCompatActivity {
                          * Если имя и фамилия не найдены,
                          * то устанавливается логин + показывается иконка {@link userWithoutName}
                          **/
-                        String sUserName = dataJsonObj.getString(NAME).length() == 0
+                        final String sUserName = dataJsonObj.getString(NAME).length() == 0
                                 ? dataJsonObj.getString(LOGIN)
                                 : dataJsonObj.getString(SURNAME).length() == 0
                                 ? dataJsonObj.getString(LOGIN)
@@ -464,6 +488,73 @@ public class ProfileActivity extends AppCompatActivity {
                          * {@link ImageManager#fetchImage(String, ImageView)}
                          **/
                         fetchImage(avatarURL, userAvatar);
+
+                        userAvatar.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                final Bitmap bitmap = ((BitmapDrawable) userAvatar.getDrawable()).getBitmap();
+
+                                if (profileId != userId) {
+                                    Intent fullScreenIntent = new Intent(ProfileActivity.this, FullScreenPhotoActivity.class);
+
+                                    fullScreenIntent.putExtra(NAME, sUserName);
+                                    fullScreenIntent.putExtra(ID, profileId);
+                                    try {
+                                        fullScreenIntent.putExtra(AVATAR, dataJsonObj.getString(AVATAR));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    ProfileActivity.this.startActivity(fullScreenIntent);
+                                }
+                                else {
+
+                                    CharSequence[] data = {
+                                            getResources().getString(R.string.dialog_item_open),
+                                            getResources().getString(R.string.dialog_item_upload),
+                                            getResources().getString(R.string.dialog_item_create)
+                                    };
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                                    builder.setTitle(getResources().getString(R.string.dialog_header_photo))
+                                            .setItems(data,
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            switch (which) {
+                                                                case 0:
+                                                                    Intent fullScreenIntent = new Intent(ProfileActivity.this,
+                                                                            FullScreenPhotoActivity.class);
+
+                                                                    fullScreenIntent.putExtra(NAME, sUserName);
+                                                                    fullScreenIntent.putExtra(ID, profileId);
+                                                                    try {
+                                                                        fullScreenIntent.putExtra(AVATAR, dataJsonObj.getString(AVATAR));
+                                                                    } catch (JSONException e) {
+                                                                        e.printStackTrace();
+                                                                    }
+                                                                    ProfileActivity.this.startActivity(fullScreenIntent);
+                                                                    break;
+                                                                case 1:
+                                                                    //Из галереи
+                                                                    startActivityForResult(galleryPhoto.openGalleryIntent(), GALLERY_REQUEST);
+                                                                    break;
+                                                                case 2:
+                                                                    try {
+                                                                        //С камеры
+                                                                        startActivityForResult(cameraPhoto.takePhotoIntent(), CAMERA_REQUEST);
+                                                                        cameraPhoto.addToGallery();
+                                                                    } catch (IOException e) {
+                                                                        e.printStackTrace();
+                                                                    }
+
+                                                            }
+                                                        }
+                                                    });
+
+                                    AlertDialog alert = builder.create();
+                                    alert.show();
+                                }
+                            }
+                        });
 
 
                         /**
@@ -564,8 +655,10 @@ public class ProfileActivity extends AppCompatActivity {
                         /** Если указано только место работы */
                         if (sUserPlaceStudy.equals("") && !sUserPlaceWork.equals("")) {
 
-                            viewUserPlaceWork = ltInflater.inflate(R.layout.item_profile_place_work, linLayout, false);
-                            TextView userPlaceWork = (TextView) viewUserPlaceWork.findViewById(R.id.descriptionCardPlaceWork);
+                            viewUserPlaceWork = ltInflater.inflate(R.layout.item_profile_place_work,
+                                    linLayout, false);
+                            TextView userPlaceWork = (TextView) viewUserPlaceWork
+                                    .findViewById(R.id.descriptionCardPlaceWork);
                             userPlaceWork.setText(sUserPlaceWork);
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
@@ -575,8 +668,10 @@ public class ProfileActivity extends AppCompatActivity {
                         /** Если указано только место учебы */
                         if (sUserPlaceWork.equals("") && !sUserPlaceStudy.equals("")) {
 
-                            viewUserPlaceStudy = ltInflater.inflate(R.layout.item_profile_place_study, linLayout, false);
-                            TextView userPlaceStudy = (TextView) viewUserPlaceStudy.findViewById(R.id.descriptionCardPlaceStudy);
+                            viewUserPlaceStudy = ltInflater.inflate(R.layout.item_profile_place_study,
+                                    linLayout, false);
+                            TextView userPlaceStudy = (TextView) viewUserPlaceStudy
+                                    .findViewById(R.id.descriptionCardPlaceStudy);
                             userPlaceStudy.setText(sUserPlaceStudy);
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
@@ -638,6 +733,70 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {//Проверка откуда была выбрана загрузка
+            if (requestCode == GALLERY_REQUEST) {//Из галереи
+                Uri uri = data.getData();
+                galleryPhoto.setPhotoUri(uri);
+                String photoPath = galleryPhoto.getPath();
+                selectedPhoto = photoPath; //Получаем путь
+
+                //Загружаем на сервер
+                try {
+                    Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
+                    String encodedImage = ImageBase64.encode(bitmap);
+
+                    HashMap<String, String> postData = new HashMap<String, String>();
+
+                    postData.put("image", encodedImage);
+
+                    PostResponseAsyncTask task = new PostResponseAsyncTask(getActivity(), postData, new AsyncResponse() {
+                        @Override
+                        public void processFinish(String s) {
+                            if (s.contains("success")) {
+                                Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                    task.execute("http://94.251.109.165/upload_img.php?login=" + info_login + "&pass=" + logandpass.getString(app_password, ""));
+                    task.setEachExceptionsHandler(new EachExceptionsHandler() {
+                        @Override
+                        public void handleIOException(IOException e) {
+                            Toast.makeText(getActivity(), "Error with connect", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void handleMalformedURLException(MalformedURLException e) {
+                            Toast.makeText(getActivity(), "Error with url", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void handleProtocolException(ProtocolException e) {
+                            Toast.makeText(getActivity(), "Error with protocol", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
+                            Toast.makeText(getActivity(), "Error with encode", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
     }
