@@ -38,6 +38,7 @@ public class Constants {
     public static final String CONTACT = "contact";
 
     public static final String GET_DATA = "getdata";
+    public static final String GET_DATA_SETTINGS = "getdatasettings";
     public static final String ADD_CONTACT = "addContact";
 
     /** Класс констант, относящихся исключительно к построению URL */
@@ -51,6 +52,7 @@ public class Constants {
         public static final String SERVER_LOGIN_METHOD = "/login";
         public static final String SERVER_REGISTRATION_METHOD = "/registration";
         public static final String SERVER_GET_DATA_METHOD = "/getData";
+        public static final String SERVER_GET_DATA_SETTINGS_METHOD = "/getDataSettings";
         public static final String SERVER_ADD_CONTACT_METHOD = "/addContact";
         public static final String SERVER_SEARCH_METHOD = "/search";
         public static final String SERVER_GET_CONTACTS_METHOD = "/getContacts";

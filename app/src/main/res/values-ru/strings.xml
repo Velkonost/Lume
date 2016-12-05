@@ -61,4 +61,17 @@
 
     <string name="change">Изменить</string>
 
+
+    <string name="editName">Имя</string>
+    <string name="editSurname">Фамилия</string>
+    <string name="editBirthday">День рождения</string>
+    <string name="editPrevPassword">Старый пароль</string>
+    <string name="editNewPassword">Новый пароль</string>
+    <string name="editCity">Город</string>
+    <string name="editCountry">Страна</string>
+    <string name="editStudy">Место учебы</string>
+    <string name="editWork">Место работы</string>
+    <string name="editEmail">Email</string>
+    <string name="editWorkEmail">Email для связи</string>
+
 </resources>

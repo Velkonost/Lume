@@ -6,8 +6,6 @@
                                         android:layout_height="match_parent"
                                         android:background="@color/mainBackground"
                                         android:fitsSystemWindows="true">
-
-
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -31,11 +29,15 @@
                     android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/llcontact"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/llsettings"
             android:orientation="vertical"
             app:layout_anchor="@id/appbarlayout"
             app:layout_anchorGravity="bottom">
@@ -43,142 +45,280 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:padding="16dp"
                 android:id="@+id/llName"
                 android:background="@color/colorWhite">
 
-                <EditText
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:id="@+id/editName"
-                    android:hint=""/>
-                <EditText
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/editName"
+                        android:layout_weight="1"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/editSurname"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/editSurname"
-                    android:layout_weight="1"/>
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:id="@+id/editName"
+                        android:hint=""/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/editSurname"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
             </LinearLayout>
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="10dp"
+                android:layout_height="5dp"
                 android:background="@color/colorBlack"
                 android:layout_gravity="bottom"/>
-
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:id="@+id/llBirthday"
+                android:background="@color/colorWhite">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/editBirthday"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/editBirthday"
+                    android:inputType="date"/>
+            </LinearLayout>
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="5dp"
+                android:background="@color/colorBlack"
+                android:layout_gravity="bottom"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:padding="16dp"
                 android:id="@+id/llPassword"
                 android:background="@color/colorWhite">
 
-                <EditText
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textPassword"
-                    android:id="@+id/prevPassword"
-                    android:layout_weight="1"
-                    android:hint=""/>
-                <EditText
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/editPrevPassword"
+                        android:layout_weight="1"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/editNewPassword"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textPassword"
-                    android:id="@+id/newPassword"
-                    android:layout_weight="1"/>
+                    android:orientation="horizontal">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:inputType="textPassword"
+                        android:id="@+id/prevPassword"
+                        android:layout_weight="1"
+                        android:hint=""/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:inputType="textPassword"
+                        android:id="@+id/newPassword"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
             </LinearLayout>
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="10dp"
+                android:layout_height="5dp"
                 android:background="@color/colorBlack"
                 android:layout_gravity="bottom"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:padding="16dp"
                 android:id="@+id/llLiving"
                 android:background="@color/colorWhite">
 
-                <EditText
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/editCity"
-                    android:layout_weight="1"
-                    android:hint=""/>
-                <EditText
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/editCity"
+                        android:layout_weight="1"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/editCountry"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/editCountry"
-                    android:layout_weight="1"/>
+                    android:orientation="horizontal">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/editCity"
+                        android:layout_weight="1"
+                        android:hint=""/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/editCountry"
+                        android:layout_weight="1"/>
+                </LinearLayout>
             </LinearLayout>
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="10dp"
+                android:layout_height="5dp"
                 android:background="@color/colorBlack"
                 android:layout_gravity="bottom"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:padding="16dp"
                 android:id="@+id/llWorking"
                 android:background="@color/colorWhite">
 
-                <EditText
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/editStudy"
-                    android:layout_weight="1"
-                    android:hint=""/>
-                <EditText
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/editStudy"
+                        android:layout_weight="1"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/editWork"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/editWork"
-                    android:layout_weight="1"/>
+                    android:orientation="horizontal">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/editStudy"
+                        android:layout_weight="1"
+                        android:hint=""/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/editWork"
+                        android:layout_weight="1"/>
+                </LinearLayout>
             </LinearLayout>
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="10dp"
+                android:layout_height="5dp"
                 android:background="@color/colorBlack"
                 android:layout_gravity="bottom"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:padding="16dp"
                 android:id="@+id/llEmail"
                 android:background="@color/colorWhite">
 
-                <EditText
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/editEmail"
-                    android:layout_weight="1"
-                    android:hint=""/>
-                <EditText
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/editEmail"
+                        android:layout_weight="1"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/editWorkEmail"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/editWorkEmail"
-                    android:layout_weight="1"/>
+                    android:orientation="horizontal">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/editEmail"
+                        android:layout_weight="1"
+                        android:hint=""
+                        android:inputType="textEmailAddress"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/editWorkEmail"
+                        android:layout_weight="1"
+                        android:inputType="textEmailAddress"/>
+                </LinearLayout>
             </LinearLayout>
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="10dp"
+                android:layout_height="5dp"
                 android:background="@color/colorBlack"
                 android:layout_gravity="bottom"/>
 
         </LinearLayout>
-
+        </ScrollView>
 
     </android.support.design.widget.CoordinatorLayout>
-
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation"
