@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
-import ru.velkonost.lume.Activities.SearchActivity;
+import ru.velkonost.lume.activity.SearchActivity;
 import ru.velkonost.lume.R;
 
 import static ru.velkonost.lume.Constants.SEARCH;
@@ -35,6 +35,7 @@ public class Initializations {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
 
     public static void initToolbar(AppCompatActivity activity, Toolbar toolbar, int title) {
 
@@ -66,7 +67,7 @@ public class Initializations {
         activity.setSupportActionBar(toolbar);
     }
 
-    public static final void changeActivityCompat(final Activity a) {
+    public static void changeActivityCompat(final Activity a) {
         final Intent intent = a.getIntent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
@@ -78,7 +79,7 @@ public class Initializations {
     }
 
 
-    public static final void changeActivityCompat(final Activity a, Intent nextIntent) {
+    public static void changeActivityCompat(final Activity a, Intent nextIntent) {
         final Intent currentIntent = a.getIntent();
         nextIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 

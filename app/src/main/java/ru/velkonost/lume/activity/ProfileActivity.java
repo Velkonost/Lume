@@ -1,34 +1,52 @@
-package ru.velkonost.lume.Activities;
+package ru.velkonost.lume.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.kosalgeek.android.photoutil.CameraPhoto;
+import com.kosalgeek.android.photoutil.GalleryPhoto;
+import com.kosalgeek.android.photoutil.ImageBase64;
+import com.kosalgeek.android.photoutil.ImageLoader;
+import com.kosalgeek.asynctask.AsyncResponse;
+import com.kosalgeek.asynctask.EachExceptionsHandler;
+import com.kosalgeek.asynctask.PostResponseAsyncTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.util.HashMap;
 
 import ru.velkonost.lume.Managers.ImageManager;
 import ru.velkonost.lume.Managers.Initializations;
@@ -47,9 +65,9 @@ import static ru.velkonost.lume.Constants.GET_DATA;
 import static ru.velkonost.lume.Constants.GET_ID;
 import static ru.velkonost.lume.Constants.HYPHEN;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
-import static ru.velkonost.lume.Constants.PNG;
 import static ru.velkonost.lume.Constants.SEND_ID;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.STUDY;
@@ -61,6 +79,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_GET_DATA_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
+import static ru.velkonost.lume.Constants.URL.SERVER_UPLOAD_IMAGE_METHOD;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
@@ -166,11 +185,19 @@ public class ProfileActivity extends AppCompatActivity {
     CollapsingToolbarLayout collapsingToolbar;
 
 
+
+    private CameraPhoto cameraPhoto;
+    private GalleryPhoto galleryPhoto;
+    final int GALLERY_REQUEST = 22131;
+    final int CAMERA_REQUEST = 13323;
+    private String selectedPhoto;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         /** Установка темы по умолчанию */
-        setTheme(R.style.AppDefault);
+//        setTheme(R.style.AppDefault);
 
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
@@ -179,13 +206,21 @@ public class ProfileActivity extends AppCompatActivity {
         mGetData = new GetData();
         mAddContact = new AddContact();
 
+        galleryPhoto = new GalleryPhoto(this);
+        cameraPhoto = new CameraPhoto(this);
+
+
         linLayout = (LinearLayout) findViewById(R.id.profileContainer);
         ltInflater = getLayoutInflater();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
+        drawerLayout = (DrawerLayout) findViewById(R.id.activity_profile);
+
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(ProfileActivity.this, toolbar, R.string.app_name); /** Инициализация */
         initNavigationView(); /** Инициализация */
+
+
 
         /**
          * Получение id пользователя.
@@ -194,21 +229,24 @@ public class ProfileActivity extends AppCompatActivity {
         userId = loadText(ProfileActivity.this, ID);
 
         Intent intent = getIntent();
-
         /**
          * Проверка:
          * Принадлежит открытый профиль пользователю,
          *      авторизованному на данном устройстве или нет?
          * */
-//        profileId = loadText(ProfileActivity.this, USER_ID).length() != 0
-//                ? loadText(ProfileActivity.this, USER_ID)
-//                : userId;
-
         profileId = intent.getIntExtra(ID, 0) != 0
                 ? intent.getIntExtra(ID, 0)
                 : userId;
 
-        Log.i("PID", String.valueOf(profileId));
+        if (!profileId.equals(userId)) {
+            toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+        }
         /**
          *  Установка цветной палитры,
          *  цвета которой будут заменять друг друга в зависимости от прогресса.
@@ -253,22 +291,19 @@ public class ProfileActivity extends AppCompatActivity {
         mGetData.execute();
     }
 
-
     /**
      * Рисует боковую панель навигации.
      **/
     private void initNavigationView() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_profile);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
-                R.string.view_navigation_open, R.string.view_navigation_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        /**
-         * Обработчки событий для меню бокового меню навигации.
-         **/
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.getMenu().getItem(0).setChecked(true);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
             @Override
@@ -290,6 +325,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     /** Переход на страницу напоминаний, созданных данным пользователем */
                     case R.id.navigationReminder:
+                        nextIntent = new Intent(ProfileActivity.this, test.class);
                         break;
 
                     /** Переход на страницу сообщений данного пользователя */
@@ -302,6 +338,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
                     case R.id.navigationSettings:
+//                        nextIntent = new Intent(ProfileActivity.this, SettingsActivity.class);
                         break;
 
                     /**
@@ -316,24 +353,34 @@ public class ProfileActivity extends AppCompatActivity {
                 }
 
                 /**
-                 * Удаляет информацию о владельце открытого профиля.
-                 * {@link PhoneDataStorage#deleteText(Context, String)}
-                 **/
-                deleteText(ProfileActivity.this, USER_ID);
-
-                /**
                  * Переход на следующую активность.
                  * {@link Initializations#changeActivityCompat(Activity, Intent)}
                  * */
+
+
                 changeActivityCompat(ProfileActivity.this, nextIntent);
+
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(ProfileActivity.this, ID).equals(""))
                     finishAffinity();
 
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_profile);
+                drawer.closeDrawer(GravityCompat.START);
+
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_profile);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     /**
@@ -421,7 +468,7 @@ public class ProfileActivity extends AppCompatActivity {
             int resultCode;
 
             /** Свойство - полученный JSON–объект*/
-            JSONObject dataJsonObj;
+            final JSONObject dataJsonObj;
 
             try {
 
@@ -441,7 +488,7 @@ public class ProfileActivity extends AppCompatActivity {
                         /** Формирование адреса, по которому хранится аватар владельца открытого профиля */
                         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
                                 + SERVER_AVATAR + SLASH + dataJsonObj.getString(AVATAR)
-                                + SLASH + profileId + PNG;
+                                + SLASH + profileId + JPG;
 
                         userAvatar = (ImageView) findViewById(R.id.imageAvatar);
 
@@ -451,7 +498,7 @@ public class ProfileActivity extends AppCompatActivity {
                          * Если имя и фамилия не найдены,
                          * то устанавливается логин + показывается иконка {@link userWithoutName}
                          **/
-                        String sUserName = dataJsonObj.getString(NAME).length() == 0
+                        final String sUserName = dataJsonObj.getString(NAME).length() == 0
                                 ? dataJsonObj.getString(LOGIN)
                                 : dataJsonObj.getString(SURNAME).length() == 0
                                 ? dataJsonObj.getString(LOGIN)
@@ -464,6 +511,76 @@ public class ProfileActivity extends AppCompatActivity {
                          * {@link ImageManager#fetchImage(String, ImageView)}
                          **/
                         fetchImage(avatarURL, userAvatar);
+
+                        userAvatar.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                final Bitmap bitmap = ((BitmapDrawable) userAvatar.getDrawable()).getBitmap();
+
+                                if (profileId != userId) {
+                                    Intent fullScreenIntent = new Intent(ProfileActivity.this, FullScreenPhotoActivity.class);
+
+                                    fullScreenIntent.putExtra(NAME, sUserName);
+                                    fullScreenIntent.putExtra(ID, profileId);
+                                    try {
+                                        fullScreenIntent.putExtra(AVATAR, dataJsonObj.getString(AVATAR));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    ProfileActivity.this.startActivity(fullScreenIntent);
+                                }
+                                else {
+
+                                    CharSequence[] data = {
+                                            getResources().getString(R.string.dialog_item_open),
+                                            getResources().getString(R.string.dialog_item_upload),
+                                            getResources().getString(R.string.dialog_item_create)
+                                    };
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                                    builder.setTitle(getResources().getString(R.string.dialog_header_photo))
+                                            .setItems(data,
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            switch (which) {
+                                                                case 0:
+                                                                    Intent fullScreenIntent = new Intent(ProfileActivity.this,
+                                                                            FullScreenPhotoActivity.class);
+
+                                                                    fullScreenIntent.putExtra(NAME, sUserName);
+                                                                    fullScreenIntent.putExtra(ID, profileId);
+                                                                    try {
+                                                                        fullScreenIntent.putExtra(AVATAR, dataJsonObj.getString(AVATAR));
+                                                                    } catch (JSONException e) {
+                                                                        e.printStackTrace();
+                                                                    }
+                                                                    ProfileActivity.this.startActivity(fullScreenIntent);
+                                                                    break;
+
+                                                                case 1:
+                                                                    Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                                                                    //Из галереи
+                                                                    startActivityForResult(intent, GALLERY_REQUEST);
+                                                                    break;
+                                                                case 2:
+                                                                    try {
+                                                                        //С камеры
+                                                                        startActivityForResult(cameraPhoto.takePhotoIntent(), CAMERA_REQUEST);
+                                                                        cameraPhoto.addToGallery();
+                                                                    } catch (IOException e) {
+                                                                        e.printStackTrace();
+                                                                    }
+
+                                                            }
+                                                        }
+                                                    });
+
+                                    AlertDialog alert = builder.create();
+                                    alert.show();
+                                }
+                            }
+                        });
 
 
                         /**
@@ -564,8 +681,10 @@ public class ProfileActivity extends AppCompatActivity {
                         /** Если указано только место работы */
                         if (sUserPlaceStudy.equals("") && !sUserPlaceWork.equals("")) {
 
-                            viewUserPlaceWork = ltInflater.inflate(R.layout.item_profile_place_work, linLayout, false);
-                            TextView userPlaceWork = (TextView) viewUserPlaceWork.findViewById(R.id.descriptionCardPlaceWork);
+                            viewUserPlaceWork = ltInflater.inflate(R.layout.item_profile_place_work,
+                                    linLayout, false);
+                            TextView userPlaceWork = (TextView) viewUserPlaceWork
+                                    .findViewById(R.id.descriptionCardPlaceWork);
                             userPlaceWork.setText(sUserPlaceWork);
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
@@ -575,8 +694,10 @@ public class ProfileActivity extends AppCompatActivity {
                         /** Если указано только место учебы */
                         if (sUserPlaceWork.equals("") && !sUserPlaceStudy.equals("")) {
 
-                            viewUserPlaceStudy = ltInflater.inflate(R.layout.item_profile_place_study, linLayout, false);
-                            TextView userPlaceStudy = (TextView) viewUserPlaceStudy.findViewById(R.id.descriptionCardPlaceStudy);
+                            viewUserPlaceStudy = ltInflater.inflate(R.layout.item_profile_place_study,
+                                    linLayout, false);
+                            TextView userPlaceStudy = (TextView) viewUserPlaceStudy
+                                    .findViewById(R.id.descriptionCardPlaceStudy);
                             userPlaceStudy.setText(sUserPlaceStudy);
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
@@ -638,6 +759,129 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {//Проверка откуда была выбрана загрузка
+            if (requestCode == GALLERY_REQUEST) {//Из галереи
+                Uri uri = data.getData();
+                galleryPhoto.setPhotoUri(uri);
+                selectedPhoto = galleryPhoto.getPath(); //Получаем путь
+
+                //Загружаем на сервер
+                try {
+                    Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
+                    String encodedImage = ImageBase64.encode(bitmap);
+
+                    HashMap<String, String> postData = new HashMap<String, String>();
+
+                    postData.put("image", encodedImage);
+                    postData.put("id", userId);
+
+                    PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, new AsyncResponse() {
+                        @Override
+                        public void processFinish(String s) {
+                            if (s.contains("500")) {
+                                Toast.makeText(ProfileActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                changeActivityCompat(ProfileActivity.this);
+                            } else {
+                                Toast.makeText(ProfileActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                    task.execute(
+                            SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
+                                    + SERVER_UPLOAD_IMAGE_METHOD
+                    );
+
+                    task.setEachExceptionsHandler(new EachExceptionsHandler() {
+                        @Override
+                        public void handleIOException(IOException e) {
+                            Toast.makeText(ProfileActivity.this, "Error with connect", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void handleMalformedURLException(MalformedURLException e) {
+                            Toast.makeText(ProfileActivity.this, "Error with url", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void handleProtocolException(ProtocolException e) {
+                            Toast.makeText(ProfileActivity.this, "Error with protocol", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
+                            Toast.makeText(ProfileActivity.this, "Error with encode", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } else if(requestCode==CAMERA_REQUEST) {
+                //С камеры
+                selectedPhoto = cameraPhoto.getPhotoPath();//Получаем путь
+                //Загружаем на сервер
+                try {
+                    Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
+                    String encodedImage = ImageBase64.encode(bitmap);
+
+                    HashMap<String, String> postData = new HashMap<String, String>();
+
+                    postData.put("image", encodedImage);
+                    postData.put("id", userId);
+
+                    PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, new AsyncResponse() {
+                        @Override
+                        public void processFinish(String s) {
+                            if (s.contains("500")) {
+                                Toast.makeText(ProfileActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                changeActivityCompat(ProfileActivity.this);
+                            } else {
+                                Toast.makeText(ProfileActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                    task.execute(
+                            SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
+                                    + SERVER_UPLOAD_IMAGE_METHOD
+                    );
+                    task.setEachExceptionsHandler(new EachExceptionsHandler() {
+                        @Override
+                        public void handleIOException(IOException e) {
+                            Toast.makeText(ProfileActivity.this, "Error with connect", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void handleMalformedURLException(MalformedURLException e) {
+                            Toast.makeText(ProfileActivity.this, "Error with url", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void handleProtocolException(ProtocolException e) {
+                            Toast.makeText(ProfileActivity.this, "Error with protocol", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
+                            Toast.makeText(ProfileActivity.this, "Error with encode", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

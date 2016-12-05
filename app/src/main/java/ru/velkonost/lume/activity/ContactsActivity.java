@@ -1,13 +1,13 @@
-package ru.velkonost.lume.Activities;
+package ru.velkonost.lume.activity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -48,7 +48,6 @@ import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_CONTACTS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
-import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initSearch;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
@@ -115,8 +114,6 @@ public class ContactsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        /** Установка темы по умолчанию */
-        setTheme(R.style.AppDefault);
 
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
@@ -126,6 +123,8 @@ public class ContactsActivity extends AppCompatActivity {
         contacts = new HashMap<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.activity_contact);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(ContactsActivity.this, toolbar, R.string.menu_item_contacts); /** Инициализация */
@@ -154,20 +153,19 @@ public class ContactsActivity extends AppCompatActivity {
      * Рисует боковую панель навигации.
      **/
     private void initNavigationView() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_contact);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
-                R.string.view_navigation_open, R.string.view_navigation_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        /**
-         * Обработчки событий для меню бокового меню навигации.
-         **/
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.getMenu().getItem(1).setChecked(true);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @SuppressWarnings("NullableProblems")
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
                 drawerLayout.closeDrawers();
 
                 /** Инициализируем намерение на следующую активность */
@@ -185,6 +183,7 @@ public class ContactsActivity extends AppCompatActivity {
 
                     /** Переход на страницу напоминаний, созданных данным пользователем */
                     case R.id.navigationReminder:
+                        nextIntent = new Intent(ContactsActivity.this, test.class);
                         break;
 
                     /** Переход на страницу сообщений данного пользователя */
@@ -197,6 +196,7 @@ public class ContactsActivity extends AppCompatActivity {
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
                     case R.id.navigationSettings:
+//                        nextIntent = new Intent(ContactsActivity.this, SettingsActivity.class);
                         break;
 
                     /**
@@ -211,20 +211,21 @@ public class ContactsActivity extends AppCompatActivity {
                 }
 
                 /**
-                 * Удаляет информацию о владельце открытого профиля.
-                 * {@link PhoneDataStorage#deleteText(Context, String)}
-                 **/
-                deleteText(ContactsActivity.this, USER_ID);
-
-                /**
                  * Переход на следующую активность.
                  * {@link Initializations#changeActivityCompat(Activity, Intent)}
                  * */
+
+
                 changeActivityCompat(ContactsActivity.this, nextIntent);
+
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(ContactsActivity.this, ID).equals(""))
                     finishAffinity();
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_contact);
+                drawer.closeDrawer(GravityCompat.START);
+
                 return true;
             }
         });
@@ -261,7 +262,10 @@ public class ContactsActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        if (searchView.isSearchOpen())
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_contact);
+        if (drawer.isDrawerOpen(GravityCompat.START))
+            drawer.closeDrawer(GravityCompat.START);
+            else if (searchView.isSearchOpen())
             searchView.closeSearch();
         else
             super.onBackPressed();
