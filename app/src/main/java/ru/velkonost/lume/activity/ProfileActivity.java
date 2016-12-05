@@ -1,4 +1,4 @@
-package ru.velkonost.lume.Activities;
+package ru.velkonost.lume.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,13 +14,13 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -197,7 +197,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         /** Установка темы по умолчанию */
-        setTheme(R.style.AppDefault);
+//        setTheme(R.style.AppDefault);
 
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
@@ -214,9 +214,13 @@ public class ProfileActivity extends AppCompatActivity {
         ltInflater = getLayoutInflater();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
+        drawerLayout = (DrawerLayout) findViewById(R.id.activity_profile);
+
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(ProfileActivity.this, toolbar, R.string.app_name); /** Инициализация */
         initNavigationView(); /** Инициализация */
+
+
 
         /**
          * Получение id пользователя.
@@ -225,7 +229,6 @@ public class ProfileActivity extends AppCompatActivity {
         userId = loadText(ProfileActivity.this, ID);
 
         Intent intent = getIntent();
-
         /**
          * Проверка:
          * Принадлежит открытый профиль пользователю,
@@ -235,7 +238,15 @@ public class ProfileActivity extends AppCompatActivity {
                 ? intent.getIntExtra(ID, 0)
                 : userId;
 
-        Log.i("PID", String.valueOf(profileId));
+        if (!profileId.equals(userId)) {
+            toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+        }
         /**
          *  Установка цветной палитры,
          *  цвета которой будут заменять друг друга в зависимости от прогресса.
@@ -284,17 +295,15 @@ public class ProfileActivity extends AppCompatActivity {
      * Рисует боковую панель навигации.
      **/
     private void initNavigationView() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_profile);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
-                R.string.view_navigation_open, R.string.view_navigation_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        /**
-         * Обработчки событий для меню бокового меню навигации.
-         **/
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.getMenu().getItem(0).setChecked(true);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
             @Override
@@ -316,6 +325,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     /** Переход на страницу напоминаний, созданных данным пользователем */
                     case R.id.navigationReminder:
+                        nextIntent = new Intent(ProfileActivity.this, test.class);
                         break;
 
                     /** Переход на страницу сообщений данного пользователя */
@@ -343,26 +353,35 @@ public class ProfileActivity extends AppCompatActivity {
                 }
 
                 /**
-                 * Удаляет информацию о владельце открытого профиля.
-                 * {@link PhoneDataStorage#deleteText(Context, String)}
-                 **/
-                deleteText(ProfileActivity.this, USER_ID);
-
-                /**
                  * Переход на следующую активность.
                  * {@link Initializations#changeActivityCompat(Activity, Intent)}
                  * */
+
+
                 changeActivityCompat(ProfileActivity.this, nextIntent);
+
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(ProfileActivity.this, ID).equals(""))
                     finishAffinity();
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_profile);
+                drawer.closeDrawer(GravityCompat.START);
 
                 return true;
             }
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_profile);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     /**
      * Форматирование даты из вида, полученного с сервер - YYYY-MM-DD

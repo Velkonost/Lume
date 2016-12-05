@@ -1,4 +1,4 @@
-package ru.velkonost.lume.Activities;
+package ru.velkonost.lume.activity;
 
 import android.content.Intent;
 import android.os.Bundle;

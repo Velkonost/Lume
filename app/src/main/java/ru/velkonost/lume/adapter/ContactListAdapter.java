@@ -2,6 +2,8 @@ package ru.velkonost.lume.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,9 +17,9 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.List;
 
-import ru.velkonost.lume.descriptions.Contact;
-import ru.velkonost.lume.Activities.ProfileActivity;
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.activity.ProfileActivity;
+import ru.velkonost.lume.descriptions.Contact;
 
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.JPG;
@@ -27,6 +29,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
+import static ru.velkonost.lume.Managers.ImageManager.getCircleMaskedBitmap;
 
 
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder>
@@ -72,6 +75,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 + SLASH + item.getId() + JPG;
 
         fetchImage(avatarURL, holder.userAvatar);
+        Bitmap bitmap = ((BitmapDrawable)holder.userAvatar.getDrawable()).getBitmap();
+        holder.userAvatar.setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
+
+
         holder.mRelativeLayout.setId(Integer.parseInt(item.getId()));
 
         holder.mRelativeLayout.setOnClickListener(new View.OnClickListener() {

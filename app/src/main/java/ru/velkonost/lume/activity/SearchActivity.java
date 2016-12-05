@@ -1,13 +1,13 @@
-package ru.velkonost.lume.Activities;
+package ru.velkonost.lume.activity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -53,14 +53,12 @@ import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SEARCH_METHOD;
-import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initSearch;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.saveText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 
@@ -123,8 +121,6 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        /** Установка темы по умолчанию */
-        setTheme(R.style.AppDefault);
 
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
@@ -134,6 +130,8 @@ public class SearchActivity extends AppCompatActivity {
         searchContacts = new HashMap<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.activity_search);
 
         /**
          * Получение данных, которые вводил пользователь.
@@ -164,20 +162,17 @@ public class SearchActivity extends AppCompatActivity {
      * Рисует боковую панель навигации.
      **/
     private void initNavigationView() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_search);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
-                R.string.view_navigation_open, R.string.view_navigation_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        /**
-         * Обработчки событий для меню бокового меню навигации.
-         **/
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @SuppressWarnings("NullableProblems")
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
                 drawerLayout.closeDrawers();
 
                 /** Инициализируем намерение на следующую активность */
@@ -195,6 +190,7 @@ public class SearchActivity extends AppCompatActivity {
 
                     /** Переход на страницу напоминаний, созданных данным пользователем */
                     case R.id.navigationReminder:
+                        nextIntent = new Intent(SearchActivity.this, test.class);
                         break;
 
                     /** Переход на страницу сообщений данного пользователя */
@@ -207,6 +203,7 @@ public class SearchActivity extends AppCompatActivity {
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
                     case R.id.navigationSettings:
+//                        nextIntent = new Intent(SearchActivity.this, SettingsActivity.class);
                         break;
 
                     /**
@@ -219,18 +216,22 @@ public class SearchActivity extends AppCompatActivity {
                         nextIntent = new Intent(SearchActivity.this, WelcomeActivity.class);
                         break;
                 }
-                deleteText(SearchActivity.this, USER_ID);
-                deleteText(SearchActivity.this, SEARCH);
 
                 /**
                  * Переход на следующую активность.
                  * {@link Initializations#changeActivityCompat(Activity, Intent)}
                  * */
+
+
                 changeActivityCompat(SearchActivity.this, nextIntent);
+
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(SearchActivity.this, ID).equals(""))
                     finishAffinity();
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_search);
+                drawer.closeDrawer(GravityCompat.START);
 
                 return true;
             }
@@ -268,28 +269,13 @@ public class SearchActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        if (searchView.isSearchOpen())
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_search);
+        if (drawer.isDrawerOpen(GravityCompat.START))
+            drawer.closeDrawer(GravityCompat.START);
+        else if (searchView.isSearchOpen())
             searchView.closeSearch();
         else
             super.onBackPressed();
-    }
-
-    /**
-     * Обработчик нажатий по view-элементам,
-     * каждый из которых отображает краткую информацию о конкретном пользователе.
-     **/
-    public void openUserProfile(View view) {
-
-        /**
-         * Сохраняет идентификатор пользователя, чей профиль намеревается открыть.
-         **/
-        saveText(SearchActivity.this, USER_ID, String.valueOf(view.getId()));
-
-        /**
-         * Переход в профиль выбранного пользователя.
-         * {@link Initializations#changeActivityCompat(Activity, Intent)}
-         * */
-        changeActivityCompat(SearchActivity.this, new Intent(this, ProfileActivity.class));
     }
 
     /**

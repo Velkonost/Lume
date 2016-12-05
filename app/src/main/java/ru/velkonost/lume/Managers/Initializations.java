@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
-import ru.velkonost.lume.Activities.SearchActivity;
+import ru.velkonost.lume.activity.SearchActivity;
 import ru.velkonost.lume.R;
 
 import static ru.velkonost.lume.Constants.SEARCH;
