@@ -44,25 +44,25 @@
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewProfile"
+
+
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-            <android.support.v4.widget.NestedScrollView
+            android:layout_marginBottom="10dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:id="@+id/profileContainer">
-            </LinearLayout>
-
+                <LinearLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:id="@+id/profileContainer"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                </LinearLayout>
+            </ScrollView>
         </android.support.v4.widget.NestedScrollView>
 
         <android.support.design.widget.FloatingActionButton

@@ -325,7 +325,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                     /** Переход на страницу напоминаний, созданных данным пользователем */
                     case R.id.navigationReminder:
-                        nextIntent = new Intent(ProfileActivity.this, test.class);
                         break;
 
                     /** Переход на страницу сообщений данного пользователя */
@@ -537,8 +536,10 @@ public class ProfileActivity extends AppCompatActivity {
                                             getResources().getString(R.string.dialog_item_create)
                                     };
 
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
-                                    builder.setTitle(getResources().getString(R.string.dialog_header_photo))
+                                    AlertDialog.Builder builder =
+                                            new AlertDialog.Builder(ProfileActivity.this);
+                                    builder
+                                            .setTitle(getResources().getString(R.string.dialog_header_photo))
                                             .setItems(data,
                                                     new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int which) {
@@ -550,15 +551,18 @@ public class ProfileActivity extends AppCompatActivity {
                                                                     fullScreenIntent.putExtra(NAME, sUserName);
                                                                     fullScreenIntent.putExtra(ID, profileId);
                                                                     try {
-                                                                        fullScreenIntent.putExtra(AVATAR, dataJsonObj.getString(AVATAR));
+                                                                        fullScreenIntent.putExtra(AVATAR,
+                                                                                dataJsonObj.getString(AVATAR));
                                                                     } catch (JSONException e) {
                                                                         e.printStackTrace();
                                                                     }
-                                                                    ProfileActivity.this.startActivity(fullScreenIntent);
+                                                                    ProfileActivity.this
+                                                                            .startActivity(fullScreenIntent);
                                                                     break;
 
                                                                 case 1:
-                                                                    Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                                                    Intent intent = new Intent(Intent.ACTION_PICK,
+                                                                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
                                                                     //Из галереи
                                                                     startActivityForResult(intent, GALLERY_REQUEST);
@@ -590,10 +594,12 @@ public class ProfileActivity extends AppCompatActivity {
                         if (!profileId.equals(userId)) {
 
                             /** Кнопка добавления/удаления владельца профиля из контактов авторизованного пользоавателя */
-                            FloatingActionButton btnAddIntoContacts = (FloatingActionButton) findViewById(R.id.btnAddIntoContacts);
+                            FloatingActionButton btnAddIntoContacts
+                                    = (FloatingActionButton) findViewById(R.id.btnAddIntoContacts);
 
                             /** Кнопка открытия диалога между авторизованным пользователем и владельцем открытого профиля */
-                            FloatingActionButton btnSendMessage = (FloatingActionButton) findViewById(R.id.btnSendMessage);
+                            FloatingActionButton btnSendMessage
+                                    = (FloatingActionButton) findViewById(R.id.btnSendMessage);
 
                             btnAddIntoContacts.setVisibility(View.VISIBLE);
                             btnSendMessage.setVisibility(View.VISIBLE);
@@ -604,7 +610,8 @@ public class ProfileActivity extends AppCompatActivity {
                              * */
                             isContact = dataJsonObj.getBoolean(CONTACT);
                             if (isContact)
-                                btnAddIntoContacts.setImageResource(R.mipmap.ic_account_multiple_minus);
+                                btnAddIntoContacts
+                                        .setImageResource(R.mipmap.ic_account_multiple_minus);
 
 
                             /** Создает обработчик событий */
@@ -625,8 +632,10 @@ public class ProfileActivity extends AppCompatActivity {
                         /**
                          * Формирование места жительства владельца открытого профиля.
                          **/
-                        viewUserPlaceLiving = ltInflater.inflate(R.layout.item_profile_place_living, linLayout, false);
-                        TextView userPlaceLiving = (TextView) viewUserPlaceLiving.findViewById(R.id.descriptionCardPlaceLiving);
+                        viewUserPlaceLiving = ltInflater
+                                .inflate(R.layout.item_profile_place_living, linLayout, false);
+                        TextView userPlaceLiving = (TextView) viewUserPlaceLiving
+                                .findViewById(R.id.descriptionCardPlaceLiving);
 
                         /**
                          * Формируется место проживания из имеющихся данных.

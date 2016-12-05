@@ -190,7 +190,6 @@ public class SearchActivity extends AppCompatActivity {
 
                     /** Переход на страницу напоминаний, созданных данным пользователем */
                     case R.id.navigationReminder:
-                        nextIntent = new Intent(SearchActivity.this, test.class);
                         break;
 
                     /** Переход на страницу сообщений данного пользователя */

@@ -44,6 +44,7 @@ public class ContactsFragment extends Fragment {
         FastScrollRecyclerView recyclerView = (FastScrollRecyclerView)
                 view.findViewById(R.id.recycleViewContact);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
         adapter = new ContactListAdapter(getActivity(), mContacts);
         recyclerView.setAdapter(adapter);
         return view;
