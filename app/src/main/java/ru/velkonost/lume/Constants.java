@@ -64,6 +64,8 @@ public class Constants {
     public static final String JPG = ".jpg";
     public static final String ZERO = "0";
 
+
+    public static final int MARQUEE_REPEAT_LIMIT = 1000000000;
     /**
      *  Название файла, с которым приложения осуществляет взаимодействие
      * {@link PhoneDataStorage}

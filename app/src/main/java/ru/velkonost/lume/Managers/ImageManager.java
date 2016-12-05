@@ -42,7 +42,7 @@ public class ImageManager {
      * @param iUrl Урл-адрес картинки
      * @param iView ImageView, для которого необходимо установить картинку
      * */
-    public static void fetchImage(final String iUrl, final ImageView iView) {
+    public static void fetchImage(final String iUrl, final ImageView iView, final boolean isCircle) {
         if ( iUrl == null || iView == null )
             return;
 
@@ -52,7 +52,8 @@ public class ImageManager {
                 /**
                  * Получение картинки из параллельного потока, установка в {@param iView}
                  */
-                final Bitmap image = (Bitmap) message.obj;
+                Bitmap image = (Bitmap) message.obj;
+                if (isCircle) image = getCircleMaskedBitmap(image, 25);
                 iView.setImageBitmap(image);
             }
         };
