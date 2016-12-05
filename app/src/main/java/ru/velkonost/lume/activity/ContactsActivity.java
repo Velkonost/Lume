@@ -195,7 +195,7 @@ public class ContactsActivity extends AppCompatActivity {
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
                     case R.id.navigationSettings:
-//                        nextIntent = new Intent(ContactsActivity.this, SettingsActivity.class);
+                        nextIntent = new Intent(ContactsActivity.this, SettingsActivity.class);
                         break;
 
                     /**

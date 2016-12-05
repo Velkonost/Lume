@@ -337,7 +337,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
                     case R.id.navigationSettings:
-//                        nextIntent = new Intent(ProfileActivity.this, SettingsActivity.class);
+                        nextIntent = new Intent(ProfileActivity.this, SettingsActivity.class);
                         break;
 
                     /**

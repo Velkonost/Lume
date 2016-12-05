@@ -51,11 +51,14 @@
 
 
     <string name="my_contacts">Мои контакты</string>
+    <string name="settings">Настройки</string>
 
 
     <string name="dialog_item_open">Открыть</string>
     <string name="dialog_item_upload">Загрузить из галереи</string>
     <string name="dialog_item_create">Сделать снимок</string>
     <string name="dialog_header_photo">Фотография</string>
+
+    <string name="change">Изменить</string>
 
 </resources>

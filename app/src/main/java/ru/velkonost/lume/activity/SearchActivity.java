@@ -202,7 +202,7 @@ public class SearchActivity extends AppCompatActivity {
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
                     case R.id.navigationSettings:
-//                        nextIntent = new Intent(SearchActivity.this, SettingsActivity.class);
+                        nextIntent = new Intent(SearchActivity.this, SettingsActivity.class);
                         break;
 
                     /**
