@@ -20,38 +20,62 @@ import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
 
+/**
+ * @author Velkonost
+ *
+ * Класс, описывающий активность полноэкранной фотографии.
+ *
+ */
 public class FullScreenPhotoActivity extends AppCompatActivity {
+
+    private static final int LAYOUT = R.layout.activity_full_screen_photo;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_full_screen_photo);
+        setContentView(LAYOUT);
+
         Intent intent = getIntent();
 
+        /**
+         * Заголовок - полное имя владельца аватарки.
+         */
         String imageTitle = (String) intent.getExtras().get(NAME);
+
+        /**
+         * Идентификатор владельца аватарки.
+         */
         String profileId = String.valueOf(intent.getExtras().get(ID));
+
+        /**
+         * Папка на сервере, в которой находится открытый аватар.
+         */
         String userAvatar = (String) intent.getExtras().get(AVATAR);
-
-
 
 
         ImageView imageView = (ImageView) findViewById(R.id.fullImage);
 
-
+        /**
+         * Составляем адрес, по которому следует загрузить картинку.
+         */
         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
                 + SERVER_AVATAR + SLASH + userAvatar
                 + SLASH + profileId + JPG;
 
-
+        /**
+         * Загружаем картинку с интернета.
+         * {@link fetchImage(java.lang.String, android.widget.ImageView, boolean, boolean)}
+         */
         fetchImage(avatarURL, imageView, false, true);
 
-
-
-
+        /**
+         * Инициализация тулбара.
+         */
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setTitle(imageTitle);
         setSupportActionBar(toolbar);
+
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

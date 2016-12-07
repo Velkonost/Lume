@@ -59,7 +59,7 @@ import static ru.velkonost.lume.net.ServerConnection.getJSON;
 /**
  * @author Velkonost
  *
- * Класс, состояние страницы контактов авторизованного пользователя.
+ * Класс, описывающий состояние страницы контактов авторизованного пользователя.
  *
  */
 public class ContactsActivity extends AppCompatActivity {
@@ -110,8 +110,12 @@ public class ContactsActivity extends AppCompatActivity {
      */
     private MaterialSearchView searchView;
 
+    /**
+     * Свойство - список контактов.
+     * {@link Contact}
+     */
     private List<Contact> mContacts;
-    ContactsFragment mContactsFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,7 +277,7 @@ public class ContactsActivity extends AppCompatActivity {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_contact);
         if (drawer.isDrawerOpen(GravityCompat.START))
             drawer.closeDrawer(GravityCompat.START);
-            else if (searchView.isSearchOpen())
+        else if (searchView.isSearchOpen())
             searchView.closeSearch();
         else
             super.onBackPressed();
@@ -385,9 +389,14 @@ public class ContactsActivity extends AppCompatActivity {
                             Integer.parseInt(userInfo.getString(AVATAR))));
                 }
 
+                /**
+                 * Добавляем фрагмент на экран.
+                 * {@link ContactsFragment}
+                 */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                mContactsFragment =  ContactsFragment.getInstance(ContactsActivity.this, mContacts);
-                ft.add(R.id.llcontact, mContactsFragment);
+                ContactsFragment contactsFragment
+                        = ContactsFragment.getInstance(ContactsActivity.this, mContacts);
+                ft.add(R.id.llcontact, contactsFragment);
                 ft.commit();
 
             } catch (JSONException e) {

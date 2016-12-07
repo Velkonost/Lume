@@ -1,6 +1,7 @@
 package ru.velkonost.lume.activity;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -63,6 +64,12 @@ import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
+/**
+ * @author Velkonost
+ *
+ * Класс, предназначенный для самостоятельного изменения данных авторизованного пользователя.
+ *
+ */
 public class SettingsActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_settings;
@@ -97,24 +104,35 @@ public class SettingsActivity extends AppCompatActivity {
      */
     protected PostData mPostData;
 
+    /**
+     * Свойство - элемент для выбора даты.
+     */
+    private DatePickerDialog dateBirdayDatePicker;
+
+    /**
+     * Свойство - отформатированная дата рождения, которую ввел пользователь.
+     */
     protected String formattedBirthday;
 
-    protected EditText editName;
-    protected EditText editSurname;
+    /**
+     * Свойство - поля для ввода данных о пользователе, которые он желает изменить.
+     */
+    protected EditText editName; /** Имя пользователя */
+    protected EditText editSurname; /** Фамилия пользователя */
 
-    protected TextView editBirthday;
+    protected TextView editBirthday; /** День рождения пользователя */
 
-    protected EditText prevPassword;
-    protected EditText newPassword;
+    protected EditText prevPassword; /** Текущий пароль пользователя */
+    protected EditText newPassword; /** Новый пароль пользователя */
 
-    protected EditText editCity;
-    protected EditText editCountry;
+    protected EditText editCity; /** Город проживания пользователя */
+    protected EditText editCountry; /** Страна проживания пользователя */
 
-    protected EditText editStudy;
-    protected EditText editWork;
+    protected EditText editStudy; /** Место учебы пользователя */
+    protected EditText editWork; /** Место работы пользователя */
 
-    protected EditText editEmail;
-    protected EditText editWorkEmail;
+    protected EditText editEmail; /** Основной email пользователя */
+    protected EditText editWorkEmail; /** email, который виден другим пользователям*/
 
 
     @Override
@@ -153,23 +171,43 @@ public class SettingsActivity extends AppCompatActivity {
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(SettingsActivity.this, toolbar, getResources().getString(R.string.settings)); /** Инициализация */
         initNavigationView(); /** Инициализация */
-        initDateBirthdayDatePicker();
+        initDateBirthdayDatePicker(); /** Инициализация */
+
         mGetData.execute();
     }
 
+    /**
+     * Слушатель для даты рождения.
+     **/
     public  void chooseDate(View w){
         switch (w.getId()){
             case R.id.editBirthday:
-                // это шаг 3, функцией show() мы говорим, что календарь нужно отобразить
+                /**
+                 * Отображает календарь для выбора даты.
+                 **/
                 dateBirdayDatePicker.show();
                 break;
         }
     }
-    private DatePickerDialog dateBirdayDatePicker;
+
+    /**
+     * Инициализация календаря.
+     **/
     private void initDateBirthdayDatePicker(){
-        Calendar newCalendar = Calendar.getInstance(); // объект типа Calendar мы будем использовать для получения даты
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); // это строка нужна для дальнейшего преобразования даты в строку
-        //создаем объект типа DatePickerDialog и инициализируем его конструктор обработчиком события выбора даты и данными для даты по умолчанию
+        /**
+         * Использует для получения даты.
+         */
+        Calendar newCalendar = Calendar.getInstance();
+
+        /**
+         * Требуется для дальнейшего преобразования даты в строку.
+         */
+        @SuppressLint("SimpleDateFormat") final SimpleDateFormat dateFormat
+                = new SimpleDateFormat("dd-MM-yyyy");
+
+        /**
+         * Создает объект и инициализирует обработчиком события выбора даты и данными для даты по умолчанию.
+         */
         dateBirdayDatePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             // функция onDateSet обрабатывает шаг 2: отображает выбранные нами данные в элементе EditText
             @Override
@@ -178,7 +216,10 @@ public class SettingsActivity extends AppCompatActivity {
                 newCal.set(year, monthOfYear, dayOfMonth);
                 editBirthday.setText(dateFormat.format(newCal.getTime()));
             }
-        },newCalendar.get(Calendar.YEAR),newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+        },
+                newCalendar.get(Calendar.YEAR),
+                newCalendar.get(Calendar.MONTH),
+                newCalendar.get(Calendar.DAY_OF_MONTH));
     }
 
     @Override
@@ -193,7 +234,14 @@ public class SettingsActivity extends AppCompatActivity {
 
         switch (id){
             case 0:
+                /**
+                 * Приводим дату к виду, в котором она хранится на сервере.
+                 */
                 formattedBirthday = formatDateBack(editBirthday.getText().toString());
+
+                /**
+                 * Отправляем данные на сервер.
+                 */
                 mPostData.execute();
                 break;
         }
@@ -362,6 +410,10 @@ public class SettingsActivity extends AppCompatActivity {
                     /** В случае успешного выполнения */
                     case 600:
 
+                        /**
+                         * Устанавливает в поля текущие данные пользователя.
+                         */
+
                         editName.setText(dataJsonObj.getString(NAME));
                         editSurname.setText(dataJsonObj.getString(SURNAME));
 
@@ -395,6 +447,10 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Класс для отправки измененных данных о пользователе на сервер.
+     */
     private class PostData extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -406,7 +462,7 @@ public class SettingsActivity extends AppCompatActivity {
             String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
                     + SERVER_EDIT_PARAMETERS_METHOD;
 
-            
+
             /**
              * Формирование отправных данных.
              */
@@ -471,11 +527,17 @@ public class SettingsActivity extends AppCompatActivity {
                     /** В случае успешного выполнения */
                     case 700:
 
-                        changeActivityCompat(SettingsActivity.this, new Intent(SettingsActivity.this, ProfileActivity.class));
+                        /**
+                         * Переходим в профиль.
+                         * Изменения прошли успешно.
+                         */
+                        changeActivityCompat(SettingsActivity.this,
+                                new Intent(SettingsActivity.this, ProfileActivity.class));
 
                         break;
                     /**
-                     * Произошла неожиданная ошибка.
+                     * При попытке сменить пароль, текущий пароль был указан неверно.
+                     * Изменение не вступили в силу.
                      **/
                     case 701:
                         /**

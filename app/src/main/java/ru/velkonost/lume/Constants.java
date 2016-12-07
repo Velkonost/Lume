@@ -22,6 +22,8 @@ public class Constants {
     public static final String ID = "id";
     public static final String IDS = "ids";
 
+    public static final String IMAGE = "image";
+
     public static final String USER_ID = "user_id";
     public static final String SEND_ID = "send_id";
     public static final String GET_ID = "get_id";
@@ -62,8 +64,16 @@ public class Constants {
         public static final String SERVER_UPLOAD_IMAGE_METHOD = "/editImage";
         public static final String SERVER_EDIT_PARAMETERS_METHOD = "/edit";
 
+    }
 
+    public static class RESULT {
+        public static final String SUCCESS = "Success";
+        public static final String ERROR = "Error";
 
+        public static final String ERROR_WITH_CONNECTION = "Error with connection";
+        public static final String ERROR_WITH_URL = "Error with url";
+        public static final String ERROR_WITH_PROTOCOL = "Error with protocol";
+        public static final String ERROR_WITH_ENCODING = "Error with encode";
     }
 
     public static final String SLASH = "/";
@@ -71,8 +81,17 @@ public class Constants {
     public static final String ZERO = "0";
 
 
+
+    public static final String UPLOAD_IMAGE_SUCCESS_CODE = "500";
+
     public static final int MARQUEE_REPEAT_LIMIT = 1000000000;
     public final static String TAG_IMAGE_MANAGER = "ImageManager";
+
+
+
+    public static final int GALLERY_REQUEST = 22131;
+    public static final int CAMERA_REQUEST = 13323;
+
     /**
      *  Название файла, с которым приложения осуществляет взаимодействие
      * {@link PhoneDataStorage}

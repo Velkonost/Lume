@@ -57,20 +57,30 @@ import static ru.velkonost.lume.Constants.ADD_CONTACT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BIRTHDAY;
+import static ru.velkonost.lume.Constants.CAMERA_REQUEST;
 import static ru.velkonost.lume.Constants.CITY;
 import static ru.velkonost.lume.Constants.CONTACT;
 import static ru.velkonost.lume.Constants.COUNTRY;
 import static ru.velkonost.lume.Constants.EQUALS;
+import static ru.velkonost.lume.Constants.GALLERY_REQUEST;
 import static ru.velkonost.lume.Constants.GET_DATA;
 import static ru.velkonost.lume.Constants.GET_ID;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.IMAGE;
 import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
+import static ru.velkonost.lume.Constants.RESULT.ERROR;
+import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_CONNECTION;
+import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_ENCODING;
+import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_PROTOCOL;
+import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_URL;
+import static ru.velkonost.lume.Constants.RESULT.SUCCESS;
 import static ru.velkonost.lume.Constants.SEND_ID;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.STUDY;
 import static ru.velkonost.lume.Constants.SURNAME;
+import static ru.velkonost.lume.Constants.UPLOAD_IMAGE_SUCCESS_CODE;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_ADD_CONTACT_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
@@ -185,12 +195,15 @@ public class ProfileActivity extends AppCompatActivity {
     CollapsingToolbarLayout collapsingToolbar;
 
 
-
+    /**
+     * Свойство - захват фото с камеры.
+     */
     private CameraPhoto cameraPhoto;
+
+    /**
+     * Свойство - выбор фото из галереи устройства.
+     */
     private GalleryPhoto galleryPhoto;
-    final int GALLERY_REQUEST = 22131;
-    final int CAMERA_REQUEST = 13323;
-    private String selectedPhoto;
 
 
     @Override
@@ -226,6 +239,7 @@ public class ProfileActivity extends AppCompatActivity {
         userId = loadText(ProfileActivity.this, ID);
 
         Intent intent = getIntent();
+
         /**
          * Проверка:
          * Принадлежит открытый профиль пользователю,
@@ -235,6 +249,11 @@ public class ProfileActivity extends AppCompatActivity {
                 ? intent.getIntExtra(ID, 0)
                 : userId;
 
+
+        /**
+         * Кнопка возврата на предыдущую активность, если текущий профиль не принадлежит пользователю,
+         *          авторизованному на данном устройстве.
+         */
         if (!profileId.equals(userId)) {
             toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -364,7 +383,6 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(ProfileActivity.this, ID).equals(""))
                     finishAffinity();
@@ -486,27 +504,42 @@ public class ProfileActivity extends AppCompatActivity {
 
                         /**
                          * Загрузка аватара пользователя
-                         * {@link ImageManager#fetchImage(String, ImageView)}
+                         * {@link ImageManager#fetchImage(String, ImageView, boolean, boolean)}
                          **/
                         fetchImage(avatarURL, userAvatar, false, false);
 
+                        /**
+                         * Слушатель на аватар открытого профиля.
+                         */
                         userAvatar.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
+                                /**
+                                 * Если профиль не принадлежит авторизованному пользователю.
+                                 */
                                 if (profileId != userId) {
+                                    /**
+                                     * То при нажатии сразу открывает аватар на весь экран.
+                                     * {@link FullScreenPhotoActivity}
+                                     */
                                     Intent fullScreenIntent = new Intent(ProfileActivity.this, FullScreenPhotoActivity.class);
 
                                     fullScreenIntent.putExtra(NAME, sUserName);
                                     fullScreenIntent.putExtra(ID, profileId);
+
                                     try {
                                         fullScreenIntent.putExtra(AVATAR, dataJsonObj.getString(AVATAR));
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
+
                                     ProfileActivity.this.startActivity(fullScreenIntent);
                                 }
                                 else {
+                                    /**
+                                     * Иначе открывает диалоговое окно.
+                                     */
 
                                     CharSequence[] data = {
                                             getResources().getString(R.string.dialog_item_open),
@@ -523,41 +556,59 @@ public class ProfileActivity extends AppCompatActivity {
                                                         public void onClick(DialogInterface dialog, int which) {
                                                             switch (which) {
                                                                 case 0:
-                                                                    Intent fullScreenIntent = new Intent(ProfileActivity.this,
-                                                                            FullScreenPhotoActivity.class);
+                                                                    /**
+                                                                     * Открывает аватар на весь экран.
+                                                                     * {@link FullScreenPhotoActivity}
+                                                                     */
+                                                                    Intent fullScreenIntent = new Intent(
+                                                                            ProfileActivity.this,
+                                                                            FullScreenPhotoActivity.class
+                                                                    );
 
                                                                     fullScreenIntent.putExtra(NAME, sUserName);
                                                                     fullScreenIntent.putExtra(ID, profileId);
+
                                                                     try {
                                                                         fullScreenIntent.putExtra(AVATAR,
                                                                                 dataJsonObj.getString(AVATAR));
                                                                     } catch (JSONException e) {
                                                                         e.printStackTrace();
                                                                     }
+
                                                                     ProfileActivity.this
                                                                             .startActivity(fullScreenIntent);
                                                                     break;
 
                                                                 case 1:
-                                                                    Intent intent = new Intent(Intent.ACTION_PICK,
-                                                                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                                                    /**
+                                                                     * Открывает галерею для выбора фото.
+                                                                     */
+                                                                    Intent intent = new Intent(
+                                                                            Intent.ACTION_PICK,
+                                                                            android.provider.MediaStore
+                                                                                    .Images.Media
+                                                                                    .EXTERNAL_CONTENT_URI
+                                                                    );
 
-                                                                    //Из галереи
-                                                                    startActivityForResult(intent, GALLERY_REQUEST);
+                                                                    startActivityForResult(intent,
+                                                                            GALLERY_REQUEST);
                                                                     break;
                                                                 case 2:
+                                                                    /**
+                                                                     * Включает камеру для совершения снимка.
+                                                                     */
                                                                     try {
-                                                                        //С камеры
-                                                                        startActivityForResult(cameraPhoto.takePhotoIntent(), CAMERA_REQUEST);
+                                                                        startActivityForResult(
+                                                                                cameraPhoto.takePhotoIntent(),
+                                                                                CAMERA_REQUEST)
+                                                                        ;
                                                                         cameraPhoto.addToGallery();
                                                                     } catch (IOException e) {
                                                                         e.printStackTrace();
                                                                     }
-
                                                             }
                                                         }
                                                     });
-
                                     AlertDialog alert = builder.create();
                                     alert.show();
                                 }
@@ -600,11 +651,8 @@ public class ProfileActivity extends AppCompatActivity {
                                     /** Открытие нового потока */
                                     mAddContact = new AddContact();
                                     mAddContact.execute();
-
                                 }
                             });
-
-
                         }
 
                         /**
@@ -755,113 +803,162 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK) {//Проверка откуда была выбрана загрузка
-            if (requestCode == GALLERY_REQUEST) {//Из галереи
+        /**
+         * Проверка, каким способом была загружена фотография.
+         */
+        if (resultCode == Activity.RESULT_OK) {
+
+            /**
+             * Адрес выбранной фотографии.
+             */
+            String selectedPhoto;
+
+            /**
+             * Фото из галереи.
+             */
+            if (requestCode == GALLERY_REQUEST) {
+
+                /**
+                 * Устанавливает путь до фотографии.
+                 */
                 Uri uri = data.getData();
                 galleryPhoto.setPhotoUri(uri);
-                selectedPhoto = galleryPhoto.getPath(); //Получаем путь
+                selectedPhoto = galleryPhoto.getPath();
 
-                //Загружаем на сервер
+                /**
+                 * Загружает фотографию на сервер.
+                 */
                 try {
+
+                    /**
+                     * Данные фотографии кодируются на устройстве и раскодируют на сервере.
+                     */
                     Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
                     String encodedImage = ImageBase64.encode(bitmap);
 
-                    HashMap<String, String> postData = new HashMap<String, String>();
+                    HashMap<String, String> postData = new HashMap<>();
 
-                    postData.put("image", encodedImage);
-                    postData.put("id", userId);
+                    postData.put(IMAGE, encodedImage);
+                    postData.put(ID, userId);
+
 
                     PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, new AsyncResponse() {
                         @Override
                         public void processFinish(String s) {
-                            if (s.contains("500")) {
-                                Toast.makeText(ProfileActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            if (s.contains(UPLOAD_IMAGE_SUCCESS_CODE)) {
+                                Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
                                 changeActivityCompat(ProfileActivity.this);
                             } else {
-                                Toast.makeText(ProfileActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
 
+                    /**
+                     * Посылаем фото на сервер.
+                     */
                     task.execute(
                             SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
                                     + SERVER_UPLOAD_IMAGE_METHOD
                     );
 
+                    /**
+                     * Обработка возможных исключений.
+                     */
                     task.setEachExceptionsHandler(new EachExceptionsHandler() {
                         @Override
                         public void handleIOException(IOException e) {
-                            Toast.makeText(ProfileActivity.this, "Error with connect", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void handleMalformedURLException(MalformedURLException e) {
-                            Toast.makeText(ProfileActivity.this, "Error with url", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void handleProtocolException(ProtocolException e) {
-                            Toast.makeText(ProfileActivity.this, "Error with protocol", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
-                            Toast.makeText(ProfileActivity.this, "Error with encode", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
                         }
                     });
-
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-            } else if(requestCode==CAMERA_REQUEST) {
-                //С камеры
-                selectedPhoto = cameraPhoto.getPhotoPath();//Получаем путь
-                //Загружаем на сервер
+
+            /**
+             * Фото с камеры.
+             */
+            } else if(requestCode == CAMERA_REQUEST) {
+
+                /**
+                 * Получает путь.
+                 */
+                selectedPhoto = cameraPhoto.getPhotoPath();
+
+                /**
+                 * Загружает на сервер.
+                 */
                 try {
+
+                    /**
+                     * Данные фотографии кодируются на устройстве и раскодируют на сервере.
+                     */
                     Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
                     String encodedImage = ImageBase64.encode(bitmap);
 
-                    HashMap<String, String> postData = new HashMap<String, String>();
+                    HashMap<String, String> postData = new HashMap<>();
 
-                    postData.put("image", encodedImage);
-                    postData.put("id", userId);
+                    postData.put(IMAGE, encodedImage);
+                    postData.put(ID, userId);
 
                     PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, new AsyncResponse() {
                         @Override
                         public void processFinish(String s) {
-                            if (s.contains("500")) {
-                                Toast.makeText(ProfileActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            if (s.contains(UPLOAD_IMAGE_SUCCESS_CODE)) {
+                                Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
                                 changeActivityCompat(ProfileActivity.this);
                             } else {
-                                Toast.makeText(ProfileActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
 
+                    /**
+                     * Посылаем фото на сервер.
+                     */
                     task.execute(
                             SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
                                     + SERVER_UPLOAD_IMAGE_METHOD
                     );
+
+                    /**
+                     * Обработка возможных исключений.
+                     */
                     task.setEachExceptionsHandler(new EachExceptionsHandler() {
                         @Override
                         public void handleIOException(IOException e) {
-                            Toast.makeText(ProfileActivity.this, "Error with connect", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void handleMalformedURLException(MalformedURLException e) {
-                            Toast.makeText(ProfileActivity.this, "Error with url", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void handleProtocolException(ProtocolException e) {
-                            Toast.makeText(ProfileActivity.this, "Error with protocol", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
-                            Toast.makeText(ProfileActivity.this, "Error with encode", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
                         }
                     });
 

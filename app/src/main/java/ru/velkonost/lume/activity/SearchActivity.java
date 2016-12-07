@@ -117,8 +117,11 @@ public class SearchActivity extends AppCompatActivity {
      */
     private MaterialSearchView searchView;
 
+    /**
+     * Свойство - список найденных пользователей.
+     * {@link SearchContact}
+     */
     private List<SearchContact> mSearchContacts;
-    SearchFragment mSearchFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +142,7 @@ public class SearchActivity extends AppCompatActivity {
          * {@link PhoneDataStorage#loadText(Context, String)}
          **/
         Intent intent = getIntent();
-        whatSearch = intent.getStringExtra(SEARCH);
+        whatSearch = intent.getStringExtra(SEARCH); /** Формирование заголовка тулбара */
         whatSearch = getResources().getString(R.string.search) + " " + whatSearch;
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
@@ -399,9 +402,14 @@ public class SearchActivity extends AppCompatActivity {
                             Integer.parseInt(userInfo.getString(AVATAR))));
                 }
 
+                /**
+                 * Добавляем фрагмент на экран.
+                 * {@link SearchFragment}
+                 */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                mSearchFragment =  SearchFragment.getInstance(SearchActivity.this, mSearchContacts);
-                ft.add(R.id.llsearch, mSearchFragment);
+                SearchFragment searchFragment
+                        = SearchFragment.getInstance(SearchActivity.this, mSearchContacts);
+                ft.add(R.id.llsearch, searchFragment);
                 ft.commit();
 
             } catch (JSONException e) {
