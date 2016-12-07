@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import ru.velkonost.lume.R;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.ID;
@@ -22,11 +21,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
 
 public class FullScreenPhotoActivity extends AppCompatActivity {
-    private String imageTitle;
-    private String profileId;
-    private String userAvatar;
 
-    PhotoViewAttacher mAttacher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +29,9 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_full_screen_photo);
         Intent intent = getIntent();
 
-        imageTitle = (String) intent.getExtras().get(NAME);
-        profileId = String.valueOf(intent.getExtras().get(ID));
-        userAvatar = (String) intent.getExtras().get(AVATAR);
+        String imageTitle = (String) intent.getExtras().get(NAME);
+        String profileId = String.valueOf(intent.getExtras().get(ID));
+        String userAvatar = (String) intent.getExtras().get(AVATAR);
 
 
 

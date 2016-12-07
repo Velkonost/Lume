@@ -2,6 +2,7 @@ package ru.velkonost.lume.activity;
 
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,15 +14,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.R;
@@ -33,20 +38,27 @@ import static ru.velkonost.lume.Constants.COUNTRY;
 import static ru.velkonost.lume.Constants.EMAIL;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.GET_DATA_SETTINGS;
+import static ru.velkonost.lume.Constants.GET_EDIT_RESULT;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.NAME;
+import static ru.velkonost.lume.Constants.NEW_PASSWORD;
+import static ru.velkonost.lume.Constants.PREV_PASSWORD;
 import static ru.velkonost.lume.Constants.STUDY;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
+import static ru.velkonost.lume.Constants.URL.SERVER_EDIT_PARAMETERS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_DATA_SETTINGS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
+import static ru.velkonost.lume.Managers.DateConverter.formatDate;
+import static ru.velkonost.lume.Managers.DateConverter.formatDateBack;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialog;
+import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialogWithRefresh;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
@@ -80,10 +92,17 @@ public class SettingsActivity extends AppCompatActivity {
      */
     protected GetData mGetData;
 
+    /**
+     * Свойство - экзмепляр класса {@link PostData}
+     */
+    protected PostData mPostData;
+
+    protected String formattedBirthday;
+
     protected EditText editName;
     protected EditText editSurname;
 
-    protected EditText editBirthday;
+    protected TextView editBirthday;
 
     protected EditText prevPassword;
     protected EditText newPassword;
@@ -112,11 +131,12 @@ public class SettingsActivity extends AppCompatActivity {
 
         /** Инициализация экземпляров классов */
         mGetData = new GetData();
+        mPostData = new PostData();
 
         editName = (EditText) findViewById(R.id.editName);
         editSurname = (EditText) findViewById(R.id.editSurname);
 
-        editBirthday = (EditText) findViewById(R.id.editBirthday);
+        editBirthday = (TextView) findViewById(R.id.editBirthday);
 
         prevPassword = (EditText) findViewById(R.id.prevPassword);
         newPassword = (EditText) findViewById(R.id.newPassword);
@@ -133,28 +153,50 @@ public class SettingsActivity extends AppCompatActivity {
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(SettingsActivity.this, toolbar, getResources().getString(R.string.settings)); /** Инициализация */
         initNavigationView(); /** Инициализация */
-
+        initDateBirthdayDatePicker();
         mGetData.execute();
+    }
+
+    public  void chooseDate(View w){
+        switch (w.getId()){
+            case R.id.editBirthday:
+                // это шаг 3, функцией show() мы говорим, что календарь нужно отобразить
+                dateBirdayDatePicker.show();
+                break;
+        }
+    }
+    private DatePickerDialog dateBirdayDatePicker;
+    private void initDateBirthdayDatePicker(){
+        Calendar newCalendar = Calendar.getInstance(); // объект типа Calendar мы будем использовать для получения даты
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); // это строка нужна для дальнейшего преобразования даты в строку
+        //создаем объект типа DatePickerDialog и инициализируем его конструктор обработчиком события выбора даты и данными для даты по умолчанию
+        dateBirdayDatePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            // функция onDateSet обрабатывает шаг 2: отображает выбранные нами данные в элементе EditText
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newCal = Calendar.getInstance();
+                newCal.set(year, monthOfYear, dayOfMonth);
+                editBirthday.setText(dateFormat.format(newCal.getTime()));
+            }
+        },newCalendar.get(Calendar.YEAR),newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_settings, menu);
-
-//        menu.findItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem menuItem) {
-//                Log.i("TEST", String.valueOf(123));
-//                return false;
-//            }
-//        });
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i("TEST", String.valueOf(item.getGroupId()));
+        int id = item.getGroupId();
 
+        switch (id){
+            case 0:
+                formattedBirthday = formatDateBack(editBirthday.getText().toString());
+                mPostData.execute();
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -270,8 +312,7 @@ public class SettingsActivity extends AppCompatActivity {
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = ID + EQUALS + userId
-                    + AMPERSAND + USER_ID + EQUALS + userId;
+            @SuppressWarnings("WrongThread") String params = USER_ID + EQUALS + userId;
 
             /** Свойство - код ответа, полученный от сервера */
             String resultJson = "";
@@ -324,7 +365,7 @@ public class SettingsActivity extends AppCompatActivity {
                         editName.setText(dataJsonObj.getString(NAME));
                         editSurname.setText(dataJsonObj.getString(SURNAME));
 
-                        editBirthday.setText(dataJsonObj.getString(BIRTHDAY));
+                        editBirthday.setText(formatDate(dataJsonObj.getString(BIRTHDAY)));
 
                         editStudy.setText(dataJsonObj.getString(STUDY));
                         editWork.setText(dataJsonObj.getString(WORK));
@@ -347,6 +388,104 @@ public class SettingsActivity extends AppCompatActivity {
                                 getResources().getString(R.string.server_error),
                                 getResources().getString(R.string.relogin),
                                 getResources().getString(R.string.btn_ok));
+                        break;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private class PostData extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
+                    + SERVER_EDIT_PARAMETERS_METHOD;
+
+            
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = USER_ID + EQUALS + userId
+                    + AMPERSAND + NAME + EQUALS + editName.getText().toString()
+                    + AMPERSAND + SURNAME + EQUALS + editSurname.getText().toString()
+                    + AMPERSAND + CITY + EQUALS + editCity.getText().toString()
+                    + AMPERSAND + COUNTRY + EQUALS + editCountry.getText().toString()
+                    + AMPERSAND + STUDY + EQUALS + editStudy.getText().toString()
+                    + AMPERSAND + WORK + EQUALS + editWork.getText().toString()
+                    + AMPERSAND + EMAIL + EQUALS + editEmail.getText().toString()
+                    + AMPERSAND + WORK_EMAIL + EQUALS + editWorkEmail.getText().toString()
+                    + AMPERSAND + BIRTHDAY + EQUALS + formattedBirthday
+                    + AMPERSAND + NEW_PASSWORD + EQUALS + newPassword.getText().toString()
+                    + AMPERSAND + PREV_PASSWORD + EQUALS + prevPassword.getText().toString();
+
+            /** Свойство - код ответа, полученный от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return resultJson;
+        }
+
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /**
+             * Свойство - код ответа от методов сервера.
+             *
+             * ВНИМАНИЕ!
+             *
+             * Этот параметр не имеет никакого отношения к кодам состояния.
+             * Он формируется на сервере в зависимости от результата проведения обработки данных.
+             *
+             **/
+            int resultCode;
+
+            /** Свойство - полученный JSON–объект*/
+            final JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+                resultCode = Integer.parseInt(dataJsonObj.getString(GET_EDIT_RESULT));
+
+                /**
+                 * Обработка полученного кода ответа.
+                 */
+                switch (resultCode) {
+                    /** В случае успешного выполнения */
+                    case 700:
+
+                        changeActivityCompat(SettingsActivity.this, new Intent(SettingsActivity.this, ProfileActivity.class));
+
+                        break;
+                    /**
+                     * Произошла неожиданная ошибка.
+                     **/
+                    case 701:
+                        /**
+                         * Формирование уведомления об ошибке.
+                         */
+                        inititializeAlertDialogWithRefresh(SettingsActivity.this,
+                                getResources().getString(R.string.password_error),
+                                getResources().getString(R.string.refill_password_field),
+                                getResources().getString(R.string.btn_ok),
+                                SettingsActivity.this);
                         break;
                 }
             } catch (JSONException e) {

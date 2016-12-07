@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -64,7 +63,6 @@ import static ru.velkonost.lume.Constants.COUNTRY;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.GET_DATA;
 import static ru.velkonost.lume.Constants.GET_ID;
-import static ru.velkonost.lume.Constants.HYPHEN;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.LOGIN;
@@ -84,6 +82,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_UPLOAD_IMAGE_METHOD;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
+import static ru.velkonost.lume.Managers.DateConverter.formatDate;
 import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
@@ -389,32 +388,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     /**
-     * Форматирование даты из вида, полученного с сервер - YYYY-MM-DD
-     *                в вид, необходимый для отображения - DD-MM-YYYY
-     **/
-    public String formatDate(String dateInStr) {
-
-        String day, month, year;
-
-        /** Разделяем строку на три ключевый строки */
-        day = String.valueOf(dateInStr.charAt(dateInStr.length() - 2)) +
-                dateInStr.charAt(dateInStr.length() - 1);
-
-        month = String.valueOf(dateInStr.charAt(dateInStr.length() - 5)) +
-                dateInStr.charAt(dateInStr.length() - 4);
-
-        year = String.valueOf(dateInStr.charAt(dateInStr.length() - 10)) +
-                dateInStr.charAt(dateInStr.length() - 9) +
-                dateInStr.charAt(dateInStr.length() - 8) +
-                dateInStr.charAt(dateInStr.length() - 7);
-
-        /** Соединяем все воедино */
-        return day
-                + HYPHEN + month
-                + HYPHEN + year;
-    }
-
-    /**
      * При полном закрытии активности удаляем информацию о владельце открытого профиля.
      **/
     @Override
@@ -520,7 +493,6 @@ public class ProfileActivity extends AppCompatActivity {
                         userAvatar.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                final Bitmap bitmap = ((BitmapDrawable) userAvatar.getDrawable()).getBitmap();
 
                                 if (profileId != userId) {
                                     Intent fullScreenIntent = new Intent(ProfileActivity.this, FullScreenPhotoActivity.class);

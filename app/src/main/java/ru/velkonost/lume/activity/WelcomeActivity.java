@@ -43,9 +43,6 @@ public class WelcomeActivity extends Activity {
          * {@link WelcomeActivity#checkConnection()}
          **/
         checkConnection();
-
-
-//        checkCookieId();
     }
 
     /**
