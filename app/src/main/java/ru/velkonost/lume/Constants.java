@@ -16,6 +16,8 @@ public class Constants {
     public static final String LOGIN = "login";
     public static final String REGISTRATION = "registration";
     public static final String PASSWORD = "password";
+    public static final String PREV_PASSWORD = "prev_password";
+    public static final String NEW_PASSWORD = "new_password";
     public static final String EMAIL = "email";
     public static final String ID = "id";
     public static final String IDS = "ids";
@@ -38,6 +40,8 @@ public class Constants {
     public static final String CONTACT = "contact";
 
     public static final String GET_DATA = "getdata";
+    public static final String GET_DATA_SETTINGS = "getdatasettings";
+    public static final String GET_EDIT_RESULT = "edit";
     public static final String ADD_CONTACT = "addContact";
 
     /** Класс констант, относящихся исключительно к построению URL */
@@ -51,10 +55,12 @@ public class Constants {
         public static final String SERVER_LOGIN_METHOD = "/login";
         public static final String SERVER_REGISTRATION_METHOD = "/registration";
         public static final String SERVER_GET_DATA_METHOD = "/getData";
+        public static final String SERVER_GET_DATA_SETTINGS_METHOD = "/getDataSettings";
         public static final String SERVER_ADD_CONTACT_METHOD = "/addContact";
         public static final String SERVER_SEARCH_METHOD = "/search";
         public static final String SERVER_GET_CONTACTS_METHOD = "/getContacts";
         public static final String SERVER_UPLOAD_IMAGE_METHOD = "/editImage";
+        public static final String SERVER_EDIT_PARAMETERS_METHOD = "/edit";
 
 
 
@@ -66,6 +72,7 @@ public class Constants {
 
 
     public static final int MARQUEE_REPEAT_LIMIT = 1000000000;
+    public final static String TAG_IMAGE_MANAGER = "ImageManager";
     /**
      *  Название файла, с которым приложения осуществляет взаимодействие
      * {@link PhoneDataStorage}

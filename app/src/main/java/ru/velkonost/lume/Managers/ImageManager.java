@@ -20,6 +20,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import ru.velkonost.lume.R;
+import uk.co.senab.photoview.PhotoViewAttacher;
+
+import static ru.velkonost.lume.Constants.TAG_IMAGE_MANAGER;
 
 
 /**
@@ -32,7 +35,6 @@ import ru.velkonost.lume.R;
  * Позволяет делать форму отображения круглой.
  * */
 public class ImageManager {
-    private final static String TAG = "ImageManager";
 
     /** Пустой конструктор */
     private ImageManager () {}
@@ -42,7 +44,8 @@ public class ImageManager {
      * @param iUrl Урл-адрес картинки
      * @param iView ImageView, для которого необходимо установить картинку
      * */
-    public static void fetchImage(final String iUrl, final ImageView iView, final boolean isCircle) {
+    public static void fetchImage(final String iUrl, final ImageView iView,
+                                  final boolean isCircle, final boolean isAttachable) {
         if ( iUrl == null || iView == null )
             return;
 
@@ -55,6 +58,9 @@ public class ImageManager {
                 Bitmap image = (Bitmap) message.obj;
                 if (isCircle) image = getCircleMaskedBitmap(image, 25);
                 iView.setImageBitmap(image);
+
+                if (isAttachable)
+                    new PhotoViewAttacher(iView);
             }
         };
 
@@ -67,7 +73,7 @@ public class ImageManager {
                  * */
                 final Bitmap image = downloadImage(iUrl);
                 if (image != null) {
-                    Log.v(TAG, "Got image by URL: " + iUrl);
+                    Log.v(TAG_IMAGE_MANAGER, "Got image by URL: " + iUrl);
                     /**
                      * Отправка полученных данных в handler,
                      * который отвечает за установку этой картинки на элемент ImageView.
@@ -97,7 +103,7 @@ public class ImageManager {
         BufferedInputStream buf_stream = null;
 
         try {
-            Log.v(TAG, "Starting loading image by URL: " + iUrl);
+            Log.v(TAG_IMAGE_MANAGER, "Starting loading image by URL: " + iUrl);
 
             /**
              * Открывается новое соединение, выстраиваются необходимые параметры.
@@ -128,11 +134,11 @@ public class ImageManager {
 
             /** Обработка ошибок: логирование */
         } catch (MalformedURLException ex) {
-            Log.e(TAG, "Url parsing was failed: " + iUrl);
+            Log.e(TAG_IMAGE_MANAGER, "Url parsing was failed: " + iUrl);
         } catch (IOException ex) {
-            Log.d(TAG, iUrl + " does not exists");
+            Log.d(TAG_IMAGE_MANAGER, iUrl + " does not exists");
         } catch (OutOfMemoryError e) {
-            Log.w(TAG, "Out of memory!!!");
+            Log.w(TAG_IMAGE_MANAGER, "Out of memory!!!");
             return null;
         } finally {
             /**

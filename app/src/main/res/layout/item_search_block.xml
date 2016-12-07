@@ -19,7 +19,7 @@
                 android:layout_height="100dp"
                 android:id="@+id/userAvatar"/>
 
-            <ru.velkonost.lume.ScrollingTextView
+            <ru.velkonost.lume.patterns.ScrollingTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/userName"
@@ -30,7 +30,7 @@
                 android:layout_alignTop="@+id/userAvatar"
                 android:layout_toEndOf="@+id/userAvatar"
                 android:lines="1"/>
-            <ru.velkonost.lume.ScrollingTextView
+            <ru.velkonost.lume.patterns.ScrollingTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/userLogin"

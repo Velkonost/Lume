@@ -1,117 +1,496 @@
-//package ru.velkonost.lume.Activities;
-//
-//import android.content.Intent;
-//import android.graphics.Bitmap;
-//import android.graphics.BitmapFactory;
-//import android.net.Uri;
-//import android.os.AsyncTask;
-//import android.os.Bundle;
-//import android.support.v7.app.AppCompatActivity;
-//import android.view.View;
-//import android.widget.Button;
-//import android.widget.ImageView;
-//
-//import java.io.FileNotFoundException;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.net.URL;
-//
-//import ru.velkonost.lume.R;
-//
-//public class SettingsActivity extends AppCompatActivity {
-//
-//    //Объявляем используемые переменные:
-//    private ImageView imageView;
-//    private final int Pick_image = 1;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_settings);
-//
-//        //Связываемся с нашим ImageView:
-//        imageView = (ImageView)findViewById(R.id.imageView);
-//
-//        //Связываемся с нашей кнопкой Button:
-//        Button PickImage = (Button) findViewById(R.id.button);
-//        //Настраиваем для нее обработчик нажатий OnClickListener:
-//        PickImage.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View view) {
-//
-//                //Вызываем стандартную галерею для выбора изображения с помощью Intent.ACTION_PICK:
-//                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-//                //Тип получаемых объектов - image:
-//                photoPickerIntent.setType("image/*");
-//                //Запускаем переход с ожиданием обратного результата в виде информации об изображении:
-//                startActivityForResult(photoPickerIntent, Pick_image);
-//            }
-//        });
-//    }
-//
-//    //Обрабатываем результат выбора в галерее:
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-//        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-//
-//        switch(requestCode) {
-//            case Pick_image:
-//                if(resultCode == RESULT_OK){
-//                    try {
-//
-//                        //Получаем URI изображения, преобразуем его в Bitmap
-//                        //объект и отображаем в элементе ImageView нашего интерфейса:
-//                        final Uri imageUri = imageReturnedIntent.getData();
-//                        final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-//                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-//                        imageView.setImageBitmap(selectedImage);
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//        }
-//    }
-//
-//
-//
-//    private class MyAsyncTask extends AsyncTask<URL, Void, Bitmap> {
-//
-//        CircleImageView ivLogo;
-//
-//        public MyAsyncTask(CircleImageView iv) {
-//            ivLogo = iv;
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//
-//        }
-//
-//        ///Загружаем
-//        @Override
-//        protected Bitmap doInBackground(URL... urls) {
-//            Bitmap networkBitmap = null;
-//
-//            URL networkUrl = urls[0];
-//            try {
-//                networkBitmap = BitmapFactory.decodeStream(networkUrl
-//                        .openConnection().getInputStream());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            return networkBitmap;
-//        }
-//
-//        //Выводим изображения
-//        protected void onPostExecute(Bitmap result) {
-//            if(result!=null) {
-//                Bitmap bm = Bitmap.createScaledBitmap(result, ivLogo.getHeight(), ivLogo.getHeight(), false);
-//                ivLogo.setImageBitmap(bm);
-//            }else{
-//                ivLogo.setImageResource(R.drawable.unkava);
-//            }
-//        }
-//    }
-//}
+package ru.velkonost.lume.activity;
+
+
+import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import ru.velkonost.lume.Managers.Initializations;
+import ru.velkonost.lume.R;
+
+import static ru.velkonost.lume.Constants.AMPERSAND;
+import static ru.velkonost.lume.Constants.BIRTHDAY;
+import static ru.velkonost.lume.Constants.CITY;
+import static ru.velkonost.lume.Constants.COUNTRY;
+import static ru.velkonost.lume.Constants.EMAIL;
+import static ru.velkonost.lume.Constants.EQUALS;
+import static ru.velkonost.lume.Constants.GET_DATA_SETTINGS;
+import static ru.velkonost.lume.Constants.GET_EDIT_RESULT;
+import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.NAME;
+import static ru.velkonost.lume.Constants.NEW_PASSWORD;
+import static ru.velkonost.lume.Constants.PREV_PASSWORD;
+import static ru.velkonost.lume.Constants.STUDY;
+import static ru.velkonost.lume.Constants.SURNAME;
+import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
+import static ru.velkonost.lume.Constants.URL.SERVER_EDIT_PARAMETERS_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_GET_DATA_SETTINGS_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
+import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
+import static ru.velkonost.lume.Constants.USER_ID;
+import static ru.velkonost.lume.Constants.WORK;
+import static ru.velkonost.lume.Constants.WORK_EMAIL;
+import static ru.velkonost.lume.Managers.DateConverter.formatDate;
+import static ru.velkonost.lume.Managers.DateConverter.formatDateBack;
+import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.Managers.Initializations.initToolbar;
+import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialog;
+import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialogWithRefresh;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.net.ServerConnection.getJSON;
+
+public class SettingsActivity extends AppCompatActivity {
+
+    private static final int LAYOUT = R.layout.activity_settings;
+
+    /**
+     * Свойство - следующая активность.
+     */
+    private Intent nextIntent;
+
+    /**
+     * Свойство - описание верхней панели инструментов приложения.
+     */
+    private Toolbar toolbar;
+
+    /**
+     * Свойство - описание {@link SearchActivity#LAYOUT}
+     */
+    private DrawerLayout drawerLayout;
+
+    /**
+     * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
+     */
+    private String userId;
+
+    /**
+     * Свойство - экзмепляр класса {@link GetData}
+     */
+    protected GetData mGetData;
+
+    /**
+     * Свойство - экзмепляр класса {@link PostData}
+     */
+    protected PostData mPostData;
+
+    protected String formattedBirthday;
+
+    protected EditText editName;
+    protected EditText editSurname;
+
+    protected TextView editBirthday;
+
+    protected EditText prevPassword;
+    protected EditText newPassword;
+
+    protected EditText editCity;
+    protected EditText editCountry;
+
+    protected EditText editStudy;
+    protected EditText editWork;
+
+    protected EditText editEmail;
+    protected EditText editWorkEmail;
+
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(LAYOUT);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.activity_settings);
+
+        userId = loadText(SettingsActivity.this, ID);
+
+        /** Инициализация экземпляров классов */
+        mGetData = new GetData();
+        mPostData = new PostData();
+
+        editName = (EditText) findViewById(R.id.editName);
+        editSurname = (EditText) findViewById(R.id.editSurname);
+
+        editBirthday = (TextView) findViewById(R.id.editBirthday);
+
+        prevPassword = (EditText) findViewById(R.id.prevPassword);
+        newPassword = (EditText) findViewById(R.id.newPassword);
+
+        editCity = (EditText) findViewById(R.id.editCity);
+        editCountry = (EditText) findViewById(R.id.editCountry);
+
+        editStudy = (EditText) findViewById(R.id.editStudy);
+        editWork = (EditText) findViewById(R.id.editWork);
+
+        editEmail = (EditText) findViewById(R.id.editEmail);
+        editWorkEmail = (EditText) findViewById(R.id.editWorkEmail);
+
+        /** {@link Initializations#initToolbar(Toolbar, int)}  */
+        initToolbar(SettingsActivity.this, toolbar, getResources().getString(R.string.settings)); /** Инициализация */
+        initNavigationView(); /** Инициализация */
+        initDateBirthdayDatePicker();
+        mGetData.execute();
+    }
+
+    public  void chooseDate(View w){
+        switch (w.getId()){
+            case R.id.editBirthday:
+                // это шаг 3, функцией show() мы говорим, что календарь нужно отобразить
+                dateBirdayDatePicker.show();
+                break;
+        }
+    }
+    private DatePickerDialog dateBirdayDatePicker;
+    private void initDateBirthdayDatePicker(){
+        Calendar newCalendar = Calendar.getInstance(); // объект типа Calendar мы будем использовать для получения даты
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); // это строка нужна для дальнейшего преобразования даты в строку
+        //создаем объект типа DatePickerDialog и инициализируем его конструктор обработчиком события выбора даты и данными для даты по умолчанию
+        dateBirdayDatePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            // функция onDateSet обрабатывает шаг 2: отображает выбранные нами данные в элементе EditText
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newCal = Calendar.getInstance();
+                newCal.set(year, monthOfYear, dayOfMonth);
+                editBirthday.setText(dateFormat.format(newCal.getTime()));
+            }
+        },newCalendar.get(Calendar.YEAR),newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getGroupId();
+
+        switch (id){
+            case 0:
+                formattedBirthday = formatDateBack(editBirthday.getText().toString());
+                mPostData.execute();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void initNavigationView() {
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @SuppressWarnings("NullableProblems")
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                drawerLayout.closeDrawers();
+
+                /** Инициализируем намерение на следующую активность */
+                switch (menuItem.getItemId()) {
+
+                    /** Переход на профиль данного пользователя */
+                    case R.id.navigationProfile:
+                        nextIntent = new Intent(SettingsActivity.this, ProfileActivity.class);
+                        break;
+
+                    /** Переход на контакты данного пользователя */
+                    case R.id.navigationContacts:
+                        nextIntent = new Intent(SettingsActivity.this, ContactsActivity.class);
+                        break;
+
+                    /** Переход на страницу напоминаний, созданных данным пользователем */
+                    case R.id.navigationReminder:
+                        break;
+
+                    /** Переход на страницу сообщений данного пользователя */
+                    case R.id.navigationMessages:
+                        break;
+
+                    /** Переход на страницу досок карточной версии канбан-системы */
+                    case R.id.navigationBoards:
+                        break;
+
+                    /** Переход на страницу индивидуальных настроек для данного пользователя */
+                    case R.id.navigationSettings:
+                        nextIntent = new Intent(SettingsActivity.this, SettingsActivity.class);
+                        break;
+
+                    /**
+                     * Завершение сессии даного пользователя на данном устройстве.
+                     * Удаляем всю информацию об авторизованном пользователе.
+                     * Переход на страницу приветствия {@link WelcomeActivity}
+                     **/
+                    case R.id.navigationLogout:
+                        deleteText(SettingsActivity.this, ID);
+                        nextIntent = new Intent(SettingsActivity.this, WelcomeActivity.class);
+                        break;
+                }
+
+                /**
+                 * Переход на следующую активность.
+                 * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                 * */
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * */
+                        changeActivityCompat(SettingsActivity.this, nextIntent);
+                    }
+                }, 350);
+
+
+                /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
+                if (loadText(SettingsActivity.this, ID).equals(""))
+                    finishAffinity();
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_settings);
+                drawer.closeDrawer(GravityCompat.START);
+
+                return true;
+            }
+        });
+    }
+
+    /**
+     * При нажатии на кнопку "Назад" поиск закрывется.
+     */
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_search);
+        if (drawer.isDrawerOpen(GravityCompat.START))
+            drawer.closeDrawer(GravityCompat.START);
+        else
+            super.onBackPressed();
+    }
+
+    /**
+     * Класс для получения данных о пользователе с сервера.
+     **/
+    private class GetData extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
+                    + SERVER_GET_DATA_SETTINGS_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = USER_ID + EQUALS + userId;
+
+            /** Свойство - код ответа, полученный от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return resultJson;
+        }
+
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /**
+             * Свойство - код ответа от методов сервера.
+             *
+             * ВНИМАНИЕ!
+             *
+             * Этот параметр не имеет никакого отношения к кодам состояния.
+             * Он формируется на сервере в зависимости от результата проведения обработки данных.
+             *
+             **/
+            int resultCode;
+
+            /** Свойство - полученный JSON–объект*/
+            final JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+                resultCode = Integer.parseInt(dataJsonObj.getString(GET_DATA_SETTINGS));
+
+                /**
+                 * Обработка полученного кода ответа.
+                 */
+                switch (resultCode) {
+                    /** В случае успешного выполнения */
+                    case 600:
+
+                        editName.setText(dataJsonObj.getString(NAME));
+                        editSurname.setText(dataJsonObj.getString(SURNAME));
+
+                        editBirthday.setText(formatDate(dataJsonObj.getString(BIRTHDAY)));
+
+                        editStudy.setText(dataJsonObj.getString(STUDY));
+                        editWork.setText(dataJsonObj.getString(WORK));
+
+                        editCity.setText(dataJsonObj.getString(CITY));
+                        editCountry.setText(dataJsonObj.getString(COUNTRY));
+
+                        editEmail.setText(dataJsonObj.getString(EMAIL));
+                        editWorkEmail.setText(dataJsonObj.getString(WORK_EMAIL));
+
+                        break;
+                    /**
+                     * Произошла неожиданная ошибка.
+                     **/
+                    case 601:
+                        /**
+                         * Формирование уведомления об ошибке.
+                         */
+                        inititializeAlertDialog(SettingsActivity.this,
+                                getResources().getString(R.string.server_error),
+                                getResources().getString(R.string.relogin),
+                                getResources().getString(R.string.btn_ok));
+                        break;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private class PostData extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
+                    + SERVER_EDIT_PARAMETERS_METHOD;
+
+            
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = USER_ID + EQUALS + userId
+                    + AMPERSAND + NAME + EQUALS + editName.getText().toString()
+                    + AMPERSAND + SURNAME + EQUALS + editSurname.getText().toString()
+                    + AMPERSAND + CITY + EQUALS + editCity.getText().toString()
+                    + AMPERSAND + COUNTRY + EQUALS + editCountry.getText().toString()
+                    + AMPERSAND + STUDY + EQUALS + editStudy.getText().toString()
+                    + AMPERSAND + WORK + EQUALS + editWork.getText().toString()
+                    + AMPERSAND + EMAIL + EQUALS + editEmail.getText().toString()
+                    + AMPERSAND + WORK_EMAIL + EQUALS + editWorkEmail.getText().toString()
+                    + AMPERSAND + BIRTHDAY + EQUALS + formattedBirthday
+                    + AMPERSAND + NEW_PASSWORD + EQUALS + newPassword.getText().toString()
+                    + AMPERSAND + PREV_PASSWORD + EQUALS + prevPassword.getText().toString();
+
+            /** Свойство - код ответа, полученный от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return resultJson;
+        }
+
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /**
+             * Свойство - код ответа от методов сервера.
+             *
+             * ВНИМАНИЕ!
+             *
+             * Этот параметр не имеет никакого отношения к кодам состояния.
+             * Он формируется на сервере в зависимости от результата проведения обработки данных.
+             *
+             **/
+            int resultCode;
+
+            /** Свойство - полученный JSON–объект*/
+            final JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+                resultCode = Integer.parseInt(dataJsonObj.getString(GET_EDIT_RESULT));
+
+                /**
+                 * Обработка полученного кода ответа.
+                 */
+                switch (resultCode) {
+                    /** В случае успешного выполнения */
+                    case 700:
+
+                        changeActivityCompat(SettingsActivity.this, new Intent(SettingsActivity.this, ProfileActivity.class));
+
+                        break;
+                    /**
+                     * Произошла неожиданная ошибка.
+                     **/
+                    case 701:
+                        /**
+                         * Формирование уведомления об ошибке.
+                         */
+                        inititializeAlertDialogWithRefresh(SettingsActivity.this,
+                                getResources().getString(R.string.password_error),
+                                getResources().getString(R.string.refill_password_field),
+                                getResources().getString(R.string.btn_ok),
+                                SettingsActivity.this);
+                        break;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

@@ -7,10 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -63,7 +63,6 @@ import static ru.velkonost.lume.Constants.COUNTRY;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.GET_DATA;
 import static ru.velkonost.lume.Constants.GET_ID;
-import static ru.velkonost.lume.Constants.HYPHEN;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.LOGIN;
@@ -83,6 +82,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_UPLOAD_IMAGE_METHOD;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
+import static ru.velkonost.lume.Managers.DateConverter.formatDate;
 import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
@@ -195,9 +195,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        /** Установка темы по умолчанию */
-//        setTheme(R.style.AppDefault);
 
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
@@ -337,7 +334,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
                     case R.id.navigationSettings:
-//                        nextIntent = new Intent(ProfileActivity.this, SettingsActivity.class);
+                        nextIntent = new Intent(ProfileActivity.this, SettingsActivity.class);
                         break;
 
                     /**
@@ -355,9 +352,17 @@ public class ProfileActivity extends AppCompatActivity {
                  * Переход на следующую активность.
                  * {@link Initializations#changeActivityCompat(Activity, Intent)}
                  * */
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 
-
-                changeActivityCompat(ProfileActivity.this, nextIntent);
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * */
+                        changeActivityCompat(ProfileActivity.this, nextIntent);
+                    }
+                }, 350);
 
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
@@ -380,32 +385,6 @@ public class ProfileActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
-    }
-
-    /**
-     * Форматирование даты из вида, полученного с сервер - YYYY-MM-DD
-     *                в вид, необходимый для отображения - DD-MM-YYYY
-     **/
-    public String formatDate(String dateInStr) {
-
-        String day, month, year;
-
-        /** Разделяем строку на три ключевый строки */
-        day = String.valueOf(dateInStr.charAt(dateInStr.length() - 2)) +
-                dateInStr.charAt(dateInStr.length() - 1);
-
-        month = String.valueOf(dateInStr.charAt(dateInStr.length() - 5)) +
-                dateInStr.charAt(dateInStr.length() - 4);
-
-        year = String.valueOf(dateInStr.charAt(dateInStr.length() - 10)) +
-                dateInStr.charAt(dateInStr.length() - 9) +
-                dateInStr.charAt(dateInStr.length() - 8) +
-                dateInStr.charAt(dateInStr.length() - 7);
-
-        /** Соединяем все воедино */
-        return day
-                + HYPHEN + month
-                + HYPHEN + year;
     }
 
     /**
@@ -509,12 +488,11 @@ public class ProfileActivity extends AppCompatActivity {
                          * Загрузка аватара пользователя
                          * {@link ImageManager#fetchImage(String, ImageView)}
                          **/
-                        fetchImage(avatarURL, userAvatar, false);
+                        fetchImage(avatarURL, userAvatar, false, false);
 
                         userAvatar.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                final Bitmap bitmap = ((BitmapDrawable) userAvatar.getDrawable()).getBitmap();
 
                                 if (profileId != userId) {
                                     Intent fullScreenIntent = new Intent(ProfileActivity.this, FullScreenPhotoActivity.class);

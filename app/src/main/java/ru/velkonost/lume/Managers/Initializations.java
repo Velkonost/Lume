@@ -12,8 +12,8 @@ import android.view.MenuItem;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
-import ru.velkonost.lume.activity.SearchActivity;
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.activity.SearchActivity;
 
 import static ru.velkonost.lume.Constants.SEARCH;
 
@@ -30,6 +30,26 @@ public class Initializations {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public static void inititializeAlertDialogWithRefresh(Context context, String header,
+                                                          String description, String btnName,
+                                                          final Activity activity){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(header)
+                .setMessage(description)
+//                .setIcon(R.drawable.ic_android_cat) МОЖНО ДОБАВИТЬ ИКОНКУ!
+                .setCancelable(false)
+                .setNegativeButton(btnName,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                changeActivityCompat(activity);
+
                             }
                         });
         AlertDialog alert = builder.create();

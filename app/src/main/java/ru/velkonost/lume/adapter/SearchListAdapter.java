@@ -105,7 +105,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Se
                 + SERVER_AVATAR + SLASH + item.getAvatar()
                 + SLASH + item.getId() + JPG;
 
-        fetchImage(avatarURL, holder.userAvatar, true);
+        fetchImage(avatarURL, holder.userAvatar, true, false);
         Bitmap bitmap = ((BitmapDrawable)holder.userAvatar.getDrawable()).getBitmap();
         holder.userAvatar.setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
 

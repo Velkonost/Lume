@@ -13,12 +13,14 @@
     <string name="authorization_error">Ошибка авторизации!</string>
     <string name="registration_error">Ошибка регистрации!</string>
     <string name="connection_error">Ошибка!</string>
+    <string name="password_error">Ошибка ввода пароля!</string>
 
     <string name="not_coincide_passwords">Пароли не совпадают!</string>
     <string name="email_already_exist">Данный email уже существует!</string>
     <string name="login_already_exist">Данный логин уже занят!</string>
     <string name="no_connection">Отсутствует интернет-соединение!</string>
     <string name="relogin">Пожалуйста, зайдите позднее.</string>
+    <string name="refill_password_field">Текущий пароль введен неверно!</string>
 
     <string name="incorrectly_introduce_login_or_password">Неправильно введен логин или пароль!</string>
     <string name="btn_ok">Хорошо</string>
@@ -51,11 +53,27 @@
 
 
     <string name="my_contacts">Мои контакты</string>
+    <string name="settings">Настройки</string>
 
 
     <string name="dialog_item_open">Открыть</string>
     <string name="dialog_item_upload">Загрузить из галереи</string>
     <string name="dialog_item_create">Сделать снимок</string>
     <string name="dialog_header_photo">Фотография</string>
+
+    <string name="change">Изменить</string>
+
+
+    <string name="editName">Имя</string>
+    <string name="editSurname">Фамилия</string>
+    <string name="editBirthday">День рождения</string>
+    <string name="editPrevPassword">Старый пароль</string>
+    <string name="editNewPassword">Новый пароль</string>
+    <string name="editCity">Город</string>
+    <string name="editCountry">Страна</string>
+    <string name="editStudy">Место учебы</string>
+    <string name="editWork">Место работы</string>
+    <string name="editEmail">Email</string>
+    <string name="editWorkEmail">Email для связи</string>
 
 </resources>
