@@ -515,7 +515,7 @@ public class ProfileActivity extends AppCompatActivity {
                          * Загрузка аватара пользователя
                          * {@link ImageManager#fetchImage(String, ImageView)}
                          **/
-                        fetchImage(avatarURL, userAvatar, false);
+                        fetchImage(avatarURL, userAvatar, false, false);
 
                         userAvatar.setOnClickListener(new View.OnClickListener() {
                             @Override

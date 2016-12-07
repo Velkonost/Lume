@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import ru.velkonost.lume.R;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 
 /**
@@ -42,7 +43,8 @@ public class ImageManager {
      * @param iUrl Урл-адрес картинки
      * @param iView ImageView, для которого необходимо установить картинку
      * */
-    public static void fetchImage(final String iUrl, final ImageView iView, final boolean isCircle) {
+    public static void fetchImage(final String iUrl, final ImageView iView,
+                                  final boolean isCircle, final boolean isAttachable) {
         if ( iUrl == null || iView == null )
             return;
 
@@ -55,6 +57,9 @@ public class ImageManager {
                 Bitmap image = (Bitmap) message.obj;
                 if (isCircle) image = getCircleMaskedBitmap(image, 25);
                 iView.setImageBitmap(image);
+
+                if (isAttachable)
+                    new PhotoViewAttacher(iView);
             }
         };
 
