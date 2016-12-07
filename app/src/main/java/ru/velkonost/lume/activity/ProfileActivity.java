@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -196,9 +197,6 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        /** Установка темы по умолчанию */
-//        setTheme(R.style.AppDefault);
-
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
 
@@ -355,9 +353,17 @@ public class ProfileActivity extends AppCompatActivity {
                  * Переход на следующую активность.
                  * {@link Initializations#changeActivityCompat(Activity, Intent)}
                  * */
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 
-
-                changeActivityCompat(ProfileActivity.this, nextIntent);
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * */
+                        changeActivityCompat(ProfileActivity.this, nextIntent);
+                    }
+                }, 350);
 
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */

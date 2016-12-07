@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -213,9 +214,17 @@ public class ContactsActivity extends AppCompatActivity {
                  * Переход на следующую активность.
                  * {@link Initializations#changeActivityCompat(Activity, Intent)}
                  * */
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
 
-
-                changeActivityCompat(ContactsActivity.this, nextIntent);
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * */
+                        changeActivityCompat(ContactsActivity.this, nextIntent);
+                    }
+                }, 350);
 
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
