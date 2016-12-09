@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.ListAdapter;
 
 import java.util.List;
 
@@ -47,8 +46,18 @@ public class DialogsFragment extends Fragment {
 //        gridView.setLayoutManager(new LinearLayoutManager(context));
 
         adapter = new DialogListAdapter(getActivity(), mContacts);
-        gridView.setAdapter((ListAdapter) adapter);
+        gridView.setAdapter(adapter);
+        adjustGridView(gridView);
         return view;
+    }
+
+    private void adjustGridView(GridView gridView) {
+        gridView.setColumnWidth(200);
+        gridView.setNumColumns(GridView.AUTO_FIT);
+
+//        gvMain.setVerticalSpacing(5);
+        gridView.setHorizontalSpacing(5);
+        gridView.setStretchMode(GridView.STRETCH_SPACING_UNIFORM);
     }
 
     public void refreshContacts (List<DialogContact> mContacts) {
