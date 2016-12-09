@@ -51,6 +51,7 @@ public class Constants {
         public static final String SERVER_PROTOCOL = "http://";
         public static final String SERVER_HOST = "vh156342.eurodir.ru";
         public static final String SERVER_ACCOUNT_SCRIPT = "/account";
+        public static final String SERVER_DIALOG_SCRIPT = "/dialogs";
         public static final String SERVER_RESOURCE = "/resource";
         public static final String SERVER_AVATAR = "/avatar";
 
@@ -64,8 +65,11 @@ public class Constants {
         public static final String SERVER_UPLOAD_IMAGE_METHOD = "/editImage";
         public static final String SERVER_EDIT_PARAMETERS_METHOD = "/edit";
 
+        public static final String SERVER_SHOW_DIALOGS_METHOD = "/showDialogs";
+
     }
 
+    /** Класс констант, описывающих результаты операций */
     public static class RESULT {
         public static final String SUCCESS = "Success";
         public static final String ERROR = "Error";
