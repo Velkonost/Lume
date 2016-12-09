@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +42,7 @@ public class DialogListAdapter extends ArrayAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull final ViewGroup parent) {
         final DialogContact dialogContact = (DialogContact) getItem(position);
         if (convertView == null) {
             convertView =
@@ -71,8 +72,35 @@ public class DialogListAdapter extends ArrayAdapter {
                         mContext.startActivity(intent);
                     }
                 }, 350);
+            }
 
-            }});
+
+        });
+        (convertView.findViewById(R.id.lluser)).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+//                CoordinatorLayout coordinatorLayout=(CoordinatorLayout)findViewById(R.id.coordinatorLayout);
+
+                Snackbar snack = Snackbar.make(parent,
+                        dialogContact.getName().length() == 0
+                                ? dialogContact.getLogin()
+                                : dialogContact.getSurname().length() == 0
+                                ? dialogContact.getLogin()
+                                : dialogContact.getName() + " " + dialogContact.getSurname(),
+                        Snackbar.LENGTH_SHORT);
+                snack.show();
+
+
+//                Toast.makeText(mContext,
+//                        dialogContact.getName().length() == 0
+//                        ? dialogContact.getLogin()
+//                        : dialogContact.getSurname().length() == 0
+//                        ? dialogContact.getLogin()
+//                        : dialogContact.getName() + " " + dialogContact.getSurname(),
+//                        Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
 
         return convertView;
     }
