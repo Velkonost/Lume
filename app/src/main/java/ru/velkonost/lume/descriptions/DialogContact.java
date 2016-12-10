@@ -92,5 +92,29 @@ public class DialogContact implements Parcelable {
     public boolean isAvatar() {
         return isAvatar;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setUnreadMessages(int unreadMessages) {
+        this.unreadMessages = unreadMessages;
+    }
+
+    public void setAvatar(int avatar) {
+        this.avatar = avatar;
+    }
 }
 

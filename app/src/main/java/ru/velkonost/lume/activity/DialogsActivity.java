@@ -155,7 +155,6 @@ public class DialogsActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         timer.cancel();
-
     }
 
     /**
@@ -440,21 +439,38 @@ public class DialogsActivity extends AppCompatActivity {
                     ids.add(idsJSON.getString(i));
                 }
 
-                mContacts = new ArrayList<>();
+//                mContacts = new ArrayList<>();
                 /**
                  * Составление view-элементов с краткой информацией о пользователях
                  */
                 for (int i = 0; i < ids.size(); i++) {
-
+                    boolean exist = false;
                     /**
                      * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
                      */
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
 
-                    mContacts.add(new DialogContact(userInfo.getString(ID), userInfo.getString(NAME),
-                            userInfo.getString(SURNAME), userInfo.getString(LOGIN),
-                            Integer.parseInt(userInfo.getString(UNREAD_MESSAGES)),
-                            Integer.parseInt(userInfo.getString(AVATAR))));
+                    for (int j = 0; j < mContacts.size(); j++){
+                        if (mContacts.get(j).getId().equals(userInfo.getString(ID))) {
+
+                            mContacts.get(j).setUnreadMessages(Integer.parseInt(userInfo
+                                    .getString(UNREAD_MESSAGES)));
+                            mContacts.get(j).setIsAvatar(true);
+
+                            Log.i(userInfo.getString(ID), String.valueOf(mContacts.get(j).getUnreadMessages()));
+                            exist = true;
+                            break;
+                        }
+                    }
+
+                    if (!exist){
+                        mContacts.add(new DialogContact(userInfo.getString(ID), userInfo.getString(NAME),
+                                userInfo.getString(SURNAME), userInfo.getString(LOGIN),
+                                Integer.parseInt(userInfo.getString(UNREAD_MESSAGES)),
+                                Integer.parseInt(userInfo.getString(AVATAR))));
+                    }
+
+
                 }
 
                 /**

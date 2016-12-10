@@ -63,16 +63,18 @@ public class DialogListAdapter extends ArrayAdapter {
 
         ((TextView) convertView.findViewById(userId)).setText(dialogContact.getId());
 
-        Log.i("KEKE" + dialogContact.getId(), String.valueOf(dialogContact.isAvatar()));
+        Log.i("KEKE " + dialogContact.getId(), String.valueOf(dialogContact.isAvatar()));
         if (!dialogContact.isAvatar()){
             fetchImage(avatarURL, (ImageView) convertView.findViewById(R.id.avatar), true, false);
+            Bitmap bitmap = ((BitmapDrawable) ((ImageView) convertView.findViewById(R.id.avatar))
+                    .getDrawable()).getBitmap();
+            ((ImageView) convertView.findViewById(R.id.avatar))
+                    .setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
+
             dialogContact.setIsAvatar(true);
         }
 
-        Bitmap bitmap = ((BitmapDrawable) ((ImageView) convertView.findViewById(R.id.avatar))
-                .getDrawable()).getBitmap();
-        ((ImageView) convertView.findViewById(R.id.avatar))
-                .setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
+
 
         if (dialogContact.getUnreadMessages() != 0){
             ((TextView) convertView.findViewById(R.id.unreadMessages))
