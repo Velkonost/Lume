@@ -3,16 +3,18 @@ package ru.velkonost.lume.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.androidadvance.topsnackbar.TSnackbar;
 
 import java.util.List;
 
@@ -81,23 +83,19 @@ public class DialogListAdapter extends ArrayAdapter {
             public boolean onLongClick(View v) {
 //                CoordinatorLayout coordinatorLayout=(CoordinatorLayout)findViewById(R.id.coordinatorLayout);
 
-                Snackbar snack = Snackbar.make(parent,
+                TSnackbar snackbar = TSnackbar.make(parent,
                         dialogContact.getName().length() == 0
                                 ? dialogContact.getLogin()
                                 : dialogContact.getSurname().length() == 0
                                 ? dialogContact.getLogin()
                                 : dialogContact.getName() + " " + dialogContact.getSurname(),
-                        Snackbar.LENGTH_SHORT);
-                snack.show();
-
-
-//                Toast.makeText(mContext,
-//                        dialogContact.getName().length() == 0
-//                        ? dialogContact.getLogin()
-//                        : dialogContact.getSurname().length() == 0
-//                        ? dialogContact.getLogin()
-//                        : dialogContact.getName() + " " + dialogContact.getSurname(),
-//                        Toast.LENGTH_SHORT).show();
+                        TSnackbar.LENGTH_SHORT);
+                snackbar.setActionTextColor(Color.WHITE);
+                View snackbarView = snackbar.getView();
+                snackbarView.setBackgroundColor(Color.parseColor("#CC00CC"));
+                TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+                textView.setTextColor(Color.YELLOW);
+                snackbar.show();
                 return true;
             }
         });
