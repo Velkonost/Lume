@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +19,10 @@ import com.androidadvance.topsnackbar.TSnackbar;
 import java.util.List;
 
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.activity.ProfileActivity;
+import ru.velkonost.lume.activity.MessageActivity;
 import ru.velkonost.lume.descriptions.DialogContact;
 
-import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
@@ -63,7 +62,6 @@ public class DialogListAdapter extends ArrayAdapter {
 
         ((TextView) convertView.findViewById(userId)).setText(dialogContact.getId());
 
-        Log.i("KEKE " + dialogContact.getId(), String.valueOf(dialogContact.isAvatar()));
         if (!dialogContact.isAvatar()){
             fetchImage(avatarURL, (ImageView) convertView.findViewById(R.id.avatar), true, false);
             Bitmap bitmap = ((BitmapDrawable) ((ImageView) convertView.findViewById(R.id.avatar))
@@ -87,14 +85,15 @@ public class DialogListAdapter extends ArrayAdapter {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(mContext, ProfileActivity.class);
+                        Intent intent = new Intent(mContext, MessageActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra(ID, Integer.parseInt(dialogContact.getId()));
+                        intent.putExtra(DIALOG_ID, Integer.parseInt(dialogContact.getId()));
                         mContext.startActivity(intent);
                     }
                 }, 350);
             }
         });
+
         (convertView.findViewById(R.id.lluser)).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -106,6 +105,7 @@ public class DialogListAdapter extends ArrayAdapter {
                                 ? dialogContact.getLogin()
                                 : dialogContact.getName() + " " + dialogContact.getSurname(),
                         TSnackbar.LENGTH_SHORT);
+
                 snackbar.setActionTextColor(Color.WHITE);
                 View snackbarView = snackbar.getView();
                 snackbarView.setBackgroundColor(Color.parseColor("#CC00CC"));
