@@ -118,11 +118,6 @@
                     android:onClick="chooseDate"
                     android:textColor="@color/colorBlack"
                     android:textSize="10pt"/>
-                <!--<EditText-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:id="@+id/editBirthday"-->
-                    <!--android:inputType="date"/>-->
             </LinearLayout>
             <View
                 android:layout_width="fill_parent"
