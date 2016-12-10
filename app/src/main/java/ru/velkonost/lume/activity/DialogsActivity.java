@@ -295,7 +295,6 @@ public class DialogsActivity extends AppCompatActivity {
 
         @Override
         public void onTick(long l) {
-            Log.i("TICK", "213");
             RefreshDialogs mRefreshDialogs = new RefreshDialogs();
             mRefreshDialogs.execute();
         }
@@ -439,7 +438,6 @@ public class DialogsActivity extends AppCompatActivity {
                     ids.add(idsJSON.getString(i));
                 }
 
-//                mContacts = new ArrayList<>();
                 /**
                  * Составление view-элементов с краткой информацией о пользователях
                  */
@@ -469,8 +467,6 @@ public class DialogsActivity extends AppCompatActivity {
                                 Integer.parseInt(userInfo.getString(UNREAD_MESSAGES)),
                                 Integer.parseInt(userInfo.getString(AVATAR))));
                     }
-
-
                 }
 
                 /**
@@ -478,9 +474,6 @@ public class DialogsActivity extends AppCompatActivity {
                  * {@link DialogsFragment}
                  */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//                dialogsFragment
-//                        = DialogsFragment.getInstance(DialogsActivity.this, mContacts);
-                dialogsFragment.refreshContacts(mContacts);
                 ft.replace(R.id.lldialog, dialogsFragment);
                 ft.commit();
 

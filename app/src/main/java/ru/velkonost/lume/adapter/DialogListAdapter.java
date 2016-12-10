@@ -74,8 +74,6 @@ public class DialogListAdapter extends ArrayAdapter {
             dialogContact.setIsAvatar(true);
         }
 
-
-
         if (dialogContact.getUnreadMessages() != 0){
             ((TextView) convertView.findViewById(R.id.unreadMessages))
                     .setText(String.valueOf(dialogContact.getUnreadMessages()));
