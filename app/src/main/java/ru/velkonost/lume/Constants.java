@@ -41,6 +41,8 @@ public class Constants {
     public static final String WORK = "work";
     public static final String CONTACT = "contact";
 
+    public static final String UNREAD_MESSAGES = "unread";
+
     public static final String GET_DATA = "getdata";
     public static final String GET_DATA_SETTINGS = "getdatasettings";
     public static final String GET_EDIT_RESULT = "edit";

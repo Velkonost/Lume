@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,14 +42,18 @@ public class DialogListAdapter extends ArrayAdapter {
     public DialogListAdapter(Context context, List<DialogContact> data) {
         super(context, R.layout.item_dialog, data);
         mContext = context;
+        this.data = data;
+    }
+
+    public void setData(List<DialogContact> data) {
+        this.data = data;
     }
 
     @Override
     public View getView(int position, View convertView, @NonNull final ViewGroup parent) {
-        final DialogContact dialogContact = (DialogContact) getItem(position);
+        final DialogContact dialogContact = data.get(position);
         if (convertView == null) {
-            convertView =
-                    LayoutInflater.from(getContext()).inflate(R.layout.item_dialog, null);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_dialog, null);
         }
 
         /** Формирование адреса, по которому лежит аватар пользователя */
@@ -57,10 +62,24 @@ public class DialogListAdapter extends ArrayAdapter {
                 + SLASH + dialogContact.getId() + JPG;
 
         ((TextView) convertView.findViewById(userId)).setText(dialogContact.getId());
-        fetchImage(avatarURL, (ImageView) convertView.findViewById(R.id.avatar), true, false);
 
-        Bitmap bitmap = ((BitmapDrawable) ((ImageView) convertView.findViewById(R.id.avatar)).getDrawable()).getBitmap();
-        ((ImageView) convertView.findViewById(R.id.avatar)).setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
+        Log.i("KEKE" + dialogContact.getId(), String.valueOf(dialogContact.isAvatar()));
+        if (!dialogContact.isAvatar()){
+            fetchImage(avatarURL, (ImageView) convertView.findViewById(R.id.avatar), true, false);
+            dialogContact.setIsAvatar(true);
+        }
+
+        Bitmap bitmap = ((BitmapDrawable) ((ImageView) convertView.findViewById(R.id.avatar))
+                .getDrawable()).getBitmap();
+        ((ImageView) convertView.findViewById(R.id.avatar))
+                .setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
+
+        if (dialogContact.getUnreadMessages() != 0){
+            ((TextView) convertView.findViewById(R.id.unreadMessages))
+                    .setText(String.valueOf(dialogContact.getUnreadMessages()));
+            (convertView.findViewById(R.id.unreadMessages)).setVisibility(View.VISIBLE);
+        }
+
 
         (convertView.findViewById(R.id.lluser)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,13 +94,10 @@ public class DialogListAdapter extends ArrayAdapter {
                     }
                 }, 350);
             }
-
-
         });
         (convertView.findViewById(R.id.lluser)).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-//                CoordinatorLayout coordinatorLayout=(CoordinatorLayout)findViewById(R.id.coordinatorLayout);
 
                 TSnackbar snackbar = TSnackbar.make(parent,
                         dialogContact.getName().length() == 0
@@ -93,9 +109,11 @@ public class DialogListAdapter extends ArrayAdapter {
                 snackbar.setActionTextColor(Color.WHITE);
                 View snackbarView = snackbar.getView();
                 snackbarView.setBackgroundColor(Color.parseColor("#CC00CC"));
-                TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+                TextView textView = (TextView) snackbarView
+                        .findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
                 textView.setTextColor(Color.YELLOW);
                 snackbar.show();
+
                 return true;
             }
         });

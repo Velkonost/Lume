@@ -42,9 +42,6 @@ public class DialogsFragment extends Fragment {
 
         GridView gridView = (GridView) view.findViewById(R.id.gridDialogs);
 
-
-//        gridView.setLayoutManager(new LinearLayoutManager(context));
-
         adapter = new DialogListAdapter(getActivity(), mContacts);
         gridView.setAdapter(adapter);
         adjustGridView(gridView);
@@ -54,14 +51,12 @@ public class DialogsFragment extends Fragment {
     private void adjustGridView(GridView gridView) {
         gridView.setColumnWidth(200);
         gridView.setNumColumns(GridView.AUTO_FIT);
-
-//        gvMain.setVerticalSpacing(5);
         gridView.setHorizontalSpacing(5);
         gridView.setStretchMode(GridView.STRETCH_SPACING_UNIFORM);
     }
 
     public void refreshContacts (List<DialogContact> mContacts) {
-//        adapter.setData(mContacts);
+        adapter.setData(mContacts);
         adapter.notifyDataSetChanged();
     }
 

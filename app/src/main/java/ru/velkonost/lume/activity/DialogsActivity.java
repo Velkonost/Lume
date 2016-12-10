@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -14,11 +15,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -34,7 +34,6 @@ import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.DialogContact;
-import ru.velkonost.lume.fragments.ContactsFragment;
 import ru.velkonost.lume.fragments.DialogsFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;
@@ -44,6 +43,7 @@ import static ru.velkonost.lume.Constants.IDS;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.SURNAME;
+import static ru.velkonost.lume.Constants.UNREAD_MESSAGES;
 import static ru.velkonost.lume.Constants.URL.SERVER_DIALOG_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
@@ -102,8 +102,8 @@ public class DialogsActivity extends AppCompatActivity {
      */
     private List<DialogContact> mContacts;
 
-    GridView gvMain;
-    ArrayAdapter<String> adapter;
+    private DialogsFragment dialogsFragment;
+    private TimerCheckDialogsState timer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -138,21 +138,24 @@ public class DialogsActivity extends AppCompatActivity {
 
         mContacts = new ArrayList<>();
 
-//        adapter = new ArrayAdapter<>(this, R.layout.item_dialog, R.id.tvText, data);
-//        gvMain = (GridView) findViewById(R.id.gvMain);
-//        gvMain.setAdapter(adapter);
-//        adjustGridView();
-
         mGetDialogs.execute();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                timer = new TimerCheckDialogsState(100000000, 5000);
+                timer.start();
+            }
+        }, 5000);
+
     }
 
-    private void adjustGridView() {
-        gvMain.setColumnWidth(200);
-        gvMain.setNumColumns(GridView.AUTO_FIT);
 
-//        gvMain.setVerticalSpacing(5);
-        gvMain.setHorizontalSpacing(5);
-        gvMain.setStretchMode(GridView.STRETCH_SPACING_UNIFORM);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        timer.cancel();
+
     }
 
     /**
@@ -285,6 +288,24 @@ public class DialogsActivity extends AppCompatActivity {
             super.onBackPressed();
     }
 
+    public class TimerCheckDialogsState extends CountDownTimer {
+
+        public TimerCheckDialogsState(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long l) {
+            Log.i("TICK", "213");
+            RefreshDialogs mRefreshDialogs = new RefreshDialogs();
+            mRefreshDialogs.execute();
+        }
+
+        @Override
+        public void onFinish() {
+        }
+    }
+
     private class GetDialogs extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -348,15 +369,16 @@ public class DialogsActivity extends AppCompatActivity {
 
                     mContacts.add(new DialogContact(userInfo.getString(ID), userInfo.getString(NAME),
                             userInfo.getString(SURNAME), userInfo.getString(LOGIN),
+                            Integer.parseInt(userInfo.getString(UNREAD_MESSAGES)),
                             Integer.parseInt(userInfo.getString(AVATAR))));
                 }
 
                 /**
                  * Добавляем фрагмент на экран.
-                 * {@link ContactsFragment}
+                 * {@link DialogsFragment}
                  */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                DialogsFragment dialogsFragment
+                dialogsFragment
                         = DialogsFragment.getInstance(DialogsActivity.this, mContacts);
                 ft.add(R.id.lldialog, dialogsFragment);
                 ft.commit();
@@ -366,4 +388,90 @@ public class DialogsActivity extends AppCompatActivity {
             }
         }
     }
+
+    private class RefreshDialogs extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_DIALOG_SCRIPT
+                    + SERVER_SHOW_DIALOGS_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = USER_ID + EQUALS + userId;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /** Свойство - полученный JSON–объект*/
+            JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+
+                /**
+                 * Получение идентификаторов найденных пользователей.
+                 */
+                JSONArray idsJSON = dataJsonObj.getJSONArray(IDS);
+
+                for (int i = 0; i < idsJSON.length(); i++){
+                    ids.add(idsJSON.getString(i));
+                }
+
+                mContacts = new ArrayList<>();
+                /**
+                 * Составление view-элементов с краткой информацией о пользователях
+                 */
+                for (int i = 0; i < ids.size(); i++) {
+
+                    /**
+                     * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
+                     */
+                    JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
+
+                    mContacts.add(new DialogContact(userInfo.getString(ID), userInfo.getString(NAME),
+                            userInfo.getString(SURNAME), userInfo.getString(LOGIN),
+                            Integer.parseInt(userInfo.getString(UNREAD_MESSAGES)),
+                            Integer.parseInt(userInfo.getString(AVATAR))));
+                }
+
+                /**
+                 * Добавляем фрагмент на экран.
+                 * {@link DialogsFragment}
+                 */
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//                dialogsFragment
+//                        = DialogsFragment.getInstance(DialogsActivity.this, mContacts);
+                dialogsFragment.refreshContacts(mContacts);
+                ft.replace(R.id.lldialog, dialogsFragment);
+                ft.commit();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
