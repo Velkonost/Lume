@@ -6,6 +6,7 @@ import android.os.Parcelable;
 public class DialogContact implements Parcelable {
 
     private String id;
+    private String dialogId;
     private String name;
     private String surname;
     private String login;
@@ -13,9 +14,10 @@ public class DialogContact implements Parcelable {
     private int avatar;
     private boolean isAvatar;
 
-    public DialogContact(String id, String name, String surname, String login,
+    public DialogContact(String id, String dialogId, String name, String surname, String login,
                          int unreadMessages, int avatar) {
         this.id = id;
+        this.dialogId = dialogId;
         this.name = name;
         this.surname = surname;
         this.login = login;
@@ -27,6 +29,7 @@ public class DialogContact implements Parcelable {
 
     private DialogContact(Parcel in) {
         id = in.readString();
+        dialogId = in.readString();
         name = in.readString();
         surname = in.readString();
         login = in.readString();
@@ -54,6 +57,7 @@ public class DialogContact implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(id);
+        parcel.writeString(dialogId);
         parcel.writeString(name);
         parcel.writeString(surname);
         parcel.writeString(login);
@@ -115,6 +119,10 @@ public class DialogContact implements Parcelable {
 
     public void setAvatar(int avatar) {
         this.avatar = avatar;
+    }
+
+    public String getDialogId() {
+        return dialogId;
     }
 }
 

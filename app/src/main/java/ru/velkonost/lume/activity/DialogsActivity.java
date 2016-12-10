@@ -37,6 +37,7 @@ import ru.velkonost.lume.descriptions.DialogContact;
 import ru.velkonost.lume.fragments.DialogsFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;
+import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.IDS;
@@ -168,7 +169,7 @@ public class DialogsActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-        navigationView.getMenu().getItem(1).setChecked(true);
+        navigationView.getMenu().getItem(3).setChecked(true);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -365,7 +366,8 @@ public class DialogsActivity extends AppCompatActivity {
                      */
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
 
-                    mContacts.add(new DialogContact(userInfo.getString(ID), userInfo.getString(NAME),
+                    mContacts.add(new DialogContact(userInfo.getString(ID),
+                            userInfo.getString(DIALOG_ID), userInfo.getString(NAME),
                             userInfo.getString(SURNAME), userInfo.getString(LOGIN),
                             Integer.parseInt(userInfo.getString(UNREAD_MESSAGES)),
                             Integer.parseInt(userInfo.getString(AVATAR))));
@@ -462,7 +464,8 @@ public class DialogsActivity extends AppCompatActivity {
                     }
 
                     if (!exist){
-                        mContacts.add(new DialogContact(userInfo.getString(ID), userInfo.getString(NAME),
+                        mContacts.add(new DialogContact(userInfo.getString(ID),
+                                userInfo.getString(DIALOG_ID), userInfo.getString(NAME),
                                 userInfo.getString(SURNAME), userInfo.getString(LOGIN),
                                 Integer.parseInt(userInfo.getString(UNREAD_MESSAGES)),
                                 Integer.parseInt(userInfo.getString(AVATAR))));
