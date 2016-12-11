@@ -3,10 +3,12 @@ package ru.velkonost.lume.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,16 +17,42 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.descriptions.DialogContact;
+import ru.velkonost.lume.descriptions.Message;
+import ru.velkonost.lume.fragments.DialogsFragment;
 
+import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.DIALOG_ID;
+import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.IDS;
+import static ru.velkonost.lume.Constants.LOGIN;
+import static ru.velkonost.lume.Constants.MESSAGE_IDS;
+import static ru.velkonost.lume.Constants.NAME;
+import static ru.velkonost.lume.Constants.SURNAME;
+import static ru.velkonost.lume.Constants.UNREAD_MESSAGES;
+import static ru.velkonost.lume.Constants.URL.SERVER_DIALOG_SCRIPT;
+import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
+import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
+import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_DIALOGS_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_MESSAGES_METHOD;
+import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -52,15 +80,39 @@ public class MessageActivity extends AppCompatActivity {
     private int addresseeId;
     private int dialogId;
 
+
+    /**
+     * Идентификаторы сообщений данного диалога.
+     **/
+    private ArrayList<String> mids;
+
+    /**
+     * Свойство - экзмепляр класса {@link GetMessages}
+     */
+    protected GetMessages mGetMessages;
+
+    /**
+     * Свойство - список контактов.
+     * {@link DialogContact}
+     */
+    private List<Message> mMessages;
+
+    private MessagesFragment mMessagesFragment;
+
+//    private TimerCheckDialogsState timer;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
 
+        mGetMessages = new GetMessages();
+        mids = new ArrayList<>();
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_dialogs);
+        drawerLayout = (DrawerLayout) findViewById(R.id.activity_messages);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(MessageActivity.this, toolbar, R.string.menu_item_contacts); /** Инициализация */
@@ -90,7 +142,7 @@ public class MessageActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_profile);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_messages);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -180,12 +232,92 @@ public class MessageActivity extends AppCompatActivity {
                 if (loadText(MessageActivity.this, ID).equals(""))
                     finishAffinity();
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_dialogs);
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_messages);
                 drawer.closeDrawer(GravityCompat.START);
 
                 return true;
             }
         });
+    }
+
+    private class GetMessages extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_DIALOG_SCRIPT
+                    + SERVER_SHOW_MESSAGES_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = DIALOG_ID + EQUALS + dialogId;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /** Свойство - полученный JSON–объект*/
+            JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+
+                /**
+                 * Получение идентификаторов найденных пользователей.
+                 */
+                JSONArray idsJSON = dataJsonObj.getJSONArray(MESSAGE_IDS);
+
+                for (int i = 0; i < idsJSON.length(); i++){
+                    mids.add(idsJSON.getString(i));
+                }
+
+                /**
+                 * Составление view-элементов с краткой информацией о пользователях
+                 */
+                for (int i = 0; i < ids.size(); i++) {
+
+                    /**
+                     * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
+                     */
+                    JSONObject userInfo = dataJsonObj.getJSONObject(mids.get(i));
+
+                    mMessages.add();
+                }
+
+                /**
+                 * Добавляем фрагмент на экран.
+                 * {@link DialogsFragment}
+                 */
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                mMessagesFragment
+                        = DialogsFragment.getInstance(MessageActivity.this, mMessages);
+                ft.add(R.id.llmessage, mMessagesFragment);
+                ft.commit();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

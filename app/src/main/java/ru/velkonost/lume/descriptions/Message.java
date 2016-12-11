@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 public class Message implements Parcelable {
 
+    private boolean fromMe;
     private int id;
     private int userId;
     private int dialogId;
@@ -12,7 +13,9 @@ public class Message implements Parcelable {
     private String mText;
     private String mDate;
 
-    public Message(int id, int userId, int dialogId, int status, String text, String date) {
+    public Message(boolean fromMe, int id, int userId, int dialogId,
+                   int status, String text, String date) {
+        this.fromMe = fromMe;
         this.id = id;
         this.userId = userId;
         this.dialogId = dialogId;
@@ -80,5 +83,9 @@ public class Message implements Parcelable {
 
     public String getDate() {
         return mDate;
+    }
+
+    public boolean isFromMe() {
+        return fromMe;
     }
 }

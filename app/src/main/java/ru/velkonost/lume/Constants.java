@@ -22,6 +22,8 @@ public class Constants {
     public static final String ID = "id";
     public static final String IDS = "ids";
     public static final String DIALOG_ID = "did";
+    public static final String MESSAGE_ID = "mid";
+    public static final String MESSAGE_IDS = "mids";
 
     public static final String IMAGE = "image";
 
@@ -69,6 +71,7 @@ public class Constants {
         public static final String SERVER_EDIT_PARAMETERS_METHOD = "/edit";
 
         public static final String SERVER_SHOW_DIALOGS_METHOD = "/showDialogs";
+        public static final String SERVER_SHOW_MESSAGES_METHOD = "/showMessages";
 
     }
 

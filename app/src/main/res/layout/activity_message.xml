@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                         xmlns:app="http://schemas.android.com/apk/res-auto"
-                                        android:id="@+id/activity_dialogs"
+                                        android:id="@+id/activity_messages"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:background="@color/mainBackground"
@@ -31,31 +31,28 @@
                     android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/lldialog"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:orientation="vertical"
-            app:layout_anchor="@id/appbarlayout"
-            app:layout_anchorGravity="bottom"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_gravity="bottom"
-                android:background="@drawable/message_edit_text"
-                android:paddingLeft="55dp"/>
-        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="60dp"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/message_edit_text"
+                    android:paddingLeft="55dp"
+                    android:id="@+id/editMessage"
+                    android:layout_alignParentBottom="true"/>
+        </RelativeLayout>
+
+
+
 
     </android.support.design.widget.CoordinatorLayout>
 
