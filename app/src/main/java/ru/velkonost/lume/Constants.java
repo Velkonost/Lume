@@ -19,6 +19,7 @@ public class Constants {
     public static final String PREV_PASSWORD = "prev_password";
     public static final String NEW_PASSWORD = "new_password";
     public static final String EMAIL = "email";
+    public static final String USER = "id";
     public static final String ID = "id";
     public static final String IDS = "ids";
     public static final String DIALOG_ID = "did";
@@ -32,6 +33,9 @@ public class Constants {
     public static final String GET_ID = "get_id";
 
     public static final String SEARCH = "search";
+    public static final String STATUS = "status";
+    public static final String TEXT = "text";
+    public static final String DATE = "date";
 
     public static final String NAME = "name";
     public static final String SURNAME = "surname";

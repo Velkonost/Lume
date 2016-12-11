@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.velkonost.lume.Constants;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
@@ -32,7 +33,9 @@ import ru.velkonost.lume.descriptions.DialogContact;
 import ru.velkonost.lume.descriptions.Message;
 import ru.velkonost.lume.fragments.DialogsFragment;
 
+import static android.provider.Telephony.Mms.Part.TEXT;
 import static ru.velkonost.lume.Constants.AVATAR;
+import static ru.velkonost.lume.Constants.DATE;
 import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
@@ -40,6 +43,7 @@ import static ru.velkonost.lume.Constants.IDS;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.MESSAGE_IDS;
 import static ru.velkonost.lume.Constants.NAME;
+import static ru.velkonost.lume.Constants.STATUS;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.UNREAD_MESSAGES;
 import static ru.velkonost.lume.Constants.URL.SERVER_DIALOG_SCRIPT;
@@ -47,6 +51,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_DIALOGS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_MESSAGES_METHOD;
+import static ru.velkonost.lume.Constants.USER;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
@@ -294,23 +299,29 @@ public class MessageActivity extends AppCompatActivity {
                 /**
                  * Составление view-элементов с краткой информацией о пользователях
                  */
-                for (int i = 0; i < ids.size(); i++) {
+                for (int i = 0; i < mids.size(); i++) {
 
                     /**
                      * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
                      */
-                    JSONObject userInfo = dataJsonObj.getJSONObject(mids.get(i));
+                    JSONObject messageInfo = dataJsonObj.getJSONObject(mids.get(i));
 
-                    mMessages.add();
+                    mMessages.add(new Message(
+                            messageInfo.getInt(USER) == Integer.parseInt(userId),
+                            messageInfo.getInt(ID), messageInfo.getInt(USER),
+                            dialogId, messageInfo.getInt(STATUS),
+                            messageInfo.getString(Constants.TEXT),
+                            messageInfo.getString(DATE)
+                    ));
                 }
 
                 /**
                  * Добавляем фрагмент на экран.
-                 * {@link DialogsFragment}
+                 * {@link MessagesFragment}
                  */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 mMessagesFragment
-                        = DialogsFragment.getInstance(MessageActivity.this, mMessages);
+                        = MessagesFragment.getInstance(MessageActivity.this, mMessages);
                 ft.add(R.id.llmessage, mMessagesFragment);
                 ft.commit();
 
