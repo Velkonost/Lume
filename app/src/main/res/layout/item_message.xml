@@ -7,9 +7,8 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:id="@+id/messageTo"
+            android:id="@+id/messageText"
             android:layout_height="wrap_content"
-            android:background="@drawable/rectangle_message_to"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:paddingRight="20dp"

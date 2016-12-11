@@ -8,13 +8,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 
 import java.util.List;
 
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.adapter.DialogListAdapter;
-import ru.velkonost.lume.descriptions.DialogContact;
+import ru.velkonost.lume.adapter.MessageListAdapter;
 import ru.velkonost.lume.descriptions.Message;
 
 public class MessagesFragment extends Fragment {
