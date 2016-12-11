@@ -104,6 +104,7 @@ public class DialogsActivity extends AppCompatActivity {
     private List<DialogContact> mContacts;
 
     private DialogsFragment dialogsFragment;
+
     private TimerCheckDialogsState timer;
 
     @Override

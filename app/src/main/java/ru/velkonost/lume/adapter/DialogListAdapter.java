@@ -23,6 +23,7 @@ import ru.velkonost.lume.activity.MessageActivity;
 import ru.velkonost.lume.descriptions.DialogContact;
 
 import static ru.velkonost.lume.Constants.DIALOG_ID;
+import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
@@ -87,7 +88,8 @@ public class DialogListAdapter extends ArrayAdapter {
                     public void run() {
                         Intent intent = new Intent(mContext, MessageActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra(DIALOG_ID, Integer.parseInt(dialogContact.getId()));
+                        intent.putExtra(DIALOG_ID, Integer.parseInt(dialogContact.getDialogId()));
+                        intent.putExtra(ID, Integer.parseInt(dialogContact.getId()));
                         mContext.startActivity(intent);
                     }
                 }, 350);
