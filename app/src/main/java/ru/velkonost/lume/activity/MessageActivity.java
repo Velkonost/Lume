@@ -14,9 +14,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,7 +79,6 @@ public class MessageActivity extends AppCompatActivity {
     private int addresseeId;
     private int dialogId;
 
-
     /**
      * Идентификаторы сообщений данного диалога.
      **/
@@ -97,6 +98,8 @@ public class MessageActivity extends AppCompatActivity {
     private MessagesFragment mMessagesFragment;
 
     private EditText editMessage;
+
+    private ImageView sendMessage;
 
 //    private TimerCheckDialogsState timer;
 
@@ -144,6 +147,7 @@ public class MessageActivity extends AppCompatActivity {
 
         mGetMessages.execute();
     }
+
 
     @Override
     public void onBackPressed() {
@@ -243,6 +247,10 @@ public class MessageActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    public void sendMessage(View view) {
+        Log.i("CHE", "che");
     }
 
     private class GetMessages extends AsyncTask<Object, Object, String> {

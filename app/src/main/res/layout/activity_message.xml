@@ -43,7 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:background="@drawable/message_edit_text"
-                    android:paddingRight="20dp"
+                    android:paddingRight="40dp"
                     android:paddingTop="20dp"
                     android:paddingBottom="20dp"
                     android:paddingLeft="55dp"
@@ -52,6 +52,16 @@
                     android:focusableInTouchMode="true"
                     android:imeOptions="actionSend|flagNoEnterAction"
                     android:inputType="textMultiLine"/>
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="100dp"
+                android:src="@mipmap/ic_send"
+                android:layout_alignTop="@+id/editMessage"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/imageView"
+                android:onClick="sendMessage"
+                />
         </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>
 

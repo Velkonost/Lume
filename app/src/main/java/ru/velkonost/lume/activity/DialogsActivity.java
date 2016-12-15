@@ -155,7 +155,8 @@ public class DialogsActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        timer.cancel();
+        if (timer != null)
+            timer.cancel();
     }
 
     /**
