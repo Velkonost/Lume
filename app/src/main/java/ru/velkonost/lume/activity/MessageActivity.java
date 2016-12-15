@@ -124,7 +124,6 @@ public class MessageActivity extends AppCompatActivity {
         userId = loadText(MessageActivity.this, ID);
 
         editMessage = (EditText) findViewById(R.id.editMessage);
-        editMessage.clearFocus();
 
         mMessages = new ArrayList<>();
 
@@ -325,7 +324,6 @@ public class MessageActivity extends AppCompatActivity {
                         = MessagesFragment.getInstance(MessageActivity.this, mMessages);
                 ft.add(R.id.llmessage, mMessagesFragment);
                 ft.commit();
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }

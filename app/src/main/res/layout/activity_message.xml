@@ -49,6 +49,7 @@
                     android:paddingLeft="55dp"
                     android:id="@+id/editMessage"
                     android:layout_alignParentBottom="true"
+                    android:focusableInTouchMode="true"
                     android:imeOptions="actionSend|flagNoEnterAction"
                     android:inputType="textMultiLine"/>
         </RelativeLayout>
