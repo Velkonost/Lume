@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,6 +96,8 @@ public class MessageActivity extends AppCompatActivity {
 
     private MessagesFragment mMessagesFragment;
 
+    private EditText editMessage;
+
 //    private TimerCheckDialogsState timer;
 
     @Override
@@ -119,6 +122,9 @@ public class MessageActivity extends AppCompatActivity {
          * {@link PhoneDataStorage#loadText(Context, String)}
          **/
         userId = loadText(MessageActivity.this, ID);
+
+        editMessage = (EditText) findViewById(R.id.editMessage);
+        editMessage.clearFocus();
 
         mMessages = new ArrayList<>();
 

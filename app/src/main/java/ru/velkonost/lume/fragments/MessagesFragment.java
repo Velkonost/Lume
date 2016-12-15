@@ -45,6 +45,7 @@ public class MessagesFragment extends Fragment {
 
         adapter = new MessageListAdapter(getActivity(), mMessages);
         recyclerView.setAdapter(adapter);
+        recyclerView.scrollToPosition(adapter.getItemCount()-1);
 
         return view;
     }

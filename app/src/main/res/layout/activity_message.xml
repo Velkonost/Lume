@@ -36,12 +36,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="60dp"
                     android:orientation="horizontal"
+                    android:background="@color/colorWhite"
                     android:id="@+id/llmessage"/>
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:background="@drawable/message_edit_text"
+                    android:paddingRight="20dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
                     android:paddingLeft="55dp"
                     android:id="@+id/editMessage"
                     android:layout_alignParentBottom="true"
