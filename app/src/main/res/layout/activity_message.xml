@@ -34,14 +34,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="60dp"
+                    android:layout_marginBottom="100dp"
                     android:orientation="horizontal"
                     android:background="@color/colorWhite"
                     android:id="@+id/llmessage"/>
 
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="100dp"
                     android:background="@drawable/message_edit_text"
                     android:paddingRight="20dp"
                     android:paddingTop="20dp"
@@ -50,7 +50,7 @@
                     android:id="@+id/editMessage"
                     android:layout_alignParentBottom="true"
                     android:imeOptions="actionSend|flagNoEnterAction"
-                    android:inputType="text"/>
+                    android:inputType="textMultiLine"/>
         </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>
 
