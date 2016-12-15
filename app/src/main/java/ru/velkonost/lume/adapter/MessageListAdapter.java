@@ -1,6 +1,7 @@
 package ru.velkonost.lume.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,19 +32,26 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
     @Override
     public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        View view = inflater.inflate(R.layout.item_message, parent, false);
+        return new MessageViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MessageViewHolder holder, int position) {
+        Message item = data.get(position);
 
+        holder.mTextView.setText(item.getText());
+
+        if(item.isFromMe())
+            holder.mTextView.setBackground(ContextCompat.getDrawable(context, R.drawable.rectangle_message_from));
+        else
+            holder.mTextView.setBackground(ContextCompat.getDrawable(context, R.drawable.rectangle_message_to));
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return data.size();
     }
-
 
     class MessageViewHolder extends RecyclerView.ViewHolder {
 

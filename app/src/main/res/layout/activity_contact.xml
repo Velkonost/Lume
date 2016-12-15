@@ -46,8 +46,6 @@
             android:orientation="vertical"
             app:layout_anchor="@id/appbarlayout"
             app:layout_anchorGravity="bottom"/>
-
-
     </android.support.design.widget.CoordinatorLayout>
 
 

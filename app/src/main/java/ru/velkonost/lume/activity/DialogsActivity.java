@@ -15,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -101,7 +100,7 @@ public class DialogsActivity extends AppCompatActivity {
      * Свойство - список контактов.
      * {@link DialogContact}
      */
-    private List<DialogContact> mContacts;
+    private List<DialogContact> mDialogs;
 
     private DialogsFragment dialogsFragment;
 
@@ -138,7 +137,7 @@ public class DialogsActivity extends AppCompatActivity {
          **/
         userId = loadText(DialogsActivity.this, ID);
 
-        mContacts = new ArrayList<>();
+        mDialogs = new ArrayList<>();
 
         mGetDialogs.execute();
 
@@ -367,7 +366,7 @@ public class DialogsActivity extends AppCompatActivity {
                      */
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
 
-                    mContacts.add(new DialogContact(userInfo.getString(ID),
+                    mDialogs.add(new DialogContact(userInfo.getString(ID),
                             userInfo.getString(DIALOG_ID), userInfo.getString(NAME),
                             userInfo.getString(SURNAME), userInfo.getString(LOGIN),
                             Integer.parseInt(userInfo.getString(UNREAD_MESSAGES)),
@@ -380,7 +379,7 @@ public class DialogsActivity extends AppCompatActivity {
                  */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 dialogsFragment
-                        = DialogsFragment.getInstance(DialogsActivity.this, mContacts);
+                        = DialogsFragment.getInstance(DialogsActivity.this, mDialogs);
                 ft.add(R.id.lldialog, dialogsFragment);
                 ft.commit();
 
@@ -451,21 +450,20 @@ public class DialogsActivity extends AppCompatActivity {
                      */
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
 
-                    for (int j = 0; j < mContacts.size(); j++){
-                        if (mContacts.get(j).getId().equals(userInfo.getString(ID))) {
+                    for (int j = 0; j < mDialogs.size(); j++){
+                        if (mDialogs.get(j).getId().equals(userInfo.getString(ID))) {
 
-                            mContacts.get(j).setUnreadMessages(Integer.parseInt(userInfo
+                            mDialogs.get(j).setUnreadMessages(Integer.parseInt(userInfo
                                     .getString(UNREAD_MESSAGES)));
-                            mContacts.get(j).setIsAvatar(true);
+                            mDialogs.get(j).setIsAvatar(true);
 
-                            Log.i(userInfo.getString(ID), String.valueOf(mContacts.get(j).getUnreadMessages()));
                             exist = true;
                             break;
                         }
                     }
 
                     if (!exist){
-                        mContacts.add(new DialogContact(userInfo.getString(ID),
+                        mDialogs.add(new DialogContact(userInfo.getString(ID),
                                 userInfo.getString(DIALOG_ID), userInfo.getString(NAME),
                                 userInfo.getString(SURNAME), userInfo.getString(LOGIN),
                                 Integer.parseInt(userInfo.getString(UNREAD_MESSAGES)),

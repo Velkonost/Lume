@@ -49,6 +49,7 @@ public class DialogListAdapter extends ArrayAdapter {
         this.data = data;
     }
 
+    @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull final ViewGroup parent) {
         final DialogContact dialogContact = data.get(position);

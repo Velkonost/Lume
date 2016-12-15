@@ -120,6 +120,8 @@ public class MessageActivity extends AppCompatActivity {
          **/
         userId = loadText(MessageActivity.this, ID);
 
+        mMessages = new ArrayList<>();
+
         Intent intent = getIntent();
         dialogId = intent.getIntExtra(DIALOG_ID, 0);
         addresseeId = intent.getIntExtra(ID, 0);
@@ -134,6 +136,8 @@ public class MessageActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        mGetMessages.execute();
     }
 
     @Override
@@ -321,5 +325,4 @@ public class MessageActivity extends AppCompatActivity {
             }
         }
     }
-
 }
