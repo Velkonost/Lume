@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -37,6 +38,8 @@ import ru.velkonost.lume.descriptions.Message;
 import ru.velkonost.lume.fragments.DialogsFragment;
 import ru.velkonost.lume.fragments.MessagesFragment;
 
+import static ru.velkonost.lume.Constants.ADDRESSEE_ID;
+import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.DATE;
 import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.EQUALS;
@@ -102,6 +105,8 @@ public class MessageActivity extends AppCompatActivity {
 
     private ImageView sendMessage;
 
+    private TimerCheckMessagesState timer;
+
 //    private TimerCheckDialogsState timer;
 
     @Override
@@ -118,7 +123,7 @@ public class MessageActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_messages);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(MessageActivity.this, toolbar, R.string.menu_item_contacts); /** Инициализация */
+        initToolbar(MessageActivity.this, toolbar, R.string.menu_item_messages); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
         /**
@@ -147,8 +152,22 @@ public class MessageActivity extends AppCompatActivity {
         });
 
         mGetMessages.execute();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                timer = new TimerCheckMessagesState(100000000, 5000);
+                timer.start();
+            }
+        }, 5000);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (timer != null)
+            timer.cancel();
+    }
 
     @Override
     public void onBackPressed() {
@@ -254,6 +273,24 @@ public class MessageActivity extends AppCompatActivity {
         Log.i("CHE", "che");
     }
 
+
+    public class TimerCheckMessagesState extends CountDownTimer {
+
+        TimerCheckMessagesState(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long l) {
+            RefreshMessages mRefreshMessages = new RefreshMessages();
+            mRefreshMessages.execute();
+        }
+
+        @Override
+        public void onFinish() {
+        }
+    }
+
     private class GetMessages extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -267,7 +304,8 @@ public class MessageActivity extends AppCompatActivity {
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = DIALOG_ID + EQUALS + dialogId;
+            @SuppressWarnings("WrongThread") String params = DIALOG_ID + EQUALS + dialogId
+                    + AMPERSAND + ADDRESSEE_ID + EQUALS + addresseeId;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
@@ -351,7 +389,8 @@ public class MessageActivity extends AppCompatActivity {
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = DIALOG_ID + EQUALS + dialogId;
+            @SuppressWarnings("WrongThread") String params = DIALOG_ID + EQUALS + dialogId
+                    + AMPERSAND + ADDRESSEE_ID + EQUALS + addresseeId;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
@@ -395,8 +434,9 @@ public class MessageActivity extends AppCompatActivity {
                  */
                 for (int i = 0; i < mids.size(); i++) {
                     boolean exist = false;
+
                     /**
-                     * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
+                     * Получение JSON-объекта с информацией о конкретном сообщении по его идентификатору.
                      */
                     JSONObject messageInfo = dataJsonObj.getJSONObject(mids.get(i));
 

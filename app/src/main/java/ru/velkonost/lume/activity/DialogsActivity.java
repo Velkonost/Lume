@@ -291,7 +291,7 @@ public class DialogsActivity extends AppCompatActivity {
 
     public class TimerCheckDialogsState extends CountDownTimer {
 
-        public TimerCheckDialogsState(long millisInFuture, long countDownInterval) {
+        TimerCheckDialogsState(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
         }
 

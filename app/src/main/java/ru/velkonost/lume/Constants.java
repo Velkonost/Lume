@@ -23,6 +23,7 @@ public class Constants {
     public static final String ID = "id";
     public static final String IDS = "ids";
     public static final String DIALOG_ID = "did";
+    public static final String ADDRESSEE_ID = "addresseeId";
     public static final String MESSAGE_ID = "mid";
     public static final String MESSAGE_IDS = "mids";
 
