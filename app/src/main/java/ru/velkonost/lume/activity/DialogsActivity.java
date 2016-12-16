@@ -438,7 +438,8 @@ public class DialogsActivity extends AppCompatActivity {
                 JSONArray idsJSON = dataJsonObj.getJSONArray(IDS);
 
                 for (int i = 0; i < idsJSON.length(); i++){
-                    ids.add(idsJSON.getString(i));
+                    if (!ids.contains(idsJSON.getString(i)))
+                        ids.add(idsJSON.getString(i));
                 }
 
                 /**
@@ -477,6 +478,7 @@ public class DialogsActivity extends AppCompatActivity {
                  * {@link DialogsFragment}
                  */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                dialogsFragment.refreshContacts(mDialogs);
                 ft.replace(R.id.lldialog, dialogsFragment);
                 ft.commit();
 
