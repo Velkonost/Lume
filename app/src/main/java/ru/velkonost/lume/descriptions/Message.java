@@ -88,4 +88,8 @@ public class Message implements Parcelable {
     public boolean isFromMe() {
         return fromMe;
     }
+
+    public void setStatus(int status) {
+        mStatus = status;
+    }
 }

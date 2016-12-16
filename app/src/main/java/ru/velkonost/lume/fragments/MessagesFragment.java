@@ -50,6 +50,11 @@ public class MessagesFragment extends Fragment {
         return view;
     }
 
+    public void refreshMessages(List<Message> mMessage) {
+        adapter.setData(mMessage);
+        adapter.notifyDataSetChanged();
+    }
+
     public void setMessages(List<Message> messages) {
         mMessages = messages;
     }

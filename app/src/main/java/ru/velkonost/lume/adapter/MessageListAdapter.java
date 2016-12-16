@@ -15,7 +15,8 @@ import java.util.List;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Message;
 
-public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.MessageViewHolder> {
+public class MessageListAdapter
+        extends RecyclerView.Adapter<MessageListAdapter.MessageViewHolder> {
 
     private List<Message> data;
     private LayoutInflater inflater;
