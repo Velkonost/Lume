@@ -40,21 +40,44 @@ public class MessageListAdapter
     }
 
     @Override
-    public void onBindViewHolder(MessageViewHolder holder, int position) {
+    public void onBindViewHolder(final MessageViewHolder holder, int position) {
         Message item = data.get(position);
 
         holder.mTextView.setText(item.getText());
 
         if(item.isFromMe()) {
-            holder.mTextView.setBackground(ContextCompat.getDrawable(context, R.drawable.rectangle_message_from));
+            holder.mTextView.setBackground(ContextCompat.getDrawable(context,
+                    R.drawable.rectangle_message_from));
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, RecyclerView.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams params
+                    = new LinearLayout.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT,
+                    RecyclerView.LayoutParams.WRAP_CONTENT);
+
             params.gravity = Gravity.RIGHT;
 
             holder.mTextView.setLayoutParams(params);
+        } else {
+            holder.mTextView.setBackground(ContextCompat.getDrawable(context,
+                    R.drawable.rectangle_message_to));
+
+//            if (!item.isExist()) {
+//                if (item.getStatus() == 1) {
+//                    holder.mTextView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorGreen));
+//                } else {
+//                    ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), ContextCompat.getColor(context, R.color.colorGreen), ContextCompat.getColor(context, R.color.colorBlue));
+//                    colorAnimation.setDuration(700); // milliseconds
+//                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//
+//                        @Override
+//                        public void onAnimationUpdate(ValueAnimator animator) {
+//                            holder.mTextView.setBackgroundColor((int) animator.getAnimatedValue());
+//                        }
+//
+//                    });
+//                    colorAnimation.start();
+//                }
+//            }
         }
-        else
-            holder.mTextView.setBackground(ContextCompat.getDrawable(context, R.drawable.rectangle_message_to));
     }
 
     @Override

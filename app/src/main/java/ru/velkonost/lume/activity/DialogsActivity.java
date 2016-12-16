@@ -120,7 +120,7 @@ public class DialogsActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_dialogs);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(DialogsActivity.this, toolbar, R.string.menu_item_contacts); /** Инициализация */
+        initToolbar(DialogsActivity.this, toolbar, R.string.menu_item_messages); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
         /**

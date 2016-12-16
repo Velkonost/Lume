@@ -12,6 +12,7 @@ public class Message implements Parcelable {
     private int mStatus;
     private String mText;
     private String mDate;
+    private boolean isExist;
 
     public Message(boolean fromMe, int id, int userId, int dialogId,
                    int status, String text, String date) {
@@ -22,6 +23,8 @@ public class Message implements Parcelable {
         mStatus = status;
         mText = text;
         mDate = date;
+
+        this.isExist = false;
     }
 
     private Message(Parcel in) {
@@ -91,5 +94,13 @@ public class Message implements Parcelable {
 
     public void setStatus(int status) {
         mStatus = status;
+    }
+
+    public boolean isExist() {
+        return isExist;
+    }
+
+    public void setExist(boolean exist) {
+        isExist = exist;
     }
 }

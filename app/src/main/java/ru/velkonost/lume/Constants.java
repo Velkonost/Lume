@@ -19,7 +19,7 @@ public class Constants {
     public static final String PREV_PASSWORD = "prev_password";
     public static final String NEW_PASSWORD = "new_password";
     public static final String EMAIL = "email";
-    public static final String USER = "id";
+    public static final String USER = "user";
     public static final String ID = "id";
     public static final String IDS = "ids";
     public static final String DIALOG_ID = "did";

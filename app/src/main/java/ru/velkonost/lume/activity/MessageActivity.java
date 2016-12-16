@@ -169,6 +169,7 @@ public class MessageActivity extends AppCompatActivity {
             timer.cancel();
     }
 
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_messages);
@@ -353,6 +354,7 @@ public class MessageActivity extends AppCompatActivity {
                      */
                     JSONObject messageInfo = dataJsonObj.getJSONObject(mids.get(i));
 
+                    Log.i("CHE", String.valueOf(messageInfo.getInt(ID)));
                     mMessages.add(new Message(
                             messageInfo.getInt(USER) == Integer.parseInt(userId),
                             messageInfo.getInt(ID), messageInfo.getInt(USER),
@@ -445,6 +447,7 @@ public class MessageActivity extends AppCompatActivity {
 
                             mMessages.get(j).setStatus(Integer.parseInt(messageInfo
                                     .getString(STATUS)));
+                            mMessages.get(j).setExist(true);
 
                             exist = true;
                             break;
@@ -468,7 +471,7 @@ public class MessageActivity extends AppCompatActivity {
                  */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 mMessagesFragment.refreshMessages(mMessages);
-                ft.replace(R.id.lldialog, mMessagesFragment);
+                ft.replace(R.id.llmessage, mMessagesFragment);
                 ft.commit();
 
             } catch (JSONException e) {
