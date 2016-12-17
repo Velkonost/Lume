@@ -56,9 +56,18 @@ public class MessageListAdapter
             params.gravity = Gravity.RIGHT;
 
             holder.mTextView.setLayoutParams(params);
+
         } else {
             holder.mTextView.setBackground(ContextCompat.getDrawable(context,
                     R.drawable.rectangle_message_to));
+
+            LinearLayout.LayoutParams params
+                    = new LinearLayout.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT,
+                    RecyclerView.LayoutParams.WRAP_CONTENT);
+
+            params.gravity = Gravity.LEFT;
+
+            holder.mTextView.setLayoutParams(params);
 
 //            if (!item.isExist()) {
 //                if (item.getStatus() == 1) {

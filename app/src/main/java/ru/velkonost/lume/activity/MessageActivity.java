@@ -354,7 +354,6 @@ public class MessageActivity extends AppCompatActivity {
                      */
                     JSONObject messageInfo = dataJsonObj.getJSONObject(mids.get(i));
 
-                    Log.i("CHE", String.valueOf(messageInfo.getInt(ID)));
                     mMessages.add(new Message(
                             messageInfo.getInt(USER) == Integer.parseInt(userId),
                             messageInfo.getInt(ID), messageInfo.getInt(USER),
