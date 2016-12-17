@@ -68,7 +68,7 @@ public class MessageListAdapter
 
                 TransitionDrawable transition = new TransitionDrawable(layers);
                 holder.mTextView.setBackground(transition);
-                transition.startTransition(3000);
+                transition.startTransition(6000);
 
             } else {
                 holder.mTextView.setBackground(ContextCompat.getDrawable(context,
