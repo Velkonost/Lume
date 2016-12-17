@@ -1,8 +1,11 @@
 package ru.velkonost.lume.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,53 +43,51 @@ public class MessageListAdapter
     }
 
     @Override
-    public void onBindViewHolder(final MessageViewHolder holder, int position) {
+    public void onBindViewHolder(MessageViewHolder holder, int position) {
         Message item = data.get(position);
 
         holder.mTextView.setText(item.getText());
+
+        LinearLayout.LayoutParams params
+                = new LinearLayout.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT,
+                RecyclerView.LayoutParams.WRAP_CONTENT);
 
         if(item.isFromMe()) {
             holder.mTextView.setBackground(ContextCompat.getDrawable(context,
                     R.drawable.rectangle_message_from));
 
-            LinearLayout.LayoutParams params
-                    = new LinearLayout.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT,
-                    RecyclerView.LayoutParams.WRAP_CONTENT);
-
             params.gravity = Gravity.RIGHT;
 
-            holder.mTextView.setLayoutParams(params);
-
         } else {
-            holder.mTextView.setBackground(ContextCompat.getDrawable(context,
-                    R.drawable.rectangle_message_to));
 
-            LinearLayout.LayoutParams params
-                    = new LinearLayout.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT,
-                    RecyclerView.LayoutParams.WRAP_CONTENT);
+            if (!item.isExist() && item.getStatus() == 1) {
+
+                Drawable[] layers = new Drawable[2];
+                layers[0] = ContextCompat.getDrawable(context, R.drawable.rectangle_message_to_unread);
+                layers[1] = ContextCompat.getDrawable(context, R.drawable.rectangle_message_to);
+
+                TransitionDrawable transition = new TransitionDrawable(layers);
+                holder.mTextView.setBackground(transition);
+                transition.startTransition(3000);
+
+            } else {
+                holder.mTextView.setBackground(ContextCompat.getDrawable(context,
+                        R.drawable.rectangle_message_to));
+            }
 
             params.gravity = Gravity.LEFT;
-
-            holder.mTextView.setLayoutParams(params);
-
-//            if (!item.isExist()) {
-//                if (item.getStatus() == 1) {
-//                    holder.mTextView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorGreen));
-//                } else {
-//                    ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), ContextCompat.getColor(context, R.color.colorGreen), ContextCompat.getColor(context, R.color.colorBlue));
-//                    colorAnimation.setDuration(700); // milliseconds
-//                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//
-//                        @Override
-//                        public void onAnimationUpdate(ValueAnimator animator) {
-//                            holder.mTextView.setBackgroundColor((int) animator.getAnimatedValue());
-//                        }
-//
-//                    });
-//                    colorAnimation.start();
-//                }
-//            }
         }
+
+        params.setMargins(dp2px(10), dp2px(5), dp2px(10), dp2px(5));
+        holder.mTextView.setLayoutParams(params);
+
+        holder.mTextView.setPadding(dp2px(20), dp2px(10), dp2px(20), dp2px(10));
+
+    }
+
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                context.getResources().getDisplayMetrics());
     }
 
     @Override
