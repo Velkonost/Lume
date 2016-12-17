@@ -20,6 +20,7 @@ public class MessagesFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_messages;
 
     private List<Message> mMessages;
+    private RecyclerView recyclerView;
     private MessageListAdapter adapter;
     protected View view;
     protected Context context;
@@ -40,7 +41,7 @@ public class MessagesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewMessages);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewMessages);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         adapter = new MessageListAdapter(getActivity(), mMessages);
@@ -53,6 +54,7 @@ public class MessagesFragment extends Fragment {
     public void refreshMessages(List<Message> mMessage) {
         adapter.setData(mMessage);
         adapter.notifyDataSetChanged();
+        recyclerView.scrollToPosition(adapter.getItemCount()-1);
     }
 
     public void setMessages(List<Message> messages) {
