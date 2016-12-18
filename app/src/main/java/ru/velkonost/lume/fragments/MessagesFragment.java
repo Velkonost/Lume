@@ -57,6 +57,10 @@ public class MessagesFragment extends Fragment {
         recyclerView.scrollToPosition(adapter.getItemCount()-1);
     }
 
+    public void refreshRecyclerView() {
+        recyclerView.scrollToPosition(adapter.getItemCount()-1);
+    }
+
     public void setMessages(List<Message> messages) {
         mMessages = messages;
     }

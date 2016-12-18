@@ -77,6 +77,7 @@ public class Constants {
 
         public static final String SERVER_SHOW_DIALOGS_METHOD = "/showDialogs";
         public static final String SERVER_SHOW_MESSAGES_METHOD = "/showMessages";
+        public static final String SERVER_SEND_MESSAGE_METHOD = "/sendMessage";
 
     }
 

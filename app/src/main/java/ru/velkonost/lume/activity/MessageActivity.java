@@ -15,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -46,9 +45,11 @@ import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.MESSAGE_IDS;
 import static ru.velkonost.lume.Constants.STATUS;
+import static ru.velkonost.lume.Constants.TEXT;
 import static ru.velkonost.lume.Constants.URL.SERVER_DIALOG_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
+import static ru.velkonost.lume.Constants.URL.SERVER_SEND_MESSAGE_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_MESSAGES_METHOD;
 import static ru.velkonost.lume.Constants.USER;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
@@ -107,8 +108,6 @@ public class MessageActivity extends AppCompatActivity {
 
     private TimerCheckMessagesState timer;
 
-//    private TimerCheckDialogsState timer;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,6 +157,7 @@ public class MessageActivity extends AppCompatActivity {
             public void run() {
                 timer = new TimerCheckMessagesState(100000000, 5000);
                 timer.start();
+
             }
         }, 5000);
     }
@@ -271,7 +271,13 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     public void sendMessage(View view) {
-        Log.i("CHE", "che");
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.execute();
+
+        editMessage.setText("");
+
+        RefreshMessages mRefreshMessages = new RefreshMessages();
+        mRefreshMessages.execute();
     }
 
 
@@ -473,9 +479,126 @@ public class MessageActivity extends AppCompatActivity {
                 ft.replace(R.id.llmessage, mMessagesFragment);
                 ft.commit();
 
+
+                editMessage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mMessagesFragment.refreshRecyclerView();
+                    }
+                });
+
+//                editMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//                    @Override
+//                    public void onFocusChange(View view, boolean b) {
+//                        mMessagesFragment.refreshRecyclerView();
+//                    }
+//                });
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
+    private class SendMessage extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_DIALOG_SCRIPT
+                    + SERVER_SEND_MESSAGE_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = DIALOG_ID + EQUALS + dialogId
+                    + AMPERSAND + ID + EQUALS + userId
+                    + AMPERSAND + TEXT + EQUALS + editMessage.getText().toString();
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+//            /** Свойство - полученный JSON–объект*/
+//            JSONObject dataJsonObj;
+//
+//            try {
+//
+//                /**
+//                 * Получение JSON-объекта по строке.
+//                 */
+//                dataJsonObj = new JSONObject(strJson);
+//
+//                /**
+//                 * Получение идентификаторов найденных пользователей.
+//                 */
+//                JSONArray idsJSON = dataJsonObj.getJSONArray(MESSAGE_IDS);
+//
+//                for (int i = 0; i < idsJSON.length(); i++){
+//                    if (!mids.contains(idsJSON.getString(i)))
+//                        mids.add(idsJSON.getString(i));
+//                }
+//
+//                /**
+//                 * Составление view-элементов с краткой информацией о пользователях
+//                 */
+//                for (int i = 0; i < mids.size(); i++) {
+//                    boolean exist = false;
+//
+//                    /**
+//                     * Получение JSON-объекта с информацией о конкретном сообщении по его идентификатору.
+//                     */
+//                    JSONObject messageInfo = dataJsonObj.getJSONObject(mids.get(i));
+//
+//                    for (int j = 0; j < mMessages.size(); j++){
+//                        if (mMessages.get(j).getId() == messageInfo.getInt(ID)) {
+//
+//                            mMessages.get(j).setStatus(Integer.parseInt(messageInfo
+//                                    .getString(STATUS)));
+//                            mMessages.get(j).setExist(true);
+//
+//                            exist = true;
+//                            break;
+//                        }
+//                    }
+//
+//                    if (!exist){
+//                        mMessages.add(new Message(
+//                                messageInfo.getInt(USER) == Integer.parseInt(userId),
+//                                messageInfo.getInt(ID), messageInfo.getInt(USER),
+//                                dialogId, messageInfo.getInt(STATUS),
+//                                messageInfo.getString(Constants.TEXT),
+//                                messageInfo.getString(DATE)
+//                        ));
+//                    }
+//                }
+//
+//                /**
+//                 * Добавляем фрагмент на экран.
+//                 * {@link DialogsFragment}
+//                 */
+//                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//                mMessagesFragment.refreshMessages(mMessages);
+//                ft.replace(R.id.llmessage, mMessagesFragment);
+//                ft.commit();
+//
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
         }
     }
 }
