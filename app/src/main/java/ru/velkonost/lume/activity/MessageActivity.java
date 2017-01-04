@@ -187,7 +187,6 @@ public class MessageActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
-
     }
 
     @Override
@@ -195,6 +194,7 @@ public class MessageActivity extends AppCompatActivity {
         super.onStop();
         if (timer != null)
             timer.cancel();
+//        finish();
     }
 
     @Override
@@ -318,6 +318,7 @@ public class MessageActivity extends AppCompatActivity {
                 ft.commit();
             }
         }, 500);
+
     }
 
 
@@ -515,10 +516,12 @@ public class MessageActivity extends AppCompatActivity {
                  * Добавляем фрагмент на экран.
                  * {@link DialogsFragment}
                  */
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                mMessagesFragment.refreshMessages(mMessages);
-                ft.replace(R.id.llmessage, mMessagesFragment);
-                ft.commit();
+                if(!isFinishing()) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    mMessagesFragment.refreshMessages(mMessages);
+                    ft.replace(R.id.llmessage, mMessagesFragment);
+                    ft.commitAllowingStateLoss();
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -558,73 +561,6 @@ public class MessageActivity extends AppCompatActivity {
         }
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
-
-//            /** Свойство - полученный JSON–объект*/
-//            JSONObject dataJsonObj;
-//
-//            try {
-//
-//                /**
-//                 * Получение JSON-объекта по строке.
-//                 */
-//                dataJsonObj = new JSONObject(strJson);
-//
-//                /**
-//                 * Получение идентификаторов найденных пользователей.
-//                 */
-//                JSONArray idsJSON = dataJsonObj.getJSONArray(MESSAGE_IDS);
-//
-//                for (int i = 0; i < idsJSON.length(); i++){
-//                    if (!mids.contains(idsJSON.getString(i)))
-//                        mids.add(idsJSON.getString(i));
-//                }
-//
-//                /**
-//                 * Составление view-элементов с краткой информацией о пользователях
-//                 */
-//                for (int i = 0; i < mids.size(); i++) {
-//                    boolean exist = false;
-//
-//                    /**
-//                     * Получение JSON-объекта с информацией о конкретном сообщении по его идентификатору.
-//                     */
-//                    JSONObject messageInfo = dataJsonObj.getJSONObject(mids.get(i));
-//
-//                    for (int j = 0; j < mMessages.size(); j++){
-//                        if (mMessages.get(j).getId() == messageInfo.getInt(ID)) {
-//
-//                            mMessages.get(j).setStatus(Integer.parseInt(messageInfo
-//                                    .getString(STATUS)));
-//                            mMessages.get(j).setExist(true);
-//
-//                            exist = true;
-//                            break;
-//                        }
-//                    }
-//
-//                    if (!exist){
-//                        mMessages.add(new Message(
-//                                messageInfo.getInt(USER) == Integer.parseInt(userId),
-//                                messageInfo.getInt(ID), messageInfo.getInt(USER),
-//                                dialogId, messageInfo.getInt(STATUS),
-//                                messageInfo.getString(Constants.TEXT),
-//                                messageInfo.getString(DATE)
-//                        ));
-//                    }
-//                }
-//
-//                /**
-//                 * Добавляем фрагмент на экран.
-//                 * {@link DialogsFragment}
-//                 */
-//                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//                mMessagesFragment.refreshMessages(mMessages);
-//                ft.replace(R.id.llmessage, mMessagesFragment);
-//                ft.commit();
-//
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
         }
     }
 }

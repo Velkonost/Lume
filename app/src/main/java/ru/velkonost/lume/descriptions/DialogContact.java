@@ -13,9 +13,10 @@ public class DialogContact implements Parcelable {
     private int unreadMessages;
     private int avatar;
     private boolean isAvatar;
+    private boolean isEmpty;
 
     public DialogContact(String id, String dialogId, String name, String surname, String login,
-                         int unreadMessages, int avatar) {
+                         int unreadMessages, int avatar, boolean isEmpty) {
         this.id = id;
         this.dialogId = dialogId;
         this.name = name;
@@ -23,6 +24,7 @@ public class DialogContact implements Parcelable {
         this.login = login;
         this.unreadMessages = unreadMessages;
         this.avatar = avatar;
+        this.isEmpty = isEmpty;
 
         this.isAvatar = false;
     }
@@ -105,10 +107,6 @@ public class DialogContact implements Parcelable {
         this.name = name;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
     public void setLogin(String login) {
         this.login = login;
     }
@@ -123,6 +121,14 @@ public class DialogContact implements Parcelable {
 
     public String getDialogId() {
         return dialogId;
+    }
+
+    public boolean isEmpty() {
+        return isEmpty;
+    }
+
+    public void setEmpty(boolean empty) {
+        isEmpty = empty;
     }
 }
 

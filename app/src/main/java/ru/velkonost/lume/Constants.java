@@ -76,7 +76,7 @@ public class Constants {
         public static final String SERVER_UPLOAD_IMAGE_METHOD = "/editImage";
         public static final String SERVER_EDIT_PARAMETERS_METHOD = "/edit";
 
-        public static final String SERVER_GET_DIALOG_ID_METHOD = "/getDialogId";
+        public static final String SERVER_CREATE_DIALOG_METHOD = "/createDialog";
         public static final String SERVER_SHOW_DIALOGS_METHOD = "/showDialogs";
         public static final String SERVER_SHOW_MESSAGES_METHOD = "/showMessages";
         public static final String SERVER_SEND_MESSAGE_METHOD = "/sendMessage";

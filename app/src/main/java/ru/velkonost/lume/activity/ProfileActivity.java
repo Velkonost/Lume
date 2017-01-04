@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -53,6 +54,7 @@ import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
 
+import static ru.velkonost.lume.Constants.ADDRESSEE_ID;
 import static ru.velkonost.lume.Constants.ADD_CONTACT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
@@ -77,6 +79,7 @@ import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_ENCODING;
 import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_PROTOCOL;
 import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_URL;
 import static ru.velkonost.lume.Constants.RESULT.SUCCESS;
+import static ru.velkonost.lume.Constants.SENDER_ID;
 import static ru.velkonost.lume.Constants.SEND_ID;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.STUDY;
@@ -85,6 +88,8 @@ import static ru.velkonost.lume.Constants.UPLOAD_IMAGE_SUCCESS_CODE;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_ADD_CONTACT_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
+import static ru.velkonost.lume.Constants.URL.SERVER_CREATE_DIALOG_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_DIALOG_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_DATA_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
@@ -300,8 +305,8 @@ public class ProfileActivity extends AppCompatActivity {
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(Palette palette) {
-                int mutedColor = getResources().getColor(R.color.colorPrimary);
-                collapsingToolbar.setContentScrimColor(mutedColor);
+                collapsingToolbar.setContentScrimColor(ContextCompat
+                        .getColor(ProfileActivity.this, R.color.colorPrimary));
             }
         });
         /** Обращаемся к серверу */
@@ -668,10 +673,8 @@ public class ProfileActivity extends AppCompatActivity {
                                             intent.putExtra(ID, Integer.parseInt(userId));
                                             ProfileActivity.this.startActivity(intent);
                                         } else {
-                                            inititializeAlertDialog(ProfileActivity.this,
-                                                    getResources().getString(R.string.server_error),
-                                                    getResources().getString(R.string.relogin),
-                                                    getResources().getString(R.string.btn_ok));
+                                            CreateDialog mCreateDialog = new CreateDialog();
+                                            mCreateDialog.execute();
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -1077,6 +1080,63 @@ public class ProfileActivity extends AppCompatActivity {
                         btnAddIntoContacts.setImageResource(R.mipmap.ic_account_multiple_minus);
                         break;
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private class CreateDialog extends AsyncTask<Object, Object, String> {
+
+        @Override
+        protected String doInBackground(Object... strings) {
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_DIALOG_SCRIPT
+                    + SERVER_CREATE_DIALOG_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = SENDER_ID + EQUALS + userId
+                    + AMPERSAND + ADDRESSEE_ID + EQUALS + profileId;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return resultJson;
+        }
+
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /** Свойство - полученный JSON–объект*/
+            JSONObject dataJsonObj;
+
+            try {
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+
+                Intent intent = new Intent(ProfileActivity.this, MessageActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(DIALOG_ID, dataJsonObj.getInt(DIALOG_ID));
+                intent.putExtra(ID, Integer.parseInt(userId));
+                ProfileActivity.this.startActivity(intent);
+
+//                dialogId = Integer.parseInt(dataJsonObj.getString(DIALOG_ID));
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -42,6 +42,7 @@ import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.IDS;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
+import static ru.velkonost.lume.Constants.STATUS;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.UNREAD_MESSAGES;
 import static ru.velkonost.lume.Constants.URL.SERVER_DIALOG_SCRIPT;
@@ -377,7 +378,8 @@ public class DialogsActivity extends AppCompatActivity {
                             userInfo.getString(DIALOG_ID), userInfo.getString(NAME),
                             userInfo.getString(SURNAME), userInfo.getString(LOGIN),
                             Integer.parseInt(userInfo.getString(UNREAD_MESSAGES)),
-                            Integer.parseInt(userInfo.getString(AVATAR))));
+                            Integer.parseInt(userInfo.getString(AVATAR)),
+                            Integer.parseInt(userInfo.getString(STATUS)) == 0));
                 }
 
                 /**
@@ -475,7 +477,8 @@ public class DialogsActivity extends AppCompatActivity {
                                 userInfo.getString(DIALOG_ID), userInfo.getString(NAME),
                                 userInfo.getString(SURNAME), userInfo.getString(LOGIN),
                                 Integer.parseInt(userInfo.getString(UNREAD_MESSAGES)),
-                                Integer.parseInt(userInfo.getString(AVATAR))));
+                                Integer.parseInt(userInfo.getString(AVATAR)),
+                                Integer.parseInt(userInfo.getString(STATUS)) == 0));
                     }
                 }
 
@@ -483,10 +486,12 @@ public class DialogsActivity extends AppCompatActivity {
                  * Добавляем фрагмент на экран.
                  * {@link DialogsFragment}
                  */
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                dialogsFragment.refreshContacts(mDialogs);
-                ft.replace(R.id.lldialog, dialogsFragment);
-                ft.commit();
+                if(!isFinishing()) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    dialogsFragment.refreshContacts(mDialogs);
+                    ft.replace(R.id.lldialog, dialogsFragment);
+                    ft.commitAllowingStateLoss();
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();
