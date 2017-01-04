@@ -198,6 +198,7 @@ public class SearchActivity extends AppCompatActivity {
 
                     /** Переход на страницу сообщений данного пользователя */
                     case R.id.navigationMessages:
+                        nextIntent = new Intent(SearchActivity.this, DialogsActivity.class);
                         break;
 
                     /** Переход на страницу досок карточной версии канбан-системы */

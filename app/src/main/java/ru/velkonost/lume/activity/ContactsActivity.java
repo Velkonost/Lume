@@ -42,6 +42,7 @@ import ru.velkonost.lume.fragments.ContactsFragment;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.IDS;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.SURNAME;
@@ -192,6 +193,7 @@ public class ContactsActivity extends AppCompatActivity {
 
                     /** Переход на страницу сообщений данного пользователя */
                     case R.id.navigationMessages:
+                        nextIntent = new Intent(ContactsActivity.this, DialogsActivity.class);
                         break;
 
                     /** Переход на страницу досок карточной версии канбан-системы */
@@ -331,7 +333,7 @@ public class ContactsActivity extends AppCompatActivity {
                 /**
                  * Получение идентификаторов найденных пользователей.
                  */
-                JSONArray idsJSON = dataJsonObj.getJSONArray("ids");
+                JSONArray idsJSON = dataJsonObj.getJSONArray(IDS);
 
                 for (int i = 0; i < idsJSON.length(); i++){
                     ids.add(idsJSON.getString(i));

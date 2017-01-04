@@ -19,8 +19,13 @@ public class Constants {
     public static final String PREV_PASSWORD = "prev_password";
     public static final String NEW_PASSWORD = "new_password";
     public static final String EMAIL = "email";
+    public static final String USER = "user";
     public static final String ID = "id";
     public static final String IDS = "ids";
+    public static final String DIALOG_ID = "did";
+    public static final String ADDRESSEE_ID = "addresseeId";
+    public static final String MESSAGE_ID = "mid";
+    public static final String MESSAGE_IDS = "mids";
 
     public static final String IMAGE = "image";
 
@@ -29,6 +34,9 @@ public class Constants {
     public static final String GET_ID = "get_id";
 
     public static final String SEARCH = "search";
+    public static final String STATUS = "status";
+    public static final String TEXT = "text";
+    public static final String DATE = "date";
 
     public static final String NAME = "name";
     public static final String SURNAME = "surname";
@@ -41,6 +49,8 @@ public class Constants {
     public static final String WORK = "work";
     public static final String CONTACT = "contact";
 
+    public static final String UNREAD_MESSAGES = "unread";
+
     public static final String GET_DATA = "getdata";
     public static final String GET_DATA_SETTINGS = "getdatasettings";
     public static final String GET_EDIT_RESULT = "edit";
@@ -51,6 +61,7 @@ public class Constants {
         public static final String SERVER_PROTOCOL = "http://";
         public static final String SERVER_HOST = "vh156342.eurodir.ru";
         public static final String SERVER_ACCOUNT_SCRIPT = "/account";
+        public static final String SERVER_DIALOG_SCRIPT = "/dialogs";
         public static final String SERVER_RESOURCE = "/resource";
         public static final String SERVER_AVATAR = "/avatar";
 
@@ -64,8 +75,13 @@ public class Constants {
         public static final String SERVER_UPLOAD_IMAGE_METHOD = "/editImage";
         public static final String SERVER_EDIT_PARAMETERS_METHOD = "/edit";
 
+        public static final String SERVER_SHOW_DIALOGS_METHOD = "/showDialogs";
+        public static final String SERVER_SHOW_MESSAGES_METHOD = "/showMessages";
+        public static final String SERVER_SEND_MESSAGE_METHOD = "/sendMessage";
+
     }
 
+    /** Класс констант, описывающих результаты операций */
     public static class RESULT {
         public static final String SUCCESS = "Success";
         public static final String ERROR = "Error";
