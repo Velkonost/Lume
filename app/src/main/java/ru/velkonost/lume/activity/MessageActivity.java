@@ -160,6 +160,8 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         }, 5000);
+
+
     }
 
     @Override
@@ -378,6 +380,7 @@ public class MessageActivity extends AppCompatActivity {
                         = MessagesFragment.getInstance(MessageActivity.this, mMessages);
                 ft.add(R.id.llmessage, mMessagesFragment);
                 ft.commit();
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -478,21 +481,6 @@ public class MessageActivity extends AppCompatActivity {
                 mMessagesFragment.refreshMessages(mMessages);
                 ft.replace(R.id.llmessage, mMessagesFragment);
                 ft.commit();
-
-
-                editMessage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mMessagesFragment.refreshRecyclerView();
-                    }
-                });
-
-//                editMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//                    @Override
-//                    public void onFocusChange(View view, boolean b) {
-//                        mMessagesFragment.refreshRecyclerView();
-//                    }
-//                });
 
             } catch (JSONException e) {
                 e.printStackTrace();

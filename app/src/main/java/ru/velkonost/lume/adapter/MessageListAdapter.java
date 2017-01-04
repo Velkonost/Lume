@@ -3,8 +3,10 @@ package ru.velkonost.lume.adapter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -46,7 +48,10 @@ public class MessageListAdapter
     public void onBindViewHolder(MessageViewHolder holder, int position) {
         Message item = data.get(position);
 
-        holder.mTextView.setText(item.getText());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            holder.mTextView.setText(Html.fromHtml(item.getText(), Html.FROM_HTML_MODE_LEGACY));
+        else
+            holder.mTextView.setText(Html.fromHtml(item.getText()));
 
         LinearLayout.LayoutParams params
                 = new LinearLayout.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT,
