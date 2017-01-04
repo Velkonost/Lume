@@ -53,7 +53,8 @@
                     android:imeOptions="actionSend|flagNoEnterAction"
                     android:inputType="textMultiLine"
                     android:layout_alignParentBottom="true"
-                    android:layout_alignParentStart="true"/>
+                    android:layout_alignParentStart="true"
+                    android:onClick="clickOnEditText"/>
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="100dp"

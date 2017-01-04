@@ -171,7 +171,6 @@ public class MessageActivity extends AppCompatActivity {
             timer.cancel();
     }
 
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_messages);
@@ -280,6 +279,19 @@ public class MessageActivity extends AppCompatActivity {
 
         RefreshMessages mRefreshMessages = new RefreshMessages();
         mRefreshMessages.execute();
+    }
+
+    public void clickOnEditText(View view) {
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                mMessagesFragment.refreshRecyclerView(mMessages);
+                ft.replace(R.id.llmessage, mMessagesFragment);
+                ft.commit();
+            }
+        }, 500);
     }
 
 
