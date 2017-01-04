@@ -15,6 +15,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -160,6 +162,27 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         }, 5000);
+
+        editMessage.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        mMessagesFragment.refreshRecyclerView(mMessages);
+                        ft.replace(R.id.llmessage, mMessagesFragment);
+                        ft.commit();
+                    }
+                }, 500);
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
 
 
     }
