@@ -53,6 +53,7 @@ public class DialogListAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, @NonNull final ViewGroup parent) {
         final DialogContact dialogContact = data.get(position);
+
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_dialog, null);
         }

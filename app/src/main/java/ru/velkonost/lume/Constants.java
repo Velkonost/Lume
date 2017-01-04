@@ -24,6 +24,7 @@ public class Constants {
     public static final String IDS = "ids";
     public static final String DIALOG_ID = "did";
     public static final String ADDRESSEE_ID = "addresseeId";
+    public static final String SENDER_ID = "senderId";
     public static final String MESSAGE_ID = "mid";
     public static final String MESSAGE_IDS = "mids";
 
@@ -75,6 +76,7 @@ public class Constants {
         public static final String SERVER_UPLOAD_IMAGE_METHOD = "/editImage";
         public static final String SERVER_EDIT_PARAMETERS_METHOD = "/edit";
 
+        public static final String SERVER_CREATE_DIALOG_METHOD = "/createDialog";
         public static final String SERVER_SHOW_DIALOGS_METHOD = "/showDialogs";
         public static final String SERVER_SHOW_MESSAGES_METHOD = "/showMessages";
         public static final String SERVER_SEND_MESSAGE_METHOD = "/sendMessage";
