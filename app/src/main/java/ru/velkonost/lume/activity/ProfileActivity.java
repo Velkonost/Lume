@@ -61,6 +61,7 @@ import static ru.velkonost.lume.Constants.CAMERA_REQUEST;
 import static ru.velkonost.lume.Constants.CITY;
 import static ru.velkonost.lume.Constants.CONTACT;
 import static ru.velkonost.lume.Constants.COUNTRY;
+import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.GALLERY_REQUEST;
 import static ru.velkonost.lume.Constants.GET_DATA;
@@ -652,6 +653,30 @@ public class ProfileActivity extends AppCompatActivity {
                                     /** Открытие нового потока */
                                     mAddContact = new AddContact();
                                     mAddContact.execute();
+                                }
+                            });
+
+                            btnSendMessage.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                    try {
+                                        if (dataJsonObj.getInt(DIALOG_ID) != -1){
+                                            Intent intent = new Intent(ProfileActivity.this, MessageActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            intent.putExtra(DIALOG_ID, dataJsonObj.getInt(DIALOG_ID));
+                                            intent.putExtra(ID, Integer.parseInt(userId));
+                                            ProfileActivity.this.startActivity(intent);
+                                        } else {
+                                            inititializeAlertDialog(ProfileActivity.this,
+                                                    getResources().getString(R.string.server_error),
+                                                    getResources().getString(R.string.relogin),
+                                                    getResources().getString(R.string.btn_ok));
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
                                 }
                             });
                         }

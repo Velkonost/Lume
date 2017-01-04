@@ -20,7 +20,6 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,6 +59,12 @@ import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
+/**
+ * @author Velkonost
+ *
+ * Класс, описывающий активность открытого диалога.
+ *
+ */
 public class MessageActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_message;
@@ -105,8 +110,6 @@ public class MessageActivity extends AppCompatActivity {
     private MessagesFragment mMessagesFragment;
 
     private EditText editMessage;
-
-    private ImageView sendMessage;
 
     private TimerCheckMessagesState timer;
 
