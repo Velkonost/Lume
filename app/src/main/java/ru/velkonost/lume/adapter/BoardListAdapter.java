@@ -2,6 +2,7 @@ package ru.velkonost.lume.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,22 +11,24 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.Message;
+import ru.velkonost.lume.descriptions.Board;
+
+import static ru.velkonost.lume.Constants.MARQUEE_REPEAT_LIMIT;
 
 public class BoardListAdapter extends RecyclerView.Adapter<BoardListAdapter.BoardViewHolder>{
 
-    private List<Message> data;
+    private List<Board> data;
     private LayoutInflater inflater;
     private Context context;
 
-    public BoardListAdapter(Context context, List<Message> data) {
+    public BoardListAdapter(Context context, List<Board> data) {
         this.context = context;
         this.data = data;
 
         inflater = LayoutInflater.from(context);
     }
 
-    public void setData(List<Message> data) {
+    public void setData(List<Board> data) {
         this.data = data;
     }
 
@@ -37,8 +40,13 @@ public class BoardListAdapter extends RecyclerView.Adapter<BoardListAdapter.Boar
 
     @Override
     public void onBindViewHolder(BoardViewHolder holder, int position) {
-        Message item = data.get(position);
+        Board item = data.get(position);
 
+        holder.boardName.setText(item.getName());
+        holder.boardName.setSelected(true);
+        holder.boardName.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        holder.boardName.setHorizontallyScrolling(true);
+        holder.boardName.setMarqueeRepeatLimit(MARQUEE_REPEAT_LIMIT);
 
     }
 
@@ -49,12 +57,12 @@ public class BoardListAdapter extends RecyclerView.Adapter<BoardListAdapter.Boar
 
     class BoardViewHolder extends RecyclerView.ViewHolder {
 
-        TextView mTextView;
+        TextView boardName;
 
         BoardViewHolder(View itemView) {
             super(itemView);
 
-            mTextView = (TextView) itemView.findViewById(R.id.messageText);
+            boardName = (TextView) itemView.findViewById(R.id.boardName);
         }
     }
 }

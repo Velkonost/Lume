@@ -6,7 +6,8 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:id="@+id/messageText"
-        android:layout_height="100dp"/>
+        android:id="@+id/boardName"
+        android:layout_height="100dp"
+        android:lines="1"/>
 
 </LinearLayout>
