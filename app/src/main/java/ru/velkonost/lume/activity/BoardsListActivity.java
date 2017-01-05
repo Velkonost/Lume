@@ -28,25 +28,19 @@ import ru.velkonost.lume.Constants;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.DialogContact;
-import ru.velkonost.lume.descriptions.Message;
+import ru.velkonost.lume.descriptions.Board;
 import ru.velkonost.lume.fragments.MessagesFragment;
 
-import static ru.velkonost.lume.Constants.ADDRESSEE_ID;
-import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.BOARD_IDS;
 import static ru.velkonost.lume.Constants.DATE;
-import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
-import static ru.velkonost.lume.Constants.MESSAGE_IDS;
+import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.STATUS;
-import static ru.velkonost.lume.Constants.URL.SERVER_DIALOG_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_BOARDS_METHOD;
-import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_MESSAGES_METHOD;
 import static ru.velkonost.lume.Constants.USER;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
@@ -266,14 +260,10 @@ public class BoardsListActivity extends AppCompatActivity {
                     /**
                      * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
                      */
-                    JSONObject messageInfo = dataJsonObj.getJSONObject(bids.get(i));
+                    JSONObject boardInfo = dataJsonObj.getJSONObject(bids.get(i));
 
                     mBoards.add(new Board(
-                            messageInfo.getInt(USER) == Integer.parseInt(userId),
-                            messageInfo.getInt(ID), messageInfo.getInt(USER),
-                            dialogId, messageInfo.getInt(STATUS),
-                            messageInfo.getString(Constants.TEXT),
-                            messageInfo.getString(DATE)
+                            Integer.parseInt(bids.get(i)), boardInfo.getString(NAME)
                     ));
                 }
 
