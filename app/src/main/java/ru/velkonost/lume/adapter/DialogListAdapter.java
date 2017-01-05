@@ -82,9 +82,11 @@ public class DialogListAdapter extends ArrayAdapter {
         }
 
 
+        final View finalConvertView = convertView;
         (convertView.findViewById(R.id.lluser)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                (finalConvertView.findViewById(R.id.unreadMessages)).setVisibility(View.INVISIBLE);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
