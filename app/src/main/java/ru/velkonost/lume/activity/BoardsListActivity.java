@@ -24,24 +24,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.velkonost.lume.Constants;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Board;
+import ru.velkonost.lume.fragments.BoardsFragment;
 import ru.velkonost.lume.fragments.MessagesFragment;
 
 import static ru.velkonost.lume.Constants.BOARD_IDS;
-import static ru.velkonost.lume.Constants.DATE;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.NAME;
-import static ru.velkonost.lume.Constants.STATUS;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_BOARDS_METHOD;
-import static ru.velkonost.lume.Constants.USER;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
@@ -273,7 +270,7 @@ public class BoardsListActivity extends AppCompatActivity {
                  */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 mBoardsFragment
-                        = MessagesFragment.getInstance(BoardsListActivity.this, mBoards);
+                        = BoardsFragment.getInstance(BoardsListActivity.this, mBoards);
                 ft.add(R.id.llboards, mBoardsFragment);
                 ft.commit();
 
