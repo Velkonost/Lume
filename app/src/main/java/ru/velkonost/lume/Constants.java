@@ -28,6 +28,8 @@ public class Constants {
     public static final String MESSAGE_ID = "mid";
     public static final String MESSAGE_IDS = "mids";
 
+    public static final String BOARD_IDS = "bids";
+
     public static final String IMAGE = "image";
 
     public static final String USER_ID = "user_id";

@@ -21,16 +21,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import ru.velkonost.lume.Constants;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.descriptions.DialogContact;
 import ru.velkonost.lume.descriptions.Message;
 import ru.velkonost.lume.fragments.MessagesFragment;
 
 import static ru.velkonost.lume.Constants.ADDRESSEE_ID;
 import static ru.velkonost.lume.Constants.AMPERSAND;
+import static ru.velkonost.lume.Constants.BOARD_IDS;
 import static ru.velkonost.lume.Constants.DATE;
 import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.EQUALS;
@@ -39,7 +43,9 @@ import static ru.velkonost.lume.Constants.MESSAGE_IDS;
 import static ru.velkonost.lume.Constants.STATUS;
 import static ru.velkonost.lume.Constants.URL.SERVER_DIALOG_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
+import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
+import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_BOARDS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_MESSAGES_METHOD;
 import static ru.velkonost.lume.Constants.USER;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
@@ -71,6 +77,24 @@ public class BoardsListActivity extends AppCompatActivity {
      * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
      */
     private String userId;
+
+    /**
+     * Идентификаторы досок, к которым принадлежит авторизованный пользователь.
+     **/
+    private ArrayList<String> bids;
+
+    /**
+     * Свойство - экзмепляр класса {@link GetBoards}
+     */
+    protected GetBoards mGetBoards;
+
+    /**
+     * Свойство - список контактов.
+     * {@link Board}
+     */
+    private List<Board> mBoards;
+
+    private BoardsFragment mBoardsFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -190,14 +214,13 @@ public class BoardsListActivity extends AppCompatActivity {
             /**
              * Формирование адреса, по которому необходимо обратиться.
              **/
-            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_DIALOG_SCRIPT
-                    + SERVER_SHOW_MESSAGES_METHOD;
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_SHOW_BOARDS_METHOD;
 
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = DIALOG_ID + EQUALS + dialogId
-                    + AMPERSAND + ADDRESSEE_ID + EQUALS + addresseeId;
+            @SuppressWarnings("WrongThread") String params = ID + EQUALS + userId;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
@@ -229,23 +252,23 @@ public class BoardsListActivity extends AppCompatActivity {
                 /**
                  * Получение идентификаторов найденных пользователей.
                  */
-                JSONArray idsJSON = dataJsonObj.getJSONArray(MESSAGE_IDS);
+                JSONArray idsJSON = dataJsonObj.getJSONArray(BOARD_IDS);
 
                 for (int i = 0; i < idsJSON.length(); i++){
-                    mids.add(idsJSON.getString(i));
+                    bids.add(idsJSON.getString(i));
                 }
 
                 /**
                  * Составление view-элементов с краткой информацией о пользователях
                  */
-                for (int i = 0; i < mids.size(); i++) {
+                for (int i = 0; i < bids.size(); i++) {
 
                     /**
                      * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
                      */
-                    JSONObject messageInfo = dataJsonObj.getJSONObject(mids.get(i));
+                    JSONObject messageInfo = dataJsonObj.getJSONObject(bids.get(i));
 
-                    mMessages.add(new Message(
+                    mBoards.add(new Board(
                             messageInfo.getInt(USER) == Integer.parseInt(userId),
                             messageInfo.getInt(ID), messageInfo.getInt(USER),
                             dialogId, messageInfo.getInt(STATUS),
@@ -259,9 +282,9 @@ public class BoardsListActivity extends AppCompatActivity {
                  * {@link MessagesFragment}
                  */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                mMessagesFragment
-                        = MessagesFragment.getInstance(MessageActivity.this, mMessages);
-                ft.add(R.id.llmessage, mMessagesFragment);
+                mBoardsFragment
+                        = MessagesFragment.getInstance(BoardsListActivity.this, mBoards);
+                ft.add(R.id.llboards, mBoardsFragment);
                 ft.commit();
 
             } catch (JSONException e) {

@@ -33,7 +33,6 @@ import ru.velkonost.lume.Constants;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.DialogContact;
 import ru.velkonost.lume.descriptions.Message;
 import ru.velkonost.lume.fragments.DialogsFragment;
 import ru.velkonost.lume.fragments.MessagesFragment;
@@ -88,6 +87,7 @@ public class MessageActivity extends AppCompatActivity {
      * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
      */
     private String userId;
+
     private int addresseeId;
     private int dialogId;
 
@@ -103,7 +103,7 @@ public class MessageActivity extends AppCompatActivity {
 
     /**
      * Свойство - список контактов.
-     * {@link DialogContact}
+     * {@link Message}
      */
     private List<Message> mMessages;
 
