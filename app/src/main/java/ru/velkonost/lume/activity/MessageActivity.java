@@ -194,7 +194,6 @@ public class MessageActivity extends AppCompatActivity {
         super.onStop();
         if (timer != null)
             timer.cancel();
-//        finish();
     }
 
     @Override

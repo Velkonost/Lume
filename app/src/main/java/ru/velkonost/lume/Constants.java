@@ -63,6 +63,7 @@ public class Constants {
         public static final String SERVER_HOST = "vh156342.eurodir.ru";
         public static final String SERVER_ACCOUNT_SCRIPT = "/account";
         public static final String SERVER_DIALOG_SCRIPT = "/dialogs";
+        public static final String SERVER_KANBAN_SCRIPT = "/kanban";
         public static final String SERVER_RESOURCE = "/resource";
         public static final String SERVER_AVATAR = "/avatar";
 
@@ -80,6 +81,8 @@ public class Constants {
         public static final String SERVER_SHOW_DIALOGS_METHOD = "/showDialogs";
         public static final String SERVER_SHOW_MESSAGES_METHOD = "/showMessages";
         public static final String SERVER_SEND_MESSAGE_METHOD = "/sendMessage";
+
+        public static final String SERVER_SHOW_BOARDS_METHOD = "/showBoards";
 
     }
 
