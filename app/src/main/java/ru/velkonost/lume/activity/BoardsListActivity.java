@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import org.json.JSONArray;
@@ -29,12 +30,10 @@ import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Board;
 import ru.velkonost.lume.fragments.BoardsFragment;
-import ru.velkonost.lume.fragments.MessagesFragment;
 
 import static ru.velkonost.lume.Constants.BOARD_IDS;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
-import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
@@ -111,6 +110,8 @@ public class BoardsListActivity extends AppCompatActivity {
          **/
         userId = loadText(BoardsListActivity.this, ID);
 
+        mGetBoards.execute();
+
     }
 
     /**
@@ -124,7 +125,7 @@ public class BoardsListActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-        navigationView.getMenu().getItem(3).setChecked(true);
+        navigationView.getMenu().getItem(4).setChecked(true);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -262,16 +263,16 @@ public class BoardsListActivity extends AppCompatActivity {
                     /**
                      * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
                      */
-                    JSONObject boardInfo = dataJsonObj.getJSONObject(bids.get(i));
-
+                    String boardName = dataJsonObj.getString(bids.get(i));
+                    Log.i("BB", bids.get(i));
                     mBoards.add(new Board(
-                            Integer.parseInt(bids.get(i)), boardInfo.getString(NAME)
+                            Integer.parseInt(bids.get(i)), boardName
                     ));
                 }
 
                 /**
                  * Добавляем фрагмент на экран.
-                 * {@link MessagesFragment}
+                 * {@link BoardsFragment}
                  */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 mBoardsFragment

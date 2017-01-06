@@ -24,13 +24,13 @@ public class BoardsFragment extends Fragment {
     protected View view;
     protected Context context;
 
-    public static BoardsFragment getInstance(Context context, List<Board> contacts) {
+    public static BoardsFragment getInstance(Context context, List<Board> boards) {
         Bundle args = new Bundle();
         BoardsFragment fragment = new BoardsFragment();
 
         fragment.setArguments(args);
         fragment.setContext(context);
-        fragment.setContacts(contacts);
+        fragment.setBoards(boards);
 
         return fragment;
     }
@@ -48,14 +48,14 @@ public class BoardsFragment extends Fragment {
         return view;
     }
 
-    public void refreshContacts (List<Board> mContacts) {
-        adapter.setData(mContacts);
+    public void refreshBoards (List<Board> mBoards) {
+        adapter.setData(mBoards);
         adapter.notifyDataSetChanged();
     }
 
     public void setContext (Context context) {this.context = context;}
 
-    public void setContacts(List<Board> mBoards) {
+    public void setBoards(List<Board> mBoards) {
         this.mBoards = mBoards;
     }
 }
