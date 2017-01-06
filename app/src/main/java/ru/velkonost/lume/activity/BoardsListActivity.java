@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -14,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import org.json.JSONArray;
@@ -86,6 +86,8 @@ public class BoardsListActivity extends AppCompatActivity {
 
     private BoardsFragment mBoardsFragment;
 
+    private TimerCheckBoardsState timer;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +114,23 @@ public class BoardsListActivity extends AppCompatActivity {
 
         mGetBoards.execute();
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                timer = new TimerCheckBoardsState(100000000, 10000);
+                timer.start();
+
+            }
+        }, 10000);
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (timer != null)
+            timer.cancel();
     }
 
     /**
@@ -204,6 +223,23 @@ public class BoardsListActivity extends AppCompatActivity {
         });
     }
 
+
+    public class TimerCheckBoardsState extends CountDownTimer {
+
+        TimerCheckBoardsState(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long l) {
+            RefreshBoards mRefreshBoards = new RefreshBoards();
+            mRefreshBoards.execute();
+        }
+
+        @Override
+        public void onFinish() {
+        }
+    }
     private class GetBoards extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -264,7 +300,6 @@ public class BoardsListActivity extends AppCompatActivity {
                      * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
                      */
                     String boardName = dataJsonObj.getString(bids.get(i));
-                    Log.i("BB", bids.get(i));
                     mBoards.add(new Board(
                             Integer.parseInt(bids.get(i)), boardName
                     ));
@@ -279,6 +314,99 @@ public class BoardsListActivity extends AppCompatActivity {
                         = BoardsFragment.getInstance(BoardsListActivity.this, mBoards);
                 ft.add(R.id.llboards, mBoardsFragment);
                 ft.commit();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private class RefreshBoards extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_SHOW_BOARDS_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = ID + EQUALS + userId;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /** Свойство - полученный JSON–объект*/
+            JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+
+                /**
+                 * Получение идентификаторов найденных пользователей.
+                 */
+                JSONArray idsJSON = dataJsonObj.getJSONArray(BOARD_IDS);
+
+                for (int i = 0; i < idsJSON.length(); i++){
+                    if (!bids.contains(idsJSON.getString(i)))
+                        bids.add(idsJSON.getString(i));
+                }
+
+                /**
+                 * Составление view-элементов с краткой информацией о пользователях
+                 */
+                for (int i = 0; i < bids.size(); i++) {
+                    boolean exist = false;
+
+                    /**
+                     * Получение JSON-объекта с информацией о конкретном сообщении по его идентификатору.
+                     */
+                    String boardName = dataJsonObj.getString(bids.get(i));
+
+                    for (int j = 0; j < mBoards.size(); j++){
+                        if (mBoards.get(j).getId() == Integer.parseInt(bids.get(i))) {
+                            exist = true;
+                            break;
+                        }
+                    }
+
+                    if (!exist){
+                        mBoards.add(new Board(
+                                Integer.parseInt(bids.get(i)), boardName
+                        ));
+                    }
+                }
+
+                /**
+                 * Добавляем фрагмент на экран.
+                 * {@link BoardsFragment}
+                 */
+                if(!isFinishing()) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    mBoardsFragment.refreshBoards(mBoards);
+                    ft.replace(R.id.llboards, mBoardsFragment);
+                    ft.commitAllowingStateLoss();
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();

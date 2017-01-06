@@ -34,7 +34,6 @@ import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Message;
-import ru.velkonost.lume.fragments.DialogsFragment;
 import ru.velkonost.lume.fragments.MessagesFragment;
 
 import static ru.velkonost.lume.Constants.ADDRESSEE_ID;
@@ -513,7 +512,7 @@ public class MessageActivity extends AppCompatActivity {
 
                 /**
                  * Добавляем фрагмент на экран.
-                 * {@link DialogsFragment}
+                 * {@link MessagesFragment}
                  */
                 if(!isFinishing()) {
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
