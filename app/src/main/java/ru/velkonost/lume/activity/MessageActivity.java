@@ -33,9 +33,7 @@ import ru.velkonost.lume.Constants;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.DialogContact;
 import ru.velkonost.lume.descriptions.Message;
-import ru.velkonost.lume.fragments.DialogsFragment;
 import ru.velkonost.lume.fragments.MessagesFragment;
 
 import static ru.velkonost.lume.Constants.ADDRESSEE_ID;
@@ -88,6 +86,7 @@ public class MessageActivity extends AppCompatActivity {
      * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
      */
     private String userId;
+
     private int addresseeId;
     private int dialogId;
 
@@ -103,7 +102,7 @@ public class MessageActivity extends AppCompatActivity {
 
     /**
      * Свойство - список контактов.
-     * {@link DialogContact}
+     * {@link Message}
      */
     private List<Message> mMessages;
 
@@ -121,6 +120,7 @@ public class MessageActivity extends AppCompatActivity {
 
         mGetMessages = new GetMessages();
         mids = new ArrayList<>();
+        mMessages = new ArrayList<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -137,8 +137,6 @@ public class MessageActivity extends AppCompatActivity {
         userId = loadText(MessageActivity.this, ID);
 
         editMessage = (EditText) findViewById(R.id.editMessage);
-
-        mMessages = new ArrayList<>();
 
         Intent intent = getIntent();
         dialogId = intent.getIntExtra(DIALOG_ID, 0);
@@ -249,6 +247,7 @@ public class MessageActivity extends AppCompatActivity {
 
                     /** Переход на страницу досок карточной версии канбан-системы */
                     case R.id.navigationBoards:
+                        nextIntent = new Intent(MessageActivity.this, BoardsListActivity.class);
                         break;
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
@@ -513,7 +512,7 @@ public class MessageActivity extends AppCompatActivity {
 
                 /**
                  * Добавляем фрагмент на экран.
-                 * {@link DialogsFragment}
+                 * {@link MessagesFragment}
                  */
                 if(!isFinishing()) {
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
