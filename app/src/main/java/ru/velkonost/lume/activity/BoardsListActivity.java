@@ -93,6 +93,10 @@ public class BoardsListActivity extends AppCompatActivity {
 
         setContentView(LAYOUT);
 
+        mGetBoards = new GetBoards();
+        bids = new ArrayList<>();
+        mBoards = new ArrayList<>();
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_boards);
@@ -152,6 +156,7 @@ public class BoardsListActivity extends AppCompatActivity {
 
                     /** Переход на страницу досок карточной версии канбан-системы */
                     case R.id.navigationBoards:
+                        nextIntent = new Intent(BoardsListActivity.this, BoardsListActivity.class);
                         break;
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */

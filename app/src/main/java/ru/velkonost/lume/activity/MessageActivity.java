@@ -121,6 +121,7 @@ public class MessageActivity extends AppCompatActivity {
 
         mGetMessages = new GetMessages();
         mids = new ArrayList<>();
+        mMessages = new ArrayList<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -137,8 +138,6 @@ public class MessageActivity extends AppCompatActivity {
         userId = loadText(MessageActivity.this, ID);
 
         editMessage = (EditText) findViewById(R.id.editMessage);
-
-        mMessages = new ArrayList<>();
 
         Intent intent = getIntent();
         dialogId = intent.getIntExtra(DIALOG_ID, 0);
@@ -249,6 +248,7 @@ public class MessageActivity extends AppCompatActivity {
 
                     /** Переход на страницу досок карточной версии канбан-системы */
                     case R.id.navigationBoards:
+                        nextIntent = new Intent(MessageActivity.this, BoardsListActivity.class);
                         break;
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */

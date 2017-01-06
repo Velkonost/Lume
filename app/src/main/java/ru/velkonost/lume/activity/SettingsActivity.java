@@ -312,6 +312,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                     /** Переход на страницу досок карточной версии канбан-системы */
                     case R.id.navigationBoards:
+                        nextIntent = new Intent(SettingsActivity.this, BoardsListActivity.class);
                         break;
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
