@@ -390,11 +390,10 @@ public class BoardsListActivity extends AppCompatActivity {
                         }
                     }
 
-                    if (!exist){
+                    if (!exist)
                         mBoards.add(new Board(
                                 Integer.parseInt(bids.get(i)), boardName
                         ));
-                    }
                 }
 
                 /**
