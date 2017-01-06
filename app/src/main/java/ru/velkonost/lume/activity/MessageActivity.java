@@ -296,6 +296,8 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     public void sendMessage(View view) {
+        if (editMessage.getText().toString().length() == 0) return;
+
         SendMessage sendMessage = new SendMessage();
         sendMessage.execute();
 
