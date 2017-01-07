@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:id="@+id/relativeLayoutContact"
+        android:id="@+id/relativeLayoutBoard"
         android:background="@color/colorWhite">
         <ru.velkonost.lume.patterns.ScrollingTextView
             android:layout_width="wrap_content"

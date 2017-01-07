@@ -112,6 +112,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
          **/
         userId = loadText(BoardWelcomeActivity.this, ID);
 
+        Intent intent = getIntent();
+
         mGetBoardInfo.execute();
 
 
