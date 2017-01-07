@@ -103,7 +103,7 @@ public class BoardsListActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_boards);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(BoardsListActivity.this, toolbar, R.string.menu_item_messages); /** Инициализация */
+        initToolbar(BoardsListActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
         /**
