@@ -28,6 +28,7 @@ public class Constants {
     public static final String MESSAGE_ID = "mid";
     public static final String MESSAGE_IDS = "mids";
 
+    public static final String BOARD_ID = "bid";
     public static final String BOARD_IDS = "bids";
 
     public static final String IMAGE = "image";
@@ -85,6 +86,7 @@ public class Constants {
         public static final String SERVER_SEND_MESSAGE_METHOD = "/sendMessage";
 
         public static final String SERVER_SHOW_BOARDS_METHOD = "/showBoards";
+        public static final String SERVER_GET_BOARD_INFO_METHOD = "/getBoardInfo";
 
     }
 
