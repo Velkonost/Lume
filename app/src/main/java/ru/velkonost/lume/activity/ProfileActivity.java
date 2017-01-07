@@ -324,7 +324,8 @@ public class ProfileActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-        navigationView.getMenu().getItem(0).setChecked(true);
+
+        if (profileId.equals(userId)) navigationView.getMenu().getItem(0).setChecked(true);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
