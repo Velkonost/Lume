@@ -47,7 +47,7 @@
             app:layout_anchor="@id/appbarlayout"
             app:layout_anchorGravity="bottom">
             <FrameLayout
-                android:id="@+id/My_Container_1_ID"
+                android:id="@+id/descriptionContainer"
                 android:layout_width="fill_parent"
                 android:layout_height="150dp">
             </FrameLayout>

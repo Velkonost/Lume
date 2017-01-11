@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/avatar"/>
 
     <TextView
@@ -18,15 +18,5 @@
         android:layout_height="match_parent"
         android:visibility="invisible"
         android:id="@+id/userId"/>
-    <TextView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:id="@+id/unreadMessages"
-        android:background="@drawable/new_messages"
-        android:layout_alignTop="@+id/avatar"
-        android:layout_alignEnd="@+id/avatar"
-        android:textAlignment="center"
-        android:textSize="14sp"
-        android:gravity="center"
-        android:visibility="invisible"/>
+
 </RelativeLayout>

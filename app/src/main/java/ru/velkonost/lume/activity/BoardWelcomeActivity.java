@@ -111,7 +111,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_welcome);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(BoardWelcomeActivity.this, toolbar, R.string.menu_item_messages); /** Инициализация */
+        initToolbar(BoardWelcomeActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
@@ -300,10 +300,12 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 }
 
 
-//                for (int i = 0; i < uids.size(); i++) {
-//                    JSONObject userInfo = dataJsonObj.getJSONObject(uids.get(i) + USER);
-//
-//                }
+                for (int i = 0; i < uids.size(); i++) {
+                    String participantId = uids.get(i).substring(0, uids.get(i).length() - 4);
+                    JSONObject userInfo = dataJsonObj.getJSONObject(uids.get(i));
+
+
+                }
 //
 //                for (int i = 0; i < cids.size(); i++) {
 //                    JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
@@ -311,14 +313,14 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 //                }
 
                 saveText(BoardWelcomeActivity.this, BOARD_DESCRIPTION, boardDescription);
-                BoardDescriptionFragment frg = new BoardDescriptionFragment();
+                BoardDescriptionFragment descriptionFragment = new BoardDescriptionFragment();
 
 
 
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
 
-                transaction.add(R.id.My_Container_1_ID, frg, "Frag_Top_tag");
+                transaction.add(R.id.descriptionContainer, descriptionFragment);
                 transaction.commit();
 
             } catch (JSONException e) {
