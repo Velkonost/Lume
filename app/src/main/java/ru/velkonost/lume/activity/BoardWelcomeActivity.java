@@ -16,7 +16,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,6 +45,7 @@ import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.saveText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 public class BoardWelcomeActivity extends AppCompatActivity {
@@ -291,16 +291,16 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 //
 //                }
 
+                saveText(BoardWelcomeActivity.this, BOARD_DESCRIPTION, boardDescription);
                 BoardDescriptionFragment frg = new BoardDescriptionFragment();
+
+
 
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
 
                 transaction.add(R.id.My_Container_1_ID, frg, "Frag_Top_tag");
                 transaction.commit();
-
-                TextView textView = (TextView) findViewById(R.id.boardDescription);
-                textView.setText(boardDescription);
 
             } catch (JSONException e) {
                 e.printStackTrace();
