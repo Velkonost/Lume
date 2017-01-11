@@ -32,6 +32,7 @@ import ru.velkonost.lume.fragments.BoardsFragment;
 
 import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.BOARD_IDS;
+import static ru.velkonost.lume.Constants.COLUMN_IDS;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_INFO_METHOD;
@@ -39,6 +40,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_BOARDS_METHOD;
+import static ru.velkonost.lume.Constants.USER_IDS;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
@@ -68,6 +70,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
      * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
      */
     private String userId;
+
+
+    private int boardId;
 
     /**
      * Идентификаторы досок, к которым принадлежит авторизованный пользователь.
@@ -113,6 +118,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         userId = loadText(BoardWelcomeActivity.this, ID);
 
         Intent intent = getIntent();
+        boardId = intent.getIntExtra(BOARD_ID, 0);
 
         mGetBoardInfo.execute();
 
@@ -221,7 +227,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + userId;
+            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + boardId;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
@@ -253,35 +259,27 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 /**
                  * Получение идентификаторов найденных пользователей.
                  */
-                JSONArray idsJSON = dataJsonObj.getJSONArray(BOARD_IDS);
+                JSONArray idsJSON = dataJsonObj.getJSONArray(USER_IDS);
+                JSONArray cidsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
 
-                for (int i = 0; i < idsJSON.length(); i++){
-                    bids.add(idsJSON.getString(i));
+                ArrayList uids = new ArrayList();
+                ArrayList cids = new ArrayList();
+
+                for (int i = 0; i < idsJSON.length(); i++) {
+                    uids.add(idsJSON.getString(i));
                 }
 
-                /**
-                 * Составление view-элементов с краткой информацией о пользователях
-                 */
-                for (int i = 0; i < bids.size(); i++) {
-
-                    /**
-                     * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
-                     */
-                    String boardName = dataJsonObj.getString(bids.get(i));
-                    mBoards.add(new Board(
-                            Integer.parseInt(bids.get(i)), boardName
-                    ));
+                for (int i = 0; i < cidsJSON.length(); i++) {
+                    cids.add(cidsJSON.getString(i));
                 }
 
-                /**
-                 * Добавляем фрагмент на экран.
-                 * {@link BoardsFragment}
-                 */
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                mBoardsFragment
-                        = BoardsFragment.getInstance(BoardsListActivity.this, mBoards);
-                ft.add(R.id.llboards, mBoardsFragment);
-                ft.commit();
+
+                for (int i = 0; i < uids.size(); i++) {
+                    JSONObject userInfo = dataJsonObj.getJSONObject(uids.get(i).toString() + "u");
+
+
+                }
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
