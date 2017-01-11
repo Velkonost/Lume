@@ -235,9 +235,6 @@ public class ProfileActivity extends AppCompatActivity {
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(ProfileActivity.this, toolbar, R.string.app_name); /** Инициализация */
 
-
-
-
         /**
          * Получение id пользователя.
          * {@link PhoneDataStorage#loadText(Context, String)}

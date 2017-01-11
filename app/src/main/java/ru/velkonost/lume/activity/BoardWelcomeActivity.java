@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -113,6 +114,14 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         initToolbar(BoardWelcomeActivity.this, toolbar, R.string.menu_item_messages); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         /**
          * Получение id пользователя.
          * {@link PhoneDataStorage#loadText(Context, String)}
@@ -125,6 +134,16 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         mGetBoardInfo.execute();
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_welcome);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     /**

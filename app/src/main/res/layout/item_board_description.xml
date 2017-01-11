@@ -19,8 +19,7 @@
             android:textSize="10pt"
             android:textColor="@color/colorBlack"
             android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:lines="1"/>
+            android:paddingLeft="10dp"/>
     </RelativeLayout>
 
 
