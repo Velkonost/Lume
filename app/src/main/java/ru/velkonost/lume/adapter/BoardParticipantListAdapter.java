@@ -20,6 +20,8 @@ import java.util.List;
 
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.MessageActivity;
+import ru.velkonost.lume.descriptions.Board;
+import ru.velkonost.lume.descriptions.BoardParticipant;
 import ru.velkonost.lume.descriptions.DialogContact;
 
 import static ru.velkonost.lume.Constants.DIALOG_ID;
@@ -36,31 +38,31 @@ import static ru.velkonost.lume.R.id.userId;
 
 public class BoardParticipantListAdapter extends ArrayAdapter {
 
-    private List<DialogContact> data;
+    private List<BoardParticipant> data;
     private Context mContext;
 
-    public BoardParticipantListAdapter(Context context, List<DialogContact> data) {
+    public BoardParticipantListAdapter(Context context, List<BoardParticipant> data) {
         super(context, R.layout.item_board_participant, data);
         mContext = context;
         this.data = data;
     }
 
-    public void setData(List<DialogContact> data) {
+    public void setData(List<BoardParticipant> data) {
         this.data = data;
     }
 
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull final ViewGroup parent) {
-        final DialogContact dialogContact = data.get(position);
+        final BoardParticipant boardParticipant = data.get(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_dialog, null);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_board_participant, null);
         }
 
         /** Формирование адреса, по которому лежит аватар пользователя */
         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
-                + SERVER_AVATAR + SLASH + dialogContact.getAvatar()
+                + SERVER_AVATAR + SLASH + boardParticipant.getAvatar()
                 + SLASH + dialogContact.getId() + JPG;
 
         ((TextView) convertView.findViewById(userId)).setText(dialogContact.getId());

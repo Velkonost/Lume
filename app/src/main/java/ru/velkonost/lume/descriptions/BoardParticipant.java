@@ -51,4 +51,43 @@ public class BoardParticipant implements Parcelable {
         parcel.writeInt(reminded);
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(int avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public boolean isLast() {
+        return last;
+    }
+
+    public void setLast(boolean last) {
+        this.last = last;
+    }
+
+    public int getReminded() {
+        return reminded;
+    }
+
+    public void setReminded(int reminded) {
+        this.reminded = reminded;
+    }
 }
