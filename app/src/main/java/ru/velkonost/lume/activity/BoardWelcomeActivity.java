@@ -8,12 +8,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +29,7 @@ import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Board;
+import ru.velkonost.lume.fragments.BoardDescriptionFragment;
 
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
 import static ru.velkonost.lume.Constants.BOARD_ID;
@@ -37,7 +41,6 @@ import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
-import static ru.velkonost.lume.Constants.USER;
 import static ru.velkonost.lume.Constants.USER_IDS;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
@@ -81,6 +84,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
      * Свойство - экзмепляр класса {@link GetBoardInfo}
      */
     protected GetBoardInfo mGetBoardInfo;
+
 
     /**
      * Свойство - список контактов.
@@ -277,17 +281,26 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 }
 
 
-                for (int i = 0; i < uids.size(); i++) {
-                    JSONObject userInfo = dataJsonObj.getJSONObject(uids.get(i) + USER);
+//                for (int i = 0; i < uids.size(); i++) {
+//                    JSONObject userInfo = dataJsonObj.getJSONObject(uids.get(i) + USER);
+//
+//                }
+//
+//                for (int i = 0; i < cids.size(); i++) {
+//                    JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
+//
+//                }
 
-                }
+                BoardDescriptionFragment frg = new BoardDescriptionFragment();
 
-                for (int i = 0; i < cids.size(); i++) {
-                    JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
 
-                }
+                transaction.add(R.id.My_Container_1_ID, frg, "Frag_Top_tag");
+                transaction.commit();
 
-
+                TextView textView = (TextView) findViewById(R.id.boardDescription);
+                textView.setText(boardDescription);
 
             } catch (JSONException e) {
                 e.printStackTrace();

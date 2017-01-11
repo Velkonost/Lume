@@ -234,7 +234,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(ProfileActivity.this, toolbar, R.string.app_name); /** Инициализация */
-        initNavigationView(); /** Инициализация */
+
 
 
 
@@ -269,6 +269,9 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
         }
+
+        initNavigationView(); /** Инициализация */
+
         /**
          *  Установка цветной палитры,
          *  цвета которой будут заменять друг друга в зависимости от прогресса.

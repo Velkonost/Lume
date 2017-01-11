@@ -45,7 +45,13 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:orientation="vertical"
             app:layout_anchor="@id/appbarlayout"
-            app:layout_anchorGravity="bottom"/>
+            app:layout_anchorGravity="bottom">
+            <FrameLayout
+                android:id="@+id/My_Container_1_ID"
+                android:layout_width="fill_parent"
+                android:layout_height="150dp">
+            </FrameLayout>
+            </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 
 
