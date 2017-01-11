@@ -31,6 +31,9 @@ public class Constants {
     public static final String BOARD_ID = "bid";
     public static final String BOARD_IDS = "bids";
 
+    public static final String BOARD_NAME = "bname";
+    public static final String BOARD_DESCRIPTION = "bdescription";
+
     public static final String USER_IDS = "uids";
 
     public static final String COLUMN_IDS = "cids";
