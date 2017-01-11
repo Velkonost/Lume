@@ -37,6 +37,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
+import static ru.velkonost.lume.Constants.USER;
 import static ru.velkonost.lume.Constants.USER_IDS;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
@@ -264,8 +265,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
                 toolbar.setTitle(boardName);
 
-                ArrayList uids = new ArrayList();
-                ArrayList cids = new ArrayList();
+                ArrayList<String> uids = new ArrayList<>();
+                ArrayList<String> cids = new ArrayList<>();
 
                 for (int i = 0; i < idsJSON.length(); i++) {
                     uids.add(idsJSON.getString(i));
@@ -277,8 +278,12 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
 
                 for (int i = 0; i < uids.size(); i++) {
-                    JSONObject userInfo = dataJsonObj.getJSONObject(uids.get(i).toString() + "u");
+                    JSONObject userInfo = dataJsonObj.getJSONObject(uids.get(i) + USER);
 
+                }
+
+                for (int i = 0; i < cids.size(); i++) {
+                    JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
 
                 }
 
