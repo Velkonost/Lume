@@ -95,7 +95,7 @@ public class Constants {
 
         public static final String SERVER_SHOW_BOARDS_METHOD = "/showBoards";
         public static final String SERVER_GET_BOARD_INFO_METHOD = "/getBoardInfo";
-        public static final String SERVER_GET_BOARD_PARTICIPANTS_METHOD = "/getBoardInfo";
+        public static final String SERVER_GET_BOARD_PARTICIPANTS_METHOD = "/getBoardParticipants";
 
     }
 

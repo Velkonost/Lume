@@ -136,7 +136,7 @@ public class BoardParticipantsListAdapter
         BoardParticipantsViewHolder(View itemView) {
             super(itemView);
 
-            mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayoutSearch);
+            mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayoutParticipant);
 
             userName = (TextView) itemView.findViewById(R.id.userName);
             userLogin = (TextView) itemView.findViewById(R.id.userLogin);

@@ -5,10 +5,11 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
+    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
         android:id="@+id/recyclerViewAllParticipants"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:stackFromEnd="true"
-        app:reverseLayout="true"/>
+        app:fastScrollThumbColor="@color/colorPrimaryDark"
+        app:fastScrollPopupBgColor="@color/colorPrimary"
+        app:fastScrollPopupTextColor="@android:color/white"/>
 </LinearLayout>
