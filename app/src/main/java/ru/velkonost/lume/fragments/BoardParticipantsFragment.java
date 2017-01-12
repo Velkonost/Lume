@@ -1,6 +1,7 @@
 package ru.velkonost.lume.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -16,8 +17,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.activity.ProfileActivity;
 import ru.velkonost.lume.descriptions.BoardParticipant;
 
+import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.PLUS;
 import static ru.velkonost.lume.Constants.SLASH;
@@ -55,8 +58,8 @@ public class BoardParticipantsFragment extends Fragment {
 
         LayoutInflater inflaterous = LayoutInflater.from(context);
 
-        for (BoardParticipant item : mBoardsParticipants) {
-            View viewItem  = inflaterous.inflate(R.layout.item_board_participant, linearLayout, false);
+        for (final BoardParticipant item : mBoardsParticipants) {
+            final View viewItem  = inflaterous.inflate(R.layout.item_board_participant, linearLayout, false);
 
             if (item.isLast()){
                 ((TextView) viewItem.findViewById(R.id.another_participants))
@@ -88,6 +91,18 @@ public class BoardParticipantsFragment extends Fragment {
                     .getDrawable()).getBitmap();
             ((ImageView) viewItem.findViewById(R.id.avatar))
                     .setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
+
+
+            viewItem.findViewById(R.id.avatar).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ProfileActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra(ID, item.getId());
+                    context.startActivity(intent);
+                }
+            });
+
 
             linearLayout.addView(viewItem);
         }
