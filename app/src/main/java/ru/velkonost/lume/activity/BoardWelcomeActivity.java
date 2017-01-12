@@ -36,6 +36,7 @@ import ru.velkonost.lume.fragments.BoardParticipantsFragment;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
 import static ru.velkonost.lume.Constants.BOARD_ID;
+import static ru.velkonost.lume.Constants.BOARD_LAST_CONTRIBUTED_USER;
 import static ru.velkonost.lume.Constants.BOARD_NAME;
 import static ru.velkonost.lume.Constants.COLUMN_IDS;
 import static ru.velkonost.lume.Constants.EQUALS;
@@ -305,7 +306,6 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
                 for (int i = 0; i < uids.size(); i++) {
                     String participantId = uids.get(i);
-//                            .substring(0, uids.get(i).length() - 4);
 
                     JSONObject userInfo = dataJsonObj.getJSONObject(participantId);
 
@@ -313,9 +313,11 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                     mBoardParticipants.add(new BoardParticipant(
                             Integer.parseInt(participantId.substring(0, uids.get(i).length() - 4)),
                             Integer.parseInt(userInfo.getString(AVATAR)),
-                            userInfo.getString(LOGIN), false, 0
+                            userInfo.getString(LOGIN),
+                            BOARD_LAST_CONTRIBUTED_USER == i, uids.size() - 1 - i
                     ));
 
+                    if (BOARD_LAST_CONTRIBUTED_USER == i) break;
 
                 }
 //

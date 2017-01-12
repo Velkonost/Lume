@@ -112,6 +112,7 @@ public class Constants {
     public static final String JPG = ".jpg";
     public static final String ZERO = "0";
 
+    public static final int BOARD_LAST_CONTRIBUTED_USER = 6;
 
 
     public static final String UPLOAD_IMAGE_SUCCESS_CODE = "500";
