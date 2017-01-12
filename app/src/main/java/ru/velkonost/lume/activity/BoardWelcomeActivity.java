@@ -309,12 +309,11 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
                     JSONObject userInfo = dataJsonObj.getJSONObject(participantId);
 
-
                     mBoardParticipants.add(new BoardParticipant(
                             Integer.parseInt(participantId.substring(0, uids.get(i).length() - 4)),
                             Integer.parseInt(userInfo.getString(AVATAR)),
                             userInfo.getString(LOGIN),
-                            BOARD_LAST_CONTRIBUTED_USER == i, uids.size() - 1 - i
+                            BOARD_LAST_CONTRIBUTED_USER == i + 1, uids.size() - i
                     ));
 
                     if (BOARD_LAST_CONTRIBUTED_USER == i) break;

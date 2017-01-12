@@ -11,7 +11,21 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="5dp"
-        android:id="@+id/avatar"/>
+        android:id="@+id/avatar"
+        android:src="@drawable/grey"/>
+    <TextView
+        android:id="@+id/another_participants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/avatar"
+        android:layout_alignLeft="@id/avatar"
+        android:layout_alignRight="@id/avatar"
+        android:layout_alignTop="@id/avatar"
+        android:lines="1"
+        android:textColor="@android:color/white"
+        android:visibility="invisible"
+        android:gravity="center"/>
+
 
     <TextView
         android:layout_width="wrap_content"

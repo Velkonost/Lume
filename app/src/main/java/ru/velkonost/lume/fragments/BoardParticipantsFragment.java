@@ -16,7 +16,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.adapter.BoardParticipantListAdapter;
 import ru.velkonost.lume.descriptions.BoardParticipant;
 
 import static ru.velkonost.lume.Constants.JPG;
@@ -32,7 +31,6 @@ public class BoardParticipantsFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_board_participants;
 
     private List<BoardParticipant> mBoardsParticipants;
-    private BoardParticipantListAdapter adapter;
     protected View view;
     protected Context context;
 
@@ -59,6 +57,21 @@ public class BoardParticipantsFragment extends Fragment {
         for (BoardParticipant item : mBoardsParticipants) {
             View viewItem  = inflaterous.inflate(R.layout.item_board_participant, linearLayout, false);
 
+            if (item.isLast()){
+                ((TextView) viewItem.findViewById(R.id.another_participants)).setText(String.valueOf("+" + item.getReminded()));
+                 viewItem.findViewById(R.id.another_participants).setVisibility(View.VISIBLE);
+
+                Bitmap bitmap = ((BitmapDrawable) ((ImageView) viewItem.findViewById(R.id.avatar))
+                        .getDrawable()).getBitmap();
+
+                ((ImageView) viewItem.findViewById(R.id.avatar))
+                        .setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
+
+                linearLayout.addView(viewItem);
+
+                break;
+            }
+
             /** Формирование адреса, по которому лежит аватар пользователя */
             String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
                     + SERVER_AVATAR + SLASH + item.getAvatar()
@@ -66,7 +79,9 @@ public class BoardParticipantsFragment extends Fragment {
 
             ((TextView) viewItem.findViewById(R.id.userId)).setText(String.valueOf(item.getId()));
 
+            viewItem.findViewById(R.id.avatar).setBackgroundResource(0);
             fetchImage(avatarURL, (ImageView) viewItem.findViewById(R.id.avatar), true, false);
+
             Bitmap bitmap = ((BitmapDrawable) ((ImageView) viewItem.findViewById(R.id.avatar))
                     .getDrawable()).getBitmap();
             ((ImageView) viewItem.findViewById(R.id.avatar))
@@ -78,12 +93,7 @@ public class BoardParticipantsFragment extends Fragment {
         return view;
     }
 
-    public void refreshParticipants (List<BoardParticipant> participants) {
-        adapter.setData(participants);
-        adapter.notifyDataSetChanged();
-    }
-
-    public void setContext (Context context) {this.context = context;}
+    public void setContext (Context context) { this.context = context; }
 
     public void setParticipants(List<BoardParticipant> mParticipants) {
         this.mBoardsParticipants = mParticipants;
