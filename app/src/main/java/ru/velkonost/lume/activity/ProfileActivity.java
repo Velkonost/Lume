@@ -1133,10 +1133,8 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(ProfileActivity.this, MessageActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(DIALOG_ID, dataJsonObj.getInt(DIALOG_ID));
-                intent.putExtra(ID, Integer.parseInt(userId));
+                intent.putExtra(ID, profileId);
                 ProfileActivity.this.startActivity(intent);
-
-//                dialogId = Integer.parseInt(dataJsonObj.getString(DIALOG_ID));
 
             } catch (JSONException e) {
                 e.printStackTrace();
