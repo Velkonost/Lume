@@ -1,11 +1,8 @@
 package ru.velkonost.lume.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,18 +11,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidadvance.topsnackbar.TSnackbar;
-
 import java.util.List;
 
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.activity.MessageActivity;
-import ru.velkonost.lume.descriptions.Board;
 import ru.velkonost.lume.descriptions.BoardParticipant;
-import ru.velkonost.lume.descriptions.DialogContact;
 
-import static ru.velkonost.lume.Constants.DIALOG_ID;
-import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
@@ -63,67 +53,58 @@ public class BoardParticipantListAdapter extends ArrayAdapter {
         /** Формирование адреса, по которому лежит аватар пользователя */
         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
                 + SERVER_AVATAR + SLASH + boardParticipant.getAvatar()
-                + SLASH + dialogContact.getId() + JPG;
+                + SLASH + boardParticipant.getId() + JPG;
 
-        ((TextView) convertView.findViewById(userId)).setText(dialogContact.getId());
+        ((TextView) convertView.findViewById(userId)).setText(boardParticipant.getId());
 
-        if (!dialogContact.isAvatar()){
-            fetchImage(avatarURL, (ImageView) convertView.findViewById(R.id.avatar), true, false);
-            Bitmap bitmap = ((BitmapDrawable) ((ImageView) convertView.findViewById(R.id.avatar))
-                    .getDrawable()).getBitmap();
-            ((ImageView) convertView.findViewById(R.id.avatar))
-                    .setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
+        fetchImage(avatarURL, (ImageView) convertView.findViewById(R.id.avatar), true, false);
+        Bitmap bitmap = ((BitmapDrawable) ((ImageView) convertView.findViewById(R.id.avatar))
+                .getDrawable()).getBitmap();
+        ((ImageView) convertView.findViewById(R.id.avatar))
+                .setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
 
-            dialogContact.setIsAvatar(true);
-        }
 
-        if (dialogContact.getUnreadMessages() != 0){
-            ((TextView) convertView.findViewById(R.id.unreadMessages))
-                    .setText(String.valueOf(dialogContact.getUnreadMessages()));
-            (convertView.findViewById(R.id.unreadMessages)).setVisibility(View.VISIBLE);
-        }
-
-        final View finalConvertView = convertView;
-        (convertView.findViewById(R.id.lluser)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                (finalConvertView.findViewById(R.id.unreadMessages)).setVisibility(View.INVISIBLE);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(mContext, MessageActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra(DIALOG_ID, Integer.parseInt(dialogContact.getDialogId()));
-                        intent.putExtra(ID, Integer.parseInt(dialogContact.getId()));
-                        mContext.startActivity(intent);
-                    }
-                }, 350);
-            }
-        });
-
-        (convertView.findViewById(R.id.lluser)).setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-
-                TSnackbar snackbar = TSnackbar.make(parent,
-                        dialogContact.getName().length() == 0
-                                ? dialogContact.getLogin()
-                                : dialogContact.getSurname().length() == 0
-                                ? dialogContact.getLogin()
-                                : dialogContact.getName() + " " + dialogContact.getSurname(),
-                        TSnackbar.LENGTH_SHORT);
-
-                snackbar.setActionTextColor(Color.WHITE);
-                View snackbarView = snackbar.getView();
-                snackbarView.setBackgroundColor(Color.parseColor("#CC00CC"));
-                TextView textView = (TextView) snackbarView
-                        .findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                textView.setTextColor(Color.YELLOW);
-                snackbar.show();
-
-                return true;
-            }
-        });
+//        final View finalConvertView = convertView;
+//        (convertView.findViewById(R.id.lluser)).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                (finalConvertView.findViewById(R.id.unreadMessages)).setVisibility(View.INVISIBLE);
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Intent intent = new Intent(mContext, MessageActivity.class);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        intent.putExtra(DIALOG_ID, Integer.parseInt(dialogContact.getDialogId()));
+//                        intent.putExtra(ID, Integer.parseInt(dialogContact.getId()));
+//                        mContext.startActivity(intent);
+//                    }
+//                }, 350);
+//            }
+//        });
+//
+//        (convertView.findViewById(R.id.lluser)).setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//
+//                TSnackbar snackbar = TSnackbar.make(parent,
+//                        dialogContact.getName().length() == 0
+//                                ? dialogContact.getLogin()
+//                                : dialogContact.getSurname().length() == 0
+//                                ? dialogContact.getLogin()
+//                                : dialogContact.getName() + " " + dialogContact.getSurname(),
+//                        TSnackbar.LENGTH_SHORT);
+//
+//                snackbar.setActionTextColor(Color.WHITE);
+//                View snackbarView = snackbar.getView();
+//                snackbarView.setBackgroundColor(Color.parseColor("#CC00CC"));
+//                TextView textView = (TextView) snackbarView
+//                        .findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+//                textView.setTextColor(Color.YELLOW);
+//                snackbar.show();
+//
+//                return true;
+//            }
+//        });
 
         return convertView;
     }

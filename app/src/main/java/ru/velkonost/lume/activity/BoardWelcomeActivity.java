@@ -24,19 +24,22 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.Board;
+import ru.velkonost.lume.descriptions.BoardParticipant;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
 
+import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
 import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.BOARD_NAME;
 import static ru.velkonost.lume.Constants.COLUMN_IDS;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
@@ -89,9 +92,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     /**
      * Свойство - список контактов.
-     * {@link Board}
+     * {@link ru.velkonost.lume.descriptions.BoardParticipant}
      */
-//    private List<Board> mBoards;
+    private List<BoardParticipant> mBoardParticipants;
 
 //    private BoardsFragment mBoardsFragment;
 
@@ -103,8 +106,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         setContentView(LAYOUT);
 
         mGetBoardInfo = new GetBoardInfo();
-//        bids = new ArrayList<>();
-//        mBoards = new ArrayList<>();
+        mBoardParticipants = new ArrayList<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -302,7 +304,14 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
                 for (int i = 0; i < uids.size(); i++) {
                     String participantId = uids.get(i).substring(0, uids.get(i).length() - 4);
-                    JSONObject userInfo = dataJsonObj.getJSONObject(uids.get(i));
+
+                    JSONObject userInfo = dataJsonObj.getJSONObject(participantId);
+
+                    mBoardParticipants.add(new BoardParticipant(
+                            Integer.parseInt(participantId),
+                            Integer.parseInt(userInfo.getString(AVATAR)),
+                            userInfo.getString(LOGIN), false, 0
+                    ));
 
 
                 }
@@ -313,8 +322,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 //                }
 
                 saveText(BoardWelcomeActivity.this, BOARD_DESCRIPTION, boardDescription);
-                BoardDescriptionFragment descriptionFragment = new BoardDescriptionFragment();
 
+                BoardDescriptionFragment descriptionFragment = new BoardDescriptionFragment();
 
 
                 FragmentManager manager = getSupportFragmentManager();
