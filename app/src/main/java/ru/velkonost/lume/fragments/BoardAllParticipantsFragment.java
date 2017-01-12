@@ -26,9 +26,9 @@ public class BoardAllParticipantsFragment extends Fragment {
     protected View view;
     protected Context context;
 
-    public static ContactsFragment getInstance(Context context, List<Contact> contacts) {
+    public static BoardAllParticipantsFragment getInstance(Context context, List<Contact> contacts) {
         Bundle args = new Bundle();
-        ContactsFragment fragment = new ContactsFragment();
+        BoardAllParticipantsFragment fragment = new BoardAllParticipantsFragment();
 
         fragment.setArguments(args);
         fragment.setContext(context);

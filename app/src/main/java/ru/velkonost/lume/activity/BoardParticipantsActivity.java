@@ -27,14 +27,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.Managers.ValueComparator;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.BoardParticipant;
 import ru.velkonost.lume.descriptions.Contact;
+import ru.velkonost.lume.fragments.BoardAllParticipantsFragment;
 import ru.velkonost.lume.fragments.ContactsFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;
@@ -45,10 +46,9 @@ import static ru.velkonost.lume.Constants.IDS;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.SURNAME;
-import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_PARTICIPANTS_METHOD;
-import static ru.velkonost.lume.Constants.URL.SERVER_GET_CONTACTS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
+import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
@@ -86,19 +86,27 @@ public class BoardParticipantsActivity extends AppCompatActivity {
     /**
      * Идентификаторы досок, к которым принадлежит авторизованный пользователь.
      **/
-//    private ArrayList<String> bids;
+    private ArrayList<String> ids;
 
     /**
-     * Свойство - экзмепляр класса {@link BoardWelcomeActivity.GetBoardInfo}
+     * Свойство - экзмепляр класса {@link GetData}
      */
-//    protected BoardWelcomeActivity.GetBoardInfo mGetBoardInfo;
+    protected GetData mGetData;
 
 
     /**
      * Свойство - список контактов.
      * {@link ru.velkonost.lume.descriptions.BoardParticipant}
      */
-    private List<BoardParticipant> mBoardParticipants;
+    private List<Contact> mBoardParticipants;
+
+    /**
+     * Контакты авторизованного пользователя.
+     *
+     * Ключ - идентификатор пользователя.
+     * Значение - его полное имя или логин.
+     **/
+    private Map<String, String> contacts;
 
 //    private BoardsFragment mBoardsFragment;
 
@@ -109,8 +117,10 @@ public class BoardParticipantsActivity extends AppCompatActivity {
 
         setContentView(LAYOUT);
 
-//        mGetBoardInfo = new BoardWelcomeActivity.GetBoardInfo();
-//        mBoardParticipants = new ArrayList<>();
+        mGetData = new GetData();
+        mBoardParticipants = new ArrayList<>();
+        ids = new ArrayList<>();
+        contacts = new HashMap<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -137,14 +147,13 @@ public class BoardParticipantsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         boardId = intent.getIntExtra(BOARD_ID, 0);
 
-//        mGetBoardInfo.execute();
-
+        mGetData.execute();
 
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_welcome);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_participant);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -248,13 +257,13 @@ public class BoardParticipantsActivity extends AppCompatActivity {
             /**
              * Формирование адреса, по которому необходимо обратиться.
              **/
-            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
                     + SERVER_GET_BOARD_PARTICIPANTS_METHOD;
 
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + userId;
+            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + boardId;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
@@ -339,7 +348,7 @@ public class BoardParticipantsActivity extends AppCompatActivity {
                      */
                     JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
 
-                    mContacts.add(new Contact(userInfo.getString(ID), userInfo.getString(NAME),
+                    mBoardParticipants.add(new Contact(userInfo.getString(ID), userInfo.getString(NAME),
                             userInfo.getString(SURNAME), userInfo.getString(LOGIN),
                             Integer.parseInt(userInfo.getString(AVATAR))));
                 }
@@ -349,9 +358,9 @@ public class BoardParticipantsActivity extends AppCompatActivity {
                  * {@link ContactsFragment}
                  */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ContactsFragment contactsFragment
-                        = ContactsFragment.getInstance(ContactsActivity.this, mContacts);
-                ft.add(R.id.llcontact, contactsFragment);
+                BoardAllParticipantsFragment boardAllParticipantsFragment
+                        = BoardAllParticipantsFragment.getInstance(BoardParticipantsActivity.this, mBoardParticipants);
+                ft.add(R.id.llparticipants, boardAllParticipantsFragment);
                 ft.commit();
 
             } catch (JSONException e) {

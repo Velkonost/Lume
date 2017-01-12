@@ -252,21 +252,6 @@ public class ProfileActivity extends AppCompatActivity {
                 ? intent.getIntExtra(ID, 0)
                 : userId;
 
-
-        /**
-         * Кнопка возврата на предыдущую активность, если текущий профиль не принадлежит пользователю,
-         *          авторизованному на данном устройстве.
-         */
-        if (!profileId.equals(userId)) {
-            toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onBackPressed();
-                }
-            });
-        }
-
         initNavigationView(); /** Инициализация */
 
         /**
@@ -309,6 +294,21 @@ public class ProfileActivity extends AppCompatActivity {
                         .getColor(ProfileActivity.this, R.color.colorPrimary));
             }
         });
+
+        /**
+         * Кнопка возврата на предыдущую активность, если текущий профиль не принадлежит пользователю,
+         *          авторизованному на данном устройстве.
+         */
+        if (!(profileId.equals(userId))) {
+            toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+        }
+
         /** Обращаемся к серверу */
         mGetData.execute();
     }

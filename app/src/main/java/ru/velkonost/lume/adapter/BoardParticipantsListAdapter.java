@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.List;
 
@@ -31,7 +34,8 @@ import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
 import static ru.velkonost.lume.Managers.ImageManager.getCircleMaskedBitmap;
 
 public class BoardParticipantsListAdapter
-        extends RecyclerView.Adapter<BoardParticipantsListAdapter.BoardParticipantsViewHolder> {
+        extends RecyclerView.Adapter<BoardParticipantsListAdapter.BoardParticipantsViewHolder>
+        implements FastScrollRecyclerView.SectionedAdapter{
 
     private List<Contact> data;
     private LayoutInflater inflater;
@@ -107,6 +111,14 @@ public class BoardParticipantsListAdapter
 
     public void setData(List<Contact> data) {
         this.data = data;
+    }
+
+    @NonNull
+    @Override
+    public String getSectionName(int position) {
+        if (data.get(position).getName().length() == 0)
+            return String.valueOf(data.get(position).getLogin().charAt(0));
+        return String.valueOf(data.get(position).getName().charAt(0));
     }
 
     class BoardParticipantsViewHolder extends RecyclerView.ViewHolder {

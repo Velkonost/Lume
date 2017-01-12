@@ -58,6 +58,16 @@ public class BoardParticipantsFragment extends Fragment {
 
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.llBoardParticipants);
 
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, BoardParticipantsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(BOARD_ID, mBoardsParticipants.get(0).getBoardId());
+                context.startActivity(intent);
+            }
+        });
+
         LayoutInflater inflaterous = LayoutInflater.from(context);
 
         for (final BoardParticipant item : mBoardsParticipants) {
