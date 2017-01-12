@@ -12,6 +12,7 @@ public class Constants {
     public static final String EQUALS = "=";
     public static final String AMPERSAND = "&";
     public static final String HYPHEN = "-";
+    public static final String PLUS = "+";
 
     public static final String LOGIN = "login";
     public static final String REGISTRATION = "registration";

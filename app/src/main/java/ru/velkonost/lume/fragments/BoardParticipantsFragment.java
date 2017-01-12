@@ -19,6 +19,7 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.BoardParticipant;
 
 import static ru.velkonost.lume.Constants.JPG;
+import static ru.velkonost.lume.Constants.PLUS;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
@@ -58,7 +59,8 @@ public class BoardParticipantsFragment extends Fragment {
             View viewItem  = inflaterous.inflate(R.layout.item_board_participant, linearLayout, false);
 
             if (item.isLast()){
-                ((TextView) viewItem.findViewById(R.id.another_participants)).setText(String.valueOf("+" + item.getReminded()));
+                ((TextView) viewItem.findViewById(R.id.another_participants))
+                        .setText(String.valueOf(PLUS + item.getReminded()));
                  viewItem.findViewById(R.id.another_participants).setVisibility(View.VISIBLE);
 
                 Bitmap bitmap = ((BitmapDrawable) ((ImageView) viewItem.findViewById(R.id.avatar))
