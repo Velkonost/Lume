@@ -17,9 +17,11 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.activity.BoardParticipantsActivity;
 import ru.velkonost.lume.activity.ProfileActivity;
 import ru.velkonost.lume.descriptions.BoardParticipant;
 
+import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.PLUS;
@@ -72,6 +74,16 @@ public class BoardParticipantsFragment extends Fragment {
                 ((ImageView) viewItem.findViewById(R.id.avatar))
                         .setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
 
+                viewItem.findViewById(R.id.avatar).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, BoardParticipantsActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra(BOARD_ID, item.getBoardId());
+                        context.startActivity(intent);
+                    }
+                });
+
                 linearLayout.addView(viewItem);
 
                 break;
@@ -102,7 +114,6 @@ public class BoardParticipantsFragment extends Fragment {
                     context.startActivity(intent);
                 }
             });
-
 
             linearLayout.addView(viewItem);
         }

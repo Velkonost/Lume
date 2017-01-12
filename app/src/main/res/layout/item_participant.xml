@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:card="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:id="@+id/item_participant">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:id="@+id/relativeLayoutParticipant"
+        android:background="@color/colorWhite">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/userAvatar"/>
+
+        <ru.velkonost.lume.patterns.ScrollingTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/userName"
+            android:textSize="10pt"
+            android:textColor="@color/colorBlack"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:layout_alignTop="@+id/userAvatar"
+            android:layout_toEndOf="@+id/userAvatar"
+            android:lines="1"/>
+        <ru.velkonost.lume.patterns.ScrollingTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/userLogin"
+            android:textSize="7pt"
+            android:layout_alignBottom="@+id/userName"
+            android:layout_toEndOf="@+id/userName"
+            android:layout_marginStart="14dp"
+            android:layout_marginBottom="8dp"
+            android:lines="1"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/userWithoutName"
+            android:layout_above="@+id/userDescription"
+            android:layout_toEndOf="@+id/userName"
+            android:layout_alignTop="@+id/userName"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:id="@+id/userDescription"
+            android:layout_below="@+id/userName"
+            android:layout_toEndOf="@+id/userAvatar">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/livingPlace"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/workingPlace"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorBlack"
+        android:id="@+id/blackLine"
+        android:layout_gravity="bottom"/>
+
+</LinearLayout>

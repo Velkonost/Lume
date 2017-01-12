@@ -10,13 +10,15 @@ public class BoardParticipant implements Parcelable {
     private String login;
     private boolean last;
     private int reminded;
+    private int boardId;
 
-    public BoardParticipant(int id, int avatar, String login, boolean last, int reminded) {
+    public BoardParticipant(int id, int avatar, String login, boolean last, int reminded, int boardId) {
         this.id = id;
         this.avatar = avatar;
         this.login = login;
         this.last = last;
         this.reminded = reminded;
+        this.boardId = boardId;
     }
 
     private BoardParticipant(Parcel in) {
@@ -24,6 +26,7 @@ public class BoardParticipant implements Parcelable {
         avatar = in.readInt();
         login = in.readString();
         reminded = in.readInt();
+        boardId = in.readInt();
     }
 
     public static final Creator<BoardParticipant> CREATOR = new Creator<BoardParticipant>() {
@@ -49,6 +52,7 @@ public class BoardParticipant implements Parcelable {
         parcel.writeInt(avatar);
         parcel.writeString(login);
         parcel.writeInt(reminded);
+        parcel.writeInt(boardId);
     }
 
     public int getId() {
@@ -89,5 +93,9 @@ public class BoardParticipant implements Parcelable {
 
     public void setReminded(int reminded) {
         this.reminded = reminded;
+    }
+
+    public int getBoardId() {
+        return boardId;
     }
 }

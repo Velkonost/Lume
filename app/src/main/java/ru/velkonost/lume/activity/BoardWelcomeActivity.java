@@ -313,7 +313,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                             Integer.parseInt(participantId.substring(0, uids.get(i).length() - 4)),
                             Integer.parseInt(userInfo.getString(AVATAR)),
                             userInfo.getString(LOGIN),
-                            BOARD_LAST_CONTRIBUTED_USER == i + 1, uids.size() - i
+                            BOARD_LAST_CONTRIBUTED_USER == i + 1, uids.size() - i, boardId
                     ));
 
                     if (BOARD_LAST_CONTRIBUTED_USER == i) break;
