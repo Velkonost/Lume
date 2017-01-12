@@ -31,6 +31,7 @@ import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.BoardParticipant;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
+import ru.velkonost.lume.fragments.BoardParticipantsFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
@@ -297,18 +298,20 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                     uids.add(idsJSON.getString(i));
                 }
 
-                for (int i = 0; i < cidsJSON.length(); i++) {
-                    cids.add(cidsJSON.getString(i));
-                }
+//                for (int i = 0; i < cidsJSON.length(); i++) {
+//                    cids.add(cidsJSON.getString(i));
+//                }
 
 
                 for (int i = 0; i < uids.size(); i++) {
-                    String participantId = uids.get(i).substring(0, uids.get(i).length() - 4);
+                    String participantId = uids.get(i);
+//                            .substring(0, uids.get(i).length() - 4);
 
                     JSONObject userInfo = dataJsonObj.getJSONObject(participantId);
 
+
                     mBoardParticipants.add(new BoardParticipant(
-                            Integer.parseInt(participantId),
+                            Integer.parseInt(participantId.substring(0, uids.get(i).length() - 4)),
                             Integer.parseInt(userInfo.getString(AVATAR)),
                             userInfo.getString(LOGIN), false, 0
                     ));
@@ -324,12 +327,14 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 saveText(BoardWelcomeActivity.this, BOARD_DESCRIPTION, boardDescription);
 
                 BoardDescriptionFragment descriptionFragment = new BoardDescriptionFragment();
-
+                BoardParticipantsFragment boardParticipantsFragment
+                        = BoardParticipantsFragment.getInstance(BoardWelcomeActivity.this, mBoardParticipants);
 
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
 
                 transaction.add(R.id.descriptionContainer, descriptionFragment);
+                transaction.add(R.id.participantsContainer, boardParticipantsFragment);
                 transaction.commit();
 
             } catch (JSONException e) {

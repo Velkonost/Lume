@@ -55,7 +55,7 @@ public class BoardParticipantListAdapter extends ArrayAdapter {
                 + SERVER_AVATAR + SLASH + boardParticipant.getAvatar()
                 + SLASH + boardParticipant.getId() + JPG;
 
-        ((TextView) convertView.findViewById(userId)).setText(boardParticipant.getId());
+        ((TextView) convertView.findViewById(R.id.userId)).setText(boardParticipant.getId());
 
         fetchImage(avatarURL, (ImageView) convertView.findViewById(R.id.avatar), true, false);
         Bitmap bitmap = ((BitmapDrawable) ((ImageView) convertView.findViewById(R.id.avatar))
