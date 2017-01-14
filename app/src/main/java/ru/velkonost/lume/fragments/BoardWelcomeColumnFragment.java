@@ -49,10 +49,10 @@ public class BoardWelcomeColumnFragment extends Fragment {
     }
 
     private void adjustGridView(GridView gridView) {
-        gridView.setColumnWidth(200);
-        gridView.setNumColumns(GridView.AUTO_FIT);
+        gridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
+        gridView.setNumColumns(2);
         gridView.setHorizontalSpacing(5);
-        gridView.setStretchMode(GridView.STRETCH_SPACING_UNIFORM);
+
     }
 
     public void refreshColumns (List<BoardColumn> mColumns) {
