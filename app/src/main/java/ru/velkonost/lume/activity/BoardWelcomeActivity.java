@@ -43,6 +43,7 @@ import static ru.velkonost.lume.Constants.COLUMN_IDS;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
+import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
@@ -327,7 +328,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 for (int i = 0; i < cids.size(); i++) {
                     JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
 
-
+                    mBoardColumn.add(new BoardColumn(
+                            Integer.parseInt(columnInfo.getString(ID)), columnInfo.getString(NAME))
+                    );
 
                 }
 
