@@ -87,6 +87,7 @@ public class BoardParticipantsListAdapter
 
             fetchImage(avatarURL, holder.userAvatar, true, false);
             Bitmap bitmap = ((BitmapDrawable)holder.userAvatar.getDrawable()).getBitmap();
+
             holder.userAvatar.setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
 
             holder.mRelativeLayout.setId(Integer.parseInt(item.getId()));

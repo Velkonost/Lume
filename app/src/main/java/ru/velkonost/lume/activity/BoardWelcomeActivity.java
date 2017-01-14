@@ -29,6 +29,7 @@ import java.util.List;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.descriptions.BoardColumn;
 import ru.velkonost.lume.descriptions.BoardParticipant;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
 import ru.velkonost.lume.fragments.BoardParticipantsFragment;
@@ -98,6 +99,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
      */
     private List<BoardParticipant> mBoardParticipants;
 
+    private List<BoardColumn> mBoardColumn;
+
 //    private BoardsFragment mBoardsFragment;
 
 
@@ -109,6 +112,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
         mGetBoardInfo = new GetBoardInfo();
         mBoardParticipants = new ArrayList<>();
+        mBoardColumn = new ArrayList<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -299,9 +303,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                     uids.add(idsJSON.getString(i));
                 }
 
-//                for (int i = 0; i < cidsJSON.length(); i++) {
-//                    cids.add(cidsJSON.getString(i));
-//                }
+                for (int i = 0; i < cidsJSON.length(); i++) {
+                    cids.add(cidsJSON.getString(i));
+                }
 
 
                 for (int i = 0; i < uids.size(); i++) {
@@ -319,11 +323,13 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                     if (BOARD_LAST_CONTRIBUTED_USER == i) break;
 
                 }
-//
-//                for (int i = 0; i < cids.size(); i++) {
-//                    JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
-//
-//                }
+
+                for (int i = 0; i < cids.size(); i++) {
+                    JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
+
+
+
+                }
 
                 saveText(BoardWelcomeActivity.this, BOARD_DESCRIPTION, boardDescription);
 
