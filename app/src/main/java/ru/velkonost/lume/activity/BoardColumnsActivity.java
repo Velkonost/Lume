@@ -29,6 +29,7 @@ import ru.velkonost.lume.descriptions.Contact;
 import ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter;
 
 import static ru.velkonost.lume.Constants.BOARD_ID;
+import static ru.velkonost.lume.Constants.BOARD_NAME;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
@@ -89,8 +90,6 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
 //    private BoardsFragment mBoardsFragment;
 
-    static final String TAG = "myLogs";
-    static final int PAGE_COUNT = 10;
 
     private ViewPager viewPager;
 
@@ -112,11 +111,11 @@ public class BoardColumnsActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_columns);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(BoardColumnsActivity.this, toolbar, R.string.menu_item_participants); /** Инициализация */
-
+        initToolbar(BoardColumnsActivity.this, toolbar, loadText(BoardColumnsActivity.this, BOARD_NAME)); /** Инициализация */
         initTabs();
-
         initNavigationView(); /** Инициализация */
+
+        deleteText(BoardColumnsActivity.this, BOARD_NAME);
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

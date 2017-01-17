@@ -297,6 +297,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 String boardDescription = dataJsonObj.getString(BOARD_DESCRIPTION);
 
                 toolbar.setTitle(boardName);
+                saveText(BoardWelcomeActivity.this, BOARD_NAME, boardName);
 
                 ArrayList<String> uids = new ArrayList<>();
                 ArrayList<String> cids = new ArrayList<>();
