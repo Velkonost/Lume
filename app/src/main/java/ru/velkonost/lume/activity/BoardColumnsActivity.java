@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -17,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -30,7 +27,6 @@ import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Contact;
-import ru.velkonost.lume.fragments.BoardColumnsFragment;
 
 import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.ID;
@@ -96,8 +92,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
     static final String TAG = "myLogs";
     static final int PAGE_COUNT = 10;
 
-    ViewPager pager;
-    PagerAdapter pagerAdapter;
+    private ViewPager viewPager;
 
 
     @Override
@@ -105,27 +100,6 @@ public class BoardColumnsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
-
-        pager = (ViewPager) findViewById(R.id.pager);
-        pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
-        pager.setAdapter(pagerAdapter);
-
-        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            @Override
-            public void onPageSelected(int position) {
-                Log.d(TAG, "onPageSelected, position = " + position);
-            }
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset,
-                                       int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
 
 
 //        mGetData = new BoardParticipantsActivity.GetData();
@@ -139,6 +113,9 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(BoardColumnsActivity.this, toolbar, R.string.menu_item_participants); /** Инициализация */
+
+        initTabs();
+
         initNavigationView(); /** Инициализация */
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
@@ -162,27 +139,14 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     }
 
-    private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+    private void initTabs() {
+        viewPager = (ViewPager) findViewById(R.id.viewPagerColumns);
+        TabsFragmentAdapter adapter = new TabsFragmentAdapter(this, getSupportFragmentManager());
 
-        public MyFragmentPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
+        viewPager.setAdapter(adapter);
 
-        @Override
-        public Fragment getItem(int position) {
-            return BoardColumnsFragment.newInstance(position);
-        }
-
-        @Override
-        public int getCount() {
-            return PAGE_COUNT;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return "Title " + position;
-        }
-
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
