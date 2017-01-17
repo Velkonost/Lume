@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,6 +26,7 @@ import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Contact;
+import ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter;
 
 import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.ID;
@@ -141,7 +141,8 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     private void initTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPagerColumns);
-        TabsFragmentAdapter adapter = new TabsFragmentAdapter(this, getSupportFragmentManager());
+        BoardColumnsTabsFragmentAdapter adapter
+                = new BoardColumnsTabsFragmentAdapter(this, getSupportFragmentManager());
 
         viewPager.setAdapter(adapter);
 

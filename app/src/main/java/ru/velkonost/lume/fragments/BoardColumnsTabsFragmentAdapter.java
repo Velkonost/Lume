@@ -38,10 +38,9 @@ public class BoardColumnsTabsFragmentAdapter extends FragmentPagerAdapter {
     private void initTabsMap(Context context) {
         tabs = new HashMap<>();
 
-        tabs.put(0, HistoryFragment.getInstance(context));
-        tabs.put(1, IdeasFragment.getInstance(context));
-        tabs.put(2, TodoFragment.getInstance(context));
-        tabs.put(3, BirthdaysFragment.getInstance(context));
+        tabs.put(0, ColumnFragment.getInstance(context, 23));
+        tabs.put(1, ColumnFragment.getInstance(context, 31));
+        tabs.put(2, ColumnFragment.getInstance(context, 32));
+        tabs.put(3, ColumnFragment.getInstance(context, 33));
     }
-}
 }

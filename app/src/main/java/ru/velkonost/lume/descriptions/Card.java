@@ -11,6 +11,11 @@ public class Card implements Parcelable {
 
     private int[] userIds;
 
+    public Card(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Card(int id, String name, int[] userIds) {
         this.id = id;
         this.name = name;
@@ -53,5 +58,21 @@ public class Card implements Parcelable {
         parcel.writeInt(id);
         parcel.writeString(name);
         parcel.writeString(description);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int[] getUserIds() {
+        return userIds;
     }
 }

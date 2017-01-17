@@ -37,6 +37,7 @@ public class Constants {
 
     public static final String USER_IDS = "uids";
 
+    public static final String COLUMN_ID = "cid";
     public static final String COLUMN_IDS = "cids";
 
     public static final String IMAGE = "image";
@@ -68,6 +69,8 @@ public class Constants {
     public static final String GET_EDIT_RESULT = "edit";
     public static final String ADD_CONTACT = "addContact";
 
+    public static final String PARTICIPANTS = "participants";
+
     /** Класс констант, относящихся исключительно к построению URL */
     public static class URL {
         public static final String SERVER_PROTOCOL = "http://";
@@ -95,6 +98,7 @@ public class Constants {
 
         public static final String SERVER_SHOW_BOARDS_METHOD = "/showBoards";
         public static final String SERVER_GET_BOARD_INFO_METHOD = "/getBoardInfo";
+        public static final String SERVER_GET_COLUMN_INFO_METHOD = "/getColumnInfo";
         public static final String SERVER_GET_BOARD_PARTICIPANTS_METHOD = "/getBoardParticipants";
 
     }
