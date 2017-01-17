@@ -49,7 +49,7 @@ public class ColumnFragment extends AbstractTabFragment {
         fragment.setArguments(args);
         fragment.setContext(context);
         fragment.setColumnId(columnId);
-        fragment.setTitle(context.getString(R.string.menu_item_boards));
+        fragment.setTitle(String.valueOf(columnId));
 
         return fragment;
     }
@@ -65,20 +65,7 @@ public class ColumnFragment extends AbstractTabFragment {
         mGetData = new GetData();
         mGetData.execute();
 
-
         return view;
-    }
-
-    private List<Card> createMockRemindListData() {
-//        List<Card> data = new ArrayList<>();
-//        data.add(new RemindDTO("Item 1", "test1"));
-//        data.add(new RemindDTO("Item 2", "tsest1"));
-//        data.add(new RemindDTO("Item 3", "3"));
-//        data.add(new RemindDTO("Item 4", "23"));
-//        data.add(new RemindDTO("Item 5", "123"));
-//        data.add(new RemindDTO("Item 6", "123"));
-
-        return data;
     }
 
     public void setContext(Context context) {
