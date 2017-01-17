@@ -124,6 +124,8 @@ public class Constants {
     public static final String UPLOAD_IMAGE_SUCCESS_CODE = "500";
 
     public static final int MARQUEE_REPEAT_LIMIT = 1000000000;
+    public static final int MAX_COLUMNS_IN_FIXED_MODE = 5;
+
     public final static String TAG_IMAGE_MANAGER = "ImageManager";
 
 

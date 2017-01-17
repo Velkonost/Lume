@@ -22,6 +22,7 @@ import ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter;
 
 import static ru.velkonost.lume.Constants.BOARD_NAME;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.MAX_COLUMNS_IN_FIXED_MODE;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
@@ -65,8 +66,6 @@ public class BoardColumnsActivity extends AppCompatActivity {
         initTabs();
         initNavigationView(); /** Инициализация */
 
-        deleteText(BoardColumnsActivity.this, BOARD_NAME);
-
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +86,11 @@ public class BoardColumnsActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
 
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+        if (adapter.getCount() < MAX_COLUMNS_IN_FIXED_MODE)
+            tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        else
+            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
     }
 
@@ -98,6 +101,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+            finish();
         }
     }
 
@@ -182,7 +186,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(BoardColumnsActivity.this, ID).equals("")) finishAffinity();
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_participant);
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_columns);
                 drawer.closeDrawer(GravityCompat.START);
 
                 return true;

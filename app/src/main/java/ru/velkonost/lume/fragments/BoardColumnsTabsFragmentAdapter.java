@@ -43,7 +43,6 @@ public class BoardColumnsTabsFragmentAdapter extends FragmentPagerAdapter {
         tabs = new HashMap<>();
 
         List<BoardColumn> boardColumns = Depository.getBoardColumns();
-        Depository.resetBoardColumns();
 
         for (int i = 0; i < boardColumns.size(); i++) {
             tabs.put(i, ColumnFragment.getInstance(context, boardColumns.get(i).getId(),
