@@ -41,7 +41,8 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
         holder.title.setHorizontallyScrolling(true);
         holder.title.setMarqueeRepeatLimit(MARQUEE_REPEAT_LIMIT);
 
-        holder.amount.setText(item.getAmountParticipants());
+        holder.amount.setText(String.valueOf(item.getAmountParticipants()));
+        holder.amount.setVisibility(View.VISIBLE);
 
         if (item.isBelong()){
             holder.isBelong.setVisibility(View.VISIBLE);
