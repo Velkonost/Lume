@@ -17,7 +17,7 @@ import ru.velkonost.lume.descriptions.BoardColumn;
 
 public class BoardWelcomeColumnFragment extends Fragment {
 
-    private static final int LAYOUT = R.layout.fragment_board_columns;
+    private static final int LAYOUT = R.layout.fragment_board_welcome_columns;
 
     private List<BoardColumn> mColumns;
     private BoardWelcomeColumnListAdapter adapter;

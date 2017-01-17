@@ -1,6 +1,8 @@
 package ru.velkonost.lume.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.activity.BoardColumnsActivity;
 import ru.velkonost.lume.descriptions.BoardColumn;
 
 public class BoardWelcomeColumnListAdapter extends ArrayAdapter {
@@ -39,23 +42,21 @@ public class BoardWelcomeColumnListAdapter extends ArrayAdapter {
         ((TextView) convertView.findViewById(R.id.columnName)).setText(boardColumn.getName());
 
 
-//        final View finalConvertView = convertView;
-//        (convertView.findViewById(R.id.lluser)).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                (finalConvertView.findViewById(R.id.unreadMessages)).setVisibility(View.INVISIBLE);
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Intent intent = new Intent(mContext, MessageActivity.class);
+        (convertView.findViewById(R.id.item_board_column)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(mContext, BoardColumnsActivity.class);
 //                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                        intent.putExtra(DIALOG_ID, Integer.parseInt(dialogContact.getDialogId()));
 //                        intent.putExtra(ID, Integer.parseInt(dialogContact.getId()));
-//                        mContext.startActivity(intent);
-//                    }
-//                }, 350);
-//            }
-//        });
+                        mContext.startActivity(intent);
+                    }
+                }, 350);
+            }
+        });
 
         return convertView;
     }
