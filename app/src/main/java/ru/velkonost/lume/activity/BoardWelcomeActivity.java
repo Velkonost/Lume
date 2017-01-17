@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
@@ -335,6 +336,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                     );
 
                 }
+
+                Depository.setBoardColumns(mBoardColumns);
 
                 saveText(BoardWelcomeActivity.this, BOARD_DESCRIPTION, boardDescription);
 

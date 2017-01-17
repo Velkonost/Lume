@@ -45,14 +45,14 @@ public class ColumnFragment extends AbstractTabFragment {
     private List<Card> data;
     private ArrayList<String> cids;
 
-    public static ColumnFragment getInstance(Context context, int columnId) {
+    public static ColumnFragment getInstance(Context context, int columnId, String columnName) {
         Bundle args = new Bundle();
         ColumnFragment fragment = new ColumnFragment();
 
         fragment.setArguments(args);
         fragment.setContext(context);
         fragment.setColumnId(columnId);
-        fragment.setTitle(String.valueOf(columnId));
+        fragment.setTitle(columnName);
 
         return fragment;
     }
