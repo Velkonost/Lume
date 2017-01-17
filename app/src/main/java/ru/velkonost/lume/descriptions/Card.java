@@ -6,6 +6,7 @@ import android.os.Parcelable;
 public class Card implements Parcelable {
 
     private int id;
+    private int amountParticipants;
     private String name;
     private String description;
 
@@ -13,6 +14,12 @@ public class Card implements Parcelable {
 
     public Card(int id, String name) {
         this.id = id;
+        this.name = name;
+    }
+
+    public Card(int id, int amountParticipants, String name) {
+        this.id = id;
+        this.amountParticipants = amountParticipants;
         this.name = name;
     }
 

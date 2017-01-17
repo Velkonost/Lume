@@ -16,19 +16,55 @@
         card:cardElevation="2dp"
         card:cardUseCompatPadding="true">
 
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/IsYouParticipant"
+            android:background="@drawable/new_messages"
+            android:layout_margin="10dp"
+            android:layout_gravity="right|top"/>
+
+        <TextView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/NumberParticipants"
+            android:background="@drawable/card_number_participants"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_gravity="right|bottom"/>
+
+        <TextView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/unreadMessages"
+            android:background="@drawable/new_messages"
+            android:layout_alignTop="@+id/avatar"
+            android:layout_alignEnd="@+id/avatar"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:visibility="invisible"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:orientation="vertical">
 
-            <TextView
+            <ru.velkonost.lume.patterns.ScrollingTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/title"
                 android:textSize="8pt"
                 android:textColor="@color/colorBlack"
-                android:paddingBottom="5dp"/>
+                android:paddingBottom="5dp"
+                android:lines="1"
+                android:layout_marginRight="30dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

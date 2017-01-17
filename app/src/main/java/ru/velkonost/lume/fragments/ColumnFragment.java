@@ -30,6 +30,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_GET_COLUMN_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
+import static ru.velkonost.lume.Constants.USER_IDS;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 public class ColumnFragment extends AbstractTabFragment {
@@ -121,10 +122,13 @@ public class ColumnFragment extends AbstractTabFragment {
                 /**
                  * Получение идентификаторов найденных пользователей.
                  */
-                JSONArray idsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
+                JSONArray cidsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
+                JSONArray uidsJSON = dataJsonObj.getJSONArray(USER_IDS);
 
-                for (int i = 0; i < idsJSON.length(); i++){
-                    cids.add(idsJSON.getString(i));
+                int amountParticipants = uidsJSON.length();
+
+                for (int i = 0; i < cidsJSON.length(); i++){
+                    cids.add(cidsJSON.getString(i));
                 }
 
 
