@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -39,6 +40,12 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
         holder.title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
         holder.title.setHorizontallyScrolling(true);
         holder.title.setMarqueeRepeatLimit(MARQUEE_REPEAT_LIMIT);
+
+        holder.amount.setText(item.getAmountParticipants());
+
+        if (item.isBelong()){
+            holder.isBelong.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -48,14 +55,20 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
 
     public static class CardListViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
+
         TextView title;
-        TextView desc;
+        TextView amount;
+
+        ImageView isBelong;
 
         public CardListViewHolder(View itemView) {
             super(itemView);
 
             cardView = (CardView) itemView.findViewById(R.id.cardView);
             title = (TextView) itemView.findViewById(R.id.title);
+            amount = (TextView) itemView.findViewById(R.id.numberParticipants);
+
+            isBelong = (ImageView) itemView.findViewById(R.id.isYouParticipant);
         }
     }
 }

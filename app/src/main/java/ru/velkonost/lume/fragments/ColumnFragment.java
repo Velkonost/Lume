@@ -25,12 +25,14 @@ import ru.velkonost.lume.descriptions.Card;
 import static ru.velkonost.lume.Constants.COLUMN_ID;
 import static ru.velkonost.lume.Constants.COLUMN_IDS;
 import static ru.velkonost.lume.Constants.EQUALS;
+import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_COLUMN_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.USER_IDS;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 public class ColumnFragment extends AbstractTabFragment {
@@ -126,8 +128,18 @@ public class ColumnFragment extends AbstractTabFragment {
                 JSONArray uidsJSON = dataJsonObj.getJSONArray(USER_IDS);
 
                 int amountParticipants = uidsJSON.length();
+                boolean isBelong = false;
 
-                for (int i = 0; i < cidsJSON.length(); i++){
+                String userId = loadText(context, ID);
+
+                for (int i = 0; i < uidsJSON.length(); i++) {
+                    if (userId.equals(uidsJSON.get(i))) {
+                        isBelong = true;
+                        break;
+                    }
+                }
+
+                for (int i = 0; i < cidsJSON.length(); i++) {
                     cids.add(cidsJSON.getString(i));
                 }
 
@@ -143,8 +155,9 @@ public class ColumnFragment extends AbstractTabFragment {
                     JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
 
                     data.add(new Card(
-                            Integer.parseInt(cids.get(i)), columnInfo.getString(NAME))
-                    );
+                            Integer.parseInt(cids.get(i)), amountParticipants,
+                            columnInfo.getString(NAME), isBelong
+                    ));
                 }
 
                 RecyclerView rv = (RecyclerView) view.findViewById(R.id.recyclerViewColumn);

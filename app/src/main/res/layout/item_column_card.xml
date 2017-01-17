@@ -19,15 +19,16 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:id="@+id/IsYouParticipant"
+            android:id="@+id/isYouParticipant"
             android:background="@drawable/new_messages"
             android:layout_margin="10dp"
-            android:layout_gravity="right|top"/>
+            android:layout_gravity="right|top"
+            android:visibility="invisible"/>
 
         <TextView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:id="@+id/NumberParticipants"
+            android:id="@+id/numberParticipants"
             android:background="@drawable/card_number_participants"
             android:layout_marginTop="50dp"
             android:layout_marginBottom="10dp"
@@ -36,7 +37,8 @@
             android:textAlignment="center"
             android:textSize="14sp"
             android:gravity="center"
-            android:layout_gravity="right|bottom"/>
+            android:layout_gravity="right|bottom"
+            android:visibility="invisible"/>
 
         <TextView
             android:layout_width="30dp"
