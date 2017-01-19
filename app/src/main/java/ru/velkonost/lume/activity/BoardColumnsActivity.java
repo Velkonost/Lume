@@ -21,6 +21,7 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter;
 
 import static ru.velkonost.lume.Constants.BOARD_NAME;
+import static ru.velkonost.lume.Constants.COLUMN_ORDER;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.MAX_COLUMNS_IN_FIXED_MODE;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
@@ -49,6 +50,8 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
 
+    private int columnOrder;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,11 +63,16 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_columns);
 
+        Intent intent = getIntent();
+        columnOrder = intent.getExtras().getInt(COLUMN_ORDER);
+
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(BoardColumnsActivity.this, toolbar,
                 loadText(BoardColumnsActivity.this, BOARD_NAME)); /** Инициализация */
         initTabs();
         initNavigationView(); /** Инициализация */
+
+
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -82,6 +90,8 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 = new BoardColumnsTabsFragmentAdapter(this, getSupportFragmentManager());
 
         viewPager.setAdapter(adapter);
+
+        viewPager.setCurrentItem(columnOrder);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
 

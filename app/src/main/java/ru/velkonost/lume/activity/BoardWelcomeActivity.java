@@ -330,7 +330,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                     JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
 
                     mBoardColumns.add(new BoardColumn(
-                            Integer.parseInt(columnInfo.getString(ID)), columnInfo.getString(NAME))
+                            Integer.parseInt(columnInfo.getString(ID)),
+                            columnInfo.getString(NAME),  i)
                     );
 
                 }

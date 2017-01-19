@@ -7,6 +7,13 @@ public class BoardColumn implements Parcelable {
 
     private int id;
     private String name;
+    private int order;
+
+    public BoardColumn(int id, String name, int order) {
+        this.id = id;
+        this.name = name;
+        this.order = order;
+    }
 
     public BoardColumn(int id, String name) {
         this.id = id;
@@ -43,6 +50,10 @@ public class BoardColumn implements Parcelable {
 
     public int getId() {
         return id;
+    }
+
+    public int getOrder() {
+        return order;
     }
 
     public String getName() {

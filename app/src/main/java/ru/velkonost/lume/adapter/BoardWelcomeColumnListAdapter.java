@@ -16,6 +16,8 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.BoardColumnsActivity;
 import ru.velkonost.lume.descriptions.BoardColumn;
 
+import static ru.velkonost.lume.Constants.COLUMN_ORDER;
+
 public class BoardWelcomeColumnListAdapter extends ArrayAdapter {
     private List<BoardColumn> data;
     private Context mContext;
@@ -49,9 +51,8 @@ public class BoardWelcomeColumnListAdapter extends ArrayAdapter {
                     @Override
                     public void run() {
                         Intent intent = new Intent(mContext, BoardColumnsActivity.class);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        intent.putExtra(DIALOG_ID, Integer.parseInt(dialogContact.getDialogId()));
-//                        intent.putExtra(ID, Integer.parseInt(dialogContact.getId()));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra(COLUMN_ORDER, boardColumn.getOrder());
                         mContext.startActivity(intent);
                     }
                 }, 350);

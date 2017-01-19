@@ -25,43 +25,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.velkonost.lume.Constants;
-import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.BoardColumn;
 import ru.velkonost.lume.descriptions.BoardParticipant;
-import ru.velkonost.lume.descriptions.Message;
+import ru.velkonost.lume.descriptions.CardComment;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
 import ru.velkonost.lume.fragments.BoardParticipantsFragment;
-import ru.velkonost.lume.fragments.BoardWelcomeColumnFragment;
-import ru.velkonost.lume.fragments.MessagesFragment;
 
-import static ru.velkonost.lume.Constants.ADDRESSEE_ID;
-import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
 import static ru.velkonost.lume.Constants.BOARD_LAST_CONTRIBUTED_USER;
-import static ru.velkonost.lume.Constants.BOARD_NAME;
+import static ru.velkonost.lume.Constants.CARD_DESCRIPTION;
 import static ru.velkonost.lume.Constants.CARD_ID;
 import static ru.velkonost.lume.Constants.CARD_NAME;
-import static ru.velkonost.lume.Constants.COLUMN_IDS;
 import static ru.velkonost.lume.Constants.COMMENT_IDS;
-import static ru.velkonost.lume.Constants.DATE;
-import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
-import static ru.velkonost.lume.Constants.MESSAGE_IDS;
-import static ru.velkonost.lume.Constants.NAME;
-import static ru.velkonost.lume.Constants.STATUS;
-import static ru.velkonost.lume.Constants.URL.SERVER_DIALOG_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_CARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
-import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_MESSAGES_METHOD;
-import static ru.velkonost.lume.Constants.USER;
 import static ru.velkonost.lume.Constants.USER_IDS;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
@@ -95,6 +79,8 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private List<CardComment> mCardComments;
 
+    private GetCardData mGetCardData;
+
 
 
     @Override
@@ -105,6 +91,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
         mCardParticipants = new ArrayList<>();
         mCardComments = new ArrayList<>();
+        mGetCardData = new GetCardData();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -112,7 +99,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String cardName = intent.getExtras().getString(CARD_NAME);
-        cardId = Integer.parseInt(intent.getExtras().getString(CARD_ID));
+        cardId = intent.getExtras().getInt(CARD_ID);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(BoardCardActivity.this, toolbar, cardName); /** Инициализация */
@@ -125,6 +112,8 @@ public class BoardCardActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        mGetCardData.execute();
 
     }
 
@@ -276,7 +265,7 @@ public class BoardCardActivity extends AppCompatActivity {
                 JSONArray idsJSON = dataJsonObj.getJSONArray(USER_IDS);
                 JSONArray cidsJSON = dataJsonObj.getJSONArray(COMMENT_IDS);
 
-                String cardDescription = dataJsonObj.getString(BOARD_DESCRIPTION);
+                String cardDescription = dataJsonObj.getString(CARD_DESCRIPTION);
 
 
                 ArrayList<String> uids = new ArrayList<>();
@@ -297,7 +286,8 @@ public class BoardCardActivity extends AppCompatActivity {
                     JSONObject userInfo = dataJsonObj.getJSONObject(participantId);
 
                     mCardParticipants.add(new BoardParticipant(
-                            Integer.parseInt(participantId.substring(0, uids.get(i).length() - 7)),
+                            Integer.parseInt(participantId),
+//                            Integer.parseInt(participantId.substring(0, uids.get(i).length() - 7)),
                             Integer.parseInt(userInfo.getString(AVATAR)),
                             userInfo.getString(LOGIN),
                             BOARD_LAST_CONTRIBUTED_USER == i + 1, uids.size() - i, cardId
@@ -307,27 +297,29 @@ public class BoardCardActivity extends AppCompatActivity {
 
                 }
 
-                for (int i = 0; i < commentIds.size(); i++) {
-                    JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
+//                for (int i = 0; i < commentIds.size(); i++) {
+//                    JSONObject commentInfo = dataJsonObj.getJSONObject(commentIds.get(i));
+//
+//                    mBoardColumns.add(new BoardColumn(
+//                            Integer.parseInt(columnInfo.getString(ID)), columnInfo.getString(NAME))
+//                    );
+//
+//                }
 
-                    mBoardColumns.add(new BoardColumn(
-                            Integer.parseInt(columnInfo.getString(ID)), columnInfo.getString(NAME))
-                    );
-
-                }
+                saveText(BoardCardActivity.this, BOARD_DESCRIPTION, cardDescription);
 
                 BoardDescriptionFragment descriptionFragment = new BoardDescriptionFragment();
                 BoardParticipantsFragment boardParticipantsFragment
-                        = BoardParticipantsFragment.getInstance(BoardCardActivity.this, mBoardParticipants);
-                BoardWelcomeColumnFragment boardWelcomeColumnFragment
-                        = BoardWelcomeColumnFragment.getInstance(BoardCardActivity.this, mBoardColumns);
+                        = BoardParticipantsFragment.getInstance(BoardCardActivity.this, mCardParticipants);
+//                BoardWelcomeColumnFragment boardWelcomeColumnFragment
+//                        = BoardWelcomeColumnFragment.getInstance(BoardCardActivity.this, mBoardColumns);
 
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
 
                 transaction.add(R.id.descriptionContainer, descriptionFragment);
                 transaction.add(R.id.participantsContainer, boardParticipantsFragment);
-                transaction.add(R.id.commentsContainer, boardWelcomeColumnFragment);
+//                transaction.add(R.id.commentsContainer, boardWelcomeColumnFragment);
                 transaction.commit();
 
             } catch (JSONException e) {

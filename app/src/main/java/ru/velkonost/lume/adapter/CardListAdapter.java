@@ -42,6 +42,8 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
     public void onBindViewHolder(CardListViewHolder holder, int position) {
         final Card item = data.get(position);
 
+        final int id = item.getId();
+
         holder.title.setText(item.getName());
         holder.title.setSelected(true);
         holder.title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
@@ -59,7 +61,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, BoardCardActivity.class);
-                intent.putExtra(CARD_ID, item.getId());
+                intent.putExtra(CARD_ID, id);
                 intent.putExtra(CARD_NAME, item.getName());
 
                 mContext.startActivity(intent);
