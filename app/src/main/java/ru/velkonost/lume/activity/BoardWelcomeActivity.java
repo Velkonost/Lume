@@ -104,8 +104,6 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     private List<BoardColumn> mBoardColumns;
 
-//    private BoardsFragment mBoardsFragment;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

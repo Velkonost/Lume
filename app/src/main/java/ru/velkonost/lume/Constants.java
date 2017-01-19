@@ -42,6 +42,7 @@ public class Constants {
 
     public static final String CARD_ID = "card_id";
     public static final String CARD_NAME = "card_name";
+    public static final String COMMENT_IDS = "comment_ids";
 
     public static final String IMAGE = "image";
 
@@ -103,6 +104,7 @@ public class Constants {
         public static final String SERVER_GET_BOARD_INFO_METHOD = "/getBoardInfo";
         public static final String SERVER_GET_COLUMN_INFO_METHOD = "/getColumnInfo";
         public static final String SERVER_GET_BOARD_PARTICIPANTS_METHOD = "/getBoardParticipants";
+        public static final String SERVER_GET_CARD_INFO_METHOD = "/getCardInfo";
 
     }
 

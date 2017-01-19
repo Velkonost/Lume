@@ -39,6 +39,21 @@
             android:orientation="vertical"
             app:layout_anchor="@id/appbarlayout"
             app:layout_anchorGravity="bottom">
+            <FrameLayout
+                android:id="@+id/descriptionContainer"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            </FrameLayout>
+            <FrameLayout
+                android:id="@+id/participantsContainer"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            </FrameLayout>
+            <FrameLayout
+                android:id="@+id/commentsContainer"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            </FrameLayout>
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 
