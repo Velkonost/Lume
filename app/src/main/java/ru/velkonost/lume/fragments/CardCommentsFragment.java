@@ -47,19 +47,8 @@ public class CardCommentsFragment extends Fragment {
 
         adapter = new CardCommentListAdapter(getActivity(), mCardComments);
         recyclerView.setAdapter(adapter);
-        recyclerView.scrollToPosition(adapter.getItemCount()-1);
 
         return view;
-    }
-
-    public void refreshCardComments(List<CardComment> mCardComments) {
-        adapter.setData(mCardComments);
-        adapter.notifyDataSetChanged();
-    }
-
-    public void refreshRecyclerView(List<CardComment> mCardComments) {
-        adapter.setData(mCardComments);
-        adapter.notifyDataSetChanged();
     }
 
     public void setCardComments(List<CardComment> cardComments) {
