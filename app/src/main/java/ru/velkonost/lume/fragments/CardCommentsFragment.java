@@ -13,25 +13,26 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.adapter.MessageListAdapter;
-import ru.velkonost.lume.descriptions.Message;
+import ru.velkonost.lume.adapter.CardCommentListAdapter;
+import ru.velkonost.lume.descriptions.CardComment;
 
-public class MessagesFragment extends Fragment {
-    private static final int LAYOUT = R.layout.fragment_messages;
+public class CardCommentsFragment extends Fragment {
 
-    private List<Message> mMessages;
+    private static final int LAYOUT = R.layout.fragment_card_comments;
+
+    private List<CardComment> mCardComments;
     private RecyclerView recyclerView;
-    private MessageListAdapter adapter;
+    private CardCommentListAdapter adapter;
     protected View view;
     protected Context context;
 
-    public static MessagesFragment getInstance(Context context, List<Message> messages) {
+    public static CardCommentsFragment getInstance(Context context, List<CardComment> cardComments) {
         Bundle args = new Bundle();
-        MessagesFragment fragment = new MessagesFragment();
+        CardCommentsFragment fragment = new CardCommentsFragment();
 
         fragment.setArguments(args);
         fragment.setContext(context);
-        fragment.setMessages(messages);
+        fragment.setCardComments(cardComments);
 
         return fragment;
     }
@@ -41,29 +42,24 @@ public class MessagesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewMessages);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewComments);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        adapter = new MessageListAdapter(getActivity(), mMessages);
+        adapter = new CardCommentListAdapter(getActivity(), mCardComments);
         recyclerView.setAdapter(adapter);
-        recyclerView.scrollToPosition(adapter.getItemCount()-1);
 
         return view;
     }
 
-    public void refreshMessages(List<Message> mMessage) {
-        adapter.setData(mMessage);
-        adapter.notifyDataSetChanged();
+    public void setCardComments(List<CardComment> cardComments) {
+        mCardComments= cardComments;
     }
 
-    public void refreshRecyclerView(List<Message> mMessage) {
-        adapter.setData(mMessage);
-        adapter.notifyDataSetChanged();
-        recyclerView.scrollToPosition(adapter.getItemCount()-1);
-    }
+    public void refreshComments(List<CardComment> mCardComments) {
 
-    public void setMessages(List<Message> messages) {
-        mMessages = messages;
+        adapter.setData(mCardComments);
+        adapter.notifyDataSetChanged();
+
     }
 
     public void setContext(Context context) {

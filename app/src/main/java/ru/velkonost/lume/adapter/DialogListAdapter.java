@@ -63,7 +63,7 @@ public class DialogListAdapter extends ArrayAdapter {
                 + SERVER_AVATAR + SLASH + dialogContact.getAvatar()
                 + SLASH + dialogContact.getId() + JPG;
 
-        ((TextView) convertView.findViewById(userId)).setText(dialogContact.getId());
+        ((TextView) convertView.findViewById(R.id.userId)).setText(dialogContact.getId());
 
         if (!dialogContact.isAvatar()){
             fetchImage(avatarURL, (ImageView) convertView.findViewById(R.id.avatar), true, false);

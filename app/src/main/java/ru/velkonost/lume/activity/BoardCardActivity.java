@@ -9,17 +9,15 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import org.json.JSONArray;
@@ -27,46 +25,55 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
-import ru.velkonost.lume.Constants;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.Message;
+import ru.velkonost.lume.descriptions.BoardParticipant;
+import ru.velkonost.lume.descriptions.CardComment;
+import ru.velkonost.lume.fragments.BoardDescriptionFragment;
+import ru.velkonost.lume.fragments.CardCommentsFragment;
+import ru.velkonost.lume.fragments.CardParticipantsFragment;
 import ru.velkonost.lume.fragments.MessagesFragment;
 
-import static ru.velkonost.lume.Constants.ADDRESSEE_ID;
 import static ru.velkonost.lume.Constants.AMPERSAND;
+import static ru.velkonost.lume.Constants.AVATAR;
+import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
+import static ru.velkonost.lume.Constants.BOARD_LAST_CONTRIBUTED_USER;
+import static ru.velkonost.lume.Constants.CARD_DESCRIPTION;
+import static ru.velkonost.lume.Constants.CARD_ID;
+import static ru.velkonost.lume.Constants.CARD_NAME;
+import static ru.velkonost.lume.Constants.COMMENT;
+import static ru.velkonost.lume.Constants.COMMENT_IDS;
 import static ru.velkonost.lume.Constants.DATE;
-import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
-import static ru.velkonost.lume.Constants.MESSAGE_IDS;
-import static ru.velkonost.lume.Constants.STATUS;
+import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.TEXT;
-import static ru.velkonost.lume.Constants.URL.SERVER_DIALOG_SCRIPT;
+import static ru.velkonost.lume.Constants.URL.SERVER_CARD_ADD_COMMENT_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_GET_CARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
+import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
-import static ru.velkonost.lume.Constants.URL.SERVER_SEND_MESSAGE_METHOD;
-import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_MESSAGES_METHOD;
 import static ru.velkonost.lume.Constants.USER;
+import static ru.velkonost.lume.Constants.USER_IDS;
+import static ru.velkonost.lume.Managers.DateConverter.formatDate;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.saveText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
-/**
- * @author Velkonost
- *
- * Класс, описывающий активность открытого диалога.
- *
- */
-public class MessageActivity extends AppCompatActivity {
+public class BoardCardActivity extends AppCompatActivity {
 
-    private static final int LAYOUT = R.layout.activity_message;
+    private static final int LAYOUT = R.layout.activity_board_card;
 
     /**
      * Свойство - следующая активность.
@@ -83,35 +90,24 @@ public class MessageActivity extends AppCompatActivity {
      */
     private DrawerLayout drawerLayout;
 
-    /**
-     * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
-     */
+    private int cardId;
+
+    private List<BoardParticipant> mCardParticipants;
+
+    private List<CardComment> mCardComments;
+
+    private GetCardData mGetCardData;
+
+    private ArrayList<String> commentIds;
+
+    private CardCommentsFragment mCommentsFragment;
+
+    private TimerCheckComments mTimerCheckComments;
+
+    private EditText mEditTextComment;
+
     private String userId;
 
-    private int addresseeId;
-    private int dialogId;
-
-    /**
-     * Идентификаторы сообщений данного диалога.
-     **/
-    private ArrayList<String> mids;
-
-    /**
-     * Свойство - экзмепляр класса {@link GetMessages}
-     */
-    protected GetMessages mGetMessages;
-
-    /**
-     * Свойство - список контактов.
-     * {@link Message}
-     */
-    private List<Message> mMessages;
-
-    private MessagesFragment mMessagesFragment;
-
-    private EditText editMessage;
-
-    private TimerCheckMessagesState timer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,33 +115,30 @@ public class MessageActivity extends AppCompatActivity {
 
         setContentView(LAYOUT);
 
-        mGetMessages = new GetMessages();
-        mids = new ArrayList<>();
-        mMessages = new ArrayList<>();
+        mCardParticipants = new ArrayList<>();
+        mCardComments = new ArrayList<>();
+        mGetCardData = new GetCardData();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_messages);
+        drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_card);
 
-        /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(MessageActivity.this, toolbar, R.string.menu_item_messages); /** Инициализация */
-        initNavigationView(); /** Инициализация */
+        mEditTextComment = (EditText) findViewById(R.id.editComment);
+
+        Intent intent = getIntent();
+        String cardName = intent.getExtras().getString(CARD_NAME);
+        cardId = intent.getExtras().getInt(CARD_ID);
 
         /**
          * Получение id пользователя.
          * {@link PhoneDataStorage#loadText(Context, String)}
          **/
-        userId = loadText(MessageActivity.this, ID);
+        userId = loadText(BoardCardActivity.this, ID);
 
-        editMessage = (EditText) findViewById(R.id.editMessage);
+        /** {@link Initializations#initToolbar(Toolbar, int)}  */
+        initToolbar(BoardCardActivity.this, toolbar, cardName); /** Инициализация */
+        initNavigationView(); /** Инициализация */
 
-        Intent intent = getIntent();
-        dialogId = intent.getIntExtra(DIALOG_ID, 0);
-        addresseeId = intent.getIntExtra(ID, 0);
-
-        /**
-         * Кнопка возврата на предыдущую активность.
-         */
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,54 +147,48 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-        mGetMessages.execute();
+        mGetCardData.execute();
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                timer = new TimerCheckMessagesState(100000000, 5000);
-                timer.start();
+                mTimerCheckComments = new TimerCheckComments(100000000, 5000);
+                mTimerCheckComments.start();
 
             }
         }, 5000);
 
-        editMessage.addTextChangedListener(new TextWatcher() {
-
-            public void afterTextChanged(Editable s) {
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                        mMessagesFragment.refreshRecyclerView(mMessages);
-                        ft.replace(R.id.llmessage, mMessagesFragment);
-                        ft.commit();
-                    }
-                }, 500);
-
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        });
-
     }
+
+
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (timer != null)
-            timer.cancel();
+        if (mTimerCheckComments != null)
+            mTimerCheckComments.cancel();
+    }
+
+    public void addComment(View view) {
+        if (mEditTextComment.getText().toString().length() == 0) return;
+
+        AddComment addComment = new AddComment();
+        addComment.execute();
+
+        mEditTextComment.setText("");
+
+        RefreshComments mRefreshComments = new RefreshComments();
+        mRefreshComments.execute();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_messages);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_card);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+            finish();
         }
     }
 
@@ -211,35 +198,11 @@ public class MessageActivity extends AppCompatActivity {
     private void initNavigationView() {
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close){
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
-            }
-
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                super.onDrawerSlide(drawerView, slideOffset);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
-            }
-        };
+                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-        navigationView.getMenu().getItem(3).setChecked(true);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -252,12 +215,12 @@ public class MessageActivity extends AppCompatActivity {
 
                     /** Переход на профиль данного пользователя */
                     case R.id.navigationProfile:
-                        nextIntent = new Intent(MessageActivity.this, ProfileActivity.class);
+                        nextIntent = new Intent(BoardCardActivity.this, ProfileActivity.class);
                         break;
 
                     /** Переход на контакты данного пользователя */
                     case R.id.navigationContacts:
-                        nextIntent = new Intent(MessageActivity.this, ContactsActivity.class);
+                        nextIntent = new Intent(BoardCardActivity.this, ContactsActivity.class);
                         break;
 
                     /** Переход на страницу напоминаний, созданных данным пользователем */
@@ -266,17 +229,17 @@ public class MessageActivity extends AppCompatActivity {
 
                     /** Переход на страницу сообщений данного пользователя */
                     case R.id.navigationMessages:
-                        nextIntent = new Intent(MessageActivity.this, DialogsActivity.class);
+                        nextIntent = new Intent(BoardCardActivity.this, DialogsActivity.class);
                         break;
 
                     /** Переход на страницу досок карточной версии канбан-системы */
                     case R.id.navigationBoards:
-                        nextIntent = new Intent(MessageActivity.this, BoardsListActivity.class);
+                        nextIntent = new Intent(BoardCardActivity.this, BoardsListActivity.class);
                         break;
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
                     case R.id.navigationSettings:
-                        nextIntent = new Intent(MessageActivity.this, SettingsActivity.class);
+                        nextIntent = new Intent(BoardCardActivity.this, SettingsActivity.class);
                         break;
 
                     /**
@@ -285,8 +248,8 @@ public class MessageActivity extends AppCompatActivity {
                      * Переход на страницу приветствия {@link WelcomeActivity}
                      **/
                     case R.id.navigationLogout:
-                        deleteText(MessageActivity.this, ID);
-                        nextIntent = new Intent(MessageActivity.this, WelcomeActivity.class);
+                        deleteText(BoardCardActivity.this, ID);
+                        nextIntent = new Intent(BoardCardActivity.this, WelcomeActivity.class);
                         break;
                 }
 
@@ -302,16 +265,15 @@ public class MessageActivity extends AppCompatActivity {
                          * Обновляет страницу.
                          * {@link Initializations#changeActivityCompat(Activity, Intent)}
                          * */
-                        changeActivityCompat(MessageActivity.this, nextIntent);
+                        changeActivityCompat(BoardCardActivity.this, nextIntent);
                     }
                 }, 350);
 
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
-                if (loadText(MessageActivity.this, ID).equals(""))
-                    finishAffinity();
+                if (loadText(BoardCardActivity.this, ID).equals("")) finishAffinity();
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_messages);
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_card);
                 drawer.closeDrawer(GravityCompat.START);
 
                 return true;
@@ -319,43 +281,16 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    public void sendMessage(View view) {
-        if (editMessage.getText().toString().length() == 0) return;
+    public class TimerCheckComments extends CountDownTimer {
 
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.execute();
-
-        editMessage.setText("");
-
-        RefreshMessages mRefreshMessages = new RefreshMessages();
-        mRefreshMessages.execute();
-    }
-
-    public void clickOnEditText(View view) {
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                mMessagesFragment.refreshRecyclerView(mMessages);
-                ft.replace(R.id.llmessage, mMessagesFragment);
-                ft.commit();
-            }
-        }, 500);
-
-    }
-
-
-    public class TimerCheckMessagesState extends CountDownTimer {
-
-        TimerCheckMessagesState(long millisInFuture, long countDownInterval) {
+        TimerCheckComments(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
         }
 
         @Override
         public void onTick(long l) {
-            RefreshMessages mRefreshMessages = new RefreshMessages();
-            mRefreshMessages.execute();
+            RefreshComments mRefreshComments = new RefreshComments();
+            mRefreshComments.execute();
         }
 
         @Override
@@ -363,21 +298,20 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
-    private class GetMessages extends AsyncTask<Object, Object, String> {
+    private class GetCardData extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
 
             /**
              * Формирование адреса, по которому необходимо обратиться.
              **/
-            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_DIALOG_SCRIPT
-                    + SERVER_SHOW_MESSAGES_METHOD;
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_GET_CARD_INFO_METHOD;
 
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = DIALOG_ID + EQUALS + dialogId
-                    + AMPERSAND + ADDRESSEE_ID + EQUALS + addresseeId;
+            @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
@@ -409,61 +343,101 @@ public class MessageActivity extends AppCompatActivity {
                 /**
                  * Получение идентификаторов найденных пользователей.
                  */
-                JSONArray idsJSON = dataJsonObj.getJSONArray(MESSAGE_IDS);
+                JSONArray idsJSON = dataJsonObj.getJSONArray(USER_IDS);
+                JSONArray cidsJSON = dataJsonObj.getJSONArray(COMMENT_IDS);
 
-                for (int i = 0; i < idsJSON.length(); i++){
-                    mids.add(idsJSON.getString(i));
+                String cardDescription = dataJsonObj.getString(CARD_DESCRIPTION);
+
+
+                ArrayList<String> uids = new ArrayList<>();
+                commentIds = new ArrayList<>();
+
+                for (int i = 0; i < idsJSON.length(); i++) {
+                    uids.add(idsJSON.getString(i));
                 }
 
-                /**
-                 * Составление view-элементов с краткой информацией о пользователях
-                 */
-                for (int i = 0; i < mids.size(); i++) {
+                for (int i = 0; i < cidsJSON.length(); i++) {
+                    commentIds.add(cidsJSON.getString(i));
+                }
 
-                    /**
-                     * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
-                     */
-                    JSONObject messageInfo = dataJsonObj.getJSONObject(mids.get(i));
 
-                    mMessages.add(new Message(
-                            messageInfo.getInt(USER) == Integer.parseInt(userId),
-                            messageInfo.getInt(ID), messageInfo.getInt(USER),
-                            dialogId, messageInfo.getInt(STATUS),
-                            messageInfo.getString(Constants.TEXT),
-                            messageInfo.getString(DATE)
+                for (int i = 0; i < uids.size(); i++) {
+                    String participantId = uids.get(i);
+
+                    JSONObject userInfo = dataJsonObj.getJSONObject(participantId);
+
+                    mCardParticipants.add(new BoardParticipant(
+                            Integer.parseInt(participantId),
+                            Integer.parseInt(userInfo.getString(AVATAR)),
+                            userInfo.getString(LOGIN),
+                            BOARD_LAST_CONTRIBUTED_USER == i + 1, uids.size() - i, cardId
                     ));
+
+                    if (BOARD_LAST_CONTRIBUTED_USER == i) break;
+
                 }
 
-                /**
-                 * Добавляем фрагмент на экран.
-                 * {@link MessagesFragment}
-                 */
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                mMessagesFragment
-                        = MessagesFragment.getInstance(MessageActivity.this, mMessages);
-                ft.add(R.id.llmessage, mMessagesFragment);
-                ft.commit();
+                for (int i = 0; i < commentIds.size(); i++) {
 
-            } catch (JSONException e) {
+                    String commentId = commentIds.get(i) + COMMENT;
+
+                    JSONObject commentInfo = dataJsonObj.getJSONObject(commentId);
+
+                    String formattedCommentDate = formatDate(commentInfo.getString(DATE).substring(0, 10));
+
+                    mCardComments.add(new CardComment(
+                            Integer.parseInt(commentId.substring(0, commentId.length() - 7)),
+                            commentInfo.getString(USER), cardId,
+                            commentInfo.getString(TEXT),
+                            formattedCommentDate.equals(new SimpleDateFormat("dd-MM-yyyy")
+                                    .format(Calendar.getInstance().getTime()))
+                                    ? commentInfo.getString(DATE)
+                                    .substring(11, commentInfo.getString(DATE).length())
+                                    : new SimpleDateFormat("dd MMM yyyy")
+                                    .format(new SimpleDateFormat("dd-MM-yyyy")
+                                            .parse(formattedCommentDate))
+                    ));
+
+                }
+
+                Collections.reverse(mCardComments);
+
+                saveText(BoardCardActivity.this, BOARD_DESCRIPTION, cardDescription);
+
+                BoardDescriptionFragment descriptionFragment = new BoardDescriptionFragment();
+                CardParticipantsFragment cardParticipantsFragment
+                        = CardParticipantsFragment.getInstance(BoardCardActivity.this, mCardParticipants);
+                mCommentsFragment
+                        = CardCommentsFragment.getInstance(BoardCardActivity.this, mCardComments);
+
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+
+                transaction.add(R.id.descriptionContainer, descriptionFragment);
+                transaction.add(R.id.participantsContainer, cardParticipantsFragment);
+                transaction.add(R.id.commentsContainer, mCommentsFragment);
+
+                transaction.commit();
+
+            } catch (JSONException | ParseException e) {
                 e.printStackTrace();
             }
         }
     }
-    private class RefreshMessages extends AsyncTask<Object, Object, String> {
+    private class RefreshComments extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
 
             /**
              * Формирование адреса, по которому необходимо обратиться.
              **/
-            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_DIALOG_SCRIPT
-                    + SERVER_SHOW_MESSAGES_METHOD;
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_GET_CARD_INFO_METHOD;
 
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = DIALOG_ID + EQUALS + dialogId
-                    + AMPERSAND + ADDRESSEE_ID + EQUALS + addresseeId;
+            @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
@@ -492,49 +466,57 @@ public class MessageActivity extends AppCompatActivity {
                  */
                 dataJsonObj = new JSONObject(strJson);
 
+                Collections.reverse(mCardComments);
+
                 /**
                  * Получение идентификаторов найденных пользователей.
                  */
-                JSONArray idsJSON = dataJsonObj.getJSONArray(MESSAGE_IDS);
+                JSONArray idsJSON = dataJsonObj.getJSONArray(COMMENT_IDS);
 
                 for (int i = 0; i < idsJSON.length(); i++){
-                    if (!mids.contains(idsJSON.getString(i)))
-                        mids.add(idsJSON.getString(i));
+                    if (!commentIds.contains(idsJSON.getString(i)))
+                        commentIds.add(0, idsJSON.getString(i));
                 }
 
                 /**
                  * Составление view-элементов с краткой информацией о пользователях
                  */
-                for (int i = 0; i < mids.size(); i++) {
+                for (int i = 0; i < commentIds.size(); i++) {
                     boolean exist = false;
+
+                    String commentId = commentIds.get(i) + COMMENT;
 
                     /**
                      * Получение JSON-объекта с информацией о конкретном сообщении по его идентификатору.
                      */
-                    JSONObject messageInfo = dataJsonObj.getJSONObject(mids.get(i));
+                    JSONObject commentInfo = dataJsonObj.getJSONObject(commentId);
 
-                    for (int j = 0; j < mMessages.size(); j++){
-                        if (mMessages.get(j).getId() == messageInfo.getInt(ID)) {
-
-                            mMessages.get(j).setStatus(Integer.parseInt(messageInfo
-                                    .getString(STATUS)));
-                            mMessages.get(j).setExist(true);
-
+                    for (int j = 0; j < mCardComments.size(); j++){
+                        if (mCardComments.get(j).getId() == commentInfo.getInt(ID)) {
                             exist = true;
                             break;
                         }
                     }
 
+                    String formattedCommentDate = formatDate(commentInfo.getString(DATE).substring(0, 10));
+
                     if (!exist){
-                        mMessages.add(new Message(
-                                messageInfo.getInt(USER) == Integer.parseInt(userId),
-                                messageInfo.getInt(ID), messageInfo.getInt(USER),
-                                dialogId, messageInfo.getInt(STATUS),
-                                messageInfo.getString(Constants.TEXT),
-                                messageInfo.getString(DATE)
+                        mCardComments.add(new CardComment(
+                                Integer.parseInt(commentId.substring(0, commentId.length() - 7)),
+                                commentInfo.getString(USER), cardId,
+                                commentInfo.getString(TEXT),
+                                formattedCommentDate.equals(new SimpleDateFormat("dd-MM-yyyy")
+                                        .format(Calendar.getInstance().getTime()))
+                                        ? commentInfo.getString(DATE)
+                                        .substring(11, commentInfo.getString(DATE).length())
+                                        : new SimpleDateFormat("dd MMM yyyy")
+                                        .format(new SimpleDateFormat("dd-MM-yyyy")
+                                                .parse(formattedCommentDate))
                         ));
                     }
                 }
+
+                Collections.reverse(mCardComments);
 
                 /**
                  * Добавляем фрагмент на экран.
@@ -542,32 +524,32 @@ public class MessageActivity extends AppCompatActivity {
                  */
                 if(!isFinishing()) {
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    mMessagesFragment.refreshMessages(mMessages);
-                    ft.replace(R.id.llmessage, mMessagesFragment);
+                    mCommentsFragment.refreshComments(mCardComments);
+                    ft.replace(R.id.commentsContainer, mCommentsFragment);
                     ft.commitAllowingStateLoss();
                 }
 
-            } catch (JSONException e) {
+            } catch (JSONException | ParseException e) {
                 e.printStackTrace();
             }
         }
     }
-    private class SendMessage extends AsyncTask<Object, Object, String> {
+    private class AddComment extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
 
             /**
              * Формирование адреса, по которому необходимо обратиться.
              **/
-            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_DIALOG_SCRIPT
-                    + SERVER_SEND_MESSAGE_METHOD;
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_CARD_ADD_COMMENT_METHOD;
 
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = DIALOG_ID + EQUALS + dialogId
+            @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId
                     + AMPERSAND + ID + EQUALS + userId
-                    + AMPERSAND + TEXT + EQUALS + editMessage.getText().toString();
+                    + AMPERSAND + TEXT + EQUALS + mEditTextComment.getText().toString();
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";

@@ -234,9 +234,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(ProfileActivity.this, toolbar, R.string.app_name); /** Инициализация */
-        initNavigationView(); /** Инициализация */
-
-
 
         /**
          * Получение id пользователя.
@@ -255,20 +252,8 @@ public class ProfileActivity extends AppCompatActivity {
                 ? intent.getIntExtra(ID, 0)
                 : userId;
 
+        initNavigationView(); /** Инициализация */
 
-        /**
-         * Кнопка возврата на предыдущую активность, если текущий профиль не принадлежит пользователю,
-         *          авторизованному на данном устройстве.
-         */
-        if (!profileId.equals(userId)) {
-            toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onBackPressed();
-                }
-            });
-        }
         /**
          *  Установка цветной палитры,
          *  цвета которой будут заменять друг друга в зависимости от прогресса.
@@ -309,6 +294,21 @@ public class ProfileActivity extends AppCompatActivity {
                         .getColor(ProfileActivity.this, R.color.colorPrimary));
             }
         });
+
+        /**
+         * Кнопка возврата на предыдущую активность, если текущий профиль не принадлежит пользователю,
+         *          авторизованному на данном устройстве.
+         */
+        if (!(profileId.equals(userId))) {
+            toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+        }
+
         /** Обращаемся к серверу */
         mGetData.execute();
     }
@@ -324,7 +324,8 @@ public class ProfileActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-        navigationView.getMenu().getItem(0).setChecked(true);
+
+        if (profileId.equals(userId)) navigationView.getMenu().getItem(0).setChecked(true);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -828,7 +829,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -1133,10 +1133,8 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(ProfileActivity.this, MessageActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(DIALOG_ID, dataJsonObj.getInt(DIALOG_ID));
-                intent.putExtra(ID, Integer.parseInt(userId));
+                intent.putExtra(ID, profileId);
                 ProfileActivity.this.startActivity(intent);
-
-//                dialogId = Integer.parseInt(dataJsonObj.getString(DIALOG_ID));
 
             } catch (JSONException e) {
                 e.printStackTrace();

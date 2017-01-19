@@ -5,18 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,28 +26,41 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.Board;
-import ru.velkonost.lume.fragments.BoardsFragment;
+import ru.velkonost.lume.descriptions.BoardColumn;
+import ru.velkonost.lume.descriptions.BoardParticipant;
+import ru.velkonost.lume.fragments.BoardDescriptionFragment;
+import ru.velkonost.lume.fragments.BoardParticipantsFragment;
+import ru.velkonost.lume.fragments.BoardWelcomeColumnFragment;
 
-import static ru.velkonost.lume.Constants.BOARD_IDS;
+import static ru.velkonost.lume.Constants.AVATAR;
+import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
+import static ru.velkonost.lume.Constants.BOARD_ID;
+import static ru.velkonost.lume.Constants.BOARD_LAST_CONTRIBUTED_USER;
+import static ru.velkonost.lume.Constants.BOARD_NAME;
+import static ru.velkonost.lume.Constants.COLUMN_IDS;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.LOGIN;
+import static ru.velkonost.lume.Constants.NAME;
+import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
-import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_BOARDS_METHOD;
+import static ru.velkonost.lume.Constants.USER_IDS;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.Managers.PhoneDataStorage.saveText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
-public class BoardsListActivity extends AppCompatActivity {
+public class BoardWelcomeActivity extends AppCompatActivity {
 
-    private static final int LAYOUT = R.layout.activity_boards;
+    private static final int LAYOUT = R.layout.activity_board_welcome;
 
     /**
      * Свойство - следующая активность.
@@ -69,25 +82,28 @@ public class BoardsListActivity extends AppCompatActivity {
      */
     private String userId;
 
+
+    private int boardId;
+
     /**
      * Идентификаторы досок, к которым принадлежит авторизованный пользователь.
      **/
-    private ArrayList<String> bids;
+//    private ArrayList<String> bids;
 
     /**
-     * Свойство - экзмепляр класса {@link GetBoards}
+     * Свойство - экзмепляр класса {@link GetBoardInfo}
      */
-    protected GetBoards mGetBoards;
+    protected GetBoardInfo mGetBoardInfo;
+
 
     /**
      * Свойство - список контактов.
-     * {@link Board}
+     * {@link ru.velkonost.lume.descriptions.BoardParticipant}
      */
-    private List<Board> mBoards;
+    private List<BoardParticipant> mBoardParticipants;
 
-    private BoardsFragment mBoardsFragment;
+    private List<BoardColumn> mBoardColumns;
 
-    private TimerCheckBoardsState timer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,43 +111,48 @@ public class BoardsListActivity extends AppCompatActivity {
 
         setContentView(LAYOUT);
 
-        mGetBoards = new GetBoards();
-        bids = new ArrayList<>();
-        mBoards = new ArrayList<>();
+        mGetBoardInfo = new GetBoardInfo();
+        mBoardParticipants = new ArrayList<>();
+        mBoardColumns = new ArrayList<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_boards);
+        drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_welcome);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(BoardsListActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
+        initToolbar(BoardWelcomeActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
         initNavigationView(); /** Инициализация */
+
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         /**
          * Получение id пользователя.
          * {@link PhoneDataStorage#loadText(Context, String)}
          **/
-        userId = loadText(BoardsListActivity.this, ID);
+        userId = loadText(BoardWelcomeActivity.this, ID);
 
-        mGetBoards.execute();
+        Intent intent = getIntent();
+        boardId = intent.getIntExtra(BOARD_ID, 0);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                timer = new TimerCheckBoardsState(100000000, 10000);
-                timer.start();
-
-            }
-        }, 10000);
+        mGetBoardInfo.execute();
 
 
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        if (timer != null)
-            timer.cancel();
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_welcome);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     /**
@@ -145,7 +166,6 @@ public class BoardsListActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-        navigationView.getMenu().getItem(4).setChecked(true);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -158,12 +178,12 @@ public class BoardsListActivity extends AppCompatActivity {
 
                     /** Переход на профиль данного пользователя */
                     case R.id.navigationProfile:
-                        nextIntent = new Intent(BoardsListActivity.this, ProfileActivity.class);
+                        nextIntent = new Intent(BoardWelcomeActivity.this, ProfileActivity.class);
                         break;
 
                     /** Переход на контакты данного пользователя */
                     case R.id.navigationContacts:
-                        nextIntent = new Intent(BoardsListActivity.this, ContactsActivity.class);
+                        nextIntent = new Intent(BoardWelcomeActivity.this, ContactsActivity.class);
                         break;
 
                     /** Переход на страницу напоминаний, созданных данным пользователем */
@@ -172,17 +192,17 @@ public class BoardsListActivity extends AppCompatActivity {
 
                     /** Переход на страницу сообщений данного пользователя */
                     case R.id.navigationMessages:
-                        nextIntent = new Intent(BoardsListActivity.this, DialogsActivity.class);
+                        nextIntent = new Intent(BoardWelcomeActivity.this, DialogsActivity.class);
                         break;
 
                     /** Переход на страницу досок карточной версии канбан-системы */
                     case R.id.navigationBoards:
-                        nextIntent = new Intent(BoardsListActivity.this, BoardsListActivity.class);
+                        nextIntent = new Intent(BoardWelcomeActivity.this, BoardsListActivity.class);
                         break;
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
                     case R.id.navigationSettings:
-                        nextIntent = new Intent(BoardsListActivity.this, SettingsActivity.class);
+                        nextIntent = new Intent(BoardWelcomeActivity.this, SettingsActivity.class);
                         break;
 
                     /**
@@ -191,8 +211,8 @@ public class BoardsListActivity extends AppCompatActivity {
                      * Переход на страницу приветствия {@link WelcomeActivity}
                      **/
                     case R.id.navigationLogout:
-                        deleteText(BoardsListActivity.this, ID);
-                        nextIntent = new Intent(BoardsListActivity.this, WelcomeActivity.class);
+                        deleteText(BoardWelcomeActivity.this, ID);
+                        nextIntent = new Intent(BoardWelcomeActivity.this, WelcomeActivity.class);
                         break;
                 }
 
@@ -208,15 +228,15 @@ public class BoardsListActivity extends AppCompatActivity {
                          * Обновляет страницу.
                          * {@link Initializations#changeActivityCompat(Activity, Intent)}
                          * */
-                        changeActivityCompat(BoardsListActivity.this, nextIntent);
+                        changeActivityCompat(BoardWelcomeActivity.this, nextIntent);
                     }
                 }, 350);
 
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
-                if (loadText(BoardsListActivity.this, ID).equals("")) finishAffinity();
+                if (loadText(BoardWelcomeActivity.this, ID).equals("")) finishAffinity();
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_boards);
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_welcome);
                 drawer.closeDrawer(GravityCompat.START);
 
                 return true;
@@ -224,24 +244,7 @@ public class BoardsListActivity extends AppCompatActivity {
         });
     }
 
-
-    public class TimerCheckBoardsState extends CountDownTimer {
-
-        TimerCheckBoardsState(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
-        @Override
-        public void onTick(long l) {
-            RefreshBoards mRefreshBoards = new RefreshBoards();
-            mRefreshBoards.execute();
-        }
-
-        @Override
-        public void onFinish() {
-        }
-    }
-    private class GetBoards extends AsyncTask<Object, Object, String> {
+    private class GetBoardInfo extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
 
@@ -249,12 +252,12 @@ public class BoardsListActivity extends AppCompatActivity {
              * Формирование адреса, по которому необходимо обратиться.
              **/
             String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
-                    + SERVER_SHOW_BOARDS_METHOD;
+                    + SERVER_GET_BOARD_INFO_METHOD;
 
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = ID + EQUALS + userId;
+            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + boardId;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
@@ -286,133 +289,75 @@ public class BoardsListActivity extends AppCompatActivity {
                 /**
                  * Получение идентификаторов найденных пользователей.
                  */
-                JSONArray idsJSON = dataJsonObj.getJSONArray(BOARD_IDS);
+                JSONArray idsJSON = dataJsonObj.getJSONArray(USER_IDS);
+                JSONArray cidsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
 
-                for (int i = 0; i < idsJSON.length(); i++){
-                    bids.add(idsJSON.getString(i));
+                String boardName = dataJsonObj.getString(BOARD_NAME);
+                String boardDescription = dataJsonObj.getString(BOARD_DESCRIPTION);
+
+                toolbar.setTitle(boardName);
+                saveText(BoardWelcomeActivity.this, BOARD_NAME, boardName);
+
+                ArrayList<String> uids = new ArrayList<>();
+                ArrayList<String> cids = new ArrayList<>();
+
+                for (int i = 0; i < idsJSON.length(); i++) {
+                    uids.add(idsJSON.getString(i));
                 }
 
-                /**
-                 * Составление view-элементов с краткой информацией о пользователях
-                 */
-                for (int i = 0; i < bids.size(); i++) {
+                for (int i = 0; i < cidsJSON.length(); i++) {
+                    cids.add(cidsJSON.getString(i));
+                }
 
-                    /**
-                     * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
-                     */
-                    String boardName = dataJsonObj.getString(bids.get(i));
-                    mBoards.add(new Board(
-                            Integer.parseInt(bids.get(i)), boardName
+
+                for (int i = 0; i < uids.size(); i++) {
+                    String participantId = uids.get(i);
+
+                    JSONObject userInfo = dataJsonObj.getJSONObject(participantId);
+
+                    mBoardParticipants.add(new BoardParticipant(
+                            Integer.parseInt(participantId.substring(0, uids.get(i).length() - 4)),
+                            Integer.parseInt(userInfo.getString(AVATAR)),
+                            userInfo.getString(LOGIN),
+                            BOARD_LAST_CONTRIBUTED_USER == i + 1, uids.size() - i, boardId
                     ));
+
+                    if (BOARD_LAST_CONTRIBUTED_USER == i) break;
+
                 }
 
-                /**
-                 * Добавляем фрагмент на экран.
-                 * {@link BoardsFragment}
-                 */
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                mBoardsFragment
-                        = BoardsFragment.getInstance(BoardsListActivity.this, mBoards);
-                ft.add(R.id.llboards, mBoardsFragment);
-                ft.commit();
+                for (int i = 0; i < cids.size(); i++) {
+                    JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
+
+                    mBoardColumns.add(new BoardColumn(
+                            Integer.parseInt(columnInfo.getString(ID)),
+                            columnInfo.getString(NAME),  i)
+                    );
+
+                }
+
+                Depository.setBoardColumns(mBoardColumns);
+
+                saveText(BoardWelcomeActivity.this, BOARD_DESCRIPTION, boardDescription);
+
+                BoardDescriptionFragment descriptionFragment = new BoardDescriptionFragment();
+                BoardParticipantsFragment boardParticipantsFragment
+                        = BoardParticipantsFragment.getInstance(BoardWelcomeActivity.this, mBoardParticipants);
+                BoardWelcomeColumnFragment boardWelcomeColumnFragment
+                        = BoardWelcomeColumnFragment.getInstance(BoardWelcomeActivity.this, mBoardColumns);
+
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+
+                transaction.add(R.id.descriptionContainer, descriptionFragment);
+                transaction.add(R.id.participantsContainer, boardParticipantsFragment);
+                transaction.add(R.id.columnsContainer, boardWelcomeColumnFragment);
+                transaction.commit();
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     }
-    private class RefreshBoards extends AsyncTask<Object, Object, String> {
-        @Override
-        protected String doInBackground(Object... strings) {
-
-            /**
-             * Формирование адреса, по которому необходимо обратиться.
-             **/
-            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
-                    + SERVER_SHOW_BOARDS_METHOD;
-
-            /**
-             * Формирование отправных данных.
-             */
-            @SuppressWarnings("WrongThread") String params = ID + EQUALS + userId;
-
-            /** Свойство - код ответа, полученных от сервера */
-            String resultJson = "";
-
-            /**
-             * Соединяется с сервером, отправляет данные, получает ответ.
-             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
-             **/
-            try {
-                resultJson = getJSON(dataURL, params);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return resultJson;
-        }
-        protected void onPostExecute(String strJson) {
-            super.onPostExecute(strJson);
-
-            /** Свойство - полученный JSON–объект*/
-            JSONObject dataJsonObj;
-
-            try {
-
-                /**
-                 * Получение JSON-объекта по строке.
-                 */
-                dataJsonObj = new JSONObject(strJson);
-
-                /**
-                 * Получение идентификаторов найденных пользователей.
-                 */
-                JSONArray idsJSON = dataJsonObj.getJSONArray(BOARD_IDS);
-
-                for (int i = 0; i < idsJSON.length(); i++){
-                    if (!bids.contains(idsJSON.getString(i)))
-                        bids.add(idsJSON.getString(i));
-                }
-
-                /**
-                 * Составление view-элементов с краткой информацией о пользователях
-                 */
-                for (int i = 0; i < bids.size(); i++) {
-                    boolean exist = false;
-
-                    /**
-                     * Получение JSON-объекта с информацией о конкретном сообщении по его идентификатору.
-                     */
-                    String boardName = dataJsonObj.getString(bids.get(i));
-
-                    for (int j = 0; j < mBoards.size(); j++){
-                        if (mBoards.get(j).getId() == Integer.parseInt(bids.get(i))) {
-                            exist = true;
-                            break;
-                        }
-                    }
-
-                    if (!exist)
-                        mBoards.add(new Board(
-                                Integer.parseInt(bids.get(i)), boardName
-                        ));
-                }
-
-                /**
-                 * Добавляем фрагмент на экран.
-                 * {@link BoardsFragment}
-                 */
-                if(!isFinishing()) {
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    mBoardsFragment.refreshBoards(mBoards);
-                    ft.replace(R.id.llboards, mBoardsFragment);
-                    ft.commitAllowingStateLoss();
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
 }

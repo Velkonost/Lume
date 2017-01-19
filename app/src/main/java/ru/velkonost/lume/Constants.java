@@ -12,6 +12,7 @@ public class Constants {
     public static final String EQUALS = "=";
     public static final String AMPERSAND = "&";
     public static final String HYPHEN = "-";
+    public static final String PLUS = "+";
 
     public static final String LOGIN = "login";
     public static final String REGISTRATION = "registration";
@@ -28,7 +29,24 @@ public class Constants {
     public static final String MESSAGE_ID = "mid";
     public static final String MESSAGE_IDS = "mids";
 
+    public static final String BOARD_ID = "bid";
     public static final String BOARD_IDS = "bids";
+
+    public static final String BOARD_NAME = "bname";
+    public static final String BOARD_DESCRIPTION = "bdescription";
+
+    public static final String USER_IDS = "uids";
+
+    public static final String COLUMN_ID = "cid";
+    public static final String COLUMN_IDS = "cids";
+    public static final String COLUMN_ORDER = "column_order";
+
+    public static final String CARD_ID = "card_id";
+    public static final String CARD_NAME = "card_name";
+    public static final String CARD_DESCRIPTION = "card_description";
+
+    public static final String COMMENT = "comment";
+    public static final String COMMENT_IDS = "comment_ids";
 
     public static final String IMAGE = "image";
 
@@ -59,6 +77,8 @@ public class Constants {
     public static final String GET_EDIT_RESULT = "edit";
     public static final String ADD_CONTACT = "addContact";
 
+    public static final String PARTICIPANTS = "participants";
+
     /** Класс констант, относящихся исключительно к построению URL */
     public static class URL {
         public static final String SERVER_PROTOCOL = "http://";
@@ -85,6 +105,12 @@ public class Constants {
         public static final String SERVER_SEND_MESSAGE_METHOD = "/sendMessage";
 
         public static final String SERVER_SHOW_BOARDS_METHOD = "/showBoards";
+        public static final String SERVER_GET_BOARD_INFO_METHOD = "/getBoardInfo";
+        public static final String SERVER_GET_COLUMN_INFO_METHOD = "/getColumnInfo";
+        public static final String SERVER_GET_BOARD_PARTICIPANTS_METHOD = "/getBoardParticipants";
+        public static final String SERVER_GET_CARD_PARTICIPANTS_METHOD = "/getCardParticipants";
+        public static final String SERVER_GET_CARD_INFO_METHOD = "/getCardInfo";
+        public static final String SERVER_CARD_ADD_COMMENT_METHOD = "/cardAddComment";
 
     }
 
@@ -103,11 +129,14 @@ public class Constants {
     public static final String JPG = ".jpg";
     public static final String ZERO = "0";
 
+    public static final int BOARD_LAST_CONTRIBUTED_USER = 6;
 
 
     public static final String UPLOAD_IMAGE_SUCCESS_CODE = "500";
 
     public static final int MARQUEE_REPEAT_LIMIT = 1000000000;
+    public static final int MAX_COLUMNS_IN_FIXED_MODE = 5;
+
     public final static String TAG_IMAGE_MANAGER = "ImageManager";
 
 
