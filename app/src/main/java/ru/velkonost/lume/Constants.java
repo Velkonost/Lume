@@ -45,6 +45,7 @@ public class Constants {
     public static final String CARD_NAME = "card_name";
     public static final String CARD_DESCRIPTION = "card_description";
 
+    public static final String COMMENT = "comment";
     public static final String COMMENT_IDS = "comment_ids";
 
     public static final String IMAGE = "image";

@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -23,6 +24,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ru.velkonost.lume.Managers.Initializations;
@@ -31,7 +33,7 @@ import ru.velkonost.lume.descriptions.BoardParticipant;
 import ru.velkonost.lume.descriptions.CardComment;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
 import ru.velkonost.lume.fragments.BoardParticipantsFragment;
-import ru.velkonost.lume.fragments.MessagesFragment;
+import ru.velkonost.lume.fragments.CardCommentsFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
@@ -39,6 +41,7 @@ import static ru.velkonost.lume.Constants.BOARD_LAST_CONTRIBUTED_USER;
 import static ru.velkonost.lume.Constants.CARD_DESCRIPTION;
 import static ru.velkonost.lume.Constants.CARD_ID;
 import static ru.velkonost.lume.Constants.CARD_NAME;
+import static ru.velkonost.lume.Constants.COMMENT;
 import static ru.velkonost.lume.Constants.COMMENT_IDS;
 import static ru.velkonost.lume.Constants.DATE;
 import static ru.velkonost.lume.Constants.EQUALS;
@@ -302,24 +305,27 @@ public class BoardCardActivity extends AppCompatActivity {
                 }
 
                 for (int i = 0; i < commentIds.size(); i++) {
-                    String commentId = commentIds.get(i);
+                    String commentId = commentIds.get(i) + COMMENT;
 
-                    JSONObject commentInfo = dataJsonObj.getJSONObject(commentIds.get(i));
+                    JSONObject commentInfo = dataJsonObj.getJSONObject(commentId);
+                    Log.i("KEKE", commentId);
 
                     mCardComments.add(new CardComment(
-                            Integer.parseInt(commentId.substring(0, uids.get(i).length() - 7)),
+                            Integer.parseInt(commentId.substring(0, commentId.length() - 7)),
                             Integer.parseInt(commentInfo.getString(USER)), cardId,
                             commentInfo.getString(TEXT), commentInfo.getString(DATE)
                     ));
 
                 }
 
+                Collections.reverse(mCardComments);
+
                 saveText(BoardCardActivity.this, BOARD_DESCRIPTION, cardDescription);
 
                 BoardDescriptionFragment descriptionFragment = new BoardDescriptionFragment();
                 BoardParticipantsFragment boardParticipantsFragment
                         = BoardParticipantsFragment.getInstance(BoardCardActivity.this, mCardParticipants);
-                mCommentsFragment
+                CardCommentsFragment mCommentsFragment
                         = CardCommentsFragment.getInstance(BoardCardActivity.this, mCardComments);
 
                 FragmentManager manager = getSupportFragmentManager();
@@ -327,7 +333,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
                 transaction.add(R.id.descriptionContainer, descriptionFragment);
                 transaction.add(R.id.participantsContainer, boardParticipantsFragment);
-//                transaction.add(R.id.commentsContainer, boardWelcomeColumnFragment);
+                transaction.add(R.id.commentsContainer, mCommentsFragment);
                 transaction.commit();
 
             } catch (JSONException e) {

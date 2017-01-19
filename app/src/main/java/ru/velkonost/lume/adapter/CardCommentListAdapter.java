@@ -1,14 +1,9 @@
 package ru.velkonost.lume.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +14,6 @@ import java.util.List;
 
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.CardComment;
-import ru.velkonost.lume.descriptions.Message;
 
 public class CardCommentListAdapter
         extends RecyclerView.Adapter<CardCommentListAdapter.CardCommentViewHolder> {
@@ -57,32 +51,6 @@ public class CardCommentListAdapter
         LinearLayout.LayoutParams params
                 = new LinearLayout.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT,
                 RecyclerView.LayoutParams.WRAP_CONTENT);
-
-        if(item.isFromMe()) {
-            holder.mTextView.setBackground(ContextCompat.getDrawable(context,
-                    R.drawable.rectangle_message_from));
-
-            params.gravity = Gravity.RIGHT;
-
-        } else {
-
-            if (!item.isExist() && item.getStatus() == 1) {
-
-                Drawable[] layers = new Drawable[2];
-                layers[0] = ContextCompat.getDrawable(context, R.drawable.rectangle_message_to_unread);
-                layers[1] = ContextCompat.getDrawable(context, R.drawable.rectangle_message_to);
-
-                TransitionDrawable transition = new TransitionDrawable(layers);
-                holder.mTextView.setBackground(transition);
-                transition.startTransition(6000);
-
-            } else {
-                holder.mTextView.setBackground(ContextCompat.getDrawable(context,
-                        R.drawable.rectangle_message_to));
-            }
-
-            params.gravity = Gravity.LEFT;
-        }
 
 //        params.setMargins(dp2px(10), dp2px(5), dp2px(10), dp2px(5));
 //        holder.mTextView.setLayoutParams(params);
