@@ -31,14 +31,20 @@
                     android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/llcard"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:orientation="vertical"
             app:layout_anchor="@id/appbarlayout"
-            app:layout_anchorGravity="bottom">
+            app:layout_anchorGravity="bottom"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true">
             <FrameLayout
                 android:id="@+id/descriptionContainer"
                 android:layout_width="fill_parent"
@@ -50,11 +56,25 @@
                 android:layout_height="wrap_content">
             </FrameLayout>
             <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editComment"
+                        android:hint="Enter your comment here..."/>
+                </android.support.v7.widget.CardView>
+            </FrameLayout>
+            <FrameLayout
                 android:id="@+id/commentsContainer"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
             </FrameLayout>
         </LinearLayout>
+        </ScrollView>
     </android.support.design.widget.CoordinatorLayout>
 
 
