@@ -31,6 +31,7 @@ import ru.velkonost.lume.descriptions.BoardParticipant;
 import ru.velkonost.lume.descriptions.CardComment;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
 import ru.velkonost.lume.fragments.BoardParticipantsFragment;
+import ru.velkonost.lume.fragments.MessagesFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
@@ -39,13 +40,16 @@ import static ru.velkonost.lume.Constants.CARD_DESCRIPTION;
 import static ru.velkonost.lume.Constants.CARD_ID;
 import static ru.velkonost.lume.Constants.CARD_NAME;
 import static ru.velkonost.lume.Constants.COMMENT_IDS;
+import static ru.velkonost.lume.Constants.DATE;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
+import static ru.velkonost.lume.Constants.TEXT;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_CARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
+import static ru.velkonost.lume.Constants.USER;
 import static ru.velkonost.lume.Constants.USER_IDS;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
@@ -297,22 +301,26 @@ public class BoardCardActivity extends AppCompatActivity {
 
                 }
 
-//                for (int i = 0; i < commentIds.size(); i++) {
-//                    JSONObject commentInfo = dataJsonObj.getJSONObject(commentIds.get(i));
-//
-//                    mBoardColumns.add(new BoardColumn(
-//                            Integer.parseInt(columnInfo.getString(ID)), columnInfo.getString(NAME))
-//                    );
-//
-//                }
+                for (int i = 0; i < commentIds.size(); i++) {
+                    String commentId = commentIds.get(i);
+
+                    JSONObject commentInfo = dataJsonObj.getJSONObject(commentIds.get(i));
+
+                    mCardComments.add(new CardComment(
+                            Integer.parseInt(commentId.substring(0, uids.get(i).length() - 7)),
+                            Integer.parseInt(commentInfo.getString(USER)), cardId,
+                            commentInfo.getString(TEXT), commentInfo.getString(DATE)
+                    ));
+
+                }
 
                 saveText(BoardCardActivity.this, BOARD_DESCRIPTION, cardDescription);
 
                 BoardDescriptionFragment descriptionFragment = new BoardDescriptionFragment();
                 BoardParticipantsFragment boardParticipantsFragment
                         = BoardParticipantsFragment.getInstance(BoardCardActivity.this, mCardParticipants);
-//                BoardWelcomeColumnFragment boardWelcomeColumnFragment
-//                        = BoardWelcomeColumnFragment.getInstance(BoardCardActivity.this, mBoardColumns);
+                mCommentsFragment
+                        = CardCommentsFragment.getInstance(BoardCardActivity.this, mCardComments);
 
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
