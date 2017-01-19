@@ -93,7 +93,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private List<BoardParticipant> mCardParticipants;
 
-    private List<BoardColumn> mCardComments;
+    private List<CardComment> mCardComments;
 
 
 
@@ -102,6 +102,9 @@ public class BoardCardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+
+        mCardParticipants = new ArrayList<>();
+        mCardComments = new ArrayList<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -293,18 +296,18 @@ public class BoardCardActivity extends AppCompatActivity {
 
                     JSONObject userInfo = dataJsonObj.getJSONObject(participantId);
 
-                    mBoardParticipants.add(new BoardParticipant(
-                            Integer.parseInt(participantId.substring(0, uids.get(i).length() - 4)),
+                    mCardParticipants.add(new BoardParticipant(
+                            Integer.parseInt(participantId.substring(0, uids.get(i).length() - 7)),
                             Integer.parseInt(userInfo.getString(AVATAR)),
                             userInfo.getString(LOGIN),
-                            BOARD_LAST_CONTRIBUTED_USER == i + 1, uids.size() - i, boardId
+                            BOARD_LAST_CONTRIBUTED_USER == i + 1, uids.size() - i, cardId
                     ));
 
                     if (BOARD_LAST_CONTRIBUTED_USER == i) break;
 
                 }
 
-                for (int i = 0; i < cids.size(); i++) {
+                for (int i = 0; i < commentIds.size(); i++) {
                     JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
 
                     mBoardColumns.add(new BoardColumn(
