@@ -28,9 +28,9 @@ import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 
-public class BoardColumnsActivity extends AppCompatActivity {
+public class BoardCardActivity extends AppCompatActivity {
 
-    private static final int LAYOUT = R.layout.activity_board_columns;
+    private static final int LAYOUT = R.layout.activity_board_card;
 
     /**
      * Свойство - следующая активность.
@@ -58,12 +58,11 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_columns);
+        drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_card);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(BoardColumnsActivity.this, toolbar,
-                loadText(BoardColumnsActivity.this, BOARD_NAME)); /** Инициализация */
-        initTabs();
+        initToolbar(BoardCardActivity.this, toolbar,
+                loadText(BoardCardActivity.this, BOARD_NAME)); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
@@ -76,27 +75,9 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     }
 
-    private void initTabs() {
-        viewPager = (ViewPager) findViewById(R.id.viewPagerColumns);
-        BoardColumnsTabsFragmentAdapter adapter
-                = new BoardColumnsTabsFragmentAdapter(this, getSupportFragmentManager());
-
-        viewPager.setAdapter(adapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-
-        tabLayout.setupWithViewPager(viewPager);
-
-        if (adapter.getCount() < MAX_COLUMNS_IN_FIXED_MODE)
-            tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        else
-            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-
-    }
-
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_columns);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_card);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -128,12 +109,12 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
                     /** Переход на профиль данного пользователя */
                     case R.id.navigationProfile:
-                        nextIntent = new Intent(BoardColumnsActivity.this, ProfileActivity.class);
+                        nextIntent = new Intent(BoardCardActivity.this, ProfileActivity.class);
                         break;
 
                     /** Переход на контакты данного пользователя */
                     case R.id.navigationContacts:
-                        nextIntent = new Intent(BoardColumnsActivity.this, ContactsActivity.class);
+                        nextIntent = new Intent(BoardCardActivity.this, ContactsActivity.class);
                         break;
 
                     /** Переход на страницу напоминаний, созданных данным пользователем */
@@ -142,17 +123,17 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
                     /** Переход на страницу сообщений данного пользователя */
                     case R.id.navigationMessages:
-                        nextIntent = new Intent(BoardColumnsActivity.this, DialogsActivity.class);
+                        nextIntent = new Intent(BoardCardActivity.this, DialogsActivity.class);
                         break;
 
                     /** Переход на страницу досок карточной версии канбан-системы */
                     case R.id.navigationBoards:
-                        nextIntent = new Intent(BoardColumnsActivity.this, BoardsListActivity.class);
+                        nextIntent = new Intent(BoardCardActivity.this, BoardsListActivity.class);
                         break;
 
                     /** Переход на страницу индивидуальных настроек для данного пользователя */
                     case R.id.navigationSettings:
-                        nextIntent = new Intent(BoardColumnsActivity.this, SettingsActivity.class);
+                        nextIntent = new Intent(BoardCardActivity.this, SettingsActivity.class);
                         break;
 
                     /**
@@ -161,8 +142,8 @@ public class BoardColumnsActivity extends AppCompatActivity {
                      * Переход на страницу приветствия {@link WelcomeActivity}
                      **/
                     case R.id.navigationLogout:
-                        deleteText(BoardColumnsActivity.this, ID);
-                        nextIntent = new Intent(BoardColumnsActivity.this, WelcomeActivity.class);
+                        deleteText(BoardCardActivity.this, ID);
+                        nextIntent = new Intent(BoardCardActivity.this, WelcomeActivity.class);
                         break;
                 }
 
@@ -178,13 +159,13 @@ public class BoardColumnsActivity extends AppCompatActivity {
                          * Обновляет страницу.
                          * {@link Initializations#changeActivityCompat(Activity, Intent)}
                          * */
-                        changeActivityCompat(BoardColumnsActivity.this, nextIntent);
+                        changeActivityCompat(BoardCardActivity.this, nextIntent);
                     }
                 }, 350);
 
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
-                if (loadText(BoardColumnsActivity.this, ID).equals("")) finishAffinity();
+                if (loadText(BoardCardActivity.this, ID).equals("")) finishAffinity();
 
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_columns);
                 drawer.closeDrawer(GravityCompat.START);

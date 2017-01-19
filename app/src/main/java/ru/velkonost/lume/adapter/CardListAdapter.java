@@ -47,6 +47,13 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
         if (item.isBelong()){
             holder.isBelong.setVisibility(View.VISIBLE);
         }
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override
@@ -55,6 +62,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
     }
 
     public static class CardListViewHolder extends RecyclerView.ViewHolder {
+
         CardView cardView;
 
         TextView title;
