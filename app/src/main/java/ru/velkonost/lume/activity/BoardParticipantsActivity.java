@@ -108,7 +108,6 @@ public class BoardParticipantsActivity extends AppCompatActivity {
      **/
     private Map<String, String> contacts;
 
-//    private BoardsFragment mBoardsFragment;
 
 
     @Override

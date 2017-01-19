@@ -114,7 +114,6 @@ public class CardParticipantsFragment extends Fragment {
             ((ImageView) viewItem.findViewById(R.id.avatar))
                     .setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
 
-
             viewItem.findViewById(R.id.avatar).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -127,6 +126,8 @@ public class CardParticipantsFragment extends Fragment {
 
             linearLayout.addView(viewItem);
         }
+
+
 
         return view;
     }

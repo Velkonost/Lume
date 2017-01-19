@@ -98,4 +98,5 @@ public class BoardParticipant implements Parcelable {
     public int getBoardId() {
         return boardId;
     }
+
 }

@@ -1,6 +1,5 @@
 package ru.velkonost.lume;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.velkonost.lume.descriptions.BoardColumn;
@@ -17,7 +16,4 @@ public class Depository {
         mBoardColumns = boardColumns;
     }
 
-    public static void resetBoardColumns() {
-        mBoardColumns = new ArrayList<>();
-    }
 }
