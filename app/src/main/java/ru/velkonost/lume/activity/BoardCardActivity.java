@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -36,6 +37,7 @@ import ru.velkonost.lume.descriptions.CardComment;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
 import ru.velkonost.lume.fragments.CardCommentsFragment;
 import ru.velkonost.lume.fragments.CardParticipantsFragment;
+import ru.velkonost.lume.fragments.MessagesFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
@@ -91,6 +93,11 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private GetCardData mGetCardData;
 
+    private ArrayList<String> commentIds;
+
+    private CardCommentsFragment mCommentsFragment;
+
+    private TimerCheckComments mTimerCheckComments;
 
 
     @Override
@@ -125,7 +132,26 @@ public class BoardCardActivity extends AppCompatActivity {
 
         mGetCardData.execute();
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mTimerCheckComments = new TimerCheckComments(100000000, 5000);
+                mTimerCheckComments.start();
+
+            }
+        }, 5000);
+
     }
+
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mTimerCheckComments != null)
+            mTimerCheckComments.cancel();
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -227,6 +253,23 @@ public class BoardCardActivity extends AppCompatActivity {
         });
     }
 
+    public class TimerCheckComments extends CountDownTimer {
+
+        TimerCheckComments(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long l) {
+            RefreshComments mRefreshComments = new RefreshComments();
+            mRefreshComments.execute();
+        }
+
+        @Override
+        public void onFinish() {
+        }
+    }
+
     private class GetCardData extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -279,7 +322,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
 
                 ArrayList<String> uids = new ArrayList<>();
-                ArrayList<String> commentIds = new ArrayList<>();
+                commentIds = new ArrayList<>();
 
                 for (int i = 0; i < idsJSON.length(); i++) {
                     uids.add(idsJSON.getString(i));
@@ -316,7 +359,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
                     mCardComments.add(new CardComment(
                             Integer.parseInt(commentId.substring(0, commentId.length() - 7)),
-                            Integer.parseInt(commentInfo.getString(USER)), cardId,
+                            commentInfo.getString(USER), cardId,
                             commentInfo.getString(TEXT),
                             formattedCommentDate.equals(new SimpleDateFormat("dd-MM-yyyy")
                                     .format(Calendar.getInstance().getTime()))
@@ -324,8 +367,7 @@ public class BoardCardActivity extends AppCompatActivity {
                                     .substring(11, commentInfo.getString(DATE).length())
                                     : new SimpleDateFormat("dd MMM yyyy")
                                     .format(new SimpleDateFormat("dd-MM-yyyy")
-                                            .parse(formattedCommentDate)),
-                            dataJsonObj.getJSONObject(commentInfo.getString(USER)).getString(LOGIN)
+                                            .parse(formattedCommentDate))
                     ));
 
                 }
@@ -337,7 +379,7 @@ public class BoardCardActivity extends AppCompatActivity {
                 BoardDescriptionFragment descriptionFragment = new BoardDescriptionFragment();
                 CardParticipantsFragment cardParticipantsFragment
                         = CardParticipantsFragment.getInstance(BoardCardActivity.this, mCardParticipants);
-                CardCommentsFragment mCommentsFragment
+                mCommentsFragment
                         = CardCommentsFragment.getInstance(BoardCardActivity.this, mCardComments);
 
                 FragmentManager manager = getSupportFragmentManager();
@@ -349,9 +391,117 @@ public class BoardCardActivity extends AppCompatActivity {
 
                 transaction.commit();
 
-            } catch (JSONException e) {
+            } catch (JSONException | ParseException e) {
                 e.printStackTrace();
-            } catch (ParseException e) {
+            }
+        }
+    }
+    private class RefreshComments extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_GET_CARD_INFO_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /** Свойство - полученный JSON–объект*/
+            JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+
+                Collections.reverse(mCardComments);
+
+                /**
+                 * Получение идентификаторов найденных пользователей.
+                 */
+                JSONArray idsJSON = dataJsonObj.getJSONArray(COMMENT_IDS);
+
+                for (int i = 0; i < idsJSON.length(); i++){
+                    if (!commentIds.contains(idsJSON.getString(i)))
+                        commentIds.add(0, idsJSON.getString(i));
+                }
+
+                /**
+                 * Составление view-элементов с краткой информацией о пользователях
+                 */
+                for (int i = 0; i < commentIds.size(); i++) {
+                    boolean exist = false;
+
+                    String commentId = commentIds.get(i) + COMMENT;
+
+                    /**
+                     * Получение JSON-объекта с информацией о конкретном сообщении по его идентификатору.
+                     */
+                    JSONObject commentInfo = dataJsonObj.getJSONObject(commentId);
+
+                    for (int j = 0; j < mCardComments.size(); j++){
+                        if (mCardComments.get(j).getId() == commentInfo.getInt(ID)) {
+                            exist = true;
+                            break;
+                        }
+                    }
+
+                    String formattedCommentDate = formatDate(commentInfo.getString(DATE).substring(0, 10));
+
+                    if (!exist){
+                        mCardComments.add(new CardComment(
+                                Integer.parseInt(commentId.substring(0, commentId.length() - 7)),
+                                commentInfo.getString(USER), cardId,
+                                commentInfo.getString(TEXT),
+                                formattedCommentDate.equals(new SimpleDateFormat("dd-MM-yyyy")
+                                        .format(Calendar.getInstance().getTime()))
+                                        ? commentInfo.getString(DATE)
+                                        .substring(11, commentInfo.getString(DATE).length())
+                                        : new SimpleDateFormat("dd MMM yyyy")
+                                        .format(new SimpleDateFormat("dd-MM-yyyy")
+                                                .parse(formattedCommentDate))
+                        ));
+                    }
+                }
+
+                Collections.reverse(mCardComments);
+
+                /**
+                 * Добавляем фрагмент на экран.
+                 * {@link MessagesFragment}
+                 */
+                if(!isFinishing()) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    mCommentsFragment.refreshComments(mCardComments);
+                    ft.replace(R.id.commentsContainer, mCommentsFragment);
+                    ft.commitAllowingStateLoss();
+                }
+
+            } catch (JSONException | ParseException e) {
                 e.printStackTrace();
             }
         }

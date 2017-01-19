@@ -12,7 +12,7 @@ public class CardComment implements Parcelable {
     private String mDate;
     private String userName;
 
-    public CardComment(int id, int userId, int cardId, String text, String date, String userName) {
+    public CardComment(int id, String userName, int cardId, String text, String date) {
         this.id = id;
         this.userId = userId;
         this.cardId = cardId;

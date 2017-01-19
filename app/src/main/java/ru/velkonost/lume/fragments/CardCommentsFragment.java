@@ -55,6 +55,13 @@ public class CardCommentsFragment extends Fragment {
         mCardComments= cardComments;
     }
 
+    public void refreshComments(List<CardComment> mCardComments) {
+
+        adapter.setData(mCardComments);
+        adapter.notifyDataSetChanged();
+
+    }
+
     public void setContext(Context context) {
         this.context = context;
     }

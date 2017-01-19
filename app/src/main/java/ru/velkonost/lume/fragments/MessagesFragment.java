@@ -54,7 +54,6 @@ public class MessagesFragment extends Fragment {
     public void refreshMessages(List<Message> mMessage) {
         adapter.setData(mMessage);
         adapter.notifyDataSetChanged();
-//        recyclerView.scrollToPosition(adapter.getItemCount()-1);
     }
 
     public void refreshRecyclerView(List<Message> mMessage) {
