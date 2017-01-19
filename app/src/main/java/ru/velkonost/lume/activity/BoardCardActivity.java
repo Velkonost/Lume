@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,11 +16,10 @@ import android.view.View;
 
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter;
 
-import static ru.velkonost.lume.Constants.BOARD_NAME;
+import static ru.velkonost.lume.Constants.CARD_ID;
+import static ru.velkonost.lume.Constants.CARD_NAME;
 import static ru.velkonost.lume.Constants.ID;
-import static ru.velkonost.lume.Constants.MAX_COLUMNS_IN_FIXED_MODE;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
@@ -47,7 +44,8 @@ public class BoardCardActivity extends AppCompatActivity {
      */
     private DrawerLayout drawerLayout;
 
-    private ViewPager viewPager;
+    private int cardId;
+
 
 
     @Override
@@ -60,9 +58,12 @@ public class BoardCardActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_card);
 
+        Intent intent = getIntent();
+        String cardName = intent.getExtras().getString(CARD_NAME);
+        cardId = Integer.parseInt(intent.getExtras().getString(CARD_ID));
+
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(BoardCardActivity.this, toolbar,
-                loadText(BoardCardActivity.this, BOARD_NAME)); /** Инициализация */
+        initToolbar(BoardCardActivity.this, toolbar, cardName); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
@@ -167,7 +168,7 @@ public class BoardCardActivity extends AppCompatActivity {
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(BoardCardActivity.this, ID).equals("")) finishAffinity();
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_columns);
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_card);
                 drawer.closeDrawer(GravityCompat.START);
 
                 return true;

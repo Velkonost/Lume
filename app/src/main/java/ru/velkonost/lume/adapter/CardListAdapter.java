@@ -1,5 +1,7 @@
 package ru.velkonost.lume.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -12,16 +14,21 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.activity.BoardCardActivity;
 import ru.velkonost.lume.descriptions.Card;
 
+import static ru.velkonost.lume.Constants.CARD_ID;
+import static ru.velkonost.lume.Constants.CARD_NAME;
 import static ru.velkonost.lume.Constants.MARQUEE_REPEAT_LIMIT;
 
 public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardListViewHolder> {
 
     private List<Card> data;
+    private Context mContext;
 
-    public CardListAdapter(List<Card> data) {
+    public CardListAdapter(List<Card> data, Context mContext) {
         this.data = data;
+        this.mContext = mContext;
     }
 
     @Override
@@ -33,7 +40,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
 
     @Override
     public void onBindViewHolder(CardListViewHolder holder, int position) {
-        Card item = data.get(position);
+        final Card item = data.get(position);
 
         holder.title.setText(item.getName());
         holder.title.setSelected(true);
@@ -51,7 +58,11 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(mContext, BoardCardActivity.class);
+                intent.putExtra(CARD_ID, item.getId());
+                intent.putExtra(CARD_NAME, item.getName());
 
+                mContext.startActivity(intent);
             }
         });
     }

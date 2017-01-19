@@ -162,7 +162,7 @@ public class ColumnFragment extends AbstractTabFragment {
 
                 RecyclerView rv = (RecyclerView) view.findViewById(R.id.recyclerViewColumn);
                 rv.setLayoutManager(new LinearLayoutManager(context));
-                rv.setAdapter(new CardListAdapter(data));
+                rv.setAdapter(new CardListAdapter(data, getContext()));
 
             } catch (JSONException e) {
                 e.printStackTrace();
