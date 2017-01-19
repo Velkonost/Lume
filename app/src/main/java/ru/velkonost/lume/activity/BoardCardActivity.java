@@ -1,6 +1,7 @@
 package ru.velkonost.lume.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 
 import ru.velkonost.lume.Managers.Initializations;
+import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.BoardParticipant;
 import ru.velkonost.lume.descriptions.CardComment;
@@ -39,6 +42,7 @@ import ru.velkonost.lume.fragments.CardCommentsFragment;
 import ru.velkonost.lume.fragments.CardParticipantsFragment;
 import ru.velkonost.lume.fragments.MessagesFragment;
 
+import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
 import static ru.velkonost.lume.Constants.BOARD_LAST_CONTRIBUTED_USER;
@@ -52,6 +56,7 @@ import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.TEXT;
+import static ru.velkonost.lume.Constants.URL.SERVER_CARD_ADD_COMMENT_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_CARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
@@ -99,6 +104,10 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private TimerCheckComments mTimerCheckComments;
 
+    private EditText mEditTextComment;
+
+    private String userId;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,9 +123,17 @@ public class BoardCardActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_card);
 
+        mEditTextComment = (EditText) findViewById(R.id.editComment);
+
         Intent intent = getIntent();
         String cardName = intent.getExtras().getString(CARD_NAME);
         cardId = intent.getExtras().getInt(CARD_ID);
+
+        /**
+         * Получение id пользователя.
+         * {@link PhoneDataStorage#loadText(Context, String)}
+         **/
+        userId = loadText(BoardCardActivity.this, ID);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(BoardCardActivity.this, toolbar, cardName); /** Инициализация */
@@ -152,6 +169,17 @@ public class BoardCardActivity extends AppCompatActivity {
             mTimerCheckComments.cancel();
     }
 
+    public void addComment(View view) {
+        if (mEditTextComment.getText().toString().length() == 0) return;
+
+        AddComment addComment = new AddComment();
+        addComment.execute();
+
+        mEditTextComment.setText("");
+
+        RefreshComments mRefreshComments = new RefreshComments();
+        mRefreshComments.execute();
+    }
 
     @Override
     public void onBackPressed() {
@@ -504,6 +532,41 @@ public class BoardCardActivity extends AppCompatActivity {
             } catch (JSONException | ParseException e) {
                 e.printStackTrace();
             }
+        }
+    }
+    private class AddComment extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_CARD_ADD_COMMENT_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId
+                    + AMPERSAND + ID + EQUALS + userId
+                    + AMPERSAND + TEXT + EQUALS + mEditTextComment.getText().toString();
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
         }
     }
 }
