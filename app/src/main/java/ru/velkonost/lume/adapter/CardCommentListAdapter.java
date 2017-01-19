@@ -7,7 +7,6 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -35,7 +34,7 @@ public class CardCommentListAdapter
 
     @Override
     public CardCommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_message, parent, false);
+        View view = inflater.inflate(R.layout.item_comment, parent, false);
         return new CardCommentViewHolder(view);
     }
 
@@ -47,15 +46,6 @@ public class CardCommentListAdapter
             holder.mTextView.setText(Html.fromHtml(item.getText(), Html.FROM_HTML_MODE_LEGACY));
         else
             holder.mTextView.setText(Html.fromHtml(item.getText()));
-
-        LinearLayout.LayoutParams params
-                = new LinearLayout.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT,
-                RecyclerView.LayoutParams.WRAP_CONTENT);
-
-//        params.setMargins(dp2px(10), dp2px(5), dp2px(10), dp2px(5));
-//        holder.mTextView.setLayoutParams(params);
-//
-//        holder.mTextView.setPadding(dp2px(20), dp2px(10), dp2px(20), dp2px(10));
 
     }
 

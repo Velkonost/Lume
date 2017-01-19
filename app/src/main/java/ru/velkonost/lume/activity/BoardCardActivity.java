@@ -14,7 +14,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -294,7 +293,6 @@ public class BoardCardActivity extends AppCompatActivity {
 
                     mCardParticipants.add(new BoardParticipant(
                             Integer.parseInt(participantId),
-//                            Integer.parseInt(participantId.substring(0, uids.get(i).length() - 7)),
                             Integer.parseInt(userInfo.getString(AVATAR)),
                             userInfo.getString(LOGIN),
                             BOARD_LAST_CONTRIBUTED_USER == i + 1, uids.size() - i, cardId
@@ -305,10 +303,10 @@ public class BoardCardActivity extends AppCompatActivity {
                 }
 
                 for (int i = 0; i < commentIds.size(); i++) {
+
                     String commentId = commentIds.get(i) + COMMENT;
 
                     JSONObject commentInfo = dataJsonObj.getJSONObject(commentId);
-                    Log.i("KEKE", commentId);
 
                     mCardComments.add(new CardComment(
                             Integer.parseInt(commentId.substring(0, commentId.length() - 7)),
@@ -334,6 +332,7 @@ public class BoardCardActivity extends AppCompatActivity {
                 transaction.add(R.id.descriptionContainer, descriptionFragment);
                 transaction.add(R.id.participantsContainer, boardParticipantsFragment);
                 transaction.add(R.id.commentsContainer, mCommentsFragment);
+
                 transaction.commit();
 
             } catch (JSONException e) {
