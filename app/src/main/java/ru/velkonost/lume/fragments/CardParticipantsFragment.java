@@ -127,8 +127,6 @@ public class CardParticipantsFragment extends Fragment {
             linearLayout.addView(viewItem);
         }
 
-
-
         return view;
     }
 

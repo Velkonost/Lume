@@ -7,14 +7,11 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
-import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.BoardParticipant;
 import ru.velkonost.lume.descriptions.CardComment;
 
 public class CardCommentListAdapter
@@ -46,11 +43,12 @@ public class CardCommentListAdapter
         CardComment item = data.get(position);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            holder.mTextView.setText(Html.fromHtml(item.getText(), Html.FROM_HTML_MODE_LEGACY));
+            holder.commentText.setText(Html.fromHtml(item.getText(), Html.FROM_HTML_MODE_LEGACY));
         else
-            holder.mTextView.setText(Html.fromHtml(item.getText()));
+            holder.commentText.setText(Html.fromHtml(item.getText()));
 
-        List<BoardParticipant> boardParticipants = Depository.getBoardParticipants();
+        holder.userName.setText(item.getUserName());
+        holder.commentDate.setText(item.getDate());
 
     }
 
@@ -62,14 +60,16 @@ public class CardCommentListAdapter
 
     class CardCommentViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView userAvatar;
-        TextView mTextView;
+        TextView userName;
+        TextView commentDate;
+        TextView commentText;
 
         CardCommentViewHolder(View itemView) {
             super(itemView);
 
-            userAvatar = (ImageView) itemView.findViewById(R.id.userAvatar);
-            mTextView = (TextView) itemView.findViewById(R.id.messageText);
+            userName = (TextView) itemView.findViewById(R.id.userName);
+            commentDate = (TextView) itemView.findViewById(R.id.commentDate);
+            commentText = (TextView) itemView.findViewById(R.id.messageText);
         }
     }
 }

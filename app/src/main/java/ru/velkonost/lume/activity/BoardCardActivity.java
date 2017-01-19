@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -22,7 +23,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -302,6 +305,14 @@ public class BoardCardActivity extends AppCompatActivity {
 
                 }
 
+                Calendar c = Calendar.getInstance();
+                System.out.println("Current time => " + c.getTime());
+
+                SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                String formattedDate = df.format(c.getTime());
+
+                Log.i("KEKE", formattedDate);
+
                 for (int i = 0; i < commentIds.size(); i++) {
 
                     String commentId = commentIds.get(i) + COMMENT;
@@ -311,7 +322,8 @@ public class BoardCardActivity extends AppCompatActivity {
                     mCardComments.add(new CardComment(
                             Integer.parseInt(commentId.substring(0, commentId.length() - 7)),
                             Integer.parseInt(commentInfo.getString(USER)), cardId,
-                            commentInfo.getString(TEXT), commentInfo.getString(DATE)
+                            commentInfo.getString(TEXT), commentInfo.getString(DATE).substring(0, 10),
+                            dataJsonObj.getJSONObject(commentInfo.getString(USER)).getString(LOGIN)
                     ));
 
                 }

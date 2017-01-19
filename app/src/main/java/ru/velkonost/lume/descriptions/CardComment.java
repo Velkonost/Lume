@@ -10,16 +10,16 @@ public class CardComment implements Parcelable {
     private int cardId;
     private String mText;
     private String mDate;
-    private boolean isExist;
+    private String userName;
 
-    public CardComment(int id, int userId, int cardId, String text, String date) {
+    public CardComment(int id, int userId, int cardId, String text, String date, String userName) {
         this.id = id;
         this.userId = userId;
         this.cardId = cardId;
+        this.userName = userName;
         mText = text;
         mDate = date;
 
-        isExist = false;
     }
 
     private CardComment(Parcel in) {
@@ -95,11 +95,7 @@ public class CardComment implements Parcelable {
         mDate = date;
     }
 
-    public boolean isExist() {
-        return isExist;
-    }
-
-    public void setExist(boolean exist) {
-        isExist = exist;
+    public String getUserName() {
+        return userName;
     }
 }
