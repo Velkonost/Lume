@@ -110,8 +110,6 @@ public class CardParticipantsActivity extends AppCompatActivity {
      **/
     private Map<String, String> contacts;
 
-//    private BoardsFragment mBoardsFragment;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

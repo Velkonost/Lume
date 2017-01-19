@@ -17,7 +17,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.activity.BoardParticipantsActivity;
 import ru.velkonost.lume.activity.CardParticipantsActivity;
 import ru.velkonost.lume.activity.ProfileActivity;
 import ru.velkonost.lume.descriptions.BoardParticipant;
@@ -88,7 +87,7 @@ public class CardParticipantsFragment extends Fragment {
                 viewItem.findViewById(R.id.avatar).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(context, BoardParticipantsActivity.class);
+                        Intent intent = new Intent(context, CardParticipantsActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra(BOARD_ID, item.getBoardId());
                         context.startActivity(intent);

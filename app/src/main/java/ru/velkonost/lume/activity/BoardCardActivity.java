@@ -31,8 +31,8 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.BoardParticipant;
 import ru.velkonost.lume.descriptions.CardComment;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
-import ru.velkonost.lume.fragments.BoardParticipantsFragment;
 import ru.velkonost.lume.fragments.CardCommentsFragment;
+import ru.velkonost.lume.fragments.CardParticipantsFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
@@ -321,8 +321,8 @@ public class BoardCardActivity extends AppCompatActivity {
                 saveText(BoardCardActivity.this, BOARD_DESCRIPTION, cardDescription);
 
                 BoardDescriptionFragment descriptionFragment = new BoardDescriptionFragment();
-                BoardParticipantsFragment boardParticipantsFragment
-                        = BoardParticipantsFragment.getInstance(BoardCardActivity.this, mCardParticipants);
+                CardParticipantsFragment cardParticipantsFragment
+                        = CardParticipantsFragment.getInstance(BoardCardActivity.this, mCardParticipants);
                 CardCommentsFragment mCommentsFragment
                         = CardCommentsFragment.getInstance(BoardCardActivity.this, mCardComments);
 
@@ -330,7 +330,7 @@ public class BoardCardActivity extends AppCompatActivity {
                 FragmentTransaction transaction = manager.beginTransaction();
 
                 transaction.add(R.id.descriptionContainer, descriptionFragment);
-                transaction.add(R.id.participantsContainer, boardParticipantsFragment);
+                transaction.add(R.id.participantsContainer, cardParticipantsFragment);
                 transaction.add(R.id.commentsContainer, mCommentsFragment);
 
                 transaction.commit();
