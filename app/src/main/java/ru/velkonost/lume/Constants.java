@@ -108,6 +108,7 @@ public class Constants {
         public static final String SERVER_GET_BOARD_INFO_METHOD = "/getBoardInfo";
         public static final String SERVER_GET_COLUMN_INFO_METHOD = "/getColumnInfo";
         public static final String SERVER_GET_BOARD_PARTICIPANTS_METHOD = "/getBoardParticipants";
+        public static final String SERVER_GET_CARD_PARTICIPANTS_METHOD = "/getBoardParticipants";
         public static final String SERVER_GET_CARD_INFO_METHOD = "/getCardInfo";
 
     }
