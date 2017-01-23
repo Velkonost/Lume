@@ -41,7 +41,6 @@ public class Initializations {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(header)
                 .setMessage(description)
-//                .setIcon(R.drawable.ic_android_cat) МОЖНО ДОБАВИТЬ ИКОНКУ!
                 .setCancelable(false)
                 .setNegativeButton(btnName,
                         new DialogInterface.OnClickListener() {

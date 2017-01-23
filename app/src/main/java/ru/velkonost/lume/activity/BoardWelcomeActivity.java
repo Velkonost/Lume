@@ -1,7 +1,9 @@
 package ru.velkonost.lume.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -172,6 +174,25 @@ public class BoardWelcomeActivity extends AppCompatActivity {
             case R.id.action_invite:
                 break;
             case R.id.action_leave:
+
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.leave_board))
+                        .setMessage(getResources().getString(R.string.ask_confirmation))
+                        .setCancelable(false)
+                        .setPositiveButton(getResources().getString(R.string.no),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                })
+                        .setNegativeButton(getResources().getString(R.string.yes),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                })
+                        .create().show();
+
                 break;
         }
 
