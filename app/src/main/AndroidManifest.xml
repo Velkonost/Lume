@@ -1,0 +1,47 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="ru.velkonost.lume">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-feature android:name="android.hardware.camera2" android:required="true"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+
+    <application
+
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="ru.velkonost.lume.activity.WelcomeActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.LoginActivity"/>
+        <activity android:name=".activity.RegistrationActivity"/>
+        <activity android:name=".activity.ProfileActivity"/>
+        <activity android:name=".activity.SearchActivity"/>
+        <activity android:name=".activity.ContactsActivity"/>
+        <activity android:name=".activity.FullScreenPhotoActivity"/>
+        <activity android:name=".activity.SettingsActivity"/>
+        <activity android:name=".activity.DialogsActivity"/>
+        <activity android:name=".activity.MessageActivity"
+                  android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity android:name=".activity.BoardsListActivity"/>
+        <activity android:name=".activity.BoardWelcomeActivity"/>
+        <activity android:name=".activity.BoardParticipantsActivity"/>
+        <activity android:name=".activity.BoardColumnsActivity"/>
+        <activity android:name=".activity.BoardCardActivity"/>
+        <activity android:name=".activity.CardParticipantsActivity"/>
+
+    </application>
+
+</manifest>
