@@ -77,4 +77,10 @@
     <string name="editEmail">Email</string>
     <string name="editWorkEmail">Email для связи</string>
 
+
+    <string name="menu_action_settings">Настройки</string>
+    <string name="menu_action_move">Move</string>
+    <string name="menu_action_invite">Пригласить</string>
+    <string name="menu_action_leave">Покинуть</string>
+
 </resources>

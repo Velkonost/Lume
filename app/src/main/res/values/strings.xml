@@ -78,4 +78,12 @@
 
 
 
+    <string name="menu_action_settings">Settings</string>
+    <string name="menu_action_move">Move</string>
+    <string name="menu_action_invite">Invite</string>
+    <string name="menu_action_leave">Leave</string>
+
+
+
+
 </resources>
