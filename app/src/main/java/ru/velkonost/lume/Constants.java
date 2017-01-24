@@ -112,6 +112,8 @@ public class Constants {
         public static final String SERVER_GET_CARD_INFO_METHOD = "/getCardInfo";
         public static final String SERVER_CARD_ADD_COMMENT_METHOD = "/cardAddComment";
 
+        public static final String SERVER_LEAVE_BOARD_METHOD = "/leaveBoard";
+
     }
 
     /** Класс констант, описывающих результаты операций */

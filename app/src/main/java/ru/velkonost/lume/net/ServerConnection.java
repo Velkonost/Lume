@@ -33,15 +33,12 @@ public class ServerConnection {
     /**
      * Проверка интернет-соединения.
      **/
-    public static boolean hasConnection(Context context)
-    {
+    public static boolean hasConnection(Context context) {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
 
-        if (netInfo != null && netInfo.isConnectedOrConnecting())
-            return true;
-        return false;
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     public static String getJSON(String sUrl, String params) throws IOException {
