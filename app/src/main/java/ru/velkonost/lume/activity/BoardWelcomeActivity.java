@@ -152,7 +152,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private View popupView;
-    private PopupWindow popupWindow;
+    public static PopupWindow popupWindow;
 
 
     @Override
@@ -210,6 +210,13 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         popupWindow = new PopupWindow(popupView,
                 WRAP_CONTENT, height - dp2px(120));
 
+
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                changeActivityCompat(BoardWelcomeActivity.this);
+            }
+        });
 
         recyclerView = (RecyclerView) popupView
                 .findViewById(R.id.recyclerViewBoardInvite);
@@ -633,7 +640,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 }
 
                 recyclerView.setLayoutManager(new LinearLayoutManager(BoardWelcomeActivity.this));
-                recyclerView.setAdapter(new BoardInviteListAdapter(BoardWelcomeActivity.this, mContacts));
+                recyclerView.setAdapter(new BoardInviteListAdapter(BoardWelcomeActivity.this, mContacts, boardId));
 
             } catch (JSONException e) {
                 e.printStackTrace();
