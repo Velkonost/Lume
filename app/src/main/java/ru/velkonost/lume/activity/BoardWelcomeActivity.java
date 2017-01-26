@@ -223,7 +223,6 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         mGetBoardInfo.execute();
         mGetContacts.execute();
 
-
     }
 
     private int dp2px(int dp) {
@@ -515,6 +514,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
             String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
                     + SERVER_GET_BOARD_INFO_METHOD;
 
+
             /**
              * Формирование отправных данных.
              */
@@ -594,10 +594,10 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                             Integer.parseInt(columnInfo.getString(ID)),
                             columnInfo.getString(NAME),  i)
                     );
-
                 }
 
                 Depository.setBoardColumns(mBoardColumns);
+                Depository.setBoardId(String.valueOf(boardId));
 
                 saveText(BoardWelcomeActivity.this, BOARD_DESCRIPTION, boardDescription);
 

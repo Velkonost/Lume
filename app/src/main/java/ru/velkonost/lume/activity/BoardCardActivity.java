@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -17,11 +19,18 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,21 +42,31 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
+import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
+import ru.velkonost.lume.Managers.ValueComparator;
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.adapter.BoardInviteListAdapter;
 import ru.velkonost.lume.descriptions.BoardParticipant;
 import ru.velkonost.lume.descriptions.CardComment;
+import ru.velkonost.lume.descriptions.Contact;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
 import ru.velkonost.lume.fragments.CardCommentsFragment;
 import ru.velkonost.lume.fragments.CardParticipantsFragment;
 import ru.velkonost.lume.fragments.MessagesFragment;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
+import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.BOARD_LAST_CONTRIBUTED_USER;
 import static ru.velkonost.lume.Constants.CARD_DESCRIPTION;
 import static ru.velkonost.lume.Constants.CARD_ID;
@@ -57,9 +76,13 @@ import static ru.velkonost.lume.Constants.COMMENT_IDS;
 import static ru.velkonost.lume.Constants.DATE;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.IDS;
 import static ru.velkonost.lume.Constants.LOGIN;
+import static ru.velkonost.lume.Constants.NAME;
+import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.TEXT;
 import static ru.velkonost.lume.Constants.URL.SERVER_CARD_ADD_COMMENT_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_PARTICIPANTS_TO_INVITE_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_CARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
@@ -73,6 +96,7 @@ import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.saveText;
+import static ru.velkonost.lume.R.layout.popup_board_invite_list;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 public class BoardCardActivity extends AppCompatActivity {
@@ -112,6 +136,31 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private String userId;
 
+    private RecyclerView recyclerView;
+    private View popupView;
+    public static PopupWindow popupWindowInvite;
+
+    private List<Contact> mContacts;
+
+    /**
+     * Идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
+     **/
+    private ArrayList<String> ids;
+
+    /**
+     * Контакты авторизованного пользователя.
+     *
+     * Ключ - идентификатор пользователя.
+     * Значение - его полное имя или логин.
+     **/
+    private Map<String, String> contacts;
+
+    private String boardId;
+
+    private GetContacts mGetContacts;
+
+    private String cardName;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,8 +169,13 @@ public class BoardCardActivity extends AppCompatActivity {
         setContentView(LAYOUT);
 
         mCardParticipants = new ArrayList<>();
+        mContacts = new ArrayList<>();
+        ids = new ArrayList<>();
+        contacts = new HashMap<>();
+
         mCardComments = new ArrayList<>();
         mGetCardData = new GetCardData();
+        mGetContacts = new GetContacts();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -130,7 +184,7 @@ public class BoardCardActivity extends AppCompatActivity {
         mEditTextComment = (EditText) findViewById(R.id.editComment);
 
         Intent intent = getIntent();
-        String cardName = intent.getExtras().getString(CARD_NAME);
+        cardName = intent.getExtras().getString(CARD_NAME);
         cardId = intent.getExtras().getInt(CARD_ID);
 
         /**
@@ -138,6 +192,7 @@ public class BoardCardActivity extends AppCompatActivity {
          * {@link PhoneDataStorage#loadText(Context, String)}
          **/
         userId = loadText(BoardCardActivity.this, ID);
+        boardId = Depository.getBoardId();
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(BoardCardActivity.this, toolbar, cardName); /** Инициализация */
@@ -151,7 +206,27 @@ public class BoardCardActivity extends AppCompatActivity {
             }
         });
 
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+
+        LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        popupView = layoutInflater.inflate(popup_board_invite_list, null);
+
+        popupWindowInvite = new PopupWindow(popupView,
+                WRAP_CONTENT, height - dp2px(120));
+
+
+        recyclerView = (RecyclerView) popupView
+                .findViewById(R.id.recyclerViewBoardInvite);
+
+
         mGetCardData.execute();
+//        mGetContacts.execute();
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -171,6 +246,11 @@ public class BoardCardActivity extends AppCompatActivity {
         return true;
     }
 
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                BoardCardActivity.this.getResources().getDisplayMetrics());
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -181,6 +261,23 @@ public class BoardCardActivity extends AppCompatActivity {
             case R.id.action_move:
                 break;
             case R.id.action_invite:
+
+                popupWindowInvite.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        changeActivityCompat(BoardCardActivity.this);
+                    }
+                });
+
+
+                popupWindowInvite.setTouchable(true);
+                popupWindowInvite.setFocusable(true);
+                popupWindowInvite.setBackgroundDrawable(new ColorDrawable(getResources()
+                        .getColor(android.R.color.transparent)));
+                popupWindowInvite.setOutsideTouchable(true);
+
+                popupWindowInvite.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
                 break;
             case R.id.action_leave:
 
@@ -200,8 +297,14 @@ public class BoardCardActivity extends AppCompatActivity {
                                         LeaveCard leaveCard = new LeaveCard();
                                         leaveCard.execute();
 
-                                        onBackPressed();
-                                        finishAffinity();
+                                        Intent intent = new Intent(BoardCardActivity.this,
+                                                BoardCardActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.putExtra(CARD_ID, cardId);
+                                        intent.putExtra(CARD_NAME, cardName);
+                                        BoardCardActivity.this.startActivity(intent);
+
+                                        finish();
                                     }
                                 })
                         .create().show();
@@ -653,6 +756,118 @@ public class BoardCardActivity extends AppCompatActivity {
         }
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
+        }
+    }
+    private class GetContacts extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_GET_BOARD_PARTICIPANTS_TO_INVITE_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + boardId;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /** Свойство - полученный JSON–объект*/
+            JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+
+                /**
+                 * Получение идентификаторов найденных пользователей.
+                 */
+                JSONArray idsJSON = dataJsonObj.getJSONArray(IDS);
+
+                for (int i = 0; i < idsJSON.length(); i++){
+                    ids.add(idsJSON.getString(i));
+                }
+
+                /**
+                 * Заполнение Map{@link contacts} для последующей сортировки контактов.
+                 *
+                 * По умолчанию идентификатору контакта соответствует его полное имя.
+                 *
+                 * Если такогого не имеется, то устанавливает взамен логин.
+                 **/
+                for (int i = 0; i < ids.size(); i++){
+                    JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
+
+                    contacts.put(
+                            ids.get(i),
+                            userInfo.getString(NAME).length() != 0
+                                    ? userInfo.getString(SURNAME).length() != 0
+                                    ? userInfo.getString(NAME) + " " + userInfo.getString(SURNAME)
+                                    : userInfo.getString(LOGIN) : userInfo.getString(LOGIN)
+                    );
+                }
+
+                /** Создание и инициализация Comparator{@link ValueComparator} */
+                Comparator<String> comparator = new ValueComparator<>((HashMap<String, String>) contacts);
+
+                /** Помещает отсортированную Map */
+                TreeMap<String, String> sortedContacts = new TreeMap<>(comparator);
+                sortedContacts.putAll(contacts);
+
+                /** "Обнуляет" хранилище идентификаторов */
+                ids = new ArrayList<>();
+
+                /** Заполняет хранилище идентификаторов */
+                for (String key : sortedContacts.keySet()) {
+                    ids.add(key);
+                }
+
+                /** "Поворачивает" хранилище идентификаторов */
+                Collections.reverse(ids);
+
+                /**
+                 * Составление view-элементов с краткой информацией о пользователях
+                 */
+                for (int i = 0; i < ids.size(); i++) {
+
+                    /**
+                     * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
+                     */
+                    JSONObject userInfo = dataJsonObj.getJSONObject(ids.get(i));
+
+                    mContacts.add(new Contact(userInfo.getString(ID), userInfo.getString(NAME),
+                            userInfo.getString(SURNAME), userInfo.getString(LOGIN),
+                            Integer.parseInt(userInfo.getString(AVATAR))));
+                }
+
+                recyclerView.setLayoutManager(new LinearLayoutManager(BoardCardActivity.this));
+                recyclerView.setAdapter(new BoardInviteListAdapter(BoardCardActivity.this,
+                        mContacts, Integer.parseInt(boardId)));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

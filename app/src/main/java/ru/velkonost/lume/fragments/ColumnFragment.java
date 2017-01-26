@@ -22,6 +22,9 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.CardListAdapter;
 import ru.velkonost.lume.descriptions.Card;
 
+import static ru.velkonost.lume.Constants.AMOUNT;
+import static ru.velkonost.lume.Constants.AMPERSAND;
+import static ru.velkonost.lume.Constants.BELONG;
 import static ru.velkonost.lume.Constants.COLUMN_ID;
 import static ru.velkonost.lume.Constants.COLUMN_IDS;
 import static ru.velkonost.lume.Constants.EQUALS;
@@ -92,7 +95,8 @@ public class ColumnFragment extends AbstractTabFragment {
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = COLUMN_ID + EQUALS + columnId;
+            @SuppressWarnings("WrongThread") String params = COLUMN_ID + EQUALS + columnId
+                    + AMPERSAND + ID + EQUALS + loadText(context, ID);
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
@@ -155,8 +159,8 @@ public class ColumnFragment extends AbstractTabFragment {
                     JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
 
                     data.add(new Card(
-                            Integer.parseInt(cids.get(i)), amountParticipants,
-                            columnInfo.getString(NAME), isBelong
+                            Integer.parseInt(cids.get(i)), Integer.parseInt(columnInfo.getString(AMOUNT)),
+                            columnInfo.getString(NAME), columnInfo.getBoolean(BELONG)
                     ));
                 }
 

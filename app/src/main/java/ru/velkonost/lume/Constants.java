@@ -14,6 +14,10 @@ public class Constants {
     public static final String HYPHEN = "-";
     public static final String PLUS = "+";
 
+
+    public static final String AMOUNT = "amount";
+    public static final String BELONG = "belong";
+
     public static final String LOGIN = "login";
     public static final String REGISTRATION = "registration";
     public static final String PASSWORD = "password";
@@ -116,6 +120,7 @@ public class Constants {
         public static final String SERVER_LEAVE_CARD_METHOD = "/leaveCard";
         public static final String SERVER_INVITE_IN_BOARD_METHOD = "/inviteInBoard";
         public static final String SERVER_CHANGE_BOARD_SETTINGS_METHOD = "/changeBoardSettings";
+        public static final String SERVER_GET_BOARD_PARTICIPANTS_TO_INVITE_METHOD = "/getInBoardToInvite";
 
     }
 

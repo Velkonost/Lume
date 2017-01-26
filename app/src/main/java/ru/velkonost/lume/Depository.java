@@ -7,6 +7,7 @@ import ru.velkonost.lume.descriptions.BoardColumn;
 public class Depository {
 
     private static List<BoardColumn> mBoardColumns;
+    private static String boardId;
 
     public static List<BoardColumn> getBoardColumns() {
         return mBoardColumns;
@@ -16,4 +17,11 @@ public class Depository {
         mBoardColumns = boardColumns;
     }
 
+    public static String getBoardId() {
+        return boardId;
+    }
+
+    public static void setBoardId(String boardId) {
+        Depository.boardId = boardId;
+    }
 }
