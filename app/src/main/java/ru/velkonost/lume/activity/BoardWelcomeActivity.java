@@ -245,7 +245,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            changeActivityCompat(BoardWelcomeActivity.this, new Intent(BoardWelcomeActivity.this, BoardsListActivity.class));
+//            super.onBackPressed();
         }
     }
 
@@ -298,8 +299,6 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                         changeBoardSettings.execute();
 
                         changeActivityCompat(BoardWelcomeActivity.this);
-                        finishAffinity();
-
 
                         return false;
                     }
