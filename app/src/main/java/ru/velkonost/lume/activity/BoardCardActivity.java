@@ -1,7 +1,9 @@
 package ru.velkonost.lume.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -61,6 +63,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_CARD_ADD_COMMENT_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_CARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
+import static ru.velkonost.lume.Constants.URL.SERVER_LEAVE_CARD_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.USER;
 import static ru.velkonost.lume.Constants.USER_IDS;
@@ -180,6 +183,29 @@ public class BoardCardActivity extends AppCompatActivity {
             case R.id.action_invite:
                 break;
             case R.id.action_leave:
+
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.leave_card))
+                        .setMessage(getResources().getString(R.string.ask_confirmation))
+                        .setCancelable(false)
+                        .setPositiveButton(getResources().getString(R.string.no),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                })
+                        .setNegativeButton(getResources().getString(R.string.yes),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        LeaveCard leaveCard = new LeaveCard();
+                                        leaveCard.execute();
+
+                                        onBackPressed();
+                                        finishAffinity();
+                                    }
+                                })
+                        .create().show();
+
                 break;
         }
 
@@ -576,6 +602,40 @@ public class BoardCardActivity extends AppCompatActivity {
             @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId
                     + AMPERSAND + ID + EQUALS + userId
                     + AMPERSAND + TEXT + EQUALS + mEditTextComment.getText().toString();
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+        }
+    }
+    private class LeaveCard extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_LEAVE_CARD_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId
+                    + AMPERSAND + ID + EQUALS + userId;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";

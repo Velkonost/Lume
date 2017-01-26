@@ -192,14 +192,6 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         initToolbar(BoardWelcomeActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
-//        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
-//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                onBackPressed();
-//            }
-//        });
-
         /**
          * Получение id пользователя.
          * {@link PhoneDataStorage#loadText(Context, String)}
@@ -245,8 +237,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            changeActivityCompat(BoardWelcomeActivity.this, new Intent(BoardWelcomeActivity.this, BoardsListActivity.class));
-//            super.onBackPressed();
+            changeActivityCompat(BoardWelcomeActivity.this,
+                    new Intent(BoardWelcomeActivity.this, BoardsListActivity.class));
         }
     }
 

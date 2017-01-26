@@ -78,6 +78,7 @@
     <string name="editWorkEmail">Email для связи</string>
 
     <string name="leave_board">Покинуть доску</string>
+    <string name="leave_card">Покинуть карточку</string>
     <string name="ask_confirmation">Вы уверены?</string>
 
     <string name="menu_action_settings">Настройки</string>
