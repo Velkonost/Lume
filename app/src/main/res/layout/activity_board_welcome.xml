@@ -30,12 +30,16 @@
                     android:background="@color/colorPrimary"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
 
-                <com.miguelcatalan.materialsearchview.MaterialSearchView
-                    android:id="@+id/search_view"
+                <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:hint="@string/search_title"/>
+                    android:layout_height="?attr/actionBarSize"
+                    android:id="@+id/editBoardName"
+                    android:background="@color/colorPrimary"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginRight="40dp"
+                    android:lines="1"
+                    android:visibility="invisible"/>
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
         <LinearLayout

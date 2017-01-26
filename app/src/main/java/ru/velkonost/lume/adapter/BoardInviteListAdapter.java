@@ -34,7 +34,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
 import static ru.velkonost.lume.Managers.ImageManager.getCircleMaskedBitmap;
-import static ru.velkonost.lume.activity.BoardWelcomeActivity.popupWindow;
+import static ru.velkonost.lume.activity.BoardWelcomeActivity.popupWindowInvite;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 public class BoardInviteListAdapter extends RecyclerView.Adapter<BoardInviteListAdapter.BoardInviteViewHolder> {
@@ -106,7 +106,7 @@ public class BoardInviteListAdapter extends RecyclerView.Adapter<BoardInviteList
                 invite.execute();
                 curContactId = Integer.parseInt(holder.id);
 
-                popupWindow.dismiss();
+                popupWindowInvite.dismiss();
 
             }
         });

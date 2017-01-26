@@ -17,4 +17,12 @@
         android:orderInCategory="100"
         android:title="@string/menu_action_leave"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_agree"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        android:title="@string/change"
+        android:icon="@mipmap/ic_check"
+        android:visible="false"/>
 </menu>

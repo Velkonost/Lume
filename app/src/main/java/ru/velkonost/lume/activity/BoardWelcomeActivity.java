@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.PopupWindow;
 
 import org.json.JSONArray;
@@ -152,8 +153,17 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private View popupView;
-    public static PopupWindow popupWindow;
+    public static PopupWindow popupWindowInvite;
 
+
+    private EditText editBoardName;
+
+    private String boardName;
+    private String boardDescription;
+
+    private BoardDescriptionFragment descriptionFragment;
+
+    private Menu menu;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -174,6 +184,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_welcome);
+
+        editBoardName = (EditText) findViewById(R.id.editBoardName);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(BoardWelcomeActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
@@ -207,25 +219,13 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
         popupView = layoutInflater.inflate(popup_board_invite_list, null);
 
-        popupWindow = new PopupWindow(popupView,
+        popupWindowInvite = new PopupWindow(popupView,
                 WRAP_CONTENT, height - dp2px(120));
 
-
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                changeActivityCompat(BoardWelcomeActivity.this);
-            }
-        });
 
         recyclerView = (RecyclerView) popupView
                 .findViewById(R.id.recyclerViewBoardInvite);
 
-        popupWindow.setTouchable(true);
-        popupWindow.setFocusable(true);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(android.R.color.transparent)));
-        popupWindow.setOutsideTouchable(true);
 
         mGetBoardInfo.execute();
         mGetContacts.execute();
@@ -251,6 +251,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_board_welcome, menu);
+
+        this.menu = menu;
         return true;
     }
 
@@ -260,10 +262,55 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.action_settings:
+                toolbar.setTitle("");
+                editBoardName.setVisibility(View.VISIBLE);
+                editBoardName.setText(boardName);
+
+                descriptionFragment.showNext();
+
+                menu.findItem(R.id.action_settings).setVisible(false);
+                menu.findItem(R.id.action_invite).setVisible(false);
+                menu.findItem(R.id.action_leave).setVisible(false);
+
+                menu.findItem(R.id.action_agree).setVisible(true);
+
+                menu.findItem(R.id.action_agree).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+
+                        toolbar.setTitle(editBoardName.getText().toString());
+                        descriptionFragment.changeText();
+                        descriptionFragment.showNext();
+
+                        editBoardName.setVisibility(View.INVISIBLE);
+
+                        menu.findItem(R.id.action_settings).setVisible(true);
+                        menu.findItem(R.id.action_invite).setVisible(true);
+                        menu.findItem(R.id.action_leave).setVisible(true);
+
+                        menu.findItem(R.id.action_agree).setVisible(false);
+
+                        return false;
+                    }
+                });
+
                 break;
             case R.id.action_invite:
 
-                popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                popupWindowInvite.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        changeActivityCompat(BoardWelcomeActivity.this);
+                    }
+                });
+
+                popupWindowInvite.setTouchable(true);
+                popupWindowInvite.setFocusable(true);
+                popupWindowInvite.setBackgroundDrawable(new ColorDrawable(getResources()
+                        .getColor(android.R.color.transparent)));
+                popupWindowInvite.setOutsideTouchable(true);
+
+                popupWindowInvite.showAtLocation(popupView, Gravity.CENTER, 0, 0);
 
                 break;
             case R.id.action_leave:
@@ -469,8 +516,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 JSONArray idsJSON = dataJsonObj.getJSONArray(USER_IDS);
                 JSONArray cidsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
 
-                String boardName = dataJsonObj.getString(BOARD_NAME);
-                String boardDescription = dataJsonObj.getString(BOARD_DESCRIPTION);
+                boardName = dataJsonObj.getString(BOARD_NAME);
+                boardDescription = dataJsonObj.getString(BOARD_DESCRIPTION);
 
                 toolbar.setTitle(boardName);
                 saveText(BoardWelcomeActivity.this, BOARD_NAME, boardName);
@@ -517,7 +564,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
                 saveText(BoardWelcomeActivity.this, BOARD_DESCRIPTION, boardDescription);
 
-                BoardDescriptionFragment descriptionFragment = new BoardDescriptionFragment();
+                descriptionFragment = new BoardDescriptionFragment();
                 BoardParticipantsFragment boardParticipantsFragment
                         = BoardParticipantsFragment.getInstance(BoardWelcomeActivity.this, mBoardParticipants);
                 BoardWelcomeColumnFragment boardWelcomeColumnFragment
