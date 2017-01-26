@@ -114,6 +114,7 @@ public class Constants {
 
         public static final String SERVER_LEAVE_BOARD_METHOD = "/leaveBoard";
         public static final String SERVER_INVITE_IN_BOARD_METHOD = "/inviteInBoard";
+        public static final String SERVER_CHANGE_BOARD_SETTINGS_METHOD = "/changeBoardSettings";
 
     }
 

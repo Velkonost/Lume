@@ -72,6 +72,7 @@ import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
+import static ru.velkonost.lume.Constants.URL.SERVER_CHANGE_BOARD_SETTINGS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_CONTACTS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
@@ -191,13 +192,13 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         initToolbar(BoardWelcomeActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
-        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+//        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onBackPressed();
+//            }
+//        });
 
         /**
          * Получение id пользователя.
@@ -278,7 +279,10 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
 
-                        toolbar.setTitle(editBoardName.getText().toString());
+                        boardName = editBoardName.getText().toString();
+                        boardDescription = descriptionFragment.getText();
+
+                        toolbar.setTitle(boardName);
                         descriptionFragment.changeText();
                         descriptionFragment.showNext();
 
@@ -289,6 +293,13 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                         menu.findItem(R.id.action_leave).setVisible(true);
 
                         menu.findItem(R.id.action_agree).setVisible(false);
+
+                        ChangeBoardSettings changeBoardSettings = new ChangeBoardSettings();
+                        changeBoardSettings.execute();
+
+                        changeActivityCompat(BoardWelcomeActivity.this);
+                        finishAffinity();
+
 
                         return false;
                     }
@@ -434,6 +445,41 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         });
     }
 
+    private class ChangeBoardSettings extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_CHANGE_BOARD_SETTINGS_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + boardId
+                    + AMPERSAND + BOARD_NAME + EQUALS + boardName
+                    + AMPERSAND + BOARD_DESCRIPTION + EQUALS + boardDescription;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+        }
+    }
     private class LeaveBoard extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {

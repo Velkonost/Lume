@@ -62,6 +62,7 @@ public class BoardDescriptionFragment extends Fragment {
     public void showNext(){ switcher.showNext(); }
     public void setText(String text) { this.text = text; }
     public void changeText() { mTextView.setText(mEditText.getText().toString()); }
+    public String getText() { return mEditText.getText().toString(); }
 
 
 }
