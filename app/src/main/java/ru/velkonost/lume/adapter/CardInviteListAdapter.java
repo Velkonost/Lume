@@ -21,7 +21,7 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Contact;
 
 import static ru.velkonost.lume.Constants.AMPERSAND;
-import static ru.velkonost.lume.Constants.BOARD_ID;
+import static ru.velkonost.lume.Constants.CARD_ID;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.JPG;
@@ -29,40 +29,40 @@ import static ru.velkonost.lume.Constants.MARQUEE_REPEAT_LIMIT;
 import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
-import static ru.velkonost.lume.Constants.URL.SERVER_INVITE_IN_BOARD_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_INVITE_IN_CARD_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
 import static ru.velkonost.lume.Managers.ImageManager.getCircleMaskedBitmap;
-import static ru.velkonost.lume.activity.BoardWelcomeActivity.popupWindowBoardInvite;
+import static ru.velkonost.lume.activity.BoardCardActivity.popupWindowCardInvite;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
-public class BoardInviteListAdapter extends RecyclerView.Adapter<BoardInviteListAdapter.BoardInviteViewHolder> {
+public class CardInviteListAdapter extends RecyclerView.Adapter<CardInviteListAdapter.CardInviteViewHolder> {
 
     private List<Contact> data;
     private LayoutInflater inflater;
     private Context context;
-    private int boardId;
+    private int cardId;
     private int curContactId;
 
-    public BoardInviteListAdapter(Context context, List<Contact> data, int boardId) {
+    public CardInviteListAdapter(Context context, List<Contact> data, int cardId) {
         this.context = context;
         this.data = data;
-        this.boardId = boardId;
+        this.cardId = cardId;
 
         inflater = LayoutInflater.from(context);
     }
 
     @Override
-    public BoardInviteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CardInviteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.item_contact_block, parent, false);
 
-        return new BoardInviteViewHolder(view);
+        return new CardInviteViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final BoardInviteViewHolder holder, int position) {
+    public void onBindViewHolder(final CardInviteViewHolder holder, int position) {
         Contact item = data.get(position);
         holder.id = item.getId();
         holder.userName.setText(
@@ -108,12 +108,11 @@ public class BoardInviteListAdapter extends RecyclerView.Adapter<BoardInviteList
                 curContactId = Integer.parseInt(holder.id);
 
                 Depository.setRefreshPopup(true);
-                popupWindowBoardInvite.dismiss();
+                popupWindowCardInvite.dismiss();
 
             }
         });
     }
-
 
 
     @Override
@@ -125,7 +124,7 @@ public class BoardInviteListAdapter extends RecyclerView.Adapter<BoardInviteList
         this.data = data;
     }
 
-    class BoardInviteViewHolder extends RecyclerView.ViewHolder {
+    class CardInviteViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout mRelativeLayout;
         String id;
@@ -134,7 +133,7 @@ public class BoardInviteListAdapter extends RecyclerView.Adapter<BoardInviteList
         ImageView userWithoutName;
         ImageView userAvatar;
 
-        BoardInviteViewHolder(View itemView) {
+        CardInviteViewHolder(View itemView) {
             super(itemView);
 
             mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayoutContact);
@@ -155,12 +154,12 @@ public class BoardInviteListAdapter extends RecyclerView.Adapter<BoardInviteList
              * Формирование адреса, по которому необходимо обратиться.
              **/
             String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
-                    + SERVER_INVITE_IN_BOARD_METHOD;
+                    + SERVER_INVITE_IN_CARD_METHOD;
 
             /**
              * Формирование отправных данных.
              */
-            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + boardId
+            @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId
                     + AMPERSAND + ID + EQUALS + curContactId;
 
             /** Свойство - код ответа, полученных от сервера */

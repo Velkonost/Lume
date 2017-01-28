@@ -131,17 +131,7 @@ public class ColumnFragment extends AbstractTabFragment {
                 JSONArray cidsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
                 JSONArray uidsJSON = dataJsonObj.getJSONArray(USER_IDS);
 
-                int amountParticipants = uidsJSON.length();
-                boolean isBelong = false;
-
                 String userId = loadText(context, ID);
-
-                for (int i = 0; i < uidsJSON.length(); i++) {
-                    if (userId.equals(uidsJSON.get(i))) {
-                        isBelong = true;
-                        break;
-                    }
-                }
 
                 for (int i = 0; i < cidsJSON.length(); i++) {
                     cids.add(cidsJSON.getString(i));

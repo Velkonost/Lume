@@ -119,6 +119,7 @@ public class Constants {
         public static final String SERVER_LEAVE_BOARD_METHOD = "/leaveBoard";
         public static final String SERVER_LEAVE_CARD_METHOD = "/leaveCard";
         public static final String SERVER_INVITE_IN_BOARD_METHOD = "/inviteInBoard";
+        public static final String SERVER_INVITE_IN_CARD_METHOD = "/inviteInCard";
         public static final String SERVER_CHANGE_BOARD_SETTINGS_METHOD = "/changeBoardSettings";
         public static final String SERVER_GET_BOARD_PARTICIPANTS_TO_INVITE_METHOD = "/getInBoardToInvite";
 

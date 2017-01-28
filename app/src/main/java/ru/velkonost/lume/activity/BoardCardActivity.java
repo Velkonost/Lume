@@ -53,7 +53,7 @@ import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.Managers.ValueComparator;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.adapter.BoardInviteListAdapter;
+import ru.velkonost.lume.adapter.CardInviteListAdapter;
 import ru.velkonost.lume.descriptions.BoardParticipant;
 import ru.velkonost.lume.descriptions.CardComment;
 import ru.velkonost.lume.descriptions.Contact;
@@ -138,7 +138,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private View popupView;
-    public static PopupWindow popupWindowInvite;
+    public static PopupWindow popupWindowCardInvite;
 
     private List<Contact> mContacts;
 
@@ -217,7 +217,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
         popupView = layoutInflater.inflate(popup_board_invite_list, null);
 
-        popupWindowInvite = new PopupWindow(popupView,
+        popupWindowCardInvite = new PopupWindow(popupView,
                 WRAP_CONTENT, height - dp2px(120));
 
 
@@ -226,7 +226,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
 
         mGetCardData.execute();
-//        mGetContacts.execute();
+        mGetContacts.execute();
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -262,21 +262,24 @@ public class BoardCardActivity extends AppCompatActivity {
                 break;
             case R.id.action_invite:
 
-                popupWindowInvite.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                popupWindowCardInvite.setOnDismissListener(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
-                        changeActivityCompat(BoardCardActivity.this);
+                        if (Depository.isRefreshPopup())
+                            changeActivityCompat(BoardCardActivity.this);
+                        Depository.setRefreshPopup(false);
+
                     }
                 });
 
 
-                popupWindowInvite.setTouchable(true);
-                popupWindowInvite.setFocusable(true);
-                popupWindowInvite.setBackgroundDrawable(new ColorDrawable(getResources()
+                popupWindowCardInvite.setTouchable(true);
+                popupWindowCardInvite.setFocusable(true);
+                popupWindowCardInvite.setBackgroundDrawable(new ColorDrawable(getResources()
                         .getColor(android.R.color.transparent)));
-                popupWindowInvite.setOutsideTouchable(true);
+                popupWindowCardInvite.setOutsideTouchable(true);
 
-                popupWindowInvite.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                popupWindowCardInvite.showAtLocation(popupView, Gravity.CENTER, 0, 0);
 
                 break;
             case R.id.action_leave:
@@ -862,8 +865,8 @@ public class BoardCardActivity extends AppCompatActivity {
                 }
 
                 recyclerView.setLayoutManager(new LinearLayoutManager(BoardCardActivity.this));
-                recyclerView.setAdapter(new BoardInviteListAdapter(BoardCardActivity.this,
-                        mContacts, Integer.parseInt(boardId)));
+                recyclerView.setAdapter(new CardInviteListAdapter(BoardCardActivity.this,
+                        mContacts, cardId));
 
             } catch (JSONException e) {
                 e.printStackTrace();

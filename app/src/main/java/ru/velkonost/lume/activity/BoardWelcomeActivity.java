@@ -154,7 +154,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private View popupView;
-    public static PopupWindow popupWindowInvite;
+    public static PopupWindow popupWindowBoardInvite;
 
 
     private EditText editBoardName;
@@ -212,7 +212,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
         popupView = layoutInflater.inflate(popup_board_invite_list, null);
 
-        popupWindowInvite = new PopupWindow(popupView,
+        popupWindowBoardInvite = new PopupWindow(popupView,
                 WRAP_CONTENT, height - dp2px(120));
 
 
@@ -298,20 +298,22 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 break;
             case R.id.action_invite:
 
-                popupWindowInvite.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                popupWindowBoardInvite.setOnDismissListener(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
-                        changeActivityCompat(BoardWelcomeActivity.this);
+                        if (Depository.isRefreshPopup())
+                            changeActivityCompat(BoardWelcomeActivity.this);
+                        Depository.setRefreshPopup(false);
                     }
                 });
 
-                popupWindowInvite.setTouchable(true);
-                popupWindowInvite.setFocusable(true);
-                popupWindowInvite.setBackgroundDrawable(new ColorDrawable(getResources()
+                popupWindowBoardInvite.setTouchable(true);
+                popupWindowBoardInvite.setFocusable(true);
+                popupWindowBoardInvite.setBackgroundDrawable(new ColorDrawable(getResources()
                         .getColor(android.R.color.transparent)));
-                popupWindowInvite.setOutsideTouchable(true);
+                popupWindowBoardInvite.setOutsideTouchable(true);
 
-                popupWindowInvite.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                popupWindowBoardInvite.showAtLocation(popupView, Gravity.CENTER, 0, 0);
 
                 break;
             case R.id.action_leave:
