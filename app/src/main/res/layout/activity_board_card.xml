@@ -29,6 +29,19 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="@color/colorPrimary"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:id="@+id/editCardName"
+                    android:background="@color/colorPrimary"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginRight="40dp"
+                    android:maxLines="1"
+                    android:visibility="invisible"/>
+
+
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
         <ScrollView

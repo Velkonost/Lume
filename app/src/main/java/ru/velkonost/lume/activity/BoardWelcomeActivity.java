@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 
@@ -255,6 +256,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.action_settings:
+
                 toolbar.setTitle("");
                 editBoardName.setVisibility(View.VISIBLE);
                 editBoardName.setText(boardName);
@@ -289,7 +291,11 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                         ChangeBoardSettings changeBoardSettings = new ChangeBoardSettings();
                         changeBoardSettings.execute();
 
-                        changeActivityCompat(BoardWelcomeActivity.this);
+
+                        InputMethodManager inputMethodManager = (InputMethodManager)
+                                getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        getCurrentFocus().clearFocus();
 
                         return false;
                     }

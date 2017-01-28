@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 
@@ -85,6 +86,7 @@ import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.TEXT;
 import static ru.velkonost.lume.Constants.URL.SERVER_CARD_ADD_COMMENT_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_CHANGE_CARD_SETTINGS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_COLUMNS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_PARTICIPANTS_TO_INVITE_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_CARD_INFO_METHOD;
@@ -174,6 +176,14 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private String cardName;
 
+    private EditText editCardName;
+
+    private String cardDescription;
+
+    private BoardDescriptionFragment descriptionFragment;
+
+    private Menu menu;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -198,6 +208,7 @@ public class BoardCardActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_card);
 
         mEditTextComment = (EditText) findViewById(R.id.editComment);
+        editCardName = (EditText) findViewById(R.id.editCardName);
 
         Intent intent = getIntent();
         cardName = intent.getExtras().getString(CARD_NAME);
@@ -267,6 +278,8 @@ public class BoardCardActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_board_card, menu);
+
+        this.menu = menu;
         return true;
     }
 
@@ -281,6 +294,54 @@ public class BoardCardActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.action_settings:
+
+                toolbar.setTitle("");
+                editCardName.setVisibility(View.VISIBLE);
+                editCardName.setText(cardName);
+
+                descriptionFragment.showNext();
+
+
+                menu.findItem(R.id.action_settings).setVisible(false);
+                menu.findItem(R.id.action_move).setVisible(false);
+                menu.findItem(R.id.action_invite).setVisible(false);
+                menu.findItem(R.id.action_leave).setVisible(false);
+
+                menu.findItem(R.id.action_agree).setVisible(true);
+
+                menu.findItem(R.id.action_agree).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+
+                        cardName = editCardName.getText().toString();
+                        cardDescription = descriptionFragment.getText();
+
+                        toolbar.setTitle(cardName);
+                        descriptionFragment.changeText();
+                        descriptionFragment.showNext();
+
+                        editCardName.setVisibility(View.INVISIBLE);
+
+                        menu.findItem(R.id.action_settings).setVisible(true);
+                        menu.findItem(R.id.action_invite).setVisible(true);
+                        menu.findItem(R.id.action_leave).setVisible(true);
+
+                        menu.findItem(R.id.action_agree).setVisible(false);
+
+                        ChangeCardSettings changeCardSettings = new ChangeCardSettings();
+                        changeCardSettings.execute();
+
+
+                        InputMethodManager inputMethodManager = (InputMethodManager)
+                                getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        getCurrentFocus().clearFocus();
+
+                        return false;
+                    }
+                });
+
+
                 break;
             case R.id.action_move:
 
@@ -548,7 +609,7 @@ public class BoardCardActivity extends AppCompatActivity {
                 JSONArray idsJSON = dataJsonObj.getJSONArray(USER_IDS);
                 JSONArray cidsJSON = dataJsonObj.getJSONArray(COMMENT_IDS);
 
-                String cardDescription = dataJsonObj.getString(CARD_DESCRIPTION);
+                cardDescription = dataJsonObj.getString(CARD_DESCRIPTION);
 
 
                 ArrayList<String> uids = new ArrayList<>();
@@ -606,7 +667,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
                 saveText(BoardCardActivity.this, BOARD_DESCRIPTION, cardDescription);
 
-                BoardDescriptionFragment descriptionFragment = new BoardDescriptionFragment();
+                descriptionFragment = new BoardDescriptionFragment();
                 CardParticipantsFragment cardParticipantsFragment
                         = CardParticipantsFragment.getInstance(BoardCardActivity.this, mCardParticipants);
                 mCommentsFragment
@@ -984,6 +1045,41 @@ public class BoardCardActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
+    private class ChangeCardSettings extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_CHANGE_CARD_SETTINGS_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId
+                    + AMPERSAND + CARD_NAME + EQUALS + cardName
+                    + AMPERSAND + CARD_DESCRIPTION + EQUALS + cardDescription;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
         }
     }
 }
