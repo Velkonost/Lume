@@ -122,6 +122,8 @@ public class Constants {
         public static final String SERVER_INVITE_IN_CARD_METHOD = "/inviteInCard";
         public static final String SERVER_CHANGE_BOARD_SETTINGS_METHOD = "/changeBoardSettings";
         public static final String SERVER_GET_BOARD_PARTICIPANTS_TO_INVITE_METHOD = "/getInBoardToInvite";
+        public static final String SERVER_GET_BOARD_COLUMNS_METHOD = "/getBoardColumns";
+        public static final String SERVER_MOVE_CARD_METHOD = "/moveCard";
 
     }
 

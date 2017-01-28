@@ -82,7 +82,7 @@
     <string name="ask_confirmation">Вы уверены?</string>
 
     <string name="menu_action_settings">Настройки</string>
-    <string name="menu_action_move">Move</string>
+    <string name="menu_action_move">Переместить</string>
     <string name="menu_action_invite">Пригласить</string>
     <string name="menu_action_leave">Покинуть</string>
 

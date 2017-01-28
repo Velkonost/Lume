@@ -54,6 +54,8 @@ import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.Managers.ValueComparator;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.CardInviteListAdapter;
+import ru.velkonost.lume.adapter.CardMoveListAdapter;
+import ru.velkonost.lume.descriptions.BoardColumn;
 import ru.velkonost.lume.descriptions.BoardParticipant;
 import ru.velkonost.lume.descriptions.CardComment;
 import ru.velkonost.lume.descriptions.Contact;
@@ -71,6 +73,7 @@ import static ru.velkonost.lume.Constants.BOARD_LAST_CONTRIBUTED_USER;
 import static ru.velkonost.lume.Constants.CARD_DESCRIPTION;
 import static ru.velkonost.lume.Constants.CARD_ID;
 import static ru.velkonost.lume.Constants.CARD_NAME;
+import static ru.velkonost.lume.Constants.COLUMN_IDS;
 import static ru.velkonost.lume.Constants.COMMENT;
 import static ru.velkonost.lume.Constants.COMMENT_IDS;
 import static ru.velkonost.lume.Constants.DATE;
@@ -82,6 +85,7 @@ import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.TEXT;
 import static ru.velkonost.lume.Constants.URL.SERVER_CARD_ADD_COMMENT_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_COLUMNS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_PARTICIPANTS_TO_INVITE_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_CARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
@@ -136,16 +140,23 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private String userId;
 
-    private RecyclerView recyclerView;
-    private View popupView;
+    private RecyclerView recyclerViewInvite;
+    private View popupViewInvite;
     public static PopupWindow popupWindowCardInvite;
 
+    private RecyclerView recyclerViewColumns;
+    private View popupViewColumns;
+    public static PopupWindow popupWindowColumns;
+
     private List<Contact> mContacts;
+
+    private List<BoardColumn> mBoardColumns;
 
     /**
      * Идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
      **/
     private ArrayList<String> ids;
+    private ArrayList<String> cids;
 
     /**
      * Контакты авторизованного пользователя.
@@ -159,6 +170,8 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private GetContacts mGetContacts;
 
+    private GetBoardColumns mGetBoardColumns;
+
     private String cardName;
 
 
@@ -170,12 +183,15 @@ public class BoardCardActivity extends AppCompatActivity {
 
         mCardParticipants = new ArrayList<>();
         mContacts = new ArrayList<>();
+        mBoardColumns = new ArrayList<>();
         ids = new ArrayList<>();
+        cids = new ArrayList<>();
         contacts = new HashMap<>();
 
         mCardComments = new ArrayList<>();
         mGetCardData = new GetCardData();
         mGetContacts = new GetContacts();
+        mGetBoardColumns = new GetBoardColumns();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -215,18 +231,26 @@ public class BoardCardActivity extends AppCompatActivity {
         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
 
-        popupView = layoutInflater.inflate(popup_board_invite_list, null);
+        popupViewInvite = layoutInflater.inflate(popup_board_invite_list, null);
+        popupViewColumns = layoutInflater.inflate(popup_board_invite_list, null);
 
-        popupWindowCardInvite = new PopupWindow(popupView,
+        popupWindowCardInvite = new PopupWindow(popupViewInvite,
+                WRAP_CONTENT, height - dp2px(120));
+
+        popupWindowColumns = new PopupWindow(popupViewColumns,
                 WRAP_CONTENT, height - dp2px(120));
 
 
-        recyclerView = (RecyclerView) popupView
+        recyclerViewInvite = (RecyclerView) popupViewInvite
+                .findViewById(R.id.recyclerViewBoardInvite);
+
+        recyclerViewColumns = (RecyclerView) popupViewColumns
                 .findViewById(R.id.recyclerViewBoardInvite);
 
 
         mGetCardData.execute();
         mGetContacts.execute();
+        mGetBoardColumns.execute();
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -259,6 +283,26 @@ public class BoardCardActivity extends AppCompatActivity {
             case R.id.action_settings:
                 break;
             case R.id.action_move:
+
+                popupWindowColumns.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        if (Depository.isRefreshPopup())
+                            changeActivityCompat(BoardCardActivity.this);
+                        Depository.setRefreshPopup(false);
+
+                    }
+                });
+
+
+                popupWindowColumns.setTouchable(true);
+                popupWindowColumns.setFocusable(true);
+                popupWindowColumns.setBackgroundDrawable(new ColorDrawable(getResources()
+                        .getColor(android.R.color.transparent)));
+                popupWindowColumns.setOutsideTouchable(true);
+
+                popupWindowColumns.showAtLocation(popupViewColumns, Gravity.CENTER, 0, 0);
+
                 break;
             case R.id.action_invite:
 
@@ -279,7 +323,7 @@ public class BoardCardActivity extends AppCompatActivity {
                         .getColor(android.R.color.transparent)));
                 popupWindowCardInvite.setOutsideTouchable(true);
 
-                popupWindowCardInvite.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                popupWindowCardInvite.showAtLocation(popupViewInvite, Gravity.CENTER, 0, 0);
 
                 break;
             case R.id.action_leave:
@@ -864,9 +908,78 @@ public class BoardCardActivity extends AppCompatActivity {
                             Integer.parseInt(userInfo.getString(AVATAR))));
                 }
 
-                recyclerView.setLayoutManager(new LinearLayoutManager(BoardCardActivity.this));
-                recyclerView.setAdapter(new CardInviteListAdapter(BoardCardActivity.this,
+                recyclerViewInvite.setLayoutManager(new LinearLayoutManager(BoardCardActivity.this));
+                recyclerViewInvite.setAdapter(new CardInviteListAdapter(BoardCardActivity.this,
                         mContacts, cardId));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private class GetBoardColumns extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_GET_BOARD_COLUMNS_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + boardId;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /** Свойство - полученный JSON–объект*/
+            JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+
+                /**
+                 * Получение идентификаторов найденных пользователей.
+                 */
+                JSONArray idsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
+
+                for (int i = 0; i < idsJSON.length(); i++){
+                    cids.add(idsJSON.getString(i));
+                }
+
+
+                for (int i = 0; i < cids.size(); i++){
+                    JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
+                    mBoardColumns.add(
+                            new BoardColumn(Integer.parseInt(cids.get(i)), columnInfo.getString(NAME))
+                    );
+
+                }
+
+                recyclerViewColumns.setLayoutManager(new LinearLayoutManager(BoardCardActivity.this));
+                recyclerViewColumns.setAdapter(new CardMoveListAdapter(BoardCardActivity.this,
+                        mBoardColumns, cardId));
 
             } catch (JSONException e) {
                 e.printStackTrace();
