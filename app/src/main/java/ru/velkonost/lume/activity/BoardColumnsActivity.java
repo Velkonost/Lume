@@ -1,6 +1,7 @@
 package ru.velkonost.lume.activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,11 +12,17 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.R;
@@ -29,6 +36,7 @@ import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter.last;
 
 public class BoardColumnsActivity extends AppCompatActivity {
 
@@ -110,9 +118,85 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
         viewPager.setCurrentItem(columnOrder);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
 
         tabLayout.setupWithViewPager(viewPager);
+
+        final boolean[] dialogOpen = {false};
+
+        final LinearLayout[] tabStrip = {((LinearLayout) tabLayout.getChildAt(0))};
+
+            tabStrip[0].getChildAt(last + 1).setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+
+
+                    if (!dialogOpen[0]) {
+
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(BoardColumnsActivity.this);
+                        builder.setTitle("Title");
+
+                        final EditText input = new EditText(BoardColumnsActivity.this);
+                        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        builder.setView(input)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //                        m_Text = input.getText().toString();
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                        alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialogInterface) {
+                                dialogOpen[0] = false;
+                            }
+                        });
+                        dialogOpen[0] = true;
+                    }
+
+                    return true;
+                }
+            });
+
+
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
+        {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab)
+            {
+
+                int current = tab.getPosition();
+                Log.i("KEKE", String.valueOf(current));
+                if (tab.getPosition() == last + 1) {
+
+
+                } else viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab)
+            {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab)
+            {
+
+            }
+        });
+
 
         if (adapter.getCount() < MAX_COLUMNS_IN_FIXED_MODE)
             tabLayout.setTabMode(TabLayout.MODE_FIXED);
