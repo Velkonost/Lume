@@ -581,7 +581,6 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
                 for (int i = 0; i < uids.size(); i++) {
                     String participantId = uids.get(i);
-
                     JSONObject userInfo = dataJsonObj.getJSONObject(participantId);
 
                     mBoardParticipants.add(new BoardParticipant(
@@ -611,9 +610,11 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
                 descriptionFragment = new BoardDescriptionFragment();
                 BoardParticipantsFragment boardParticipantsFragment
-                        = BoardParticipantsFragment.getInstance(BoardWelcomeActivity.this, mBoardParticipants);
+                        = BoardParticipantsFragment.getInstance(BoardWelcomeActivity.this,
+                        mBoardParticipants);
                 BoardWelcomeColumnFragment boardWelcomeColumnFragment
-                        = BoardWelcomeColumnFragment.getInstance(BoardWelcomeActivity.this, mBoardColumns);
+                        = BoardWelcomeColumnFragment.getInstance(BoardWelcomeActivity.this,
+                        mBoardColumns, String.valueOf(boardId));
 
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();

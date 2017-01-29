@@ -129,8 +129,7 @@ public class BoardsListActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (timer != null)
-            timer.cancel();
+        if (timer != null) timer.cancel();
     }
 
     /**

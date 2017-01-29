@@ -23,14 +23,17 @@ public class BoardWelcomeColumnFragment extends Fragment {
     private BoardWelcomeColumnListAdapter adapter;
     protected View view;
     protected Context context;
+    private String boardId;
 
-    public static BoardWelcomeColumnFragment getInstance(Context context, List<BoardColumn> columns) {
+    public static BoardWelcomeColumnFragment getInstance(Context context, List<BoardColumn> columns,
+                                                         String boardId) {
         Bundle args = new Bundle();
         BoardWelcomeColumnFragment fragment = new BoardWelcomeColumnFragment();
 
         fragment.setArguments(args);
         fragment.setContext(context);
         fragment.setColumns(columns);
+        fragment.setBoardId(boardId);
 
         return fragment;
     }
@@ -42,7 +45,7 @@ public class BoardWelcomeColumnFragment extends Fragment {
 
         GridView gridView = (GridView) view.findViewById(R.id.gridColumns);
 
-        adapter = new BoardWelcomeColumnListAdapter(getActivity(), mColumns);
+        adapter = new BoardWelcomeColumnListAdapter(getActivity(), mColumns, boardId);
         gridView.setAdapter(adapter);
         adjustGridView(gridView);
         return view;
@@ -61,6 +64,7 @@ public class BoardWelcomeColumnFragment extends Fragment {
     }
 
     public void setContext (Context context) {this.context = context;}
+    public void setBoardId (String boardId) {this.boardId = boardId;}
 
     public void setColumns(List<BoardColumn> mColumns) {
         this.mColumns= mColumns;

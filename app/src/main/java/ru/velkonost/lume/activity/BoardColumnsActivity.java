@@ -3,6 +3,7 @@ package ru.velkonost.lume.activity;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -16,7 +17,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -24,19 +24,30 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import java.io.IOException;
+
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter;
 
+import static ru.velkonost.lume.Constants.AMPERSAND;
+import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.BOARD_NAME;
 import static ru.velkonost.lume.Constants.COLUMN_ORDER;
+import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.MAX_COLUMNS_IN_FIXED_MODE;
+import static ru.velkonost.lume.Constants.NAME;
+import static ru.velkonost.lume.Constants.URL.SERVER_ADD_COLUMN_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
+import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
+import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter.last;
+import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 public class BoardColumnsActivity extends AppCompatActivity {
 
@@ -61,6 +72,9 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     private int columnOrder;
 
+    private String boardId;
+    private String columnName;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +88,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         columnOrder = intent.getExtras().getInt(COLUMN_ORDER);
+        boardId = intent.getExtras().getString(BOARD_ID);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(BoardColumnsActivity.this, toolbar,
@@ -111,7 +126,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     private void initTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPagerColumns);
-        BoardColumnsTabsFragmentAdapter adapter
+        final BoardColumnsTabsFragmentAdapter adapter
                 = new BoardColumnsTabsFragmentAdapter(this, getSupportFragmentManager());
 
         viewPager.setAdapter(adapter);
@@ -138,12 +153,26 @@ public class BoardColumnsActivity extends AppCompatActivity {
                         builder.setTitle("Title");
 
                         final EditText input = new EditText(BoardColumnsActivity.this);
-                        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        input.setHint("Enter column's name...");
+                        input.setInputType(InputType.TYPE_CLASS_TEXT);
                         builder.setView(input)
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        //                        m_Text = input.getText().toString();
+                                        columnName = input.getText().toString();
+
+                                        if (columnName.length() != 0) {
+                                            AddColumn addColumn = new AddColumn();
+                                            addColumn.execute();
+
+                                            Intent intent = new Intent(BoardColumnsActivity.this,
+                                                    BoardWelcomeActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            intent.putExtra(BOARD_ID, Integer.parseInt(boardId));
+                                            BoardColumnsActivity.this.startActivity(intent);
+                                            finish();
+                                        } else dialog.cancel();
+
                                     }
                                 })
                                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -168,35 +197,6 @@ public class BoardColumnsActivity extends AppCompatActivity {
                     return true;
                 }
             });
-
-
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
-        {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab)
-            {
-
-                int current = tab.getPosition();
-                Log.i("KEKE", String.valueOf(current));
-                if (tab.getPosition() == last + 1) {
-
-
-                } else viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab)
-            {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab)
-            {
-
-            }
-        });
-
 
         if (adapter.getCount() < MAX_COLUMNS_IN_FIXED_MODE)
             tabLayout.setTabMode(TabLayout.MODE_FIXED);
@@ -303,5 +303,41 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+
+    private class AddColumn extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_ADD_COLUMN_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + boardId
+                    + AMPERSAND + NAME + EQUALS + columnName;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+        }
     }
 }
