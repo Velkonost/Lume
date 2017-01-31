@@ -64,6 +64,7 @@ public class Constants {
     public static final String DATE = "date";
 
     public static final String NAME = "name";
+    public static final String DESCRIPTION = "description";
     public static final String SURNAME = "surname";
     public static final String WORK_EMAIL = "work_email";
     public static final String COUNTRY = "country";
@@ -126,6 +127,7 @@ public class Constants {
         public static final String SERVER_GET_BOARD_COLUMNS_METHOD = "/getBoardColumns";
         public static final String SERVER_MOVE_CARD_METHOD = "/moveCard";
         public static final String SERVER_ADD_COLUMN_METHOD = "/addColumn";
+        public static final String SERVER_ADD_CARD_METHOD = "/addCard";
 
     }
 
