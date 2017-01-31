@@ -515,7 +515,7 @@ public class BoardsListActivity extends AppCompatActivity {
             String resultJson = "";
 
             /**
-             * Соединяется с сервером, отправляет данные, получает ответ.
+             * Соединяетс я с сервером, отправляет данные, получает ответ.
              * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
              **/
             try {

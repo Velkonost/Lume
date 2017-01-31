@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -73,6 +74,7 @@ import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
+import static ru.velkonost.lume.Constants.URL.SERVER_ADD_COLUMN_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_CHANGE_BOARD_SETTINGS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_CONTACTS_METHOD;
@@ -161,6 +163,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     private EditText editBoardName;
 
     private String boardName;
+    private String columnName;
     private String boardDescription;
 
     private BoardDescriptionFragment descriptionFragment;
@@ -223,6 +226,47 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
         mGetBoardInfo.execute();
         mGetContacts.execute();
+
+    }
+
+    public void addColumnOnClick(View view) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(BoardWelcomeActivity.this);
+        builder.setTitle("Title");
+
+        final EditText input = new EditText(BoardWelcomeActivity.this);
+        input.setHint("Enter column's name...");
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        columnName = input.getText().toString();
+
+                        if (columnName.length() != 0) {
+                            AddColumn addColumn = new AddColumn();
+                            addColumn.execute();
+
+                            Intent intent = new Intent(BoardWelcomeActivity.this,
+                                    BoardWelcomeActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra(BOARD_ID, boardId);
+                            BoardWelcomeActivity.this.startActivity(intent);
+                            finish();
+
+                        } else dialog.cancel();
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
 
     }
 
@@ -738,6 +782,40 @@ public class BoardWelcomeActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
+    private class AddColumn extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_ADD_COLUMN_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + boardId
+                    + AMPERSAND + NAME + EQUALS + columnName;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
         }
     }
 

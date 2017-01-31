@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -48,6 +49,19 @@ public class BoardWelcomeColumnFragment extends Fragment {
         adapter = new BoardWelcomeColumnListAdapter(getActivity(), mColumns, boardId);
         gridView.setAdapter(adapter);
         adjustGridView(gridView);
+
+        if (gridView.getCount() == 0){
+//            GridView.LayoutParams params
+//                    = new GridView.LayoutParams(GridView.LayoutParams.MATCH_PARENT, 0);
+//
+//            gridView.setLayoutParams(params);
+            gridView.setVisibility(View.INVISIBLE);
+
+            TextView textView = (TextView) view.findViewById(R.id.noColumns);
+            textView.setVisibility(View.VISIBLE);
+
+        }
+
         return view;
     }
 
