@@ -14,6 +14,10 @@ public class Constants {
     public static final String HYPHEN = "-";
     public static final String PLUS = "+";
 
+
+    public static final String AMOUNT = "amount";
+    public static final String BELONG = "belong";
+
     public static final String LOGIN = "login";
     public static final String REGISTRATION = "registration";
     public static final String PASSWORD = "password";
@@ -60,6 +64,8 @@ public class Constants {
     public static final String DATE = "date";
 
     public static final String NAME = "name";
+    public static final String PREVIOUS_NAME = "previous_name";
+    public static final String DESCRIPTION = "description";
     public static final String SURNAME = "surname";
     public static final String WORK_EMAIL = "work_email";
     public static final String COUNTRY = "country";
@@ -78,6 +84,7 @@ public class Constants {
     public static final String ADD_CONTACT = "addContact";
 
     public static final String PARTICIPANTS = "participants";
+    public static final String POSITION = "position";
 
     /** Класс констант, относящихся исключительно к построению URL */
     public static class URL {
@@ -111,6 +118,20 @@ public class Constants {
         public static final String SERVER_GET_CARD_PARTICIPANTS_METHOD = "/getCardParticipants";
         public static final String SERVER_GET_CARD_INFO_METHOD = "/getCardInfo";
         public static final String SERVER_CARD_ADD_COMMENT_METHOD = "/cardAddComment";
+
+        public static final String SERVER_LEAVE_BOARD_METHOD = "/leaveBoard";
+        public static final String SERVER_LEAVE_CARD_METHOD = "/leaveCard";
+        public static final String SERVER_INVITE_IN_BOARD_METHOD = "/inviteInBoard";
+        public static final String SERVER_INVITE_IN_CARD_METHOD = "/inviteInCard";
+        public static final String SERVER_CHANGE_BOARD_SETTINGS_METHOD = "/changeBoardSettings";
+        public static final String SERVER_CHANGE_CARD_SETTINGS_METHOD = "/changeCardSettings";
+        public static final String SERVER_GET_BOARD_PARTICIPANTS_TO_INVITE_METHOD = "/getInBoardToInvite";
+        public static final String SERVER_GET_BOARD_COLUMNS_METHOD = "/getBoardColumns";
+        public static final String SERVER_MOVE_CARD_METHOD = "/moveCard";
+        public static final String SERVER_ADD_COLUMN_METHOD = "/addColumn";
+        public static final String SERVER_ADD_CARD_METHOD = "/addCard";
+        public static final String SERVER_ADD_BOARD_METHOD = "/addBoard";
+        public static final String SERVER_CHANGE_COLUMN_SETTINGS_METHOD = "/changeColumnSettings";
 
     }
 

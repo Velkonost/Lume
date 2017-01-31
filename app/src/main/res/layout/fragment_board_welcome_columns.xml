@@ -7,7 +7,16 @@
               android:background="@color/colorWhite">
     <GridView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/gridColumns"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:id="@+id/noColumns"
+        android:visibility="invisible"
+        android:onClick="addColumnOnClick"
+        android:text="Колонок еще нет"/>
 
 </LinearLayout>

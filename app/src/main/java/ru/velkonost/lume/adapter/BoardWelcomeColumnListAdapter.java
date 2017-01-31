@@ -16,16 +16,20 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.BoardColumnsActivity;
 import ru.velkonost.lume.descriptions.BoardColumn;
 
+import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.COLUMN_ORDER;
 
 public class BoardWelcomeColumnListAdapter extends ArrayAdapter {
+
     private List<BoardColumn> data;
     private Context mContext;
+    private String boardId;
 
-    public BoardWelcomeColumnListAdapter(Context context, List<BoardColumn> data) {
+    public BoardWelcomeColumnListAdapter(Context context, List<BoardColumn> data, String boardId) {
         super(context, R.layout.item_board_column, data);
         mContext = context;
         this.data = data;
+        this.boardId = boardId;
     }
 
     public void setData(List<BoardColumn> data) {
@@ -53,7 +57,9 @@ public class BoardWelcomeColumnListAdapter extends ArrayAdapter {
                         Intent intent = new Intent(mContext, BoardColumnsActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra(COLUMN_ORDER, boardColumn.getOrder());
+                        intent.putExtra(BOARD_ID, boardId);
                         mContext.startActivity(intent);
+
                     }
                 }, 350);
             }

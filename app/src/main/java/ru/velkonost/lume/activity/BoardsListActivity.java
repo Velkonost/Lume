@@ -2,21 +2,29 @@ package ru.velkonost.lume.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.text.InputType;
+import android.util.TypedValue;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,9 +40,13 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Board;
 import ru.velkonost.lume.fragments.BoardsFragment;
 
+import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.BOARD_IDS;
+import static ru.velkonost.lume.Constants.DESCRIPTION;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.NAME;
+import static ru.velkonost.lume.Constants.URL.SERVER_ADD_BOARD_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
@@ -89,6 +101,11 @@ public class BoardsListActivity extends AppCompatActivity {
 
     private TimerCheckBoardsState timer;
 
+    private FloatingActionButton addNewBoard;
+
+    private String boardName;
+    private String boardDescription;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +119,7 @@ public class BoardsListActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_boards);
+        addNewBoard = (FloatingActionButton) findViewById(R.id.btnAddBoard);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(BoardsListActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
@@ -124,14 +142,76 @@ public class BoardsListActivity extends AppCompatActivity {
             }
         }, 10000);
 
+    }
 
+    public void createBoardOnClick(View view) {
+
+        LinearLayout layout = new LinearLayout(BoardsListActivity.this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout.LayoutParams  params =
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, dp2px(20), 0, dp2px(20));
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(BoardsListActivity.this);
+        builder.setTitle("Title");
+
+        final EditText inputName = new EditText(BoardsListActivity.this);
+        inputName.setLayoutParams(params);
+
+        inputName.setHint("Enter card's name...");
+        inputName.setInputType(InputType.TYPE_CLASS_TEXT);
+        layout.addView(inputName);
+
+        final EditText inputDesc = new EditText(BoardsListActivity.this);
+        inputDesc.setLayoutParams(params);
+
+        inputDesc.setHint("Enter card's description...");
+        layout.addView(inputDesc);
+
+
+        builder.setView(layout)
+
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        boardName = inputName.getText().toString();
+                        boardDescription = inputDesc.getText().toString();
+
+                        if (boardName.length() != 0) {
+
+                            AddBoard addBoard = new AddBoard();
+                            addBoard.execute();
+
+                            changeActivityCompat(BoardsListActivity.this);
+
+                        } else dialog.cancel();
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+
+        AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                BoardsListActivity.this.getResources().getDisplayMetrics());
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (timer != null)
-            timer.cancel();
+        if (timer != null) timer.cancel();
     }
 
     /**
@@ -241,6 +321,7 @@ public class BoardsListActivity extends AppCompatActivity {
         public void onFinish() {
         }
     }
+
     private class GetBoards extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -411,6 +492,41 @@ public class BoardsListActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
+    private class AddBoard extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_ADD_BOARD_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = NAME + EQUALS + boardName
+                    + AMPERSAND + DESCRIPTION + EQUALS + boardDescription
+                    + AMPERSAND + ID + EQUALS + userId;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяетс я с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
         }
     }
 

@@ -16,6 +16,7 @@ public class BoardColumnsTabsFragmentAdapter extends FragmentPagerAdapter {
 
     private Map<Integer, AbstractTabFragment> tabs;
     private Context context;
+    public static int last = 0;
 
     public BoardColumnsTabsFragmentAdapter(Context context, FragmentManager fm) {
         super(fm);
@@ -43,10 +44,14 @@ public class BoardColumnsTabsFragmentAdapter extends FragmentPagerAdapter {
         tabs = new HashMap<>();
 
         List<BoardColumn> boardColumns = Depository.getBoardColumns();
+        last = 0;
 
         for (int i = 0; i < boardColumns.size(); i++) {
             tabs.put(i, ColumnFragment.getInstance(context, boardColumns.get(i).getId(),
                     boardColumns.get(i).getName()));
+
+            last = i;
         }
+        tabs.put(last + 1, AddColumnFragment.getInstance(context));
     }
 }

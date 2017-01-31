@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
@@ -42,7 +41,6 @@ public class Initializations {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(header)
                 .setMessage(description)
-//                .setIcon(R.drawable.ic_android_cat) МОЖНО ДОБАВИТЬ ИКОНКУ!
                 .setCancelable(false)
                 .setNegativeButton(btnName,
                         new DialogInterface.OnClickListener() {
@@ -106,7 +104,6 @@ public class Initializations {
 
         if (currentIntent.filterEquals(nextIntent)) {
             a.finish();
-            Log.i("CUR", String.valueOf(currentIntent));
         }
         a.overridePendingTransition(0, 0);
 
