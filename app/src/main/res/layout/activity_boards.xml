@@ -38,14 +38,29 @@
                     android:hint="@string/search_title"/>
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
-        <LinearLayout
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/llboards"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:orientation="vertical"
             app:layout_anchor="@id/appbarlayout"
-            app:layout_anchorGravity="bottom"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/llboards"
+                android:orientation="vertical"
+                app:layout_anchorGravity="bottom"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/btnAddBoard"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_margin="10dp"
+                app:layout_anchorGravity="bottom|end"
+                style="@style/FabStyle"
+                android:onClick="createBoardOnClick"
+                android:src="@mipmap/ic_check"/>
+        </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>
 
 

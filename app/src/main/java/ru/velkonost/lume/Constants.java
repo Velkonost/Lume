@@ -130,6 +130,7 @@ public class Constants {
         public static final String SERVER_MOVE_CARD_METHOD = "/moveCard";
         public static final String SERVER_ADD_COLUMN_METHOD = "/addColumn";
         public static final String SERVER_ADD_CARD_METHOD = "/addCard";
+        public static final String SERVER_ADD_BOARD_METHOD = "/addBoard";
         public static final String SERVER_CHANGE_COLUMN_SETTINGS_METHOD = "/changeColumnSettings";
 
     }

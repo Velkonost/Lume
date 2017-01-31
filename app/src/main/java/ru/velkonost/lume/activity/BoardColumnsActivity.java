@@ -134,15 +134,9 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 builder.setTitle("Title");
 
                 final EditText inputName = new EditText(BoardColumnsActivity.this);
-//                inputName.setLayoutParams(params);
 
                 inputName.setText(currentColumnName);
                 inputName.setInputType(InputType.TYPE_CLASS_TEXT);
-//                layout.addView(inputName);
-
-
-//                layout.addView(inputDesc);
-
 
                 builder.setView(inputName)
 
@@ -362,7 +356,6 @@ public class BoardColumnsActivity extends AppCompatActivity {
         });
     }
 
-
     private class AddColumn extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -432,4 +425,5 @@ public class BoardColumnsActivity extends AppCompatActivity {
             super.onPostExecute(strJson);
         }
     }
+
 }
