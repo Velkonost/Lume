@@ -38,7 +38,9 @@ import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.MAX_COLUMNS_IN_FIXED_MODE;
 import static ru.velkonost.lume.Constants.NAME;
+import static ru.velkonost.lume.Constants.POSITION;
 import static ru.velkonost.lume.Constants.URL.SERVER_ADD_COLUMN_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_CHANGE_COLUMN_SETTINGS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
@@ -75,6 +77,10 @@ public class BoardColumnsActivity extends AppCompatActivity {
     private String boardId;
     private String columnName;
 
+    private TabLayout tabLayout;
+
+    private String currentColumnName;
+    private int currentColumnPosition;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,6 +125,59 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
         switch (id){
             case 0:
+
+                currentColumnName = tabLayout.getTabAt(viewPager.getCurrentItem()).getText().toString();
+                currentColumnPosition = viewPager.getCurrentItem() + 1;
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(BoardColumnsActivity.this);
+                builder.setTitle("Title");
+
+                final EditText inputName = new EditText(BoardColumnsActivity.this);
+//                inputName.setLayoutParams(params);
+
+                inputName.setText(currentColumnName);
+                inputName.setInputType(InputType.TYPE_CLASS_TEXT);
+//                layout.addView(inputName);
+
+
+//                layout.addView(inputDesc);
+
+
+                builder.setView(inputName)
+
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                currentColumnName = inputName.getText().toString();
+
+                                if (currentColumnName.length() != 0) {
+
+                                    ChangeColumnSettings changeColumnSettings = new ChangeColumnSettings();
+                                    changeColumnSettings.execute();
+
+                                    Intent intent = new Intent(BoardColumnsActivity.this,
+                                            BoardWelcomeActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.putExtra(BOARD_ID, Integer.parseInt(boardId));
+                                    BoardColumnsActivity.this.startActivity(intent);
+                                    finish();
+
+                                } else dialog.cancel();
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+
+                AlertDialog alert = builder.create();
+                alert.show();
+
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -133,7 +192,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
         viewPager.setCurrentItem(columnOrder);
 
-        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
 
         tabLayout.setupWithViewPager(viewPager);
 
@@ -147,7 +206,6 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
 
                     if (!dialogOpen[0]) {
-
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(BoardColumnsActivity.this);
                         builder.setTitle("Title");
@@ -181,7 +239,6 @@ public class BoardColumnsActivity extends AppCompatActivity {
                                         dialog.cancel();
                                     }
                                 });
-
 
                         AlertDialog alert = builder.create();
                         alert.show();
@@ -321,6 +378,41 @@ public class BoardColumnsActivity extends AppCompatActivity {
              */
             @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + boardId
                     + AMPERSAND + NAME + EQUALS + columnName;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+        }
+    }
+    private class ChangeColumnSettings extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_CHANGE_COLUMN_SETTINGS_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + boardId
+                    + AMPERSAND + NAME + EQUALS + currentColumnName
+                    + AMPERSAND + POSITION + EQUALS + currentColumnPosition;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";

@@ -64,6 +64,7 @@ public class Constants {
     public static final String DATE = "date";
 
     public static final String NAME = "name";
+    public static final String PREVIOUS_NAME = "previous_name";
     public static final String DESCRIPTION = "description";
     public static final String SURNAME = "surname";
     public static final String WORK_EMAIL = "work_email";
@@ -83,6 +84,7 @@ public class Constants {
     public static final String ADD_CONTACT = "addContact";
 
     public static final String PARTICIPANTS = "participants";
+    public static final String POSITION = "position";
 
     /** Класс констант, относящихся исключительно к построению URL */
     public static class URL {
@@ -128,6 +130,7 @@ public class Constants {
         public static final String SERVER_MOVE_CARD_METHOD = "/moveCard";
         public static final String SERVER_ADD_COLUMN_METHOD = "/addColumn";
         public static final String SERVER_ADD_CARD_METHOD = "/addCard";
+        public static final String SERVER_CHANGE_COLUMN_SETTINGS_METHOD = "/changeColumnSettings";
 
     }
 
