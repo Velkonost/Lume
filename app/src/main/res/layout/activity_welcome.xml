@@ -1,65 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/colorBlue">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorBlue">
 
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <ImageView
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbarlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@mipmap/lume"
-        android:id="@+id/lumeImage"/>
+        android:background="@color/search_layover_bg">
 
-    <EditText
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorBlue"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/loginLogIn"
-        android:maxLines="1"
-        android:hint="@string/login_placeholder"
-        style="@style/EditText.Login"
-        android:layout_below="@id/lumeImage"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="15dp"/>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/lume"
+            android:id="@+id/lumeImage"/>
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/passwordLogIn"
-        android:hint="@string/password_placeholder"
-        android:layout_below="@id/loginLogIn"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        style="@style/EditText.Login"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/loginLogIn"
+            android:maxLines="1"
+            android:hint="@string/login_placeholder"
+            style="@style/EditText.Login"
+            android:layout_below="@id/lumeImage"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="15dp"/>
 
-    <Button
-        android:text="@string/logIn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnLoginWelcome"
-        android:onClick="chooseWayToEnter"
-        android:background="@drawable/button_welcome"
-        android:layout_below="@id/passwordLogIn"
-        android:layout_margin="30dp"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/passwordLogIn"
+            android:hint="@string/password_placeholder"
+            android:layout_below="@id/loginLogIn"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            style="@style/EditText.Login"/>
+        </RelativeLayout>
 
-
-    <Button
-        android:text="@string/registration"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnRegistrationWelcome"
-        android:onClick="chooseWayToEnter"
-        android:background="@drawable/button_welcome"
-        android:layout_gravity="bottom"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="30dp"/>
-
+</android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>

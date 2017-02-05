@@ -9,9 +9,10 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.view.View;
-import android.widget.Button;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import org.json.JSONException;
@@ -30,9 +31,10 @@ import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.PASSWORD;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
-import static ru.velkonost.lume.Constants.URL.SERVER_LOGIN_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
+import static ru.velkonost.lume.Constants.URL.SERVER_REGISTRATION_METHOD;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialog;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.saveText;
@@ -45,7 +47,7 @@ import static ru.velkonost.lume.net.ServerConnection.hasConnection;
  * Стартовая активность, предлагающая зарегистрироваться или войти.
  * Если пользователь входил ранее, то сразу перебрасывается на страницу своего профиля.
  */
-public class WelcomeActivity extends Activity {
+public class WelcomeActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_welcome;
 
@@ -57,11 +59,20 @@ public class WelcomeActivity extends Activity {
     /** Cвойство - введенный пользователем пароль */
     private EditText inputPassword;
 
+    /**
+     * Свойство - описание верхней панели инструментов приложения.
+     */
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        /** {@link Initializations#initToolbar(Toolbar, int)}  */
+        initToolbar(WelcomeActivity.this, toolbar, ""); /** Инициализация */
 
         /** Прикрепляет поля к view-элементам */
         inputLogin = (EditText) findViewById(R.id.loginLogIn);
@@ -89,6 +100,12 @@ public class WelcomeActivity extends Activity {
         checkConnection();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
+    }
+
     /**
      * Проверяет отсутствие интернет-соединения.
      * Показывает соответствующее уведомление.
@@ -109,13 +126,9 @@ public class WelcomeActivity extends Activity {
             /**
              * Закрашивает кнопки, делает некликабельными.
              */
-            Button btnLogin = (Button) findViewById(R.id.btnLoginWelcome);
-            btnLogin.setBackgroundColor(ContextCompat.getColor(this, R.color.colorRed));
-            btnLogin.setClickable(false);
 
-            Button btnRegistration = (Button) findViewById(R.id.btnRegistrationWelcome);
-            btnRegistration.setBackgroundColor(ContextCompat.getColor(this, R.color.colorRed));
-            btnRegistration.setClickable(false);
+            inputLogin.setEnabled(false);
+            inputPassword.setEnabled(false);
         }
 
         /**
@@ -125,39 +138,24 @@ public class WelcomeActivity extends Activity {
         else checkCookieId();
     }
 
-    /**
-     * Функция служит обработчкиком событий для кнопок
-     * {@link WelcomeActivity#LAYOUT}
-     * @param view Нажатая кнопка
-     */
-    public void chooseWayToEnter(View view) {
-        switch (view.getId()) {
-            /**
-             * Если нажата кнопка регистрации - переходим в активность с регистрацией
-             * {@link RegistrationActivity}
-             */
-            case R.id.btnRegistrationWelcome:
-                mIntentNext = new Intent(this, RegistrationActivity.class);
-                changeActivityCompat(WelcomeActivity.this, mIntentNext);
-                break;
 
-            /**
-             * Если нажата кнопка входа - переходим в активность со входом.
-             * {@link LoginActivity}
-             * {@link Initializations#changeActivityCompat(Activity, Intent)}
-             */
-            case R.id.btnLoginWelcome:
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getGroupId();
+
+        switch (id){
+            case 0:
+
                 /**
-                 * Если поля заполнены, тогда запускается параллельый поток,
-                 *      в котором происходит взаимодействие с сервером
-                 **/
+                 * Отправляем данные на сервер.
+                 */
                 if (inputLogin.getText().length() != 0
                         && inputPassword.getText().length() != 0)
                     new SignIn().execute();
 
                 break;
         }
-
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -189,7 +187,7 @@ public class WelcomeActivity extends Activity {
              * Формирование адреса, по которому необходимо обратиться.
              **/
             String loginURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
-                    + SERVER_LOGIN_METHOD;
+                    + SERVER_REGISTRATION_METHOD;
 
             /**
              * Формирование отправных данных.
@@ -241,10 +239,14 @@ public class WelcomeActivity extends Activity {
                  * Обработка полученного кода ответа.
                  */
                 switch (resultCode){
+
+
+
                     /**
                      * В случае успешного выполнения.
                      **/
-                    case 200:
+                    case 100:
+
                         /**
                          * Получение id вошедшего пользователя, запись его в файл на устройстве.
                          */
@@ -258,6 +260,27 @@ public class WelcomeActivity extends Activity {
                         Intent profileIntent = new Intent(WelcomeActivity.this, ProfileActivity.class);
                         changeActivityCompat(WelcomeActivity.this, profileIntent);
                         finish();
+
+                        break;
+
+                    /**
+                     * В случае успешного выполнения.
+                     **/
+                    case 200:
+                        /**
+                         * Получение id вошедшего пользователя, запись его в файл на устройстве.
+                         */
+                        String id2 = dataJsonObj.getString(ID);
+                        saveText(WelcomeActivity.this, ID, id2);
+
+                        /**
+                         * Переход на новую активность - профиль вошедшего пользователя.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         */
+                        Intent profileIntent2 = new Intent(WelcomeActivity.this, ProfileActivity.class);
+                        changeActivityCompat(WelcomeActivity.this, profileIntent2);
+                        finish();
+
                         break;
                     /**
                      * Неправильно введен логин или пароль.
