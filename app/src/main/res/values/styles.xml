@@ -29,4 +29,14 @@
         <item name="android:shadowColor">@android:color/black</item>
     </style>
 
+
+    <style name="EditText.Login" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@android:color/darker_gray</item>
+        <item name="colorAccent">@color/colorBlue</item>
+        <item name="colorControlNormal">#9e9e9e</item>
+        <!--<item name="colorControlActivated">@color/colorBlue</item>-->
+        <item name="android:textColorSecondary">@color/colorWhite</item>
+
+    </style>
 </resources>

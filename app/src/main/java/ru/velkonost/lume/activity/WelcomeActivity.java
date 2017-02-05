@@ -3,7 +3,11 @@ package ru.velkonost.lume.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -63,6 +67,20 @@ public class WelcomeActivity extends Activity {
         inputLogin = (EditText) findViewById(R.id.loginLogIn);
         inputPassword = (EditText) findViewById(R.id.passwordLogIn);
 
+
+        Drawable drawableLogin = inputLogin.getBackground(); // get current EditText drawable
+        drawableLogin.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP); // change the drawable color
+
+        Drawable drawablePassword = inputPassword.getBackground(); // get current EditText drawable
+        drawablePassword.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP); // change the drawable color
+
+        if (Build.VERSION.SDK_INT > 16) {
+            inputLogin.setBackground(drawableLogin); // set the new drawable to EditText
+            inputPassword.setBackground(drawablePassword); // set the new drawable to EditText
+        } else {
+            inputLogin.setBackgroundDrawable(drawableLogin); // use setBackgroundDrawable because setBackground required API 16
+            inputPassword.setBackgroundDrawable(drawablePassword); // use setBackgroundDrawable because setBackground required API 16
+        }
 
         /**
          * Проверяет интернет-соединение на данном устройстве.
@@ -132,11 +150,10 @@ public class WelcomeActivity extends Activity {
                 /**
                  * Если поля заполнены, тогда запускается параллельый поток,
                  *      в котором происходит взаимодействие с сервером
-                 * */
+                 **/
                 if (inputLogin.getText().length() != 0
                         && inputPassword.getText().length() != 0)
                     new SignIn().execute();
-
 
                 break;
         }
