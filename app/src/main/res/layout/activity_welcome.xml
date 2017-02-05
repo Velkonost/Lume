@@ -1,15 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <Button
-        android:text="@string/registration"
+
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btnRegistrationWelcome"
-        android:onClick="chooseWayToEnter"/>
+        android:src="@mipmap/lume"
+        android:id="@+id/lumeImage"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text=""
+        android:ems="10"
+        android:id="@+id/loginLogIn"
+        android:maxLines="1"
+        android:hint="@string/login_placeholder"
+        android:layout_below="@id/lumeImage"
+        android:layout_margin="10dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/passwordLogIn"
+        android:hint="@string/password_placeholder"
+        android:layout_below="@id/loginLogIn"
+        android:layout_margin="10dp"/>
 
     <Button
         android:text="@string/logIn"
@@ -17,5 +39,21 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnLoginWelcome"
         android:onClick="chooseWayToEnter"
-        />
-</LinearLayout>
+        android:background="@drawable/button_welcome"
+        android:layout_below="@id/passwordLogIn"
+        android:layout_margin="10dp"/>
+
+
+    <Button
+        android:text="@string/registration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnRegistrationWelcome"
+        android:onClick="chooseWayToEnter"
+        android:background="@drawable/button_welcome"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"/>
+
+
+</RelativeLayout>
