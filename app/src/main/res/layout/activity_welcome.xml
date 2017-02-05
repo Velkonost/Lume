@@ -4,7 +4,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorBlue">
+                android:background="@drawable/background_activity_welcome">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -14,13 +14,12 @@
         android:id="@+id/appbarlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/search_layover_bg">
+        android:background="@null">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorBlue"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
 
     </android.support.design.widget.AppBarLayout>

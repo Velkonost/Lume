@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Lume</string>
-    <string name="login_placeholder">Login</string>
-    <string name="password_placeholder">Password</string>
+    <string name="login_placeholder">Login…</string>
+    <string name="password_placeholder">Password…</string>
     <string name="btn_login">Enter</string>
     <string name="repeat_password_placeholder">Repeat password…</string>
     <string name="email_placeholder">Email…</string>
