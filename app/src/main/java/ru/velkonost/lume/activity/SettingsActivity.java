@@ -19,9 +19,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -136,6 +139,8 @@ public class SettingsActivity extends AppCompatActivity {
     protected EditText editEmail; /** Основной email пользователя */
     protected EditText editWorkEmail; /** email, который виден другим пользователям*/
 
+    private Animation rotateArrow;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -176,6 +181,12 @@ public class SettingsActivity extends AppCompatActivity {
         initDateBirthdayDatePicker(); /** Инициализация */
 
         mGetData.execute();
+
+        rotateArrow = AnimationUtils.loadAnimation(this, R.anim.arrow_rotation);
+
+        final ImageView imageView = (ImageView) findViewById(R.id.image_arrow);
+        imageView.startAnimation(rotateArrow);
+
     }
 
     /**
