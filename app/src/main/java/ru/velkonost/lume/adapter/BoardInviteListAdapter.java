@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -127,7 +127,7 @@ public class BoardInviteListAdapter extends RecyclerView.Adapter<BoardInviteList
 
     class BoardInviteViewHolder extends RecyclerView.ViewHolder {
 
-        RelativeLayout mRelativeLayout;
+        LinearLayout mRelativeLayout;
         String id;
         TextView userName;
         TextView userLogin;
@@ -137,7 +137,7 @@ public class BoardInviteListAdapter extends RecyclerView.Adapter<BoardInviteList
         BoardInviteViewHolder(View itemView) {
             super(itemView);
 
-            mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayoutContact);
+            mRelativeLayout = (LinearLayout) itemView.findViewById(R.id.relativeLayoutContact);
 
             userName = (TextView) itemView.findViewById(R.id.userName);
             userLogin = (TextView) itemView.findViewById(R.id.userLogin);
