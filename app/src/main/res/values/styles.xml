@@ -37,6 +37,11 @@
         <item name="colorControlNormal">#9e9e9e</item>
         <!--<item name="colorControlActivated">@color/colorBlue</item>-->
         <item name="android:textColorSecondary">@color/colorWhite</item>
+    </style>
 
+
+    <style name="TextAppearance.App.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorBlue</item>
+        <item name="android:textSize">14sp</item>
     </style>
 </resources>

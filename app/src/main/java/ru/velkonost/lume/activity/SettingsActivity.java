@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -141,6 +142,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private Animation rotateArrow;
 
+    private TextView personalInfo;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -174,6 +177,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         editEmail = (EditText) findViewById(R.id.editEmail);
         editWorkEmail = (EditText) findViewById(R.id.editWorkEmail);
+
+        personalInfo = (TextView) findViewById(R.id.personalInfo);
+        personalInfo.setTypeface(Typeface.createFromAsset(
+                getAssets(), "fonts/Roboto-Regular.ttf"));
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(SettingsActivity.this, toolbar, getResources().getString(R.string.settings)); /** Инициализация */
