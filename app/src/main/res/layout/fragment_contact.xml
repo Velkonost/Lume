@@ -8,7 +8,9 @@
         android:id="@+id/recycleViewContact"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:fastScrollThumbColor="@color/colorPrimaryDark"
+        android:paddingTop="8dp"
+        android:background="@color/colorWhite"
+        app:fastScrollThumbColor="@color/colorPrimary"
         app:fastScrollPopupBgColor="@color/colorPrimary"
         app:fastScrollPopupTextColor="@android:color/white"/>
 
