@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
@@ -71,9 +71,19 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Se
         holder.userName.setMarqueeRepeatLimit(MARQUEE_REPEAT_LIMIT);
 
         if (holder.userName.getText().toString().equals(item.getLogin()))
-            holder.userWithoutName.setImageResource(R.drawable.withoutname);
-        else
+            holder.userAvatar.setImageResource(R.drawable.withoutname);
+        else {
             holder.userLogin.setText(item.getLogin());
+
+            /** Формирование адреса, по которому лежит аватар пользователя */
+            String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
+                    + SERVER_AVATAR + SLASH + item.getAvatar()
+                    + SLASH + item.getId() + JPG;
+
+            fetchImage(avatarURL, holder.userAvatar, true, false);
+            Bitmap bitmap = ((BitmapDrawable)holder.userAvatar.getDrawable()).getBitmap();
+            holder.userAvatar.setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
+        }
 
         holder.userLogin.setSelected(true);
         holder.userLogin.setEllipsize(TextUtils.TruncateAt.MARQUEE);
@@ -91,23 +101,6 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Se
                 : "" : ""
         );
 
-        /** Формирование текущего места работы пользователя */
-        holder.workingPlace.setText(
-                item.getWork().length() != 0
-                ? item.getWork()
-                : item.getStudy().length() != 0
-                ? item.getStudy()
-                : ""
-        );
-
-        /** Формирование адреса, по которому лежит аватар пользователя */
-        String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
-                + SERVER_AVATAR + SLASH + item.getAvatar()
-                + SLASH + item.getId() + JPG;
-
-        fetchImage(avatarURL, holder.userAvatar, true, false);
-        Bitmap bitmap = ((BitmapDrawable)holder.userAvatar.getDrawable()).getBitmap();
-        holder.userAvatar.setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
 
         holder.mRelativeLayout.setId(Integer.parseInt(item.getId()));
 
@@ -142,29 +135,25 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Se
 
     class SearchViewHolder extends RecyclerView.ViewHolder {
 
-        RelativeLayout mRelativeLayout;
+        LinearLayout mRelativeLayout;
         String id;
 
         TextView livingPlace;
-        TextView workingPlace;
         TextView userName;
         TextView userLogin;
 
-        ImageView userWithoutName;
         ImageView userAvatar;
 
 
         SearchViewHolder(View itemView) {
             super(itemView);
 
-            mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayoutSearch);
+            mRelativeLayout = (LinearLayout) itemView.findViewById(R.id.relativeLayoutSearch);
 
             userName = (TextView) itemView.findViewById(R.id.userName);
             userLogin = (TextView) itemView.findViewById(R.id.userLogin);
             livingPlace = (TextView) itemView.findViewById(R.id.livingPlace);
-            workingPlace = (TextView) itemView.findViewById(R.id.workingPlace);
 
-            userWithoutName = (ImageView) itemView.findViewById(R.id.userWithoutName);
             userAvatar = (ImageView) itemView.findViewById(R.id.userAvatar);
 
         }

@@ -156,6 +156,7 @@ public class SearchActivity extends AppCompatActivity {
          **/
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
         initSearch(this, searchView);
+        searchView.setCursorDrawable(R.drawable.cursor_drawable);
 
         mSearchContacts = new ArrayList<>();
 
