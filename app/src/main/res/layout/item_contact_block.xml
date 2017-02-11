@@ -10,7 +10,8 @@
     android:layout_height="72dp"
     android:orientation="horizontal"
     android:id="@+id/relativeLayoutContact"
-    android:background="@color/colorWhite">
+    android:background="@drawable/selector_item"
+    android:clickable="true">
         <ImageView
         android:layout_width="56dp"
         android:layout_height="56dp"

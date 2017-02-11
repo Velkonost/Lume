@@ -48,4 +48,11 @@
     <style name="AppTheme.Cursor" parent="AppTheme">
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
+
+
+    <style name="MaterialSearchViewStyle">
+        <item name="searchBackground">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textColorHint">@color/colorWhite</item>
+    </style>
 </resources>

@@ -143,6 +143,7 @@ public class ContactsActivity extends AppCompatActivity {
          **/
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
         initSearch(this, searchView);
+        searchView.setCursorDrawable(R.drawable.cursor_drawable);
 
         /**
          * Получение id пользователя.
@@ -153,6 +154,15 @@ public class ContactsActivity extends AppCompatActivity {
         mContacts = new ArrayList<>();
 
         mGetData.execute();
+
+
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     /**
