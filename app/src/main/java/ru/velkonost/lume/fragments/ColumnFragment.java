@@ -107,7 +107,7 @@ public class ColumnFragment extends AbstractTabFragment {
                 final EditText inputDesc = new EditText(context);
                 inputDesc.setLayoutParams(params);
 
-                inputDesc.setHint("Enter card's description...");
+                inputDesc.setHint("Введите описание карточки...");
                 layout.addView(inputDesc);
 
 

@@ -324,6 +324,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
                         menu.findItem(R.id.action_settings).setVisible(true);
                         menu.findItem(R.id.action_invite).setVisible(true);
+                        menu.findItem(R.id.action_move).setVisible(true);
                         menu.findItem(R.id.action_leave).setVisible(true);
 
                         menu.findItem(R.id.action_agree).setVisible(false);
