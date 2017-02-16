@@ -121,6 +121,7 @@ public class MessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         mGetMessages = new GetMessages();
         mids = new ArrayList<>();

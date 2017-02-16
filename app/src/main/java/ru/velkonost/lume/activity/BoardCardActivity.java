@@ -190,6 +190,7 @@ public class BoardCardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         mCardParticipants = new ArrayList<>();
         mContacts = new ArrayList<>();

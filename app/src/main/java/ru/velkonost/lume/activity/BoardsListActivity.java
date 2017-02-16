@@ -111,6 +111,7 @@ public class BoardsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         mGetBoards = new GetBoards();
         bids = new ArrayList<>();

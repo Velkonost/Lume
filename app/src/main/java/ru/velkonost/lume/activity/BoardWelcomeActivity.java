@@ -175,6 +175,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         mGetBoardInfo = new GetBoardInfo();
         mGetContacts = new GetContacts();

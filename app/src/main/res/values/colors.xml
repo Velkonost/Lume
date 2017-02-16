@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#5682A3</color>
+    <color name="colorPrimary">#ff527da3</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
@@ -16,6 +16,12 @@
     <color name="colorYellow">#ffc800</color>
     <color name="colorGrey">#D3D3D3</color>
     <color name="colorLightGrey">#E3E3E6</color>
+
+
+    <color name="colorSendMessage">#ffefffde</color>
+    <color name="colorGetMessage">#ffffffff</color>
+    <color name="colorMessageBackground">#ffbfcdd6</color>
+    <color name="colorMessageText">#ff1e201c</color>
 
 
     <color name="translucent_scrim_top">#26000000</color>

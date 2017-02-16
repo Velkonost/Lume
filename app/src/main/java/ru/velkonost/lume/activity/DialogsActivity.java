@@ -120,6 +120,7 @@ public class DialogsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         mGetDialogs = new GetDialogs();
         ids = new ArrayList<>();

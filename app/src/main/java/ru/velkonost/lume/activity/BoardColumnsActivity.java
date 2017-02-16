@@ -87,6 +87,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 

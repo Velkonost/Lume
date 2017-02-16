@@ -34,7 +34,9 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         Intent intent = getIntent();
 

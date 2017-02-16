@@ -124,9 +124,10 @@ public class ContactsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         mGetData = new GetData();
         ids = new ArrayList<>();

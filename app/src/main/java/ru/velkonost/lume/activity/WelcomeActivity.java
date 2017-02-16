@@ -67,7 +67,9 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
