@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -116,6 +118,8 @@ public class MessageActivity extends AppCompatActivity {
 
     private String collocutorName;
 
+    private ImageView imageArrowSend;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,9 +140,21 @@ public class MessageActivity extends AppCompatActivity {
         addresseeId = intent.getIntExtra(ID, 0);
         collocutorName = intent.getStringExtra(NAME);
 
+        imageArrowSend = (ImageView) findViewById(R.id.imageArrowSend);
+
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(MessageActivity.this, toolbar, collocutorName); /** Инициализация */
         initNavigationView(); /** Инициализация */
+
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MessageActivity.this, ProfileActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(ID, view.getId());
+                MessageActivity.this.startActivity(intent);
+            }
+        });
 
         /**
          * Получение id пользователя.
@@ -188,7 +204,17 @@ public class MessageActivity extends AppCompatActivity {
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 0) {
+                    imageArrowSend.setColorFilter(ContextCompat
+                            .getColor(MessageActivity.this,R.color.colorMessageBackground));
+                } else {
+                    imageArrowSend.setColorFilter(ContextCompat
+                            .getColor(MessageActivity.this,R.color.colorPrimary));
+
+                }
+
+            }
         });
 
     }

@@ -86,7 +86,7 @@ public class MessageListAdapter
         params.setMargins(dp2px(10), dp2px(5), dp2px(10), dp2px(5));
         holder.mTextView.setLayoutParams(params);
 
-        holder.mTextView.setPadding(dp2px(20), dp2px(10), dp2px(20), dp2px(10));
+        holder.mTextView.setPadding(dp2px(7), dp2px(5), dp2px(7), dp2px(5));
 
     }
 

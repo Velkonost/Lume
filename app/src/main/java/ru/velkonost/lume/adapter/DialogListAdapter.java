@@ -124,6 +124,7 @@ public class DialogListAdapter extends ArrayAdapter {
                         .findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
                 textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 textView.setTextColor(Color.WHITE);
+                textView.setTextSize(18);
                 snackbar.show();
 
                 return true;

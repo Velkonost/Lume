@@ -62,7 +62,7 @@
                     android:layout_alignTop="@+id/editMessage"
                     android:layout_alignParentEnd="true"
                     android:tint="@color/colorMessageBackground"
-                    android:id="@+id/imageView"
+                    android:id="@+id/imageArrowSend"
                     android:onClick="sendMessage"/>
         </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>
