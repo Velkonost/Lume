@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="8dp"
+        app:fastScrollTrackColor="@color/colorWhite"
         android:background="@color/colorWhite"
         app:fastScrollThumbColor="@color/colorPrimary"
         app:fastScrollPopupBgColor="@color/colorPrimary"
