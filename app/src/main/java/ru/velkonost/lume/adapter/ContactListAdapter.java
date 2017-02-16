@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.velkonost.lume.R;
@@ -35,15 +36,22 @@ import static ru.velkonost.lume.Managers.ImageManager.getCircleMaskedBitmap;
 
 
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder>
-        implements FastScrollRecyclerView.SectionedAdapter {
+        implements FastScrollRecyclerView.SectionedAdapter{
 
     private List<Contact> data;
+    private List<Contact> dataCopy;
     private LayoutInflater inflater;
     private Context context;
+
+    protected List<Contact> list;
+    protected List<Contact> originalList;
 
     public ContactListAdapter(Context context, List<Contact> data) {
         this.context = context;
         this.data = data;
+
+        dataCopy = new ArrayList<>();
+        dataCopy.addAll(data);
 
         inflater = LayoutInflater.from(context);
     }
@@ -104,8 +112,12 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
             }
         });
+    }
 
-
+    public void removeAt(int position) {
+        data.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, data.size());
     }
 
     @NonNull
@@ -116,6 +128,22 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         return String.valueOf(data.get(position).getName().charAt(0));
     }
 
+
+    public void filter(String text) {
+        data.clear();
+        if(text.isEmpty()) data.addAll(dataCopy);
+        else {
+            text = text.toLowerCase();
+
+            for(Contact item: dataCopy)
+                if(item.getName().toLowerCase().contains(text)
+                        || item.getSurname().toLowerCase().contains(text)
+                        || item.getLogin().toLowerCase().contains(text))
+                    data.add(item);
+        }
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return data.size();
@@ -123,6 +151,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     public void setData(List<Contact> data) {
         this.data = data;
+        notifyDataSetChanged();
     }
 
     class ContactViewHolder extends RecyclerView.ViewHolder {

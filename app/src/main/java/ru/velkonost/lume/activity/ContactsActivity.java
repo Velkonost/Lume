@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -51,7 +52,6 @@ import static ru.velkonost.lume.Constants.URL.SERVER_GET_CONTACTS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Managers.Initializations.initSearch;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
@@ -117,6 +117,11 @@ public class ContactsActivity extends AppCompatActivity {
      */
     private List<Contact> mContacts;
 
+    private List<Contact> CONTACTS;
+
+    private FloatingActionButton fabGoSearch;
+
+    private ContactsFragment contactsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +132,8 @@ public class ContactsActivity extends AppCompatActivity {
         mGetData = new GetData();
         ids = new ArrayList<>();
         contacts = new HashMap<>();
+
+        CONTACTS = new ArrayList<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -142,8 +149,23 @@ public class ContactsActivity extends AppCompatActivity {
          * {@link Initializations#initSearch(Activity, MaterialSearchView)}
          **/
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
-        initSearch(this, searchView);
+        initSearchContacts(this, searchView);
         searchView.setCursorDrawable(R.drawable.cursor_drawable);
+
+//        searchView.setOncl
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+
+                fabGoSearch.hide();
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                fabGoSearch.show();
+            }
+        });
 
         /**
          * Получение id пользователя.
@@ -155,6 +177,15 @@ public class ContactsActivity extends AppCompatActivity {
 
         mGetData.execute();
 
+        fabGoSearch = (FloatingActionButton) findViewById(R.id.btnGoSearch);
+
+//        fabGoSearch.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                changeActivityCompat(ContactsActivity.this,
+//                        new Intent(ContactsActivity.this, SearchActivity.class));
+//            }
+//        });
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -282,6 +313,7 @@ public class ContactsActivity extends AppCompatActivity {
         return true;
     }
 
+
     /**
      * При нажатии на кнопку "Назад" поиск закрывется.
      */
@@ -294,6 +326,34 @@ public class ContactsActivity extends AppCompatActivity {
             searchView.closeSearch();
         else
             super.onBackPressed();
+    }
+
+    private void initSearchContacts(final Activity activity, final MaterialSearchView searchView) {
+
+        searchView.setEllipsize(true);
+        final boolean[] check = {false, true};
+
+
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                contactsFragment.search(query, check[0], check[1]);
+                check[1] = false;
+                searchView.clearFocus();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(final String newText) {
+                contactsFragment.search(newText, check[0], check[1]);
+                check[0] = true;
+                check[1] = true;
+
+                return true;
+            }
+        });
     }
 
     /**
@@ -407,10 +467,12 @@ public class ContactsActivity extends AppCompatActivity {
                  * {@link ContactsFragment}
                  */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ContactsFragment contactsFragment
+                contactsFragment
                         = ContactsFragment.getInstance(ContactsActivity.this, mContacts);
                 ft.add(R.id.llcontact, contactsFragment);
                 ft.commit();
+
+                for (int i = 0; i < mContacts.size(); i++) CONTACTS.add(mContacts.get(i));
 
             } catch (JSONException e) {
                 e.printStackTrace();
