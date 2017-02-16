@@ -1,6 +1,7 @@
 package ru.velkonost.lume.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -11,14 +12,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.activity.SearchActivity;
 import ru.velkonost.lume.adapter.ContactListAdapter;
 import ru.velkonost.lume.descriptions.Contact;
+
+import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 
 public class ContactsFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_contact;
@@ -56,29 +61,37 @@ public class ContactsFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         fabGoSearch = (FloatingActionButton) view.findViewById(R.id.btnGoSearch);
+        fabGoSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeActivityCompat(getActivity(),
+                        new Intent(context, SearchActivity.class));
+            }
+        });
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-                if (dy > 0)
-                    fabGoSearch.hide();
-                else if (dy < 0)
-                    fabGoSearch.show();
+                if (dy > 0) fabGoSearch.hide();
+                else if (dy < 0) fabGoSearch.show();
+            }
+        });
+
+        final MaterialSearchView searchView = (MaterialSearchView) getActivity().findViewById(R.id.search_view);
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown () {
+                searchView.setVisibility(View.VISIBLE);
+                fabGoSearch.hide();
+            }
+            @Override
+            public void onSearchViewClosed() {
+                fabGoSearch.show();
             }
         });
 
         return view;
-    }
-
-    public void refreshContacts (List<Contact> mContacts) {
-        adapter.setData(mContacts);
-        adapter.notifyDataSetChanged();
-    }
-
-    public void removeItem (List<Contact> mContacts, int position) {
-        adapter.setData(mContacts);
-        adapter.notifyItemRemoved(position);
-        adapter.notifyItemRangeChanged(position, mContacts.size());
     }
 
     public void search(String text, boolean empty, boolean let) {

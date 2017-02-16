@@ -152,13 +152,16 @@ public class ContactsActivity extends AppCompatActivity {
         initSearchContacts(this, searchView);
         searchView.setCursorDrawable(R.drawable.cursor_drawable);
 
-//        searchView.setOncl
-
+        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                fabGoSearch.hide();
+            }
+        });
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
             public void onSearchViewShown() {
 
-                fabGoSearch.hide();
             }
 
             @Override
@@ -176,16 +179,6 @@ public class ContactsActivity extends AppCompatActivity {
         mContacts = new ArrayList<>();
 
         mGetData.execute();
-
-        fabGoSearch = (FloatingActionButton) findViewById(R.id.btnGoSearch);
-
-//        fabGoSearch.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                changeActivityCompat(ContactsActivity.this,
-//                        new Intent(ContactsActivity.this, SearchActivity.class));
-//            }
-//        });
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -305,9 +298,11 @@ public class ContactsActivity extends AppCompatActivity {
             @Override
             public void onSearchViewShown () {
                 searchView.setVisibility(View.VISIBLE);
+                fabGoSearch.hide();
             }
             @Override
             public void onSearchViewClosed() {
+                fabGoSearch.show();
             }
         });
         return true;
@@ -471,8 +466,6 @@ public class ContactsActivity extends AppCompatActivity {
                         = ContactsFragment.getInstance(ContactsActivity.this, mContacts);
                 ft.add(R.id.llcontact, contactsFragment);
                 ft.commit();
-
-                for (int i = 0; i < mContacts.size(); i++) CONTACTS.add(mContacts.get(i));
 
             } catch (JSONException e) {
                 e.printStackTrace();

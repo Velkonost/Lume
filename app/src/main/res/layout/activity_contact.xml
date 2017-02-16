@@ -40,12 +40,6 @@
                     android:hint="@string/search_title"/>
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
-        <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:id="@+id/rl"-->
-            <!--app:layout_anchor="@id/appbarlayout"-->
-            <!--&gt;-->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
