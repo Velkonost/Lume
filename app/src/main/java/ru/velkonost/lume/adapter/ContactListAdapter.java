@@ -114,11 +114,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         });
     }
 
-    public void removeAt(int position) {
-        data.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, data.size());
-    }
 
     @NonNull
     @Override
@@ -126,22 +121,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         if (data.get(position).getName().length() == 0)
             return String.valueOf(data.get(position).getLogin().charAt(0));
         return String.valueOf(data.get(position).getName().charAt(0));
-    }
-
-
-    public void filter(String text) {
-        data.clear();
-        if(text.isEmpty()) data.addAll(dataCopy);
-        else {
-            text = text.toLowerCase();
-
-            for(Contact item: dataCopy)
-                if(item.getName().toLowerCase().contains(text)
-                        || item.getSurname().toLowerCase().contains(text)
-                        || item.getLogin().toLowerCase().contains(text))
-                    data.add(item);
-        }
-        notifyDataSetChanged();
     }
 
     @Override

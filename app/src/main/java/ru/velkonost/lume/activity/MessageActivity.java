@@ -44,6 +44,7 @@ import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.MESSAGE_IDS;
+import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.STATUS;
 import static ru.velkonost.lume.Constants.TEXT;
 import static ru.velkonost.lume.Constants.URL.SERVER_DIALOG_SCRIPT;
@@ -113,6 +114,8 @@ public class MessageActivity extends AppCompatActivity {
 
     private TimerCheckMessagesState timer;
 
+    private String collocutorName;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,8 +130,13 @@ public class MessageActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_messages);
 
+        Intent intent = getIntent();
+        dialogId = intent.getIntExtra(DIALOG_ID, 0);
+        addresseeId = intent.getIntExtra(ID, 0);
+        collocutorName = intent.getStringExtra(NAME);
+
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(MessageActivity.this, toolbar, R.string.menu_item_messages); /** Инициализация */
+        initToolbar(MessageActivity.this, toolbar, collocutorName); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
         /**
@@ -138,10 +146,6 @@ public class MessageActivity extends AppCompatActivity {
         userId = loadText(MessageActivity.this, ID);
 
         editMessage = (EditText) findViewById(R.id.editMessage);
-
-        Intent intent = getIntent();
-        dialogId = intent.getIntExtra(DIALOG_ID, 0);
-        addresseeId = intent.getIntExtra(ID, 0);
 
         /**
          * Кнопка возврата на предыдущую активность.

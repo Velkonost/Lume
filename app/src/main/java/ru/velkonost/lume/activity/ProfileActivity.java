@@ -673,6 +673,7 @@ public class ProfileActivity extends AppCompatActivity {
                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                             intent.putExtra(DIALOG_ID, dataJsonObj.getInt(DIALOG_ID));
                                             intent.putExtra(ID, Integer.parseInt(userId));
+                                            intent.putExtra(NAME, sUserName);
                                             ProfileActivity.this.startActivity(intent);
                                         } else {
                                             CreateDialog mCreateDialog = new CreateDialog();

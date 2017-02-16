@@ -4,31 +4,37 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:id="@+id/lluser"
-    android:background="@drawable/selectable_item_background">
+    android:id="@+id/lluser">
 
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/corners_item_dialog"
+        android:background="@drawable/drawable_item_dialog"
         android:scaleType="fitXY"
+        android:src="@drawable/favicon"
+        android:padding="6dp"
         android:id="@+id/avatar"/>
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:visibility="invisible"
         android:id="@+id/userId"/>
+
     <TextView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
         android:id="@+id/unreadMessages"
         android:background="@drawable/new_messages"
-        android:layout_alignTop="@+id/avatar"
-        android:layout_alignEnd="@+id/avatar"
+        android:layout_alignLeft="@id/avatar"
+        android:layout_alignRight="@id/avatar"
+        android:layout_centerInParent="true"
         android:textAlignment="center"
         android:textSize="14sp"
-        android:gravity="center"
-        android:visibility="invisible"/>
+        android:text="12"
+        android:padding="3dp"
+        android:gravity="center"/>
+
 </RelativeLayout>
