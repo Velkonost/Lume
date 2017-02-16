@@ -114,8 +114,6 @@ public class ContactsFragment extends Fragment {
                 adapter.setData(mContacts);
             }
         }
-
-//        adapter.notifyDataSetChanged();
     }
 
     public void setContext (Context context) {this.context = context;}

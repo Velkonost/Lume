@@ -46,6 +46,7 @@ public class DialogListAdapter extends ArrayAdapter {
 
     public void setData(List<DialogContact> data) {
         this.data = data;
+        notifyDataSetChanged();
     }
 
     @NonNull

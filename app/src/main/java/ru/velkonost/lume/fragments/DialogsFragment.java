@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.velkonost.lume.R;
@@ -20,6 +21,7 @@ public class DialogsFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_dialogs;
 
     private List<DialogContact> mContacts;
+    private List<DialogContact> mContactsCopy;
     private DialogListAdapter adapter;
     protected View view;
     protected Context context;
@@ -31,6 +33,7 @@ public class DialogsFragment extends Fragment {
         fragment.setArguments(args);
         fragment.setContext(context);
         fragment.setContacts(contacts);
+        fragment.setContactsCopy();
 
         return fragment;
     }
@@ -60,9 +63,37 @@ public class DialogsFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    public void search(String text, boolean empty, boolean let) {
+        if (let) {
+            if (!text.isEmpty()) {
+
+                mContacts.clear();
+                text = text.toLowerCase();
+
+                for (DialogContact item : mContactsCopy)
+                    if (item.getName().toLowerCase().contains(text)
+                            || item.getSurname().toLowerCase().contains(text)
+                            || item.getLogin().toLowerCase().contains(text))
+                        mContacts.add(item);
+
+                adapter.setData(mContacts);
+            } else if (empty) {
+                mContacts.clear();
+                mContacts.addAll(mContactsCopy);
+                adapter.setData(mContacts);
+            }
+        }
+    }
+
+
     public void setContext (Context context) {this.context = context;}
 
     public void setContacts(List<DialogContact> mContacts) {
         this.mContacts = mContacts;
+    }
+
+    public void setContactsCopy() {
+        mContactsCopy = new ArrayList<>();
+        mContactsCopy.addAll(mContacts);
     }
 }
