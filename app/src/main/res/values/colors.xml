@@ -23,6 +23,9 @@
     <color name="colorMessageBackground">#ffbfcdd6</color>
     <color name="colorMessageText">#ff1e201c</color>
 
+    <color name="colorDialog">#ff527da3</color>
+    <color name="colorDialogPressed">#eceff1</color>
+
 
     <color name="translucent_scrim_top">#26000000</color>
     <color name="translucent_scrim_top_center">#0C000000</color>

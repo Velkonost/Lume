@@ -5,11 +5,8 @@
              android:top="6dp"
              android:right="6dp"
              android:bottom="6dp" />
-    <gradient
-        android:angle="270"
-        android:startColor="@color/colorRed"
-        android:endColor="@color/colorGreen"
-        android:centerColor="@color/colorBlack"
+    <solid
+        android:color="@color/colorDialogPressed"
         />
     <corners android:radius="5dp"
              android:topLeftRadius="5dp"
