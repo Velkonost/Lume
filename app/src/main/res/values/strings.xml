@@ -51,6 +51,7 @@
 
     <string name="search_title">Search new contacts…</string>
     <string name="search">Search:</string>
+    <string name="search_empty">Search</string>
 
     <string name="my_contacts">My contacts</string>
     <string name="settings">Settings</string>

@@ -117,8 +117,6 @@ public class ContactsActivity extends AppCompatActivity {
      */
     private List<Contact> mContacts;
 
-    private List<Contact> CONTACTS;
-
     private FloatingActionButton fabGoSearch;
 
     private ContactsFragment contactsFragment;
@@ -132,8 +130,6 @@ public class ContactsActivity extends AppCompatActivity {
         mGetData = new GetData();
         ids = new ArrayList<>();
         contacts = new HashMap<>();
-
-        CONTACTS = new ArrayList<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -151,24 +147,6 @@ public class ContactsActivity extends AppCompatActivity {
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
         initSearchContacts(this, searchView);
         searchView.setCursorDrawable(R.drawable.cursor_drawable);
-
-        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                fabGoSearch.hide();
-            }
-        });
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown() {
-
-            }
-
-            @Override
-            public void onSearchViewClosed() {
-                fabGoSearch.show();
-            }
-        });
 
         /**
          * Получение id пользователя.

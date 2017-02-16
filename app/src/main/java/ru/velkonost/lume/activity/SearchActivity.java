@@ -91,7 +91,7 @@ public class SearchActivity extends AppCompatActivity {
     /**
      * Свойство - информация, по которой собирается искать пользователь.
      **/
-    private String whatSearch;
+    private String whatSearch = " ";
 
     /**
      * Идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
@@ -143,7 +143,8 @@ public class SearchActivity extends AppCompatActivity {
          **/
         Intent intent = getIntent();
         whatSearch = intent.getStringExtra(SEARCH); /** Формирование заголовка тулбара */
-        whatSearch = getResources().getString(R.string.search) + " " + whatSearch;
+        if (whatSearch == null) whatSearch = getResources().getString(R.string.search_empty);
+        else whatSearch = getResources().getString(R.string.search) + " " + whatSearch;
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(SearchActivity.this, toolbar, whatSearch); /** Инициализация */
@@ -272,8 +273,7 @@ public class SearchActivity extends AppCompatActivity {
                 searchView.setVisibility(View.VISIBLE);
             }
             @Override
-            public void onSearchViewClosed() {
-            }
+            public void onSearchViewClosed() {}
         });
         return true;
     }
