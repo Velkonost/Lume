@@ -31,8 +31,6 @@ import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
-import static ru.velkonost.lume.Managers.ImageManager.getCircleMaskedBitmap;
-import static ru.velkonost.lume.R.id.userId;
 
 public class DialogListAdapter extends ArrayAdapter {
 
@@ -66,11 +64,10 @@ public class DialogListAdapter extends ArrayAdapter {
         ((TextView) convertView.findViewById(R.id.userId)).setText(dialogContact.getId());
 
         if (!dialogContact.isAvatar()){
-            fetchImage(avatarURL, (ImageView) convertView.findViewById(R.id.avatar), true, false);
+            fetchImage(avatarURL, (ImageView) convertView.findViewById(R.id.avatar), false, false);
             Bitmap bitmap = ((BitmapDrawable) ((ImageView) convertView.findViewById(R.id.avatar))
                     .getDrawable()).getBitmap();
-            ((ImageView) convertView.findViewById(R.id.avatar))
-                    .setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
+            ((ImageView) convertView.findViewById(R.id.avatar)).setImageBitmap(bitmap);
 
             dialogContact.setIsAvatar(true);
         }
