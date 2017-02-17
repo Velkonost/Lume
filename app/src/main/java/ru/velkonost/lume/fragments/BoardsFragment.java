@@ -3,6 +3,7 @@ package ru.velkonost.lume.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +25,9 @@ public class BoardsFragment extends Fragment {
     protected View view;
     protected Context context;
 
+    private FloatingActionButton fabAddBoard;
+
+
     public static BoardsFragment getInstance(Context context, List<Board> boards) {
         Bundle args = new Bundle();
         BoardsFragment fragment = new BoardsFragment();
@@ -43,6 +47,23 @@ public class BoardsFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewBoards);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
+        fabAddBoard = (FloatingActionButton) view.findViewById(R.id.btnGoSearch);
+//        fabAddBoard.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                changeActivityCompat(getActivity(),
+//                        new Intent(context, SearchActivity.class));
+//            }
+//        });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+                if (dy > 0) fabAddBoard.hide();
+                else if (dy < 0) fabAddBoard.show();
+            }
+        });
+
         adapter = new BoardListAdapter(getActivity(), mBoards);
         recyclerView.setAdapter(adapter);
         return view;
@@ -52,6 +73,8 @@ public class BoardsFragment extends Fragment {
         adapter.setData(mBoards);
         adapter.notifyDataSetChanged();
     }
+
+
 
     public void setContext (Context context) {this.context = context;}
 

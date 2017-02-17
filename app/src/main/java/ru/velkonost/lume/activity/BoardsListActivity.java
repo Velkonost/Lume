@@ -14,6 +14,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -106,6 +107,11 @@ public class BoardsListActivity extends AppCompatActivity {
     private String boardName;
     private String boardDescription;
 
+    /**
+     * Свойство - опинсание view-элемента, служащего для обновления страницы.
+     **/
+    protected SwipeRefreshLayout mSwipeRefreshLayout;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,7 +126,6 @@ public class BoardsListActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_boards);
-        addNewBoard = (FloatingActionButton) findViewById(R.id.btnAddBoard);
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(BoardsListActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
@@ -131,6 +136,35 @@ public class BoardsListActivity extends AppCompatActivity {
          * {@link PhoneDataStorage#loadText(Context, String)}
          **/
         userId = loadText(BoardsListActivity.this, ID);
+
+
+        /**
+         *  Установка цветной палитры,
+         *  цвета которой будут заменять друг друга в зависимости от прогресса.
+         * */
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorMessageBackground,
+                R.color.colorPrimary);
+
+        /** Ставит обработчик событий */
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+
+            public void onRefresh() {
+                /** Выполнение происходит с задержкой в 2.5 секунды */
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity)}
+                         * */
+                        changeActivityCompat(BoardsListActivity.this);
+                    }
+                }, 2500);
+            }
+        });
 
         mGetBoards.execute();
 

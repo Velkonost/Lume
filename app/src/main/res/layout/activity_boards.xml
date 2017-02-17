@@ -39,28 +39,34 @@
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
 
-        <RelativeLayout
+        <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swipe_container"
             android:layout_width="match_parent"
-            app:layout_anchor="@id/appbarlayout"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:layout_height="match_parent">
-            <LinearLayout
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/llboards"
-                android:orientation="vertical"
-                app:layout_anchorGravity="bottom"/>
+                app:layout_anchor="@id/appbarlayout"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/llboards"
+                    android:orientation="vertical"
+                    app:layout_anchorGravity="bottom"/>
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/btnAddBoard"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_margin="10dp"
-                app:layout_anchorGravity="bottom|end"
-                style="@style/FabStyle"
-                android:onClick="createBoardOnClick"
-                android:src="@mipmap/ic_check"/>
-        </RelativeLayout>
+                <!--<android.support.design.widget.FloatingActionButton-->
+                    <!--android:id="@+id/btnAddBoard"-->
+                    <!--android:layout_alignParentBottom="true"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_margin="10dp"-->
+                    <!--app:layout_anchorGravity="bottom|end"-->
+                    <!--style="@style/FabStyle"-->
+                    <!--android:onClick="createBoardOnClick"-->
+                    <!--android:src="@drawable/ic_add_white_24dp"/>-->
+            </RelativeLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
     </android.support.design.widget.CoordinatorLayout>
 
 
