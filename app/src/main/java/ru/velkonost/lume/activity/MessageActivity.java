@@ -151,7 +151,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MessageActivity.this, ProfileActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra(ID, view.getId());
+                intent.putExtra(ID, addresseeId);
                 MessageActivity.this.startActivity(intent);
             }
         });

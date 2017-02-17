@@ -20,6 +20,7 @@ import java.util.List;
 
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.MessageActivity;
+import ru.velkonost.lume.activity.ProfileActivity;
 import ru.velkonost.lume.descriptions.DialogContact;
 
 import static android.provider.LiveFolders.NAME;
@@ -101,7 +102,7 @@ public class DialogListAdapter extends ArrayAdapter {
                         intent.putExtra(NAME, collocutor);
                         mContext.startActivity(intent);
                     }
-                }, 350);
+                }, 150);
             }
         });
 
@@ -126,6 +127,16 @@ public class DialogListAdapter extends ArrayAdapter {
                 textView.setTextColor(Color.WHITE);
                 textView.setTextSize(18);
                 snackbar.show();
+
+                snackbarView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(mContext, ProfileActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra(ID, Integer.parseInt(dialogContact.getId()));
+                        mContext.startActivity(intent);
+                    }
+                });
 
                 return true;
             }
