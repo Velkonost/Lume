@@ -123,11 +123,6 @@ public class ProfileActivity extends AppCompatActivity {
     private Intent nextIntent;
 
     /**
-    * Свойство - опинсание view-элемента, служащего для обновления страницы.
-    **/
-    protected SwipeRefreshLayout mSwipeRefreshLayout;
-
-    /**
      * Свойство - описание верхней панели инструментов приложения.
      */
     private Toolbar toolbar;
@@ -254,34 +249,6 @@ public class ProfileActivity extends AppCompatActivity {
                 : userId;
 
         initNavigationView(); /** Инициализация */
-
-        /**
-         *  Установка цветной палитры,
-         *  цвета которой будут заменять друг друга в зависимости от прогресса.
-         * */
-//        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
-//        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorBlue, R.color.colorGreen,
-//                R.color.colorYellow, R.color.colorRed);
-
-//        /** Ставит обработчик событий */
-//        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//
-//            public void onRefresh() {
-//                /** Выполнение происходит с задержкой в 2.5 секунды */
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                        /**
-//                         * Обновляет страницу.
-//                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
-//                         * */
-//                        changeActivityCompat(ProfileActivity.this);
-//                    }
-//                }, 2500);
-//            }
-//        });
 
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 

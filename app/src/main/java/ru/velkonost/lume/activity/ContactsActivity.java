@@ -11,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -122,6 +123,11 @@ public class ContactsActivity extends AppCompatActivity {
 
     private ContactsFragment contactsFragment;
 
+    /**
+     * Свойство - опинсание view-элемента, служащего для обновления страницы.
+     **/
+    protected SwipeRefreshLayout mSwipeRefreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,6 +155,34 @@ public class ContactsActivity extends AppCompatActivity {
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
         initSearchContacts(this, searchView);
         searchView.setCursorDrawable(R.drawable.cursor_drawable);
+
+        /**
+         *  Установка цветной палитры,
+         *  цвета которой будут заменять друг друга в зависимости от прогресса.
+         * */
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorMessageBackground,
+                R.color.colorPrimary);
+
+        /** Ставит обработчик событий */
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+
+            public void onRefresh() {
+                /** Выполнение происходит с задержкой в 2.5 секунды */
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity)}
+                         * */
+                        changeActivityCompat(ContactsActivity.this);
+                    }
+                }, 2500);
+            }
+        });
 
         /**
          * Получение id пользователя.
