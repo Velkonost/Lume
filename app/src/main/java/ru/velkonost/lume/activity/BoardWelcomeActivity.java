@@ -643,9 +643,6 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                             userInfo.getString(LOGIN),
                             BOARD_LAST_CONTRIBUTED_USER == i + 1, uids.size() - i, boardId
                     ));
-
-                    if (BOARD_LAST_CONTRIBUTED_USER == i) break;
-
                 }
 
                 for (int i = 0; i < cids.size(); i++) {
