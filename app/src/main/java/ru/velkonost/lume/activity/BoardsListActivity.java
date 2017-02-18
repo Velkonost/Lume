@@ -147,35 +147,6 @@ public class BoardsListActivity extends AppCompatActivity {
             }
         });
 
-
-        /**
-         *  Установка цветной палитры,
-         *  цвета которой будут заменять друг друга в зависимости от прогресса.
-         * */
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorMessageBackground,
-                R.color.colorPrimary);
-
-        /** Ставит обработчик событий */
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-
-            public void onRefresh() {
-                /** Выполнение происходит с задержкой в 2.5 секунды */
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        /**
-                         * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity)}
-                         * */
-                        changeActivityCompat(BoardsListActivity.this);
-                    }
-                }, 2500);
-            }
-        });
-
         mGetBoards.execute();
 
         new Handler().postDelayed(new Runnable() {

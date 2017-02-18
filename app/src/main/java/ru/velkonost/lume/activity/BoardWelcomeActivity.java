@@ -293,6 +293,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         } else {
             changeActivityCompat(BoardWelcomeActivity.this,
                     new Intent(BoardWelcomeActivity.this, BoardsListActivity.class));
+            finish();
         }
     }
 

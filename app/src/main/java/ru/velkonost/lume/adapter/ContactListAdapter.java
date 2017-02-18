@@ -44,7 +44,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     private Context context;
 
     protected List<Contact> list;
-    protected List<Contact> originalList;
 
     public ContactListAdapter(Context context, List<Contact> data) {
         this.context = context;
