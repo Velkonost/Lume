@@ -48,13 +48,6 @@ public class BoardsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         fabAddBoard = (FloatingActionButton) view.findViewById(R.id.btnGoSearch);
-//        fabAddBoard.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                changeActivityCompat(getActivity(),
-//                        new Intent(context, SearchActivity.class));
-//            }
-//        });
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
