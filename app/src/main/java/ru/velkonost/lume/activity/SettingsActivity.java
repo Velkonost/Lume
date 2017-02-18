@@ -403,6 +403,7 @@ public class SettingsActivity extends AppCompatActivity {
                 getCurrentFocus().clearFocus();
             }
         };
+
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 

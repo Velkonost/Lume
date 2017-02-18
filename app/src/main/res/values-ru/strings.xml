@@ -91,6 +91,9 @@
     <string name="enter_board_name">Введите название…</string>
     <string name="enter_board_description">Введите описание…</string>
 
+    <string name="create_column">Создать колонку</string>
+    <string name="enter_column_name">Введите название…</string>
+
     <string name="no_columns_message">Создать колонку</string>
 
     <string name="yes">Да</string>

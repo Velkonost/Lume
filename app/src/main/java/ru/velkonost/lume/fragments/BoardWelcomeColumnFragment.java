@@ -26,8 +26,13 @@ public class BoardWelcomeColumnFragment extends Fragment {
     protected Context context;
     private String boardId;
 
-    public static BoardWelcomeColumnFragment getInstance(Context context, List<BoardColumn> columns,
-                                                         String boardId) {
+    public static BoardWelcomeColumnFragment getInstance(
+            Context context,
+            List<BoardColumn> columns,
+            String boardId
+    ) {
+
+
         Bundle args = new Bundle();
         BoardWelcomeColumnFragment fragment = new BoardWelcomeColumnFragment();
 
@@ -37,6 +42,7 @@ public class BoardWelcomeColumnFragment extends Fragment {
         fragment.setBoardId(boardId);
 
         return fragment;
+
     }
 
     @Nullable

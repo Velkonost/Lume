@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,8 +30,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import org.json.JSONArray;
@@ -241,13 +244,28 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     public void addColumnOnClick(View view) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(BoardWelcomeActivity.this);
-        builder.setTitle(getResources().getString(R.string.create_column));
+        LinearLayout layout = new LinearLayout(BoardWelcomeActivity.this);
+        layout.setOrientation(LinearLayout.VERTICAL);
 
-        final EditText input = new EditText(BoardWelcomeActivity.this);
-        input.setHint(getResources().getString(R.string.enter_column_name));
+        LinearLayout.LayoutParams  params =
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(dp2px(5), dp2px(20), dp2px(5), dp2px(20));
+
+        android.support.v7.app.AlertDialog.Builder builder
+                = new android.support.v7.app.AlertDialog.Builder(BoardWelcomeActivity.this);
+        builder.setTitle(getResources().getString(R.string.create_board));
+
+        final EditText input
+                = (EditText) getLayoutInflater().inflate(R.layout.item_edittext_style, null);
+        input.setTextColor(ContextCompat.getColor(BoardWelcomeActivity.this, R.color.colorBlack));
+        input.setLayoutParams(params);
+
+        input.setHint(getResources().getString(R.string.enter_board_name));
         input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input)
+        layout.addView(input);
+
+        builder.setView(layout)
                 .setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -275,8 +293,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                     }
                 });
 
-        AlertDialog alert = builder.create();
+        android.support.v7.app.AlertDialog alert = builder.create();
         alert.show();
+
 
     }
 
@@ -415,7 +434,31 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     private void initNavigationView() {
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
+                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                getCurrentFocus().clearFocus();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                getCurrentFocus().clearFocus();
+            }
+        };
+
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
