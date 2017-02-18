@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -138,6 +139,15 @@ public class BoardsListActivity extends AppCompatActivity {
         userId = loadText(BoardsListActivity.this, ID);
 
 
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
         /**
          *  Установка цветной палитры,
          *  цвета которой будут заменять друг друга в зависимости от прогресса.
@@ -187,28 +197,31 @@ public class BoardsListActivity extends AppCompatActivity {
         LinearLayout.LayoutParams  params =
                 new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, dp2px(20), 0, dp2px(20));
+        params.setMargins(dp2px(5), dp2px(20), dp2px(5), dp2px(20));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(BoardsListActivity.this);
-        builder.setTitle("Title");
+        builder.setTitle(getResources().getString(R.string.create_board));
 
-        final EditText inputName = new EditText(BoardsListActivity.this);
+        final EditText inputName
+                = (EditText) getLayoutInflater().inflate(R.layout.item_edittext_style, null);
+        inputName.setTextColor(ContextCompat.getColor(BoardsListActivity.this, R.color.colorBlack));
         inputName.setLayoutParams(params);
 
-        inputName.setHint("Enter card's name...");
+        inputName.setHint(getResources().getString(R.string.enter_board_name));
         inputName.setInputType(InputType.TYPE_CLASS_TEXT);
         layout.addView(inputName);
 
-        final EditText inputDesc = new EditText(BoardsListActivity.this);
+        final EditText inputDesc
+                = (EditText) getLayoutInflater().inflate(R.layout.item_edittext_style, null);
         inputDesc.setLayoutParams(params);
 
-        inputDesc.setHint("Enter card's description...");
+        inputDesc.setTextColor(ContextCompat.getColor(BoardsListActivity.this, R.color.colorBlack));
+        inputDesc.setHint(getResources().getString(R.string.enter_board_description));
         layout.addView(inputDesc);
 
 
         builder.setView(layout)
-
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getResources().getString(R.string.create), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         boardName = inputName.getText().toString();
@@ -225,7 +238,7 @@ public class BoardsListActivity extends AppCompatActivity {
 
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();

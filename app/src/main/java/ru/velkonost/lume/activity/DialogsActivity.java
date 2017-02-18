@@ -150,6 +150,14 @@ public class DialogsActivity extends AppCompatActivity {
 
         mDialogs = new ArrayList<>();
 
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         mGetDialogs.execute();
 
         new Handler().postDelayed(new Runnable() {

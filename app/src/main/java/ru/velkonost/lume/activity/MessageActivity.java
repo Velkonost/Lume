@@ -207,10 +207,10 @@ public class MessageActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() == 0) {
                     imageArrowSend.setColorFilter(ContextCompat
-                            .getColor(MessageActivity.this,R.color.colorMessageBackground));
+                            .getColor(MessageActivity.this, R.color.colorMessageBackground));
                 } else {
                     imageArrowSend.setColorFilter(ContextCompat
-                            .getColor(MessageActivity.this,R.color.colorPrimary));
+                            .getColor(MessageActivity.this, R.color.colorPrimary));
 
                 }
 

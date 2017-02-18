@@ -225,6 +225,15 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 .findViewById(R.id.recyclerViewBoardInvite);
 
 
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
         mGetBoardInfo.execute();
         mGetContacts.execute();
 
@@ -372,14 +381,14 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 new AlertDialog.Builder(this)
                         .setTitle(getResources().getString(R.string.leave_board))
                         .setMessage(getResources().getString(R.string.ask_confirmation))
-                        .setCancelable(false)
-                        .setPositiveButton(getResources().getString(R.string.no),
+                        .setCancelable(true)
+                        .setNegativeButton(getResources().getString(R.string.no),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();
                                     }
                                 })
-                        .setNegativeButton(getResources().getString(R.string.yes),
+                        .setPositiveButton(getResources().getString(R.string.yes),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         LeaveBoard leaveBoard = new LeaveBoard();
