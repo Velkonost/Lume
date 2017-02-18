@@ -92,6 +92,11 @@
     <string name="enter_board_name">Enter name…</string>
     <string name="enter_board_description">Enter descripiton…</string>
 
+    <string name="create_column">Create column</string>
+    <string name="enter_column_name">Enter name…</string>
+
+    <string name="no_columns_message">Create column</string>
+
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="cancel">Cancel</string>

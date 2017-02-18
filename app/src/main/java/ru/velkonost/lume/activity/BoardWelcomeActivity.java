@@ -242,13 +242,13 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     public void addColumnOnClick(View view) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(BoardWelcomeActivity.this);
-        builder.setTitle("Title");
+        builder.setTitle(getResources().getString(R.string.create_column));
 
         final EditText input = new EditText(BoardWelcomeActivity.this);
-        input.setHint("Enter column's name...");
+        input.setHint(getResources().getString(R.string.enter_column_name));
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         columnName = input.getText().toString();
@@ -268,7 +268,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();

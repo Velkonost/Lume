@@ -10,5 +10,4 @@
         android:background="@color/colorWhite"
         android:id="@+id/rvParticipants"/>
 
-
 </LinearLayout>

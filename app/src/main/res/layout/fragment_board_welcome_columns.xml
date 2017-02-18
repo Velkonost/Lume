@@ -8,6 +8,7 @@
     <GridView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:id="@+id/gridColumns"/>
 
     <TextView
@@ -16,7 +17,9 @@
         android:textAlignment="center"
         android:id="@+id/noColumns"
         android:visibility="invisible"
+        android:padding="16dp"
+        android:background="@drawable/grid_item_column"
         android:onClick="addColumnOnClick"
-        android:text="Колонок еще нет"/>
+        android:text="@string/no_columns_message"/>
 
 </LinearLayout>
