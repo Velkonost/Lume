@@ -56,6 +56,7 @@ public class ColumnFragment extends AbstractTabFragment {
     private String cardName;
     private String cardDescription;
 
+    private FloatingActionButton addCardButton;
 
     protected GetData mGetData;
 
@@ -82,7 +83,7 @@ public class ColumnFragment extends AbstractTabFragment {
         data = new ArrayList<>();
         cids = new ArrayList<>();
 
-        FloatingActionButton addCardButton = (FloatingActionButton) view.findViewById(R.id.btnAddCard);
+        addCardButton = (FloatingActionButton) view.findViewById(R.id.btnAddCard);
         addCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -237,6 +238,14 @@ public class ColumnFragment extends AbstractTabFragment {
                 RecyclerView rv = (RecyclerView) view.findViewById(R.id.recyclerViewColumn);
                 rv.setLayoutManager(new LinearLayoutManager(context));
                 rv.setAdapter(new CardListAdapter(data, getContext()));
+
+                rv.addOnScrollListener(new RecyclerView.OnScrollListener(){
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+                        if (dy > 0) addCardButton.hide();
+                        else if (dy < 0) addCardButton.show();
+                    }
+                });
 
             } catch (JSONException e) {
                 e.printStackTrace();
