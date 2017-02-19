@@ -34,10 +34,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="?attr/actionBarSize"
+                    android:background="@color/colorPrimary"
                     app:tabIndicatorColor="@android:color/white"
-                    app:tabIndicatorHeight="6dp"
+                    app:tabIndicatorHeight="2dp"
                     app:tabSelectedTextColor="@android:color/white"
-                    app:tabTextColor="@android:color/white"/>
+                    app:tabTextColor="@color/colorPrimaryDark"/>
 
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
