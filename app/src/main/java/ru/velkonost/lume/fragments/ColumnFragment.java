@@ -2,6 +2,7 @@ package ru.velkonost.lume.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -83,7 +84,9 @@ public class ColumnFragment extends AbstractTabFragment {
         data = new ArrayList<>();
         cids = new ArrayList<>();
 
-        addCardButton = (FloatingActionButton) view.findViewById(R.id.btnAddCard);
+        addCardButton = (FloatingActionButton) getActivity().findViewById(R.id.btnAddCard);
+        addCardButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+
         addCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
