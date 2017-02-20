@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
@@ -85,7 +86,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
     private String currentColumnName;
     private int currentColumnPosition;
 
-    private Menu menu;
+    private FloatingActionButton addCardButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,6 +108,8 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 loadText(BoardColumnsActivity.this, BOARD_NAME)); /** Инициализация */
         initTabs();
         initNavigationView(); /** Инициализация */
+
+        addCardButton = (FloatingActionButton) findViewById(R.id.btnAddCard);
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -270,6 +273,23 @@ public class BoardColumnsActivity extends AppCompatActivity {
                     return true;
                 }
             });
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                addCardButton.show();
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                addCardButton.show();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                addCardButton.show();
+            }
+        });
 
         if (adapter.getCount() < MAX_COLUMNS_IN_FIXED_MODE)
             tabLayout.setTabMode(TabLayout.MODE_FIXED);

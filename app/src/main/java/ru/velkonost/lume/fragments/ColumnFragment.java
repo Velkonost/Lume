@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +50,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.USER_IDS;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter.tabsColumnOrder;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 public class ColumnFragment extends AbstractTabFragment {
@@ -131,6 +134,8 @@ public class ColumnFragment extends AbstractTabFragment {
 
                                 if (cardName.length() != 0) {
 
+                                    columnId =
+                                            tabsColumnOrder.get(((ViewPager) getActivity().findViewById(R.id.viewPagerColumns)).getCurrentItem());
                                     AddCard addCard = new AddCard();
                                     addCard.execute();
 
@@ -264,6 +269,7 @@ public class ColumnFragment extends AbstractTabFragment {
     private class AddCard extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
+
 
             /**
              * Формирование адреса, по которому необходимо обратиться.
