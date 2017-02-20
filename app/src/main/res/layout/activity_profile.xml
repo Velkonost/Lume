@@ -71,6 +71,7 @@
             app:layout_anchorGravity="bottom|end"
             style="@style/FabStyle"
             android:src="@mipmap/ic_email_outline"
+
             android:visibility="invisible"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/btnAddIntoContacts"

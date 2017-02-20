@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -204,6 +205,9 @@ public class ProfileActivity extends AppCompatActivity {
      * Свойство - выбор фото из галереи устройства.
      */
     private GalleryPhoto galleryPhoto;
+
+    private FloatingActionButton btnAddIntoContacts;
+    private FloatingActionButton btnSendMessage;
 
 
     @Override
@@ -598,12 +602,19 @@ public class ProfileActivity extends AppCompatActivity {
                         if (!profileIdString.equals(userId)) {
 
                             /** Кнопка добавления/удаления владельца профиля из контактов авторизованного пользоавателя */
-                            FloatingActionButton btnAddIntoContacts
+                            btnAddIntoContacts
                                     = (FloatingActionButton) findViewById(R.id.btnAddIntoContacts);
 
                             /** Кнопка открытия диалога между авторизованным пользователем и владельцем открытого профиля */
-                            FloatingActionButton btnSendMessage
+                            btnSendMessage
                                     = (FloatingActionButton) findViewById(R.id.btnSendMessage);
+
+                            btnAddIntoContacts
+                                    .setBackgroundTintList(ColorStateList.valueOf(getResources()
+                                            .getColor(R.color.colorPurpleDark)));
+                            btnSendMessage
+                                    .setBackgroundTintList(ColorStateList.valueOf(getResources()
+                                            .getColor(R.color.colorPurpleDark)));
 
                             btnAddIntoContacts.setVisibility(View.VISIBLE);
                             btnSendMessage.setVisibility(View.VISIBLE);
@@ -1025,10 +1036,6 @@ public class ProfileActivity extends AppCompatActivity {
                  */
                 dataJsonObj = new JSONObject(strJson);
                 resultCode = Integer.parseInt(dataJsonObj.getString(ADD_CONTACT));
-
-
-                FloatingActionButton btnAddIntoContacts = (FloatingActionButton)
-                        findViewById(R.id.btnAddIntoContacts);
 
                 switch (resultCode) {
 
