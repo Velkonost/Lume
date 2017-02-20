@@ -56,7 +56,7 @@ public class BoardInviteListAdapter extends RecyclerView.Adapter<BoardInviteList
 
     @Override
     public BoardInviteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_contact_block, parent, false);
+        View view = inflater.inflate(R.layout.item_board_invite, parent, false);
 
         return new BoardInviteViewHolder(view);
     }

@@ -3,49 +3,12 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@drawable/popup_board_invite"
-              android:padding="10dp"
+              android:padding="3dp"
               android:orientation="vertical">
-
-
-    <!--<com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"/>-->
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/recyclerViewBoardInvite"/>
-
-
-    <!--<LinearLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="1dp"-->
-        <!--android:background="@android:color/darker_gray"-->
-        <!--android:orientation="vertical">-->
-
-        <!--<LinearLayout-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_margin="20dp"-->
-            <!--android:orientation="vertical">-->
-
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Это PopupWindow"/>-->
-
-            <!--<ImageView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:src="@mipmap/ic_launcher"/>-->
-
-            <!--<Button-->
-                <!--android:id="@+id/button_close"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Закрыть"/>-->
-        <!--</LinearLayout>-->
-    <!--</LinearLayout>-->
 
 </LinearLayout>
