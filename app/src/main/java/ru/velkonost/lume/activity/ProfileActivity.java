@@ -594,7 +594,6 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         });
 
-
                         /**
                          * Если профиль не принадлежит авторизованному пользователю,
                          *      то добавляем модуль взаимодействия.
