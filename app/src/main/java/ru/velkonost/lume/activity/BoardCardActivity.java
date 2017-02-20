@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,6 +23,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -31,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 
 import org.json.JSONArray;
@@ -184,6 +188,8 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private Menu menu;
 
+    private ImageView imageArrowSend;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -210,6 +216,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
         mEditTextComment = (EditText) findViewById(R.id.editComment);
         editCardName = (EditText) findViewById(R.id.editCardName);
+        imageArrowSend = (ImageView) findViewById(R.id.imageView);
 
         Intent intent = getIntent();
         cardName = intent.getExtras().getString(CARD_NAME);
@@ -259,6 +266,29 @@ public class BoardCardActivity extends AppCompatActivity {
         recyclerViewColumns = (RecyclerView) popupViewColumns
                 .findViewById(R.id.recyclerViewBoardInvite);
 
+
+        mEditTextComment.addTextChangedListener(new TextWatcher() {
+
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 0) {
+                    imageArrowSend.setColorFilter(ContextCompat
+                            .getColor(BoardCardActivity.this, R.color.colorMessageBackground));
+                } else {
+                    imageArrowSend.setColorFilter(ContextCompat
+                            .getColor(BoardCardActivity.this, R.color.colorPrimary));
+
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         mGetCardData.execute();
         mGetContacts.execute();

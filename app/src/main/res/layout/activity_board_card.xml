@@ -35,11 +35,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:id="@+id/editCardName"
+                    android:textCursorDrawable="@null"
                     android:background="@color/colorPrimary"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                    android:textSelectHandle="@drawable/edittext_empty_handle"
                     android:layout_marginLeft="80dp"
                     android:layout_marginRight="40dp"
                     android:maxLines="1"
+                    android:inputType="text"
+                    android:scrollHorizontally="true"
+                    android:ellipsize="end"
                     android:visibility="invisible"/>
 
 
@@ -87,6 +92,8 @@
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:minHeight="50dp"
+                            android:maxHeight="120dp"
                             android:id="@+id/editComment"
                             android:paddingLeft="10dp"
                             android:paddingTop="5dp"
@@ -95,8 +102,9 @@
                             android:background="@drawable/edittext_remove_underbar"
                             android:hint="Enter your comment here..."/>
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="40dp"
+                            android:layout_height="match_parent"
+                            android:tint="@color/colorMessageBackground"
                             android:src="@mipmap/ic_send"
                             android:layout_alignTop="@+id/editComment"
                             android:layout_alignBottom="@id/editComment"
