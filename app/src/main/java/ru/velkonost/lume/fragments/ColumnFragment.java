@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -78,7 +79,7 @@ public class ColumnFragment extends AbstractTabFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
 
         data = new ArrayList<>();
@@ -96,28 +97,33 @@ public class ColumnFragment extends AbstractTabFragment {
                 LinearLayout.LayoutParams  params =
                         new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(0, dp2px(20), 0, dp2px(20));
+                params.setMargins(dp2px(5), dp2px(20), dp2px(5), dp2px(20));
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Title");
+                builder.setTitle(getResources().getString(R.string.create_card));
 
-                final EditText inputName = new EditText(context);
+                final EditText inputName =
+                        (EditText) getLayoutInflater(savedInstanceState)
+                                .inflate(R.layout.item_edittext_style, null);
+                inputName.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
                 inputName.setLayoutParams(params);
-
-                inputName.setHint("Enter card's name...");
+                inputName.setHint(getResources().getString(R.string.enter_card_name));
                 inputName.setInputType(InputType.TYPE_CLASS_TEXT);
                 layout.addView(inputName);
 
-                final EditText inputDesc = new EditText(context);
+                final EditText inputDesc =
+                        (EditText) getLayoutInflater(savedInstanceState)
+                                .inflate(R.layout.item_edittext_style, null);
+                inputDesc.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
                 inputDesc.setLayoutParams(params);
-
-                inputDesc.setHint("Введите описание карточки...");
+                inputDesc.setHint(getResources().getString(R.string.enter_card_description));
                 layout.addView(inputDesc);
 
 
                 builder.setView(layout)
 
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(getResources().getString(R.string.btn_ok),
+                                new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 cardName = inputName.getText().toString();
@@ -134,7 +140,7 @@ public class ColumnFragment extends AbstractTabFragment {
 
                             }
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();

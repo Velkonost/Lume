@@ -91,8 +91,13 @@
     <string name="enter_board_name">Введите название…</string>
     <string name="enter_board_description">Введите описание…</string>
 
+    <string name="create_card">Создать новую карточку</string>
+    <string name="enter_card_name">Введите название…</string>
+    <string name="enter_card_description">Введите описание…</string>
+
     <string name="create_column">Создать колонку</string>
     <string name="enter_column_name">Введите название…</string>
+    <string name="change_column_name">Изменить название колонки</string>
 
     <string name="no_columns_message">Создать колонку</string>
 

@@ -92,8 +92,15 @@
     <string name="enter_board_name">Enter name…</string>
     <string name="enter_board_description">Enter descripiton…</string>
 
+    <string name="create_card">Create new card</string>
+    <string name="enter_card_name">Enter name…</string>
+    <string name="enter_card_description">Enter descripiton…</string>
+
+
     <string name="create_column">Create column</string>
     <string name="enter_column_name">Enter name…</string>
+    <string name="change_column_name">Change column name</string>
+
 
     <string name="no_columns_message">Create column</string>
 

@@ -157,7 +157,6 @@ public class BoardsListActivity extends AppCompatActivity {
 
             }
         }, 10000);
-
     }
 
     public void createBoardOnClick(View view) {
@@ -189,7 +188,6 @@ public class BoardsListActivity extends AppCompatActivity {
         inputDesc.setTextColor(ContextCompat.getColor(BoardsListActivity.this, R.color.colorBlack));
         inputDesc.setHint(getResources().getString(R.string.enter_board_description));
         layout.addView(inputDesc);
-
 
         builder.setView(layout)
                 .setPositiveButton(getResources().getString(R.string.create), new DialogInterface.OnClickListener() {
