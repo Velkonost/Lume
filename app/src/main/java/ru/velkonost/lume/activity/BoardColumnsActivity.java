@@ -85,6 +85,8 @@ public class BoardColumnsActivity extends AppCompatActivity {
     private String currentColumnName;
     private int currentColumnPosition;
 
+    private Menu menu;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,10 +127,10 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getGroupId();
+        int id = item.getItemId();
 
         switch (id){
-            case 0:
+            case R.id.action_change:
 
                 currentColumnName = tabLayout.getTabAt(viewPager.getCurrentItem()).getText().toString();
                 currentColumnPosition = viewPager.getCurrentItem() + 1;
@@ -200,7 +202,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
     private void initTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPagerColumns);
         final BoardColumnsTabsFragmentAdapter adapter
-                = new BoardColumnsTabsFragmentAdapter(this, getSupportFragmentManager());
+                = new BoardColumnsTabsFragmentAdapter(this, getSupportFragmentManager(), boardId);
 
         viewPager.setAdapter(adapter);
 
@@ -222,13 +224,13 @@ public class BoardColumnsActivity extends AppCompatActivity {
                     if (!dialogOpen[0]) {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(BoardColumnsActivity.this);
-                        builder.setTitle("Title");
+                        builder.setTitle(getResources().getString(R.string.create_column));
 
                         final EditText input = new EditText(BoardColumnsActivity.this);
-                        input.setHint("Enter column's name...");
+                        input.setHint(getResources().getString(R.string.enter_column_name));
                         input.setInputType(InputType.TYPE_CLASS_TEXT);
                         builder.setView(input)
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         columnName = input.getText().toString();
@@ -247,7 +249,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
                                     }
                                 })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.cancel();

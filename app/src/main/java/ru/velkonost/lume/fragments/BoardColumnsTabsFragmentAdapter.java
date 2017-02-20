@@ -18,10 +18,14 @@ public class BoardColumnsTabsFragmentAdapter extends FragmentPagerAdapter {
     private Context context;
     public static int last = 0;
 
-    public BoardColumnsTabsFragmentAdapter(Context context, FragmentManager fm) {
+    private String boardId;
+
+    public BoardColumnsTabsFragmentAdapter(Context context, FragmentManager fm, String boardId) {
         super(fm);
 
         this.context = context;
+        this.boardId = boardId;
+
         initTabsMap(context);
     }
 
@@ -52,6 +56,6 @@ public class BoardColumnsTabsFragmentAdapter extends FragmentPagerAdapter {
 
             last = i;
         }
-        tabs.put(last + 1, AddColumnFragment.getInstance(context));
+        tabs.put(last + 1, AddColumnFragment.getInstance(context, boardId));
     }
 }
