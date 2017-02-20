@@ -13,7 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -124,7 +123,6 @@ public class ColumnFragment extends AbstractTabFragment {
 
 
                 builder.setView(layout)
-
                         .setPositiveButton(getResources().getString(R.string.btn_ok),
                                 new DialogInterface.OnClickListener() {
                             @Override
@@ -135,7 +133,10 @@ public class ColumnFragment extends AbstractTabFragment {
                                 if (cardName.length() != 0) {
 
                                     columnId =
-                                            tabsColumnOrder.get(((ViewPager) getActivity().findViewById(R.id.viewPagerColumns)).getCurrentItem());
+                                            tabsColumnOrder.get(((ViewPager) getActivity()
+                                                    .findViewById(R.id.viewPagerColumns))
+                                                    .getCurrentItem());
+
                                     AddCard addCard = new AddCard();
                                     addCard.execute();
 
