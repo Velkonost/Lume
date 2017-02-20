@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class CardInviteListAdapter extends RecyclerView.Adapter<CardInviteListAd
 
     @Override
     public CardInviteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_contact_block, parent, false);
+        View view = inflater.inflate(R.layout.item_board_invite, parent, false);
 
         return new CardInviteViewHolder(view);
     }
@@ -126,7 +126,7 @@ public class CardInviteListAdapter extends RecyclerView.Adapter<CardInviteListAd
 
     class CardInviteViewHolder extends RecyclerView.ViewHolder {
 
-        RelativeLayout mRelativeLayout;
+        LinearLayout mRelativeLayout;
         String id;
         TextView userName;
         TextView userLogin;
@@ -136,7 +136,7 @@ public class CardInviteListAdapter extends RecyclerView.Adapter<CardInviteListAd
         CardInviteViewHolder(View itemView) {
             super(itemView);
 
-            mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayoutContact);
+            mRelativeLayout = (LinearLayout) itemView.findViewById(R.id.relativeLayoutContact);
 
             userName = (TextView) itemView.findViewById(R.id.userName);
             userLogin = (TextView) itemView.findViewById(R.id.userLogin);

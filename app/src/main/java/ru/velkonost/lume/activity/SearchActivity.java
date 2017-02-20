@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -91,7 +92,7 @@ public class SearchActivity extends AppCompatActivity {
     /**
      * Свойство - информация, по которой собирается искать пользователь.
      **/
-    private String whatSearch;
+    private String whatSearch = " ";
 
     /**
      * Идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
@@ -125,9 +126,10 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         mGetData = new GetData();
         ids = new ArrayList<>();
@@ -143,7 +145,8 @@ public class SearchActivity extends AppCompatActivity {
          **/
         Intent intent = getIntent();
         whatSearch = intent.getStringExtra(SEARCH); /** Формирование заголовка тулбара */
-        whatSearch = getResources().getString(R.string.search) + " " + whatSearch;
+        if (whatSearch == null) whatSearch = getResources().getString(R.string.search_empty);
+        else whatSearch = getResources().getString(R.string.search) + " " + whatSearch;
 
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(SearchActivity.this, toolbar, whatSearch); /** Инициализация */
@@ -156,6 +159,7 @@ public class SearchActivity extends AppCompatActivity {
          **/
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
         initSearch(this, searchView);
+        searchView.setCursorDrawable(R.drawable.cursor_drawable);
 
         mSearchContacts = new ArrayList<>();
 
@@ -167,7 +171,30 @@ public class SearchActivity extends AppCompatActivity {
      **/
     private void initNavigationView() {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
+                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                getCurrentFocus().clearFocus();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                getCurrentFocus().clearFocus();
+            }
+        };
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -271,8 +298,7 @@ public class SearchActivity extends AppCompatActivity {
                 searchView.setVisibility(View.VISIBLE);
             }
             @Override
-            public void onSearchViewClosed() {
-            }
+            public void onSearchViewClosed() {}
         });
         return true;
     }

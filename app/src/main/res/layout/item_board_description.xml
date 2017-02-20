@@ -26,8 +26,9 @@
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"/>
             <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/edittext_remove_underbar"
                 android:id="@+id/editBoardDescription"
                 android:textSize="10pt"
                 android:textColor="@color/colorBlack"

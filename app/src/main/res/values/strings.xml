@@ -51,6 +51,7 @@
 
     <string name="search_title">Search new contacts…</string>
     <string name="search">Search:</string>
+    <string name="search_empty">Search</string>
 
     <string name="my_contacts">My contacts</string>
     <string name="settings">Settings</string>
@@ -87,10 +88,26 @@
     <string name="menu_action_invite">Invite</string>
     <string name="menu_action_leave">Leave</string>
 
+    <string name="create_board">Create new board</string>
+    <string name="enter_board_name">Enter name…</string>
+    <string name="enter_board_description">Enter descripiton…</string>
 
+    <string name="create_card">Create new card</string>
+    <string name="enter_card_name">Enter name…</string>
+    <string name="enter_card_description">Enter descripiton…</string>
+
+
+    <string name="create_column">Create column</string>
+    <string name="enter_column_name">Enter name…</string>
+    <string name="change_column_name">Change column name</string>
+
+
+    <string name="no_columns_message">Create column</string>
 
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
 
 
 </resources>

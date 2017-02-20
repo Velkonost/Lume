@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -51,7 +52,6 @@ import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_DIALOGS_METHOD;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Managers.Initializations.initSearch;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
@@ -113,11 +113,14 @@ public class DialogsActivity extends AppCompatActivity {
 
     private TimerCheckDialogsState timer;
 
+    private boolean letRefresh = true;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         mGetDialogs = new GetDialogs();
         ids = new ArrayList<>();
@@ -136,7 +139,8 @@ public class DialogsActivity extends AppCompatActivity {
          * {@link Initializations#initSearch(Activity, MaterialSearchView)}
          **/
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
-        initSearch(this, searchView);
+        initSearchDialog(this, searchView);
+        searchView.setCursorDrawable(R.drawable.cursor_drawable);
 
         /**
          * Получение id пользователя.
@@ -145,6 +149,14 @@ public class DialogsActivity extends AppCompatActivity {
         userId = loadText(DialogsActivity.this, ID);
 
         mDialogs = new ArrayList<>();
+
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         mGetDialogs.execute();
 
@@ -166,13 +178,66 @@ public class DialogsActivity extends AppCompatActivity {
             timer.cancel();
     }
 
+    private void initSearchDialog(final Activity activity, final MaterialSearchView searchView) {
+
+        searchView.setEllipsize(true);
+        final boolean[] check = {false, true};
+
+
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                dialogsFragment.search(query, check[0], check[1]);
+                check[1] = false;
+                searchView.clearFocus();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(final String newText) {
+                letRefresh = newText.isEmpty();
+
+                dialogsFragment.search(newText, check[0], check[1]);
+                check[0] = true;
+                check[1] = true;
+
+                return true;
+            }
+        });
+    }
+
     /**
      * Рисует боковую панель навигации.
      **/
     private void initNavigationView() {
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
+                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                getCurrentFocus().clearFocus();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                getCurrentFocus().clearFocus();
+            }
+        };
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -278,6 +343,7 @@ public class DialogsActivity extends AppCompatActivity {
             }
             @Override
             public void onSearchViewClosed() {
+                letRefresh = true;
             }
         });
         return true;
@@ -487,7 +553,7 @@ public class DialogsActivity extends AppCompatActivity {
                  * Добавляем фрагмент на экран.
                  * {@link DialogsFragment}
                  */
-                if(!isFinishing()) {
+                if(!isFinishing() && letRefresh) {
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     dialogsFragment.refreshContacts(mDialogs);
                     ft.replace(R.id.lldialog, dialogsFragment);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                         xmlns:app="http://schemas.android.com/apk/res-auto"
+                                        xmlns:card_view="http://schemas.android.com/tools"
                                         android:id="@+id/activity_board_card"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
@@ -34,11 +35,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:id="@+id/editCardName"
+                    android:textCursorDrawable="@null"
                     android:background="@color/colorPrimary"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                    android:textSelectHandle="@drawable/edittext_empty_handle"
                     android:layout_marginLeft="80dp"
                     android:layout_marginRight="40dp"
                     android:maxLines="1"
+                    android:inputType="text"
+                    android:scrollHorizontally="true"
+                    android:ellipsize="end"
                     android:visibility="invisible"/>
 
 
@@ -47,6 +53,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:scrollbars="none"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,21 +77,34 @@
             </FrameLayout>
             <FrameLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-3dp">
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    card_view:cardPreventCornerOverlap="false"
+                    card_view:cardUseCompatPadding="true"
+                    android:layout_marginLeft="@dimen/card_margin_horizontal"
+                    android:layout_marginRight="@dimen/card_margin_horizontal">
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:minHeight="50dp"
+                            android:maxHeight="120dp"
                             android:id="@+id/editComment"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:paddingRight="40dp"
+                            android:background="@drawable/edittext_remove_underbar"
                             android:hint="Enter your comment here..."/>
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="40dp"
+                            android:layout_height="match_parent"
+                            android:tint="@color/colorMessageBackground"
                             android:src="@mipmap/ic_send"
                             android:layout_alignTop="@+id/editComment"
                             android:layout_alignBottom="@id/editComment"
@@ -97,7 +117,9 @@
             <FrameLayout
                 android:id="@+id/commentsContainer"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="fill_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="-3dp">
             </FrameLayout>
         </LinearLayout>
         </ScrollView>

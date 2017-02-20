@@ -6,16 +6,19 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -51,7 +54,6 @@ import static ru.velkonost.lume.Constants.URL.SERVER_GET_CONTACTS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Managers.Initializations.initSearch;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
@@ -117,12 +119,21 @@ public class ContactsActivity extends AppCompatActivity {
      */
     private List<Contact> mContacts;
 
+    private FloatingActionButton fabGoSearch;
+
+    private ContactsFragment contactsFragment;
+
+    /**
+     * Свойство - опинсание view-элемента, служащего для обновления страницы.
+     **/
+    protected SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         mGetData = new GetData();
         ids = new ArrayList<>();
@@ -142,7 +153,36 @@ public class ContactsActivity extends AppCompatActivity {
          * {@link Initializations#initSearch(Activity, MaterialSearchView)}
          **/
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
-        initSearch(this, searchView);
+        initSearchContacts(this, searchView);
+        searchView.setCursorDrawable(R.drawable.cursor_drawable);
+
+        /**
+         *  Установка цветной палитры,
+         *  цвета которой будут заменять друг друга в зависимости от прогресса.
+         * */
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorMessageBackground,
+                R.color.colorPrimary);
+
+        /** Ставит обработчик событий */
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+
+            public void onRefresh() {
+                /** Выполнение происходит с задержкой в 2.5 секунды */
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity)}
+                         * */
+                        changeActivityCompat(ContactsActivity.this);
+                    }
+                }, 2500);
+            }
+        });
 
         /**
          * Получение id пользователя.
@@ -153,6 +193,14 @@ public class ContactsActivity extends AppCompatActivity {
         mContacts = new ArrayList<>();
 
         mGetData.execute();
+
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     /**
@@ -161,7 +209,31 @@ public class ContactsActivity extends AppCompatActivity {
     private void initNavigationView() {
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
+                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                getCurrentFocus().clearFocus();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                getCurrentFocus().clearFocus();
+            }
+        };
+
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -264,13 +336,16 @@ public class ContactsActivity extends AppCompatActivity {
             @Override
             public void onSearchViewShown () {
                 searchView.setVisibility(View.VISIBLE);
+                fabGoSearch.hide();
             }
             @Override
             public void onSearchViewClosed() {
+                fabGoSearch.show();
             }
         });
         return true;
     }
+
 
     /**
      * При нажатии на кнопку "Назад" поиск закрывется.
@@ -284,6 +359,34 @@ public class ContactsActivity extends AppCompatActivity {
             searchView.closeSearch();
         else
             super.onBackPressed();
+    }
+
+    private void initSearchContacts(final Activity activity, final MaterialSearchView searchView) {
+
+        searchView.setEllipsize(true);
+        final boolean[] check = {false, true};
+
+
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                contactsFragment.search(query, check[0], check[1]);
+                check[1] = false;
+                searchView.clearFocus();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(final String newText) {
+                contactsFragment.search(newText, check[0], check[1]);
+                check[0] = true;
+                check[1] = true;
+
+                return true;
+            }
+        });
     }
 
     /**
@@ -397,7 +500,7 @@ public class ContactsActivity extends AppCompatActivity {
                  * {@link ContactsFragment}
                  */
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ContactsFragment contactsFragment
+                contactsFragment
                         = ContactsFragment.getInstance(ContactsActivity.this, mContacts);
                 ft.add(R.id.llcontact, contactsFragment);
                 ft.commit();

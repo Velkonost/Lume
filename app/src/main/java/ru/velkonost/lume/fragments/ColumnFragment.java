@@ -2,10 +2,13 @@ package ru.velkonost.lume.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -46,6 +49,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.USER_IDS;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter.tabsColumnOrder;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 public class ColumnFragment extends AbstractTabFragment {
@@ -56,6 +60,7 @@ public class ColumnFragment extends AbstractTabFragment {
     private String cardName;
     private String cardDescription;
 
+    private FloatingActionButton addCardButton;
 
     protected GetData mGetData;
 
@@ -76,13 +81,15 @@ public class ColumnFragment extends AbstractTabFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
 
         data = new ArrayList<>();
         cids = new ArrayList<>();
 
-        FloatingActionButton addCardButton = (FloatingActionButton) view.findViewById(R.id.btnAddCard);
+        addCardButton = (FloatingActionButton) getActivity().findViewById(R.id.btnAddCard);
+        addCardButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+
         addCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,34 +99,43 @@ public class ColumnFragment extends AbstractTabFragment {
                 LinearLayout.LayoutParams  params =
                         new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(0, dp2px(20), 0, dp2px(20));
+                params.setMargins(dp2px(5), dp2px(20), dp2px(5), dp2px(20));
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Title");
+                builder.setTitle(getResources().getString(R.string.create_card));
 
-                final EditText inputName = new EditText(context);
+                final EditText inputName =
+                        (EditText) getLayoutInflater(savedInstanceState)
+                                .inflate(R.layout.item_edittext_style, null);
+                inputName.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
                 inputName.setLayoutParams(params);
-
-                inputName.setHint("Enter card's name...");
+                inputName.setHint(getResources().getString(R.string.enter_card_name));
                 inputName.setInputType(InputType.TYPE_CLASS_TEXT);
                 layout.addView(inputName);
 
-                final EditText inputDesc = new EditText(context);
+                final EditText inputDesc =
+                        (EditText) getLayoutInflater(savedInstanceState)
+                                .inflate(R.layout.item_edittext_style, null);
+                inputDesc.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
                 inputDesc.setLayoutParams(params);
-
-                inputDesc.setHint("Enter card's description...");
+                inputDesc.setHint(getResources().getString(R.string.enter_card_description));
                 layout.addView(inputDesc);
 
 
                 builder.setView(layout)
-
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(getResources().getString(R.string.btn_ok),
+                                new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 cardName = inputName.getText().toString();
                                 cardDescription = inputDesc.getText().toString();
 
                                 if (cardName.length() != 0) {
+
+                                    columnId =
+                                            tabsColumnOrder.get(((ViewPager) getActivity()
+                                                    .findViewById(R.id.viewPagerColumns))
+                                                    .getCurrentItem());
 
                                     AddCard addCard = new AddCard();
                                     addCard.execute();
@@ -130,7 +146,7 @@ public class ColumnFragment extends AbstractTabFragment {
 
                             }
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
@@ -238,6 +254,14 @@ public class ColumnFragment extends AbstractTabFragment {
                 rv.setLayoutManager(new LinearLayoutManager(context));
                 rv.setAdapter(new CardListAdapter(data, getContext()));
 
+                rv.addOnScrollListener(new RecyclerView.OnScrollListener(){
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+                        if (dy > 0) addCardButton.hide();
+                        else if (dy < 0) addCardButton.show();
+                    }
+                });
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -246,6 +270,7 @@ public class ColumnFragment extends AbstractTabFragment {
     private class AddCard extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
+
 
             /**
              * Формирование адреса, по которому необходимо обратиться.

@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class CardMoveListAdapter extends RecyclerView.Adapter<CardMoveListAdapte
 
     @Override
     public CardMoveViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_contact_block, parent, false);
+        View view = inflater.inflate(R.layout.item_board_move_card, parent, false);
 
         return new CardMoveViewHolder(view);
     }
@@ -92,14 +92,14 @@ public class CardMoveListAdapter extends RecyclerView.Adapter<CardMoveListAdapte
 
     class CardMoveViewHolder extends RecyclerView.ViewHolder {
 
-        RelativeLayout mRelativeLayout;
+        LinearLayout mRelativeLayout;
         String id;
         TextView userName;
 
         CardMoveViewHolder(View itemView) {
             super(itemView);
 
-            mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayoutContact);
+            mRelativeLayout = (LinearLayout) itemView.findViewById(R.id.relativeLayoutContact);
 
             userName = (TextView) itemView.findViewById(R.id.userName);
 

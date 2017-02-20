@@ -1,11 +1,11 @@
 package ru.velkonost.lume.activity;
 
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,9 +19,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -35,6 +39,7 @@ import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.R;
 
 import static ru.velkonost.lume.Constants.AMPERSAND;
+import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BIRTHDAY;
 import static ru.velkonost.lume.Constants.CITY;
 import static ru.velkonost.lume.Constants.COUNTRY;
@@ -43,21 +48,27 @@ import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.GET_DATA_SETTINGS;
 import static ru.velkonost.lume.Constants.GET_EDIT_RESULT;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.JPG;
+import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.NEW_PASSWORD;
 import static ru.velkonost.lume.Constants.PREV_PASSWORD;
+import static ru.velkonost.lume.Constants.SLASH;
 import static ru.velkonost.lume.Constants.STUDY;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
+import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
 import static ru.velkonost.lume.Constants.URL.SERVER_EDIT_PARAMETERS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_DATA_SETTINGS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
+import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
 import static ru.velkonost.lume.Managers.DateConverter.formatDate;
 import static ru.velkonost.lume.Managers.DateConverter.formatDateBack;
+import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialog;
@@ -136,12 +147,29 @@ public class SettingsActivity extends AppCompatActivity {
     protected EditText editEmail; /** Основной email пользователя */
     protected EditText editWorkEmail; /** email, который виден другим пользователям*/
 
+    private Animation rotateArrowOpen, rotateArrowClose;
+
+    private TextView personalInfo;
+    private TextView accountInfo;
+
+    private ImageView userAvatar;
+    private TextView userLogin;
+
+    private LinearLayout divPersonalHeader, divAccountHeader;
+    private LinearLayout divPersonal, divAccount;
+
+    private boolean personalOpen = false, accountOpen = false;
+
+    private ImageView imageArrowPersonal, imageArrowAccount;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
+
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -170,12 +198,111 @@ public class SettingsActivity extends AppCompatActivity {
         editEmail = (EditText) findViewById(R.id.editEmail);
         editWorkEmail = (EditText) findViewById(R.id.editWorkEmail);
 
+        userAvatar = (ImageView) findViewById(R.id.avatar) ;
+        userLogin = (TextView) findViewById(R.id.login);
+
+        personalInfo = (TextView) findViewById(R.id.personalInfo);
+        accountInfo = (TextView) findViewById(R.id.accountInfo);
+
+        personalInfo.setTypeface(Typeface.createFromAsset(
+                getAssets(), "fonts/Roboto-Regular.ttf"));
+
+        accountInfo.setTypeface(Typeface.createFromAsset(
+                getAssets(), "fonts/Roboto-Regular.ttf"));
+
+        final LinearLayout.LayoutParams layoutParamsVisible
+                = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+
+
+        final LinearLayout.LayoutParams layoutParamsInvisible
+                = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
+
+        divPersonalHeader = (LinearLayout) findViewById(R.id.div_personal_header);
+        divAccountHeader = (LinearLayout) findViewById(R.id.div_account_header);
+
+        divPersonal = (LinearLayout) findViewById(R.id.div_personal);
+        divAccount = (LinearLayout) findViewById(R.id.div_account);
+
+        divPersonal.setLayoutParams(layoutParamsInvisible);
+        divAccount.setLayoutParams(layoutParamsInvisible);
+
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
         initToolbar(SettingsActivity.this, toolbar, getResources().getString(R.string.settings)); /** Инициализация */
         initNavigationView(); /** Инициализация */
         initDateBirthdayDatePicker(); /** Инициализация */
 
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         mGetData.execute();
+
+        rotateArrowOpen = AnimationUtils.loadAnimation(this, R.anim.arrow_rotation_open);
+        rotateArrowClose = AnimationUtils.loadAnimation(this, R.anim.arrow_rotation_close);
+
+        imageArrowPersonal = (ImageView) findViewById(R.id.image_arrow_personal);
+        imageArrowAccount = (ImageView) findViewById(R.id.image_arrow_account);
+
+        divPersonalHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                if (personalOpen) {
+                    divPersonal.setLayoutParams(layoutParamsInvisible);
+                    imageArrowPersonal.startAnimation(rotateArrowClose);
+
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    getCurrentFocus().clearFocus();
+
+                } else {
+                    divPersonal.setLayoutParams(layoutParamsVisible);
+                    imageArrowPersonal.startAnimation(rotateArrowOpen);
+
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    getCurrentFocus().clearFocus();
+                }
+
+                personalOpen = !personalOpen;
+
+            }
+        });
+
+        divAccountHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                if (accountOpen) {
+                    divAccount.setLayoutParams(layoutParamsInvisible);
+                    imageArrowAccount.startAnimation(rotateArrowClose);
+
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    getCurrentFocus().clearFocus();
+                } else {
+                    divAccount.setLayoutParams(layoutParamsVisible);
+                    imageArrowAccount.startAnimation(rotateArrowOpen);
+
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    getCurrentFocus().clearFocus();
+                }
+
+                accountOpen = !accountOpen;
+
+            }
+        });
+
+
+
     }
 
     /**
@@ -276,6 +403,7 @@ public class SettingsActivity extends AppCompatActivity {
                 getCurrentFocus().clearFocus();
             }
         };
+
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -365,7 +493,7 @@ public class SettingsActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_search);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_settings);
         if (drawer.isDrawerOpen(GravityCompat.START))
             drawer.closeDrawer(GravityCompat.START);
         else
@@ -455,6 +583,14 @@ public class SettingsActivity extends AppCompatActivity {
 
                         editEmail.setText(dataJsonObj.getString(EMAIL));
                         editWorkEmail.setText(dataJsonObj.getString(WORK_EMAIL));
+
+                        userLogin.setText(dataJsonObj.getString(LOGIN));
+
+                        String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
+                                + SERVER_AVATAR + SLASH + dataJsonObj.getString(AVATAR)
+                                + SLASH + userId + JPG;
+
+                        fetchImage(avatarURL, userAvatar, true, false);
 
                         break;
                     /**

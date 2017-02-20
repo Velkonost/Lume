@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +46,7 @@ import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.MESSAGE_IDS;
+import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.STATUS;
 import static ru.velkonost.lume.Constants.TEXT;
 import static ru.velkonost.lume.Constants.URL.SERVER_DIALOG_SCRIPT;
@@ -113,11 +116,16 @@ public class MessageActivity extends AppCompatActivity {
 
     private TimerCheckMessagesState timer;
 
+    private String collocutorName;
+
+    private ImageView imageArrowSend;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         mGetMessages = new GetMessages();
         mids = new ArrayList<>();
@@ -127,9 +135,26 @@ public class MessageActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_messages);
 
+        Intent intent = getIntent();
+        dialogId = intent.getIntExtra(DIALOG_ID, 0);
+        addresseeId = intent.getIntExtra(ID, 0);
+        collocutorName = intent.getStringExtra(NAME);
+
+        imageArrowSend = (ImageView) findViewById(R.id.imageArrowSend);
+
         /** {@link Initializations#initToolbar(Toolbar, int)}  */
-        initToolbar(MessageActivity.this, toolbar, R.string.menu_item_messages); /** Инициализация */
+        initToolbar(MessageActivity.this, toolbar, collocutorName); /** Инициализация */
         initNavigationView(); /** Инициализация */
+
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MessageActivity.this, ProfileActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(ID, addresseeId);
+                MessageActivity.this.startActivity(intent);
+            }
+        });
 
         /**
          * Получение id пользователя.
@@ -138,10 +163,6 @@ public class MessageActivity extends AppCompatActivity {
         userId = loadText(MessageActivity.this, ID);
 
         editMessage = (EditText) findViewById(R.id.editMessage);
-
-        Intent intent = getIntent();
-        dialogId = intent.getIntExtra(DIALOG_ID, 0);
-        addresseeId = intent.getIntExtra(ID, 0);
 
         /**
          * Кнопка возврата на предыдущую активность.
@@ -183,7 +204,17 @@ public class MessageActivity extends AppCompatActivity {
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 0) {
+                    imageArrowSend.setColorFilter(ContextCompat
+                            .getColor(MessageActivity.this, R.color.colorMessageBackground));
+                } else {
+                    imageArrowSend.setColorFilter(ContextCompat
+                            .getColor(MessageActivity.this, R.color.colorPrimary));
+
+                }
+
+            }
         });
 
     }

@@ -7,8 +7,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -17,10 +19,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -82,11 +86,14 @@ public class BoardColumnsActivity extends AppCompatActivity {
     private String currentColumnName;
     private int currentColumnPosition;
 
+    private FloatingActionButton addCardButton;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -101,6 +108,8 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 loadText(BoardColumnsActivity.this, BOARD_NAME)); /** Инициализация */
         initTabs();
         initNavigationView(); /** Инициализация */
+
+        addCardButton = (FloatingActionButton) findViewById(R.id.btnAddCard);
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -121,26 +130,37 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getGroupId();
+        int id = item.getItemId();
 
         switch (id){
-            case 0:
+            case R.id.action_change:
 
                 currentColumnName = tabLayout.getTabAt(viewPager.getCurrentItem()).getText().toString();
                 currentColumnPosition = viewPager.getCurrentItem() + 1;
 
+                LinearLayout layout = new LinearLayout(BoardColumnsActivity.this);
+                layout.setOrientation(LinearLayout.VERTICAL);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(BoardColumnsActivity.this);
-                builder.setTitle("Title");
+                builder.setTitle(getResources().getString(R.string.change_column_name));
 
-                final EditText inputName = new EditText(BoardColumnsActivity.this);
+                LinearLayout.LayoutParams  params =
+                        new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(dp2px(5), dp2px(20), dp2px(5), dp2px(20));
 
+                final EditText inputName
+                        = (EditText) getLayoutInflater().inflate(R.layout.item_edittext_style, null);
+
+                inputName.setTextColor(ContextCompat.getColor(BoardColumnsActivity.this, R.color.colorBlack));
                 inputName.setText(currentColumnName);
                 inputName.setInputType(InputType.TYPE_CLASS_TEXT);
+                inputName.setLayoutParams(params);
+                layout.addView(inputName);
 
-                builder.setView(inputName)
+                builder.setView(layout)
 
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 currentColumnName = inputName.getText().toString();
@@ -161,7 +181,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
                             }
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
@@ -177,10 +197,15 @@ public class BoardColumnsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                BoardColumnsActivity.this.getResources().getDisplayMetrics());
+    }
+
     private void initTabs() {
         viewPager = (ViewPager) findViewById(R.id.viewPagerColumns);
         final BoardColumnsTabsFragmentAdapter adapter
-                = new BoardColumnsTabsFragmentAdapter(this, getSupportFragmentManager());
+                = new BoardColumnsTabsFragmentAdapter(this, getSupportFragmentManager(), boardId);
 
         viewPager.setAdapter(adapter);
 
@@ -202,13 +227,13 @@ public class BoardColumnsActivity extends AppCompatActivity {
                     if (!dialogOpen[0]) {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(BoardColumnsActivity.this);
-                        builder.setTitle("Title");
+                        builder.setTitle(getResources().getString(R.string.create_column));
 
                         final EditText input = new EditText(BoardColumnsActivity.this);
-                        input.setHint("Enter column's name...");
+                        input.setHint(getResources().getString(R.string.enter_column_name));
                         input.setInputType(InputType.TYPE_CLASS_TEXT);
                         builder.setView(input)
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         columnName = input.getText().toString();
@@ -227,7 +252,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
                                     }
                                 })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.cancel();
@@ -248,6 +273,23 @@ public class BoardColumnsActivity extends AppCompatActivity {
                     return true;
                 }
             });
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                addCardButton.show();
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                addCardButton.show();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                addCardButton.show();
+            }
+        });
 
         if (adapter.getCount() < MAX_COLUMNS_IN_FIXED_MODE)
             tabLayout.setTabMode(TabLayout.MODE_FIXED);

@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,8 +30,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import org.json.JSONArray;
@@ -175,6 +178,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         mGetBoardInfo = new GetBoardInfo();
         mGetContacts = new GetContacts();
@@ -224,6 +228,15 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 .findViewById(R.id.recyclerViewBoardInvite);
 
 
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
         mGetBoardInfo.execute();
         mGetContacts.execute();
 
@@ -231,14 +244,29 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     public void addColumnOnClick(View view) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(BoardWelcomeActivity.this);
-        builder.setTitle("Title");
+        LinearLayout layout = new LinearLayout(BoardWelcomeActivity.this);
+        layout.setOrientation(LinearLayout.VERTICAL);
 
-        final EditText input = new EditText(BoardWelcomeActivity.this);
-        input.setHint("Enter column's name...");
+        LinearLayout.LayoutParams  params =
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(dp2px(5), dp2px(20), dp2px(5), dp2px(20));
+
+        android.support.v7.app.AlertDialog.Builder builder
+                = new android.support.v7.app.AlertDialog.Builder(BoardWelcomeActivity.this);
+        builder.setTitle(getResources().getString(R.string.create_board));
+
+        final EditText input
+                = (EditText) getLayoutInflater().inflate(R.layout.item_edittext_style, null);
+        input.setTextColor(ContextCompat.getColor(BoardWelcomeActivity.this, R.color.colorBlack));
+        input.setLayoutParams(params);
+
+        input.setHint(getResources().getString(R.string.enter_board_name));
         input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        layout.addView(input);
+
+        builder.setView(layout)
+                .setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         columnName = input.getText().toString();
@@ -258,15 +286,16 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
                 });
 
-        AlertDialog alert = builder.create();
+        android.support.v7.app.AlertDialog alert = builder.create();
         alert.show();
+
 
     }
 
@@ -283,6 +312,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         } else {
             changeActivityCompat(BoardWelcomeActivity.this,
                     new Intent(BoardWelcomeActivity.this, BoardsListActivity.class));
+            finish();
         }
     }
 
@@ -371,14 +401,14 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 new AlertDialog.Builder(this)
                         .setTitle(getResources().getString(R.string.leave_board))
                         .setMessage(getResources().getString(R.string.ask_confirmation))
-                        .setCancelable(false)
-                        .setPositiveButton(getResources().getString(R.string.no),
+                        .setCancelable(true)
+                        .setNegativeButton(getResources().getString(R.string.no),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();
                                     }
                                 })
-                        .setNegativeButton(getResources().getString(R.string.yes),
+                        .setPositiveButton(getResources().getString(R.string.yes),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         LeaveBoard leaveBoard = new LeaveBoard();
@@ -404,7 +434,31 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     private void initNavigationView() {
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
+                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                getCurrentFocus().clearFocus();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                getCurrentFocus().clearFocus();
+            }
+        };
+
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -633,9 +687,6 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                             userInfo.getString(LOGIN),
                             BOARD_LAST_CONTRIBUTED_USER == i + 1, uids.size() - i, boardId
                     ));
-
-                    if (BOARD_LAST_CONTRIBUTED_USER == i) break;
-
                 }
 
                 for (int i = 0; i < cids.size(); i++) {

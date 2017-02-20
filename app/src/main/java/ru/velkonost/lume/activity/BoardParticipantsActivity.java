@@ -115,6 +115,7 @@ public class BoardParticipantsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         mGetData = new GetData();
         mBoardParticipants = new ArrayList<>();

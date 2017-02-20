@@ -1,18 +1,13 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorBlack</item>
-    </style>
-
-    <style name="AppDefault" parent="AppTheme">
-        <item name="colorPrimary">@color/colorPurple</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorBlack</item>
-        <item name="colorControlNormal">@color/colorPurple</item>
-
-        <item name="selectableItemBackground">@drawable/selectable_item_background</item>
-        <item name="android:selectableItemBackground">@drawable/selectable_item_background</item>
+        <!-- Main theme colors -->
+        <!--   your app branding color for the app bar -->
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <!--   darker variant for the status bar and contextual app bars -->
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!--   theme UI controls like checkboxes and text fields -->
+        <item name="android:colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
@@ -23,7 +18,8 @@
         <item name="borderWidth">0dp</item>
         <item name="elevation">6dp</item>
         <item name="pressedTranslationZ">12dp</item>
-        <item name="rippleColor">@android:color/white</item>
+        <item name="android:color">@color/colorPrimary</item>
+
     </style>
 
     <style name="TextAppearance.Design.CollapsingToolbar.Expanded.Shadow">
@@ -34,4 +30,36 @@
         <item name="android:shadowColor">@android:color/black</item>
     </style>
 
+
+    <style name="EditText.Login" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">#bcb5b5</item>
+        <item name="colorAccent">@color/colorBlue</item>
+        <item name="colorControlNormal">#9e9e9e</item>
+        <!--<item name="colorControlActivated">@color/colorBlue</item>-->
+        <item name="android:textColorSecondary">@color/colorWhite</item>
+    </style>
+
+
+    <style name="TextAppearance.App.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="AppTheme.Cursor" parent="AppTheme">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+
+    <style name="MaterialSearchViewStyle">
+        <item name="searchBackground">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textColorHint">@color/colorWhite</item>
+
+        <item name="searchCloseIcon">@drawable/ic_action_navigation_close_inverted</item>
+
+        <!-- Change up icon -->
+        <item name="searchBackIcon">@drawable/ic_action_navigation_arrow_back_inverted</item>
+
+    </style>
 </resources>

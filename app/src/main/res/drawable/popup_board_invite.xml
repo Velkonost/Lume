@@ -2,15 +2,15 @@
        android:shape="rectangle" >
 
     <corners
-        android:bottomLeftRadius="20dp"
-        android:bottomRightRadius="20dp"
-        android:topLeftRadius="20dp"
-        android:topRightRadius="20dp" />
+        android:bottomLeftRadius="10dp"
+        android:bottomRightRadius="10dp"
+        android:topLeftRadius="10dp"
+        android:topRightRadius="10dp" />
 
     <stroke
         android:width="3dp"
-        android:color="@android:color/background_dark" />
+        android:color="@color/colorWhite" />
 
-    <solid android:color="#800000c0" />
+    <solid android:color="@color/colorBoardColumnWelcome" />
 
 </shape>

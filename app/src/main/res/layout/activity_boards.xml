@@ -38,7 +38,6 @@
                     android:hint="@string/search_title"/>
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
-
         <RelativeLayout
             android:layout_width="match_parent"
             app:layout_anchor="@id/appbarlayout"
@@ -50,16 +49,6 @@
                 android:id="@+id/llboards"
                 android:orientation="vertical"
                 app:layout_anchorGravity="bottom"/>
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/btnAddBoard"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_margin="10dp"
-                app:layout_anchorGravity="bottom|end"
-                style="@style/FabStyle"
-                android:onClick="createBoardOnClick"
-                android:src="@mipmap/ic_check"/>
         </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>
 

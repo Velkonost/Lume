@@ -7,47 +7,53 @@
                                         android:background="@color/mainBackground"
                                         android:fitsSystemWindows="true">
 
+
+
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbarlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/search_layover_bg">
+            android:background="@color/search_layover_bg"
+            android:fitsSystemWindows="true">
 
-            <FrameLayout
-                android:id="@+id/toolbar_container"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                app:layout_scrollFlags="scroll|enterAlways"/>
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@color/colorPrimary"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
-
-                <android.support.design.widget.TabLayout
-                    android:id="@+id/tabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="?attr/actionBarSize"
-                    app:tabIndicatorColor="@android:color/white"
-                    app:tabIndicatorHeight="6dp"
-                    app:tabSelectedTextColor="@android:color/white"
-                    app:tabTextColor="@android:color/white"/>
-
-            </FrameLayout>
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/colorPrimary"
+                app:tabIndicatorColor="@android:color/white"
+                app:tabIndicatorHeight="2dp"
+                app:tabSelectedTextColor="@android:color/white"
+                app:tabTextColor="@color/colorPrimaryDark"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
         </android.support.design.widget.AppBarLayout>
-
-
         <android.support.v4.view.ViewPager
             android:id="@+id/viewPagerColumns"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_height="match_parent"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/btnAddCard"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="25dp"
+            android:layout_marginRight="20dp"
+            android:layout_gravity="bottom|right"
+            android:layout_width="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_white_24dp"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

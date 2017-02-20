@@ -15,13 +15,18 @@ import ru.velkonost.lume.descriptions.BoardColumn;
 public class BoardColumnsTabsFragmentAdapter extends FragmentPagerAdapter {
 
     private Map<Integer, AbstractTabFragment> tabs;
+    public static Map<Integer, Integer> tabsColumnOrder;
     private Context context;
     public static int last = 0;
 
-    public BoardColumnsTabsFragmentAdapter(Context context, FragmentManager fm) {
+    private String boardId;
+
+    public BoardColumnsTabsFragmentAdapter(Context context, FragmentManager fm, String boardId) {
         super(fm);
 
         this.context = context;
+        this.boardId = boardId;
+
         initTabsMap(context);
     }
 
@@ -42,6 +47,7 @@ public class BoardColumnsTabsFragmentAdapter extends FragmentPagerAdapter {
 
     private void initTabsMap(Context context) {
         tabs = new HashMap<>();
+        tabsColumnOrder = new HashMap<>();
 
         List<BoardColumn> boardColumns = Depository.getBoardColumns();
         last = 0;
@@ -50,8 +56,12 @@ public class BoardColumnsTabsFragmentAdapter extends FragmentPagerAdapter {
             tabs.put(i, ColumnFragment.getInstance(context, boardColumns.get(i).getId(),
                     boardColumns.get(i).getName()));
 
+            tabsColumnOrder.put(i, boardColumns.get(i).getId());
+
             last = i;
         }
-        tabs.put(last + 1, AddColumnFragment.getInstance(context));
+        tabs.put(last + 1, AddColumnFragment.getInstance(context, boardId));
     }
+
+
 }

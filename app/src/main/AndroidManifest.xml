@@ -25,9 +25,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.LoginActivity"/>
-        <activity android:name=".activity.RegistrationActivity"/>
-        <activity android:name=".activity.ProfileActivity"/>
+        <activity android:name=".activity.ProfileActivity"
+            android:theme="@style/AppTheme"/>
         <activity android:name=".activity.SearchActivity"/>
         <activity android:name=".activity.ContactsActivity"/>
         <activity android:name=".activity.FullScreenPhotoActivity"/>

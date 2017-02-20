@@ -35,16 +35,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
+                    style="@style/MaterialSearchViewStyle"
                     android:hint="@string/search_title"/>
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/lldialog"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:orientation="vertical"
             app:layout_anchor="@id/appbarlayout"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_anchorGravity="bottom"/>
 
 

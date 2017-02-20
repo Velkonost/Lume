@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -17,7 +18,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
@@ -43,7 +43,6 @@ import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -123,11 +122,6 @@ public class ProfileActivity extends AppCompatActivity {
     private Intent nextIntent;
 
     /**
-    * Свойство - опинсание view-элемента, служащего для обновления страницы.
-    **/
-    protected SwipeRefreshLayout mSwipeRefreshLayout;
-
-    /**
      * Свойство - описание верхней панели инструментов приложения.
      */
     private Toolbar toolbar;
@@ -160,14 +154,15 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * Свойство - идентификатор пользователя, которому принадлежит открытый профиль.
      * */
-    private Serializable profileId;
+    private int profileIdInt;
+    private String profileIdString;
 
     /**
      * Свойство - состояние между
-     * {@link ProfileActivity#userId} и {@link ProfileActivity#profileId}
+     * {@link ProfileActivity#userId} и {@link ProfileActivity#profileIdString}
      *
      * Положительный ответ означает, что {@link ProfileActivity#userId} уже добавлял в контакты
-     * {@link ProfileActivity#profileId}
+     * {@link ProfileActivity#profileIdString}
      * */
     protected boolean isContact;
 
@@ -211,12 +206,16 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private GalleryPhoto galleryPhoto;
 
+    private FloatingActionButton btnAddIntoContacts;
+    private FloatingActionButton btnSendMessage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+
         setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
 
         /** Инициализация экземпляров классов */
         mGetData = new GetData();
@@ -248,39 +247,10 @@ public class ProfileActivity extends AppCompatActivity {
          * Принадлежит открытый профиль пользователю,
          *      авторизованному на данном устройстве или нет?
          * */
-        profileId = intent.getIntExtra(ID, 0) != 0
-                ? intent.getIntExtra(ID, 0)
-                : userId;
+        profileIdInt = intent.getIntExtra(ID, Integer.parseInt(userId));
+        profileIdString = String.valueOf(profileIdInt);
 
         initNavigationView(); /** Инициализация */
-
-        /**
-         *  Установка цветной палитры,
-         *  цвета которой будут заменять друг друга в зависимости от прогресса.
-         * */
-//        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
-//        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorBlue, R.color.colorGreen,
-//                R.color.colorYellow, R.color.colorRed);
-
-//        /** Ставит обработчик событий */
-//        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//
-//            public void onRefresh() {
-//                /** Выполнение происходит с задержкой в 2.5 секунды */
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                        /**
-//                         * Обновляет страницу.
-//                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
-//                         * */
-//                        changeActivityCompat(ProfileActivity.this);
-//                    }
-//                }, 2500);
-//            }
-//        });
 
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
@@ -299,7 +269,7 @@ public class ProfileActivity extends AppCompatActivity {
          * Кнопка возврата на предыдущую активность, если текущий профиль не принадлежит пользователю,
          *          авторизованному на данном устройстве.
          */
-        if (!(profileId.equals(userId))) {
+        if (!(profileIdString.equals(userId))) {
             toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -325,7 +295,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
 
-        if (profileId.equals(userId)) navigationView.getMenu().getItem(0).setChecked(true);
+        if (profileIdString.equals(userId)) navigationView.getMenu().getItem(0).setChecked(true);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -440,7 +410,7 @@ public class ProfileActivity extends AppCompatActivity {
              * Формирование отправных данных.
              */
             @SuppressWarnings("WrongThread") String params = ID + EQUALS + userId
-                    + AMPERSAND + USER_ID + EQUALS + profileId;
+                    + AMPERSAND + USER_ID + EQUALS + profileIdString;
 
             /** Свойство - код ответа, полученный от сервера */
             String resultJson = "";
@@ -493,7 +463,7 @@ public class ProfileActivity extends AppCompatActivity {
                         /** Формирование адреса, по которому хранится аватар владельца открытого профиля */
                         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
                                 + SERVER_AVATAR + SLASH + dataJsonObj.getString(AVATAR)
-                                + SLASH + profileId + JPG;
+                                + SLASH + profileIdString + JPG;
 
                         userAvatar = (ImageView) findViewById(R.id.imageAvatar);
 
@@ -527,7 +497,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 /**
                                  * Если профиль не принадлежит авторизованному пользователю.
                                  */
-                                if (profileId != userId) {
+                                if (!profileIdString.equals(userId)) {
                                     /**
                                      * То при нажатии сразу открывает аватар на весь экран.
                                      * {@link FullScreenPhotoActivity}
@@ -535,7 +505,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     Intent fullScreenIntent = new Intent(ProfileActivity.this, FullScreenPhotoActivity.class);
 
                                     fullScreenIntent.putExtra(NAME, sUserName);
-                                    fullScreenIntent.putExtra(ID, profileId);
+                                    fullScreenIntent.putExtra(ID, profileIdString);
 
                                     try {
                                         fullScreenIntent.putExtra(AVATAR, dataJsonObj.getString(AVATAR));
@@ -575,7 +545,7 @@ public class ProfileActivity extends AppCompatActivity {
                                                                     );
 
                                                                     fullScreenIntent.putExtra(NAME, sUserName);
-                                                                    fullScreenIntent.putExtra(ID, profileId);
+                                                                    fullScreenIntent.putExtra(ID, profileIdString);
 
                                                                     try {
                                                                         fullScreenIntent.putExtra(AVATAR,
@@ -629,15 +599,22 @@ public class ProfileActivity extends AppCompatActivity {
                          * Если профиль не принадлежит авторизованному пользователю,
                          *      то добавляем модуль взаимодействия.
                          **/
-                        if (!profileId.equals(userId)) {
+                        if (!profileIdString.equals(userId)) {
 
                             /** Кнопка добавления/удаления владельца профиля из контактов авторизованного пользоавателя */
-                            FloatingActionButton btnAddIntoContacts
+                            btnAddIntoContacts
                                     = (FloatingActionButton) findViewById(R.id.btnAddIntoContacts);
 
                             /** Кнопка открытия диалога между авторизованным пользователем и владельцем открытого профиля */
-                            FloatingActionButton btnSendMessage
+                            btnSendMessage
                                     = (FloatingActionButton) findViewById(R.id.btnSendMessage);
+
+                            btnAddIntoContacts
+                                    .setBackgroundTintList(ColorStateList.valueOf(getResources()
+                                            .getColor(R.color.colorPurpleDark)));
+                            btnSendMessage
+                                    .setBackgroundTintList(ColorStateList.valueOf(getResources()
+                                            .getColor(R.color.colorPurpleDark)));
 
                             btnAddIntoContacts.setVisibility(View.VISIBLE);
                             btnSendMessage.setVisibility(View.VISIBLE);
@@ -673,6 +650,7 @@ public class ProfileActivity extends AppCompatActivity {
                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                             intent.putExtra(DIALOG_ID, dataJsonObj.getInt(DIALOG_ID));
                                             intent.putExtra(ID, Integer.parseInt(userId));
+                                            intent.putExtra(NAME, sUserName);
                                             ProfileActivity.this.startActivity(intent);
                                         } else {
                                             CreateDialog mCreateDialog = new CreateDialog();
@@ -1017,7 +995,7 @@ public class ProfileActivity extends AppCompatActivity {
              * Формирование отправных данных.
              */
             @SuppressWarnings("WrongThread") String params = SEND_ID + EQUALS + userId
-                    + AMPERSAND + GET_ID + EQUALS + profileId;
+                    + AMPERSAND + GET_ID + EQUALS + profileIdString;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
@@ -1059,10 +1037,6 @@ public class ProfileActivity extends AppCompatActivity {
                 dataJsonObj = new JSONObject(strJson);
                 resultCode = Integer.parseInt(dataJsonObj.getString(ADD_CONTACT));
 
-
-                FloatingActionButton btnAddIntoContacts = (FloatingActionButton)
-                        findViewById(R.id.btnAddIntoContacts);
-
                 switch (resultCode) {
 
                     /**
@@ -1100,7 +1074,7 @@ public class ProfileActivity extends AppCompatActivity {
              * Формирование отправных данных.
              */
             @SuppressWarnings("WrongThread") String params = SENDER_ID + EQUALS + userId
-                    + AMPERSAND + ADDRESSEE_ID + EQUALS + profileId;
+                    + AMPERSAND + ADDRESSEE_ID + EQUALS + profileIdString;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
@@ -1133,7 +1107,7 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(ProfileActivity.this, MessageActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(DIALOG_ID, dataJsonObj.getInt(DIALOG_ID));
-                intent.putExtra(ID, profileId);
+                intent.putExtra(ID, profileIdString);
                 ProfileActivity.this.startActivity(intent);
 
             } catch (JSONException e) {

@@ -11,11 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.velkonost.lume.R;
@@ -35,15 +36,21 @@ import static ru.velkonost.lume.Managers.ImageManager.getCircleMaskedBitmap;
 
 
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder>
-        implements FastScrollRecyclerView.SectionedAdapter {
+        implements FastScrollRecyclerView.SectionedAdapter{
 
     private List<Contact> data;
+    private List<Contact> dataCopy;
     private LayoutInflater inflater;
     private Context context;
+
+    protected List<Contact> list;
 
     public ContactListAdapter(Context context, List<Contact> data) {
         this.context = context;
         this.data = data;
+
+        dataCopy = new ArrayList<>();
+        dataCopy.addAll(data);
 
         inflater = LayoutInflater.from(context);
     }
@@ -71,24 +78,25 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         holder.userName.setHorizontallyScrolling(true);
         holder.userName.setMarqueeRepeatLimit(MARQUEE_REPEAT_LIMIT);
 
+
         if (holder.userName.getText().toString().equals(item.getLogin()))
-            holder.userWithoutName.setImageResource(R.drawable.withoutname);
-        else
+            holder.userAvatar.setImageResource(R.drawable.withoutname);
+        else {
             holder.userLogin.setText(item.getLogin());
 
+            /** Формирование адреса, по которому лежит аватар пользователя */
+            String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
+                    + SERVER_AVATAR + SLASH + item.getAvatar()
+                    + SLASH + item.getId() + JPG;
+
+            fetchImage(avatarURL, holder.userAvatar, true, false);
+            Bitmap bitmap = ((BitmapDrawable)holder.userAvatar.getDrawable()).getBitmap();
+            holder.userAvatar.setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
+        }
         holder.userLogin.setSelected(true);
         holder.userLogin.setEllipsize(TextUtils.TruncateAt.MARQUEE);
         holder.userLogin.setHorizontallyScrolling(true);
         holder.userLogin.setMarqueeRepeatLimit(MARQUEE_REPEAT_LIMIT);
-
-        /** Формирование адреса, по которому лежит аватар пользователя */
-        String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
-                + SERVER_AVATAR + SLASH + item.getAvatar()
-                + SLASH + item.getId() + JPG;
-
-        fetchImage(avatarURL, holder.userAvatar, true, false);
-        Bitmap bitmap = ((BitmapDrawable)holder.userAvatar.getDrawable()).getBitmap();
-        holder.userAvatar.setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
 
 
         holder.mRelativeLayout.setId(Integer.parseInt(item.getId()));
@@ -103,9 +111,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
             }
         });
-
-
     }
+
 
     @NonNull
     @Override
@@ -122,11 +129,12 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     public void setData(List<Contact> data) {
         this.data = data;
+        notifyDataSetChanged();
     }
 
     class ContactViewHolder extends RecyclerView.ViewHolder {
 
-        RelativeLayout mRelativeLayout;
+        LinearLayout mRelativeLayout;
         String id;
         TextView userName;
         TextView userLogin;
@@ -136,7 +144,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         ContactViewHolder(View itemView) {
             super(itemView);
 
-            mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayoutContact);
+            mRelativeLayout = (LinearLayout) itemView.findViewById(R.id.relativeLayoutContact);
 
             userName = (TextView) itemView.findViewById(R.id.userName);
             userLogin = (TextView) itemView.findViewById(R.id.userLogin);

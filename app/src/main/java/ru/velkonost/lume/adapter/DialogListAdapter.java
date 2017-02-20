@@ -20,8 +20,10 @@ import java.util.List;
 
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.MessageActivity;
+import ru.velkonost.lume.activity.ProfileActivity;
 import ru.velkonost.lume.descriptions.DialogContact;
 
+import static android.provider.LiveFolders.NAME;
 import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.JPG;
@@ -31,8 +33,6 @@ import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
-import static ru.velkonost.lume.Managers.ImageManager.getCircleMaskedBitmap;
-import static ru.velkonost.lume.R.id.userId;
 
 public class DialogListAdapter extends ArrayAdapter {
 
@@ -47,6 +47,7 @@ public class DialogListAdapter extends ArrayAdapter {
 
     public void setData(List<DialogContact> data) {
         this.data = data;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -66,11 +67,10 @@ public class DialogListAdapter extends ArrayAdapter {
         ((TextView) convertView.findViewById(R.id.userId)).setText(dialogContact.getId());
 
         if (!dialogContact.isAvatar()){
-            fetchImage(avatarURL, (ImageView) convertView.findViewById(R.id.avatar), true, false);
+            fetchImage(avatarURL, (ImageView) convertView.findViewById(R.id.avatar), false, false);
             Bitmap bitmap = ((BitmapDrawable) ((ImageView) convertView.findViewById(R.id.avatar))
                     .getDrawable()).getBitmap();
-            ((ImageView) convertView.findViewById(R.id.avatar))
-                    .setImageBitmap(getCircleMaskedBitmap(bitmap, 25));
+            ((ImageView) convertView.findViewById(R.id.avatar)).setImageBitmap(bitmap);
 
             dialogContact.setIsAvatar(true);
         }
@@ -80,6 +80,12 @@ public class DialogListAdapter extends ArrayAdapter {
                     .setText(String.valueOf(dialogContact.getUnreadMessages()));
             (convertView.findViewById(R.id.unreadMessages)).setVisibility(View.VISIBLE);
         }
+
+        final String collocutor = dialogContact.getName().length() == 0
+                ? dialogContact.getLogin()
+                : dialogContact.getSurname().length() == 0
+                ? dialogContact.getLogin()
+                : dialogContact.getName() + " " + dialogContact.getSurname();
 
         final View finalConvertView = convertView;
         (convertView.findViewById(R.id.lluser)).setOnClickListener(new View.OnClickListener() {
@@ -93,9 +99,10 @@ public class DialogListAdapter extends ArrayAdapter {
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra(DIALOG_ID, Integer.parseInt(dialogContact.getDialogId()));
                         intent.putExtra(ID, Integer.parseInt(dialogContact.getId()));
+                        intent.putExtra(NAME, collocutor);
                         mContext.startActivity(intent);
                     }
-                }, 350);
+                }, 150);
             }
         });
 
@@ -113,11 +120,23 @@ public class DialogListAdapter extends ArrayAdapter {
 
                 snackbar.setActionTextColor(Color.WHITE);
                 View snackbarView = snackbar.getView();
-                snackbarView.setBackgroundColor(Color.parseColor("#CC00CC"));
+                snackbarView.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
                 TextView textView = (TextView) snackbarView
                         .findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
-                textView.setTextColor(Color.YELLOW);
+                textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                textView.setTextColor(Color.WHITE);
+                textView.setTextSize(18);
                 snackbar.show();
+
+                snackbarView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(mContext, ProfileActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra(ID, Integer.parseInt(dialogContact.getId()));
+                        mContext.startActivity(intent);
+                    }
+                });
 
                 return true;
             }

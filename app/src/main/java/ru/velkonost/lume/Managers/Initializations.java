@@ -85,6 +85,7 @@ public class Initializations {
         activity.setSupportActionBar(toolbar);
     }
 
+
     public static void changeActivityCompat(final Activity a) {
         final Intent intent = a.getIntent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

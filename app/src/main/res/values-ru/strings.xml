@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Lume</string>
-    <string name="login">Логин...</string>
-    <string name="password">Пароль...</string>
+    <string name="login_placeholder">Логин…</string>
+    <string name="password_placeholder">Пароль…</string>
     <string name="btn_login">Вход</string>
     <string name="repeat_password_placeholder">Повторите пароль...</string>
     <string name="email_placeholder">Email...</string>
@@ -51,6 +51,7 @@
 
     <string name="search_title">Поиск новых контактов…</string>
     <string name="search">Поиск:</string>
+    <string name="search_empty">Поиск</string>
 
 
     <string name="my_contacts">Мои контакты</string>
@@ -86,8 +87,23 @@
     <string name="menu_action_invite">Пригласить</string>
     <string name="menu_action_leave">Покинуть</string>
 
+    <string name="create_board">Создать новую доску</string>
+    <string name="enter_board_name">Введите название…</string>
+    <string name="enter_board_description">Введите описание…</string>
+
+    <string name="create_card">Создать новую карточку</string>
+    <string name="enter_card_name">Введите название…</string>
+    <string name="enter_card_description">Введите описание…</string>
+
+    <string name="create_column">Создать колонку</string>
+    <string name="enter_column_name">Введите название…</string>
+    <string name="change_column_name">Изменить название колонки</string>
+
+    <string name="no_columns_message">Создать колонку</string>
 
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="cancel">Отмена</string>
+    <string name="create">Создать</string>
 
 </resources>
