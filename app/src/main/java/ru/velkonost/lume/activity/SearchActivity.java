@@ -37,6 +37,7 @@ import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.Managers.ValueComparator;
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.descriptions.SearchContact;
 import ru.velkonost.lume.fragments.SearchFragment;
 
@@ -130,6 +131,7 @@ public class SearchActivity extends AppCompatActivity {
 
         setContentView(LAYOUT);
         setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
         mGetData = new GetData();
         ids = new ArrayList<>();

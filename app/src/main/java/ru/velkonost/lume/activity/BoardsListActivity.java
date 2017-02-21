@@ -39,6 +39,7 @@ import java.util.List;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.descriptions.Board;
 import ru.velkonost.lume.fragments.BoardsFragment;
 
@@ -119,6 +120,7 @@ public class BoardsListActivity extends AppCompatActivity {
 
         setContentView(LAYOUT);
         setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
         mGetBoards = new GetBoards();
         bids = new ArrayList<>();

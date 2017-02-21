@@ -36,6 +36,7 @@ import ru.velkonost.lume.Constants;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.descriptions.Message;
 import ru.velkonost.lume.fragments.MessagesFragment;
 
@@ -126,6 +127,7 @@ public class MessageActivity extends AppCompatActivity {
 
         setContentView(LAYOUT);
         setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
         mGetMessages = new GetMessages();
         mids = new ArrayList<>();

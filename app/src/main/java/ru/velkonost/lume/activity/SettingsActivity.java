@@ -37,6 +37,7 @@ import java.util.Calendar;
 
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.TypefaceUtil;
 
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
@@ -169,7 +170,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         setContentView(LAYOUT);
         setTheme(R.style.AppTheme_Cursor);
-
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 

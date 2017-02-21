@@ -54,6 +54,7 @@ import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.Managers.ValueComparator;
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.adapter.BoardInviteListAdapter;
 import ru.velkonost.lume.descriptions.BoardColumn;
 import ru.velkonost.lume.descriptions.BoardParticipant;
@@ -179,6 +180,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
         setContentView(LAYOUT);
         setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
         mGetBoardInfo = new GetBoardInfo();
         mGetContacts = new GetContacts();

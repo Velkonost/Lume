@@ -58,6 +58,7 @@ import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.Managers.ValueComparator;
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.adapter.CardInviteListAdapter;
 import ru.velkonost.lume.adapter.CardMoveListAdapter;
 import ru.velkonost.lume.descriptions.BoardColumn;
@@ -197,6 +198,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
         setContentView(LAYOUT);
         setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
         mCardParticipants = new ArrayList<>();
         mContacts = new ArrayList<>();

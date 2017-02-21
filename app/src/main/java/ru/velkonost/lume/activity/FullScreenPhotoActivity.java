@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import ru.velkonost.lume.R;
+import ru.velkonost.lume.TypefaceUtil;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.ID;
@@ -37,6 +38,7 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
 
         setContentView(LAYOUT);
         setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
         Intent intent = getIntent();
 
