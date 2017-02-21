@@ -251,6 +251,29 @@ public class BoardsListActivity extends AppCompatActivity {
         TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
         navHeaderLogin.setText(loadText(BoardsListActivity.this, LOGIN));
 
+        navHeaderLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * */
+                        changeActivityCompat(BoardsListActivity.this,
+                                new Intent(BoardsListActivity.this, ProfileActivity.class));
+                    }
+                }, 350);
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_boards);
+                drawer.closeDrawer(GravityCompat.START);
+
+            }
+        });
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
             @Override
@@ -259,11 +282,6 @@ public class BoardsListActivity extends AppCompatActivity {
 
                 /** Инициализируем намерение на следующую активность */
                 switch (menuItem.getItemId()) {
-
-                    /** Переход на профиль данного пользователя */
-                    case R.id.navigationProfile:
-                        nextIntent = new Intent(BoardsListActivity.this, ProfileActivity.class);
-                        break;
 
                     /** Переход на контакты данного пользователя */
                     case R.id.navigationContacts:
