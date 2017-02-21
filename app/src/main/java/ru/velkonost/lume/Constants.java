@@ -86,6 +86,10 @@ public class Constants {
     public static final String PARTICIPANTS = "participants";
     public static final String POSITION = "position";
 
+
+    public static final int REMIND_TODO_INDEX = 0;
+    public static final int REMIND_DONE_INDEX = 1;
+
     /** Класс констант, относящихся исключительно к построению URL */
     public static class URL {
         public static final String SERVER_PROTOCOL = "http://";
@@ -93,6 +97,7 @@ public class Constants {
         public static final String SERVER_ACCOUNT_SCRIPT = "/account";
         public static final String SERVER_DIALOG_SCRIPT = "/dialogs";
         public static final String SERVER_KANBAN_SCRIPT = "/kanban";
+        public static final String SERVER_REMIND_SCRIPT = "/remind";
         public static final String SERVER_RESOURCE = "/resource";
         public static final String SERVER_AVATAR = "/avatar";
 
@@ -132,6 +137,8 @@ public class Constants {
         public static final String SERVER_ADD_CARD_METHOD = "/addCard";
         public static final String SERVER_ADD_BOARD_METHOD = "/addBoard";
         public static final String SERVER_CHANGE_COLUMN_SETTINGS_METHOD = "/changeColumnSettings";
+
+        public static final String SERVER_ADD_TASK_METHOD = "/addTask";
 
     }
 

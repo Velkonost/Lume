@@ -40,6 +40,7 @@
         <activity android:name=".activity.BoardColumnsActivity"/>
         <activity android:name=".activity.BoardCardActivity"/>
         <activity android:name=".activity.CardParticipantsActivity"/>
+        <activity android:name=".activity.RemindActivity"/>
 
     </application>
 

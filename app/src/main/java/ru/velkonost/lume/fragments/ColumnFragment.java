@@ -267,6 +267,7 @@ public class ColumnFragment extends AbstractTabFragment {
             }
         }
     }
+
     private class AddCard extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {

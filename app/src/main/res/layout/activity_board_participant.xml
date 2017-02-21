@@ -29,12 +29,12 @@
                     android:background="@color/colorPrimary"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
 
-                <com.miguelcatalan.materialsearchview.MaterialSearchView
-                    android:id="@+id/search_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:hint="@string/search_title"/>
+                <!--<com.miguelcatalan.materialsearchview.MaterialSearchView-->
+                    <!--android:id="@+id/search_view"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:visibility="gone"-->
+                    <!--android:hint="@string/search_title"/>-->
 
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
