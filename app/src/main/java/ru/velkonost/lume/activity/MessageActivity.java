@@ -291,10 +291,6 @@ public class MessageActivity extends AppCompatActivity {
                         nextIntent = new Intent(MessageActivity.this, ContactsActivity.class);
                         break;
 
-                    /** Переход на страницу напоминаний, созданных данным пользователем */
-                    case R.id.navigationReminder:
-                        break;
-
                     /** Переход на страницу сообщений данного пользователя */
                     case R.id.navigationMessages:
                         nextIntent = new Intent(MessageActivity.this, DialogsActivity.class);

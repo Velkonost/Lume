@@ -518,10 +518,6 @@ public class BoardCardActivity extends AppCompatActivity {
                         nextIntent = new Intent(BoardCardActivity.this, ContactsActivity.class);
                         break;
 
-                    /** Переход на страницу напоминаний, созданных данным пользователем */
-                    case R.id.navigationReminder:
-                        break;
-
                     /** Переход на страницу сообщений данного пользователя */
                     case R.id.navigationMessages:
                         nextIntent = new Intent(BoardCardActivity.this, DialogsActivity.class);
