@@ -36,6 +36,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -500,6 +501,10 @@ public class BoardCardActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+
+        View header = navigationView.getHeaderView(0);
+        TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(BoardCardActivity.this, LOGIN));
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")

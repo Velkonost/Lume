@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.io.IOException;
 
@@ -41,6 +42,7 @@ import static ru.velkonost.lume.Constants.BOARD_NAME;
 import static ru.velkonost.lume.Constants.COLUMN_ORDER;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.MAX_COLUMNS_IN_FIXED_MODE;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.POSITION;
@@ -322,6 +324,10 @@ public class BoardColumnsActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+
+        View header = navigationView.getHeaderView(0);
+        TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(BoardColumnsActivity.this, LOGIN));
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")

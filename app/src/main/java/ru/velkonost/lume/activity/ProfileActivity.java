@@ -303,6 +303,29 @@ public class ProfileActivity extends AppCompatActivity {
         navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
         navHeaderLogin.setText(loadText(ProfileActivity.this, LOGIN));
 
+        navHeaderLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * */
+                        changeActivityCompat(ProfileActivity.this,
+                                new Intent(ProfileActivity.this, ProfileActivity.class));
+                    }
+                }, 350);
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_profile);
+                drawer.closeDrawer(GravityCompat.START);
+
+            }
+        });
+
         if (profileIdString.equals(userId)) navigationView.getMenu().getItem(0).setChecked(true);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -313,11 +336,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                 /** Инициализируем намерение на следующую активность */
                 switch (menuItem.getItemId()) {
-
-                    /** Переход на профиль данного пользователя */
-                    case R.id.navigationProfile:
-                        nextIntent = new Intent(ProfileActivity.this, ProfileActivity.class);
-                        break;
 
                     /** Переход на контакты данного пользователя */
                     case R.id.navigationContacts:

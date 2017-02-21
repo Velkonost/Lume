@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -174,6 +175,10 @@ public class BoardParticipantsActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+
+        View header = navigationView.getHeaderView(0);
+        TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(BoardParticipantsActivity.this, LOGIN));
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")

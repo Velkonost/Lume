@@ -403,6 +403,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
 
+        View header = navigationView.getHeaderView(0);
+        TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(SettingsActivity.this, LOGIN));
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
             @Override

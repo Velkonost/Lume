@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,6 +47,7 @@ import static ru.velkonost.lume.Constants.DATE;
 import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
+import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.MESSAGE_IDS;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.STATUS;
@@ -272,7 +274,10 @@ public class MessageActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-        navigationView.getMenu().getItem(3).setChecked(true);
+
+        View header = navigationView.getHeaderView(0);
+        TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(MessageActivity.this, LOGIN));
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
