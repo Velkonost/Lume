@@ -67,6 +67,10 @@
         <activity android:name=".activity.CardParticipantsActivity"
                   android:screenOrientation="portrait"/>
 
+        <activity android:name=".activity.FAQBotActivity"
+                  android:windowSoftInputMode="stateHidden|adjustResize"
+                  android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

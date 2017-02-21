@@ -300,8 +300,32 @@ public class ProfileActivity extends AppCompatActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
 
         View header = navigationView.getHeaderView(0);
+
         navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
         navHeaderLogin.setText(loadText(ProfileActivity.this, LOGIN));
+
+        ImageView askQuestion = (ImageView) header.findViewById(R.id.askQuestion);
+
+        askQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * */
+                        changeActivityCompat(ProfileActivity.this,
+                                new Intent(ProfileActivity.this, FAQBotActivity.class));
+                    }
+                }, 350);
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_profile);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
 
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -325,8 +349,6 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
-
-        if (profileIdString.equals(userId)) navigationView.getMenu().getItem(0).setChecked(true);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")

@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
@@ -245,6 +246,29 @@ public class ContactsActivity extends AppCompatActivity {
         View header = navigationView.getHeaderView(0);
         TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
         navHeaderLogin.setText(loadText(ContactsActivity.this, LOGIN));
+
+        ImageView askQuestion = (ImageView) header.findViewById(R.id.askQuestion);
+
+        askQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * */
+                        changeActivityCompat(ContactsActivity.this,
+                                new Intent(ContactsActivity.this, FAQBotActivity.class));
+                    }
+                }, 350);
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_contact);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
 
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override

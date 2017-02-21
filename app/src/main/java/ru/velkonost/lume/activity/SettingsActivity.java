@@ -407,6 +407,29 @@ public class SettingsActivity extends AppCompatActivity {
         TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
         navHeaderLogin.setText(loadText(SettingsActivity.this, LOGIN));
 
+        ImageView askQuestion = (ImageView) header.findViewById(R.id.askQuestion);
+
+        askQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * */
+                        changeActivityCompat(SettingsActivity.this,
+                                new Intent(SettingsActivity.this, FAQBotActivity.class));
+                    }
+                }, 350);
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_settings);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

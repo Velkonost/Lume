@@ -279,6 +279,29 @@ public class MessageActivity extends AppCompatActivity {
         TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
         navHeaderLogin.setText(loadText(MessageActivity.this, LOGIN));
 
+        ImageView askQuestion = (ImageView) header.findViewById(R.id.askQuestion);
+
+        askQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * */
+                        changeActivityCompat(MessageActivity.this,
+                                new Intent(MessageActivity.this, FAQBotActivity.class));
+                    }
+                }, 350);
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_messages);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

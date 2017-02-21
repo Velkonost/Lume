@@ -26,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -328,6 +329,29 @@ public class BoardColumnsActivity extends AppCompatActivity {
         View header = navigationView.getHeaderView(0);
         TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
         navHeaderLogin.setText(loadText(BoardColumnsActivity.this, LOGIN));
+
+        ImageView askQuestion = (ImageView) header.findViewById(R.id.askQuestion);
+
+        askQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        /**
+                         * Обновляет страницу.
+                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * */
+                        changeActivityCompat(BoardColumnsActivity.this,
+                                new Intent(BoardColumnsActivity.this, FAQBotActivity.class));
+                    }
+                }, 350);
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_columns);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
 
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
