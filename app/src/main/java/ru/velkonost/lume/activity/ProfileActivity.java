@@ -37,6 +37,7 @@ import com.kosalgeek.android.photoutil.ImageLoader;
 import com.kosalgeek.asynctask.AsyncResponse;
 import com.kosalgeek.asynctask.EachExceptionsHandler;
 import com.kosalgeek.asynctask.PostResponseAsyncTask;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,7 +49,6 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.util.HashMap;
 
-import ru.velkonost.lume.Managers.ImageManager;
 import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
@@ -99,7 +99,6 @@ import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
 import static ru.velkonost.lume.Managers.DateConverter.formatDate;
-import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
 import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
 import static ru.velkonost.lume.Managers.Initializations.initToolbar;
 import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialog;
@@ -480,12 +479,11 @@ public class ProfileActivity extends AppCompatActivity {
 
                         collapsingToolbar.setTitle(sUserName);
 
-                        /**
-                         * Загрузка аватара пользователя
-                         * {@link ImageManager#fetchImage(String, ImageView, boolean, boolean)}
-                         **/
-                        fetchImage(avatarURL, userAvatar, false, false);
-
+                        Picasso
+                                .with(ProfileActivity.this)
+                                .load(avatarURL)
+                                .placeholder(R.drawable.noavatar)
+                                .into(userAvatar);
                         /**
                          * Слушатель на аватар открытого профиля.
                          */

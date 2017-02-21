@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +26,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -204,12 +205,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         personalInfo = (TextView) findViewById(R.id.personalInfo);
         accountInfo = (TextView) findViewById(R.id.accountInfo);
-
-        personalInfo.setTypeface(Typeface.createFromAsset(
-                getAssets(), "fonts/Roboto-Regular.ttf"));
-
-        accountInfo.setTypeface(Typeface.createFromAsset(
-                getAssets(), "fonts/Roboto-Regular.ttf"));
 
         final LinearLayout.LayoutParams layoutParamsVisible
                 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
