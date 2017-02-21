@@ -276,6 +276,7 @@ public class WelcomeActivity extends AppCompatActivity {
                          */
                         String id2 = dataJsonObj.getString(ID);
                         saveText(WelcomeActivity.this, ID, id2);
+                        saveText(WelcomeActivity.this, LOGIN, inputLogin.getText().toString());
 
                         /**
                          * Переход на новую активность - профиль вошедшего пользователя.

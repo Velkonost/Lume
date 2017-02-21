@@ -209,6 +209,8 @@ public class ProfileActivity extends AppCompatActivity {
     private FloatingActionButton btnAddIntoContacts;
     private FloatingActionButton btnSendMessage;
 
+    private TextView navHeaderLogin;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -296,6 +298,10 @@ public class ProfileActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+
+        View header = navigationView.getHeaderView(0);
+        navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(ProfileActivity.this, LOGIN));
 
         if (profileIdString.equals(userId)) navigationView.getMenu().getItem(0).setChecked(true);
 
