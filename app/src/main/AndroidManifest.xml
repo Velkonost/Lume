@@ -17,6 +17,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="ru.velkonost.lume.activity.WelcomeActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,20 +27,45 @@
         </activity>
 
         <activity android:name=".activity.ProfileActivity"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".activity.SearchActivity"/>
-        <activity android:name=".activity.ContactsActivity"/>
-        <activity android:name=".activity.FullScreenPhotoActivity"/>
-        <activity android:name=".activity.SettingsActivity"/>
-        <activity android:name=".activity.DialogsActivity"/>
+                  android:theme="@style/AppTheme"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.SearchActivity"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.ContactsActivity"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.FullScreenPhotoActivity"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.SettingsActivity"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.DialogsActivity"
+                  android:screenOrientation="portrait"/>
+
         <activity android:name=".activity.MessageActivity"
-                  android:windowSoftInputMode="stateHidden|adjustResize"/>
-        <activity android:name=".activity.BoardsListActivity"/>
-        <activity android:name=".activity.BoardWelcomeActivity"/>
-        <activity android:name=".activity.BoardParticipantsActivity"/>
-        <activity android:name=".activity.BoardColumnsActivity"/>
-        <activity android:name=".activity.BoardCardActivity"/>
-        <activity android:name=".activity.CardParticipantsActivity"/>
+                  android:windowSoftInputMode="stateHidden|adjustResize"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.BoardsListActivity"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.BoardWelcomeActivity"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.BoardParticipantsActivity"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.BoardColumnsActivity"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.BoardCardActivity"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.CardParticipantsActivity"
+                  android:screenOrientation="portrait"/>
 
     </application>
 
