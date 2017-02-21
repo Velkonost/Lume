@@ -15,8 +15,7 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbarlayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/search_layover_bg">
+            android:layout_height="wrap_content">
 
             <FrameLayout
                 android:id="@+id/toolbar_container"
