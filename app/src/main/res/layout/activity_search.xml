@@ -37,7 +37,7 @@
                     android:visibility="gone"
                     android:iconifiedByDefault="true"
                     style="@style/MaterialSearchViewStyle"
-                    android:hint="@string/search_title"/>
+                    android:hint="@string/search_new_contacts"/>
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
         <LinearLayout

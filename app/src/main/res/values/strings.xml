@@ -49,7 +49,9 @@
     <string name="user_remove_from_contacts">Remove from contacts</string>
     <string name="user_send_message">Send message</string>
 
-    <string name="search_title">Search new contacts…</string>
+    <string name="search_new_contacts">Search new contacts…</string>
+    <string name="search_in_contacts">Search in contacts…</string>
+    <string name="search_in_dialogs">Search in dialogs…</string>
     <string name="search">Search:</string>
     <string name="search_empty">Search</string>
 

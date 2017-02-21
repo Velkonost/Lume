@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone"
                     style="@style/MaterialSearchViewStyle"
-                    android:hint="@string/search_title"/>
+                    android:hint="@string/search_in_dialogs"/>
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
 

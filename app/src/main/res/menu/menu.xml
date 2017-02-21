@@ -5,6 +5,6 @@
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_action_action_search"
-        android:title="@string/search_title"
+        android:title="@string/search_new_contacts"
         app:showAsAction="ifRoom|collapseActionView" />
 </menu>

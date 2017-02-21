@@ -49,7 +49,9 @@
     <string name="user_remove_from_contacts">Удалить из контактов</string>
     <string name="user_send_message">Отправить сообщение</string>
 
-    <string name="search_title">Поиск новых контактов…</string>
+    <string name="search_new_contacts">Поиск новых контактов…</string>
+    <string name="search_in_contacts">Поиск среди контактов…</string>
+    <string name="search_in_dialogs">Поиск среди диалогов…</string>
     <string name="search">Поиск:</string>
     <string name="search_empty">Поиск</string>
 
