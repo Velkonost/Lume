@@ -14,8 +14,8 @@ import android.widget.ViewSwitcher;
 import ru.velkonost.lume.R;
 
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.deleteText;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.loadText;
 
 public class BoardDescriptionFragment extends Fragment {
 

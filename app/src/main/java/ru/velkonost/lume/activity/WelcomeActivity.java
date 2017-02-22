@@ -20,8 +20,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import ru.velkonost.lume.Managers.Initializations;
-import ru.velkonost.lume.Managers.PhoneDataStorage;
+import ru.velkonost.lume.managers.Initializations1;
+import ru.velkonost.lume.managers.PhoneDataStorage1;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 
@@ -34,11 +34,11 @@ import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_REGISTRATION_METHOD;
-import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Managers.Initializations.initToolbar;
-import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialog;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.saveText;
+import static ru.velkonost.lume.managers.Initializations1.changeActivityCompat;
+import static ru.velkonost.lume.managers.Initializations1.initToolbar;
+import static ru.velkonost.lume.managers.Initializations1.inititializeAlertDialog;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.loadText;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.saveText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 import static ru.velkonost.lume.net.ServerConnection.hasConnection;
 
@@ -75,7 +75,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        /** {@link Initializations#initToolbar(Toolbar, int)}  */
+        /** {@link Initializations1#initToolbar(Toolbar, int)}  */
         initToolbar(WelcomeActivity.this, toolbar, ""); /** Инициализация */
 
         /** Прикрепляет поля к view-элементам */
@@ -113,7 +113,7 @@ public class WelcomeActivity extends AppCompatActivity {
     /**
      * Проверяет отсутствие интернет-соединения.
      * Показывает соответствующее уведомление.
-     * {@link Initializations#inititializeAlertDialog(Context, String, String, String)}
+     * {@link Initializations1#inititializeAlertDialog(Context, String, String, String)}
      */
     private void checkConnection(){
 
@@ -166,7 +166,7 @@ public class WelcomeActivity extends AppCompatActivity {
     /**
      * Функция служит для проверки того, заходил ли пользователь с этого устройства ранее.
      * При положительном ответе перебрасывает на профиль пользователя
-     * {@link PhoneDataStorage#loadText(Context, String)}
+     * {@link PhoneDataStorage1#loadText(Context, String)}
      */
     private void checkCookieId() {
         String cookieId = loadText(WelcomeActivity.this, ID);
@@ -175,7 +175,7 @@ public class WelcomeActivity extends AppCompatActivity {
          * Проверяет на наличие своеобразных "cookie" пользователя.
          * В случае положительного ответа переходим на профиль пользователя.
          * {@link ProfileActivity}
-         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
          */
         if(cookieId.length() != 0){
             Intent profileIntent = new Intent(this, ProfileActivity.class);
@@ -259,7 +259,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
                         /**
                          * Переход на новую активность - профиль вошедшего пользователя.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          */
                         Intent profileIntent = new Intent(WelcomeActivity.this, ProfileActivity.class);
                         changeActivityCompat(WelcomeActivity.this, profileIntent);
@@ -280,7 +280,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
                         /**
                          * Переход на новую активность - профиль вошедшего пользователя.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          */
                         Intent profileIntent2 = new Intent(WelcomeActivity.this, ProfileActivity.class);
                         changeActivityCompat(WelcomeActivity.this, profileIntent2);

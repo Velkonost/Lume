@@ -32,7 +32,7 @@ import android.widget.TextView;
 
 import java.io.IOException;
 
-import ru.velkonost.lume.Managers.Initializations;
+import ru.velkonost.lume.managers.Initializations1;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter;
@@ -52,10 +52,10 @@ import static ru.velkonost.lume.Constants.URL.SERVER_CHANGE_COLUMN_SETTINGS_METH
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
-import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Managers.Initializations.initToolbar;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.managers.Initializations1.changeActivityCompat;
+import static ru.velkonost.lume.managers.Initializations1.initToolbar;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.deleteText;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.loadText;
 import static ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter.last;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
@@ -108,7 +108,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
         columnOrder = intent.getExtras().getInt(COLUMN_ORDER);
         boardId = intent.getExtras().getString(BOARD_ID);
 
-        /** {@link Initializations#initToolbar(Toolbar, int)}  */
+        /** {@link Initializations1#initToolbar(Toolbar, int)}  */
         initToolbar(BoardColumnsActivity.this, toolbar,
                 loadText(BoardColumnsActivity.this, BOARD_NAME)); /** Инициализация */
         initTabs();
@@ -352,7 +352,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(BoardColumnsActivity.this,
                                 new Intent(BoardColumnsActivity.this, FAQBotActivity.class));
@@ -374,7 +374,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(BoardColumnsActivity.this,
                                 new Intent(BoardColumnsActivity.this, ProfileActivity.class));
@@ -429,7 +429,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
                 /**
                  * Переход на следующую активность.
-                 * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                 * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                  * */
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -437,7 +437,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(BoardColumnsActivity.this, nextIntent);
                     }

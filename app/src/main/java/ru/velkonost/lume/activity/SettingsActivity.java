@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import ru.velkonost.lume.Managers.Initializations;
+import ru.velkonost.lume.managers.Initializations1;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 
@@ -66,15 +66,15 @@ import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
-import static ru.velkonost.lume.Managers.DateConverter.formatDate;
-import static ru.velkonost.lume.Managers.DateConverter.formatDateBack;
-import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
-import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Managers.Initializations.initToolbar;
-import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialog;
-import static ru.velkonost.lume.Managers.Initializations.inititializeAlertDialogWithRefresh;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.managers.DateConverter1.formatDate;
+import static ru.velkonost.lume.managers.DateConverter1.formatDateBack;
+import static ru.velkonost.lume.managers.ImageManager1.fetchImage;
+import static ru.velkonost.lume.managers.Initializations1.changeActivityCompat;
+import static ru.velkonost.lume.managers.Initializations1.initToolbar;
+import static ru.velkonost.lume.managers.Initializations1.inititializeAlertDialog;
+import static ru.velkonost.lume.managers.Initializations1.inititializeAlertDialogWithRefresh;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.deleteText;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
@@ -221,7 +221,7 @@ public class SettingsActivity extends AppCompatActivity {
         divPersonal.setLayoutParams(layoutParamsInvisible);
         divAccount.setLayoutParams(layoutParamsInvisible);
 
-        /** {@link Initializations#initToolbar(Toolbar, int)}  */
+        /** {@link Initializations1#initToolbar(Toolbar, int)}  */
         initToolbar(SettingsActivity.this, toolbar, getResources().getString(R.string.settings)); /** Инициализация */
         initNavigationView(); /** Инициализация */
         initDateBirthdayDatePicker(); /** Инициализация */
@@ -418,7 +418,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(SettingsActivity.this,
                                 new Intent(SettingsActivity.this, FAQBotActivity.class));
@@ -440,7 +440,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(SettingsActivity.this,
                                 new Intent(SettingsActivity.this, ProfileActivity.class));
@@ -496,7 +496,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                 /**
                  * Переход на следующую активность.
-                 * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                 * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                  * */
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -504,7 +504,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(SettingsActivity.this, nextIntent);
                     }

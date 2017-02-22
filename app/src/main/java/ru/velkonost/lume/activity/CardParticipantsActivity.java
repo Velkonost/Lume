@@ -33,9 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import ru.velkonost.lume.Managers.Initializations;
-import ru.velkonost.lume.Managers.PhoneDataStorage;
-import ru.velkonost.lume.Managers.ValueComparator;
+import ru.velkonost.lume.managers.Initializations1;
+import ru.velkonost.lume.managers.PhoneDataStorage1;
+import ru.velkonost.lume.managers.ValueComparator1;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.descriptions.Contact;
@@ -55,10 +55,10 @@ import static ru.velkonost.lume.Constants.URL.SERVER_GET_CARD_PARTICIPANTS_METHO
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
-import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Managers.Initializations.initToolbar;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.managers.Initializations1.changeActivityCompat;
+import static ru.velkonost.lume.managers.Initializations1.initToolbar;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.deleteText;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 public class CardParticipantsActivity extends AppCompatActivity {
@@ -131,7 +131,7 @@ public class CardParticipantsActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_participant);
 
-        /** {@link Initializations#initToolbar(Toolbar, int)}  */
+        /** {@link Initializations1#initToolbar(Toolbar, int)}  */
         initToolbar(CardParticipantsActivity.this, toolbar, R.string.menu_item_participants); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
@@ -145,7 +145,7 @@ public class CardParticipantsActivity extends AppCompatActivity {
 
         /**
          * Получение id пользователя.
-         * {@link PhoneDataStorage#loadText(Context, String)}
+         * {@link PhoneDataStorage1#loadText(Context, String)}
          **/
         userId = loadText(CardParticipantsActivity.this, ID);
 
@@ -193,7 +193,7 @@ public class CardParticipantsActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(CardParticipantsActivity.this,
                                 new Intent(CardParticipantsActivity.this, FAQBotActivity.class));
@@ -215,7 +215,7 @@ public class CardParticipantsActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(CardParticipantsActivity.this,
                                 new Intent(CardParticipantsActivity.this, ProfileActivity.class));
@@ -270,7 +270,7 @@ public class CardParticipantsActivity extends AppCompatActivity {
 
                 /**
                  * Переход на следующую активность.
-                 * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                 * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                  * */
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -278,7 +278,7 @@ public class CardParticipantsActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(CardParticipantsActivity.this, nextIntent);
                     }
@@ -367,8 +367,8 @@ public class CardParticipantsActivity extends AppCompatActivity {
                     );
                 }
 
-                /** Создание и инициализация Comparator{@link ValueComparator} */
-                Comparator<String> comparator = new ValueComparator<>((HashMap<String, String>) contacts);
+                /** Создание и инициализация Comparator{@link ValueComparator1} */
+                Comparator<String> comparator = new ValueComparator1<>((HashMap<String, String>) contacts);
 
                 /** Помещает отсортированную Map */
                 TreeMap<String, String> sortedContacts = new TreeMap<>(comparator);

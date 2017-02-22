@@ -1,7 +1,7 @@
 package ru.velkonost.lume;
 
 
-import ru.velkonost.lume.Managers.PhoneDataStorage;
+import ru.velkonost.lume.managers.PhoneDataStorage1;
 
 /**
  * @author Velkonost
@@ -165,7 +165,7 @@ public class Constants {
     public static final int MARQUEE_REPEAT_LIMIT = 1000000000;
     public static final int MAX_COLUMNS_IN_FIXED_MODE = 5;
 
-    public final static String TAG_IMAGE_MANAGER = "ImageManager";
+    public final static String TAG_IMAGE_MANAGER = "ImageManager1";
 
 
 
@@ -174,7 +174,7 @@ public class Constants {
 
     /**
      *  Название файла, с которым приложения осуществляет взаимодействие
-     * {@link PhoneDataStorage}
+     * {@link PhoneDataStorage1}
      * */
     public static final String APP_PREFERENCES = "UserSettings";
 }

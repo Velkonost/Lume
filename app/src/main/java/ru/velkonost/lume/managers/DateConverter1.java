@@ -1,8 +1,8 @@
-package ru.velkonost.lume.Managers;
+package ru.velkonost.lume.managers;
 
 import static ru.velkonost.lume.Constants.HYPHEN;
 
-public class DateConverter {
+public class DateConverter1 {
     /**
      * Форматирование даты из вида, полученного с сервер - YYYY-MM-DD
      *                в вид, необходимый для отображения - DD-MM-YYYY

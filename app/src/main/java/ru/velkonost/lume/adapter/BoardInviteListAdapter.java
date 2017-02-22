@@ -33,8 +33,8 @@ import static ru.velkonost.lume.Constants.URL.SERVER_INVITE_IN_BOARD_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
-import static ru.velkonost.lume.Managers.ImageManager.fetchImage;
-import static ru.velkonost.lume.Managers.ImageManager.getCircleMaskedBitmap;
+import static ru.velkonost.lume.managers.ImageManager1.fetchImage;
+import static ru.velkonost.lume.managers.ImageManager1.getCircleMaskedBitmap;
 import static ru.velkonost.lume.activity.BoardWelcomeActivity.popupWindowBoardInvite;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 

@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import ru.velkonost.lume.Managers.Initializations;
-import ru.velkonost.lume.Managers.PhoneDataStorage;
-import ru.velkonost.lume.Managers.ValueComparator;
+import ru.velkonost.lume.managers.Initializations1;
+import ru.velkonost.lume.managers.PhoneDataStorage1;
+import ru.velkonost.lume.managers.ValueComparator1;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.descriptions.SearchContact;
@@ -59,11 +59,11 @@ import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SEARCH_METHOD;
 import static ru.velkonost.lume.Constants.WORK;
-import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Managers.Initializations.initSearch;
-import static ru.velkonost.lume.Managers.Initializations.initToolbar;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.managers.Initializations1.changeActivityCompat;
+import static ru.velkonost.lume.managers.Initializations1.initSearch;
+import static ru.velkonost.lume.managers.Initializations1.initToolbar;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.deleteText;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 
@@ -145,21 +145,21 @@ public class SearchActivity extends AppCompatActivity {
 
         /**
          * Получение данных, которые вводил пользователь.
-         * {@link PhoneDataStorage#loadText(Context, String)}
+         * {@link PhoneDataStorage1#loadText(Context, String)}
          **/
         Intent intent = getIntent();
         whatSearch = intent.getStringExtra(SEARCH); /** Формирование заголовка тулбара */
         if (whatSearch == null) whatSearch = getResources().getString(R.string.search_empty);
         else whatSearch = getResources().getString(R.string.search) + " " + whatSearch;
 
-        /** {@link Initializations#initToolbar(Toolbar, int)}  */
+        /** {@link Initializations1#initToolbar(Toolbar, int)}  */
         initToolbar(SearchActivity.this, toolbar, whatSearch); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
         /**
          * Инициализируем строку поиска.
          * {@link MaterialSearchView}
-         * {@link Initializations#initSearch(Activity, MaterialSearchView)}
+         * {@link Initializations1#initSearch(Activity, MaterialSearchView)}
          **/
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
         initSearch(this, searchView);
@@ -219,7 +219,7 @@ public class SearchActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(SearchActivity.this,
                                 new Intent(SearchActivity.this, FAQBotActivity.class));
@@ -241,7 +241,7 @@ public class SearchActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(SearchActivity.this,
                                 new Intent(SearchActivity.this, ProfileActivity.class));
@@ -296,7 +296,7 @@ public class SearchActivity extends AppCompatActivity {
 
                 /**
                  * Переход на следующую активность.
-                 * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                 * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                  * */
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -304,7 +304,7 @@ public class SearchActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(SearchActivity.this, nextIntent);
                     }
@@ -440,8 +440,8 @@ public class SearchActivity extends AppCompatActivity {
                     );
                 }
 
-                /** Создание и инициализация Comparator{@link ValueComparator} */
-                Comparator<String> comparator = new ValueComparator<>((HashMap<String, String>) searchContacts);
+                /** Создание и инициализация Comparator{@link ValueComparator1} */
+                Comparator<String> comparator = new ValueComparator1<>((HashMap<String, String>) searchContacts);
 
                 /** Помещает отсортированную Map */
                 TreeMap<String, String> sortedContacts = new TreeMap<>(comparator);

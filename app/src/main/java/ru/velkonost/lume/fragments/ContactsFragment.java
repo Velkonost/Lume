@@ -23,7 +23,7 @@ import ru.velkonost.lume.activity.SearchActivity;
 import ru.velkonost.lume.adapter.ContactListAdapter;
 import ru.velkonost.lume.descriptions.Contact;
 
-import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
+import static ru.velkonost.lume.managers.Initializations1.changeActivityCompat;
 
 public class ContactsFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_contact;

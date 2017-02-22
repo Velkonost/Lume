@@ -1,4 +1,4 @@
-package ru.velkonost.lume.Managers;
+package ru.velkonost.lume.managers;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,10 +34,10 @@ import static ru.velkonost.lume.Constants.TAG_IMAGE_MANAGER;
  *
  * Позволяет делать форму отображения круглой.
  * */
-public class ImageManager {
+public class ImageManager1 {
 
     /** Пустой конструктор */
-    private ImageManager () {}
+    private ImageManager1() {}
 
     /**
      * Метод, устанавливающий картинку, скачанную с интернета
@@ -69,7 +69,7 @@ public class ImageManager {
             public void run() {
                 /**
                  * Скачивание изображение по заданному {@param iUrl}
-                 * {@link ImageManager#downloadImage(String)}
+                 * {@link ImageManager1#downloadImage(String)}
                  * */
                 final Bitmap image = downloadImage(iUrl);
                 if (image != null) {

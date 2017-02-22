@@ -19,16 +19,16 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import ru.velkonost.lume.Managers.Initializations;
+import ru.velkonost.lume.managers.Initializations1;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
-import static ru.velkonost.lume.Managers.Initializations.changeActivityCompat;
-import static ru.velkonost.lume.Managers.Initializations.initToolbar;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.deleteText;
-import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
+import static ru.velkonost.lume.managers.Initializations1.changeActivityCompat;
+import static ru.velkonost.lume.managers.Initializations1.initToolbar;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.deleteText;
+import static ru.velkonost.lume.managers.PhoneDataStorage1.loadText;
 
 public class FAQBotActivity extends AppCompatActivity {
 
@@ -62,7 +62,7 @@ public class FAQBotActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_bot);
 
 
-        /** {@link Initializations#initToolbar(Toolbar, int)}  */
+        /** {@link Initializations1#initToolbar(Toolbar, int)}  */
         initToolbar(FAQBotActivity.this, toolbar, "Задать вопрос"); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
@@ -149,7 +149,7 @@ public class FAQBotActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(FAQBotActivity.this,
                                 new Intent(FAQBotActivity.this, ProfileActivity.class));
@@ -204,7 +204,7 @@ public class FAQBotActivity extends AppCompatActivity {
 
                 /**
                  * Переход на следующую активность.
-                 * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                 * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                  * */
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -212,7 +212,7 @@ public class FAQBotActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations#changeActivityCompat(Activity, Intent)}
+                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(FAQBotActivity.this, nextIntent);
                     }
