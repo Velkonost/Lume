@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import ru.velkonost.lume.managers.Initializations1;
-import ru.velkonost.lume.managers.PhoneDataStorage1;
-import ru.velkonost.lume.managers.ValueComparator1;
+import ru.velkonost.lume.managers.InitializationsManager;
+import ru.velkonost.lume.managers.PhoneDataStorageManager;
+import ru.velkonost.lume.managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.descriptions.Contact;
@@ -53,10 +53,10 @@ import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_PARTICIPANTS_METH
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
-import static ru.velkonost.lume.managers.Initializations1.changeActivityCompat;
-import static ru.velkonost.lume.managers.Initializations1.initToolbar;
-import static ru.velkonost.lume.managers.PhoneDataStorage1.deleteText;
-import static ru.velkonost.lume.managers.PhoneDataStorage1.loadText;
+import static ru.velkonost.lume.managers.InitializationsManager.changeActivityCompat;
+import static ru.velkonost.lume.managers.InitializationsManager.initToolbar;
+import static ru.velkonost.lume.managers.PhoneDataStorageManager.deleteText;
+import static ru.velkonost.lume.managers.PhoneDataStorageManager.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 public class BoardParticipantsActivity extends AppCompatActivity {
@@ -130,7 +130,7 @@ public class BoardParticipantsActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_participant);
 
-        /** {@link Initializations1#initToolbar(Toolbar, int)}  */
+        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(BoardParticipantsActivity.this, toolbar, R.string.menu_item_participants); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
@@ -144,7 +144,7 @@ public class BoardParticipantsActivity extends AppCompatActivity {
 
         /**
          * Получение id пользователя.
-         * {@link PhoneDataStorage1#loadText(Context, String)}
+         * {@link PhoneDataStorageManager#loadText(Context, String)}
          **/
         userId = loadText(BoardParticipantsActivity.this, ID);
 
@@ -192,7 +192,7 @@ public class BoardParticipantsActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(BoardParticipantsActivity.this,
                                 new Intent(BoardParticipantsActivity.this, FAQBotActivity.class));
@@ -214,7 +214,7 @@ public class BoardParticipantsActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(BoardParticipantsActivity.this,
                                 new Intent(BoardParticipantsActivity.this, ProfileActivity.class));
@@ -269,7 +269,7 @@ public class BoardParticipantsActivity extends AppCompatActivity {
 
                 /**
                  * Переход на следующую активность.
-                 * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                 * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                  * */
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -277,7 +277,7 @@ public class BoardParticipantsActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(BoardParticipantsActivity.this, nextIntent);
                     }
@@ -365,8 +365,8 @@ public class BoardParticipantsActivity extends AppCompatActivity {
                     );
                 }
 
-                /** Создание и инициализация Comparator{@link ValueComparator1} */
-                Comparator<String> comparator = new ValueComparator1<>((HashMap<String, String>) contacts);
+                /** Создание и инициализация Comparator{@link ValueComparatorManager} */
+                Comparator<String> comparator = new ValueComparatorManager<>((HashMap<String, String>) contacts);
 
                 /** Помещает отсортированную Map */
                 TreeMap<String, String> sortedContacts = new TreeMap<>(comparator);

@@ -34,8 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.velkonost.lume.Constants;
-import ru.velkonost.lume.managers.Initializations1;
-import ru.velkonost.lume.managers.PhoneDataStorage1;
+import ru.velkonost.lume.managers.InitializationsManager;
+import ru.velkonost.lume.managers.PhoneDataStorageManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.descriptions.Message;
@@ -58,10 +58,10 @@ import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SEND_MESSAGE_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_MESSAGES_METHOD;
 import static ru.velkonost.lume.Constants.USER;
-import static ru.velkonost.lume.managers.Initializations1.changeActivityCompat;
-import static ru.velkonost.lume.managers.Initializations1.initToolbar;
-import static ru.velkonost.lume.managers.PhoneDataStorage1.deleteText;
-import static ru.velkonost.lume.managers.PhoneDataStorage1.loadText;
+import static ru.velkonost.lume.managers.InitializationsManager.changeActivityCompat;
+import static ru.velkonost.lume.managers.InitializationsManager.initToolbar;
+import static ru.velkonost.lume.managers.PhoneDataStorageManager.deleteText;
+import static ru.velkonost.lume.managers.PhoneDataStorageManager.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
@@ -146,7 +146,7 @@ public class MessageActivity extends AppCompatActivity {
 
         imageArrowSend = (ImageView) findViewById(R.id.imageArrowSend);
 
-        /** {@link Initializations1#initToolbar(Toolbar, int)}  */
+        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(MessageActivity.this, toolbar, collocutorName); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
@@ -164,7 +164,7 @@ public class MessageActivity extends AppCompatActivity {
 
         /**
          * Получение id пользователя.
-         * {@link PhoneDataStorage1#loadText(Context, String)}
+         * {@link PhoneDataStorageManager#loadText(Context, String)}
          **/
         userId = loadText(MessageActivity.this, ID);
 
@@ -292,7 +292,7 @@ public class MessageActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(MessageActivity.this,
                                 new Intent(MessageActivity.this, FAQBotActivity.class));
@@ -314,7 +314,7 @@ public class MessageActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(MessageActivity.this,
                                 new Intent(MessageActivity.this, ProfileActivity.class));
@@ -369,7 +369,7 @@ public class MessageActivity extends AppCompatActivity {
 
                 /**
                  * Переход на следующую активность.
-                 * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                 * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                  * */
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -377,7 +377,7 @@ public class MessageActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(MessageActivity.this, nextIntent);
                     }

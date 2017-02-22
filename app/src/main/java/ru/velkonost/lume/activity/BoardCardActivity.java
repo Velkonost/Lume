@@ -55,9 +55,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import ru.velkonost.lume.Depository;
-import ru.velkonost.lume.managers.Initializations1;
-import ru.velkonost.lume.managers.PhoneDataStorage1;
-import ru.velkonost.lume.managers.ValueComparator1;
+import ru.velkonost.lume.managers.InitializationsManager;
+import ru.velkonost.lume.managers.PhoneDataStorageManager;
+import ru.velkonost.lume.managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.adapter.CardInviteListAdapter;
@@ -102,12 +102,12 @@ import static ru.velkonost.lume.Constants.URL.SERVER_LEAVE_CARD_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.USER;
 import static ru.velkonost.lume.Constants.USER_IDS;
-import static ru.velkonost.lume.managers.DateConverter1.formatDate;
-import static ru.velkonost.lume.managers.Initializations1.changeActivityCompat;
-import static ru.velkonost.lume.managers.Initializations1.initToolbar;
-import static ru.velkonost.lume.managers.PhoneDataStorage1.deleteText;
-import static ru.velkonost.lume.managers.PhoneDataStorage1.loadText;
-import static ru.velkonost.lume.managers.PhoneDataStorage1.saveText;
+import static ru.velkonost.lume.managers.DateConverterManager.formatDate;
+import static ru.velkonost.lume.managers.InitializationsManager.changeActivityCompat;
+import static ru.velkonost.lume.managers.InitializationsManager.initToolbar;
+import static ru.velkonost.lume.managers.PhoneDataStorageManager.deleteText;
+import static ru.velkonost.lume.managers.PhoneDataStorageManager.loadText;
+import static ru.velkonost.lume.managers.PhoneDataStorageManager.saveText;
 import static ru.velkonost.lume.R.layout.popup_board_invite_list;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
@@ -229,12 +229,12 @@ public class BoardCardActivity extends AppCompatActivity {
 
         /**
          * Получение id пользователя.
-         * {@link PhoneDataStorage1#loadText(Context, String)}
+         * {@link PhoneDataStorageManager#loadText(Context, String)}
          **/
         userId = loadText(BoardCardActivity.this, ID);
         boardId = Depository.getBoardId();
 
-        /** {@link Initializations1#initToolbar(Toolbar, int)}  */
+        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(BoardCardActivity.this, toolbar, cardName); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
@@ -524,7 +524,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(BoardCardActivity.this,
                                 new Intent(BoardCardActivity.this, FAQBotActivity.class));
@@ -546,7 +546,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(BoardCardActivity.this,
                                 new Intent(BoardCardActivity.this, ProfileActivity.class));
@@ -601,7 +601,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
                 /**
                  * Переход на следующую активность.
-                 * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                 * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                  * */
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -609,7 +609,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(BoardCardActivity.this, nextIntent);
                     }
@@ -1019,8 +1019,8 @@ public class BoardCardActivity extends AppCompatActivity {
                     );
                 }
 
-                /** Создание и инициализация Comparator{@link ValueComparator1} */
-                Comparator<String> comparator = new ValueComparator1<>((HashMap<String, String>) contacts);
+                /** Создание и инициализация Comparator{@link ValueComparatorManager} */
+                Comparator<String> comparator = new ValueComparatorManager<>((HashMap<String, String>) contacts);
 
                 /** Помещает отсортированную Map */
                 TreeMap<String, String> sortedContacts = new TreeMap<>(comparator);

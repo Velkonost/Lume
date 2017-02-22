@@ -47,8 +47,8 @@ import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.USER_IDS;
-import static ru.velkonost.lume.managers.Initializations1.changeActivityCompat;
-import static ru.velkonost.lume.managers.PhoneDataStorage1.loadText;
+import static ru.velkonost.lume.managers.InitializationsManager.changeActivityCompat;
+import static ru.velkonost.lume.managers.PhoneDataStorageManager.loadText;
 import static ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter.tabsColumnOrder;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 

@@ -10,13 +10,13 @@ import static ru.velkonost.lume.Constants.APP_PREFERENCES;
  * @author Velkonost
  * Класс, служащий для взаимодействия приложения с файлом для оперирования данными.
  */
-public class PhoneDataStorage1 {
+public class PhoneDataStorageManager {
 
     private static SharedPreferences mSharedPreferences;
 
 
     /** Пустой конструктор */
-    public PhoneDataStorage1() {
+    public PhoneDataStorageManager() {
     }
 
     /**

@@ -34,10 +34,10 @@ import static ru.velkonost.lume.Constants.TAG_IMAGE_MANAGER;
  *
  * Позволяет делать форму отображения круглой.
  * */
-public class ImageManager1 {
+public class SetImageManager {
 
     /** Пустой конструктор */
-    private ImageManager1() {}
+    private SetImageManager() {}
 
     /**
      * Метод, устанавливающий картинку, скачанную с интернета
@@ -69,7 +69,7 @@ public class ImageManager1 {
             public void run() {
                 /**
                  * Скачивание изображение по заданному {@param iUrl}
-                 * {@link ImageManager1#downloadImage(String)}
+                 * {@link SetImageManager#downloadImage(String)}
                  * */
                 final Bitmap image = downloadImage(iUrl);
                 if (image != null) {

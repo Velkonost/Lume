@@ -16,7 +16,7 @@ import ru.velkonost.lume.activity.SearchActivity;
 
 import static ru.velkonost.lume.Constants.SEARCH;
 
-public class Initializations1 {
+public class InitializationsManager {
 
     public static void inititializeAlertDialog(Context context, String header,
                                                String description, String btnName){
@@ -141,7 +141,7 @@ public class Initializations1 {
 
                 /**
                  * Переход на следующую активность.
-                 * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                 * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                  **/
                 changeActivityCompat(activity, nextIntent);
                 return false;

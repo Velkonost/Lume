@@ -49,8 +49,8 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.util.HashMap;
 
-import ru.velkonost.lume.managers.Initializations1;
-import ru.velkonost.lume.managers.PhoneDataStorage1;
+import ru.velkonost.lume.managers.InitializationsManager;
+import ru.velkonost.lume.managers.PhoneDataStorageManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.patterns.SecretTextView;
@@ -99,12 +99,12 @@ import static ru.velkonost.lume.Constants.URL.SERVER_UPLOAD_IMAGE_METHOD;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
-import static ru.velkonost.lume.managers.DateConverter1.formatDate;
-import static ru.velkonost.lume.managers.Initializations1.changeActivityCompat;
-import static ru.velkonost.lume.managers.Initializations1.initToolbar;
-import static ru.velkonost.lume.managers.Initializations1.inititializeAlertDialog;
-import static ru.velkonost.lume.managers.PhoneDataStorage1.deleteText;
-import static ru.velkonost.lume.managers.PhoneDataStorage1.loadText;
+import static ru.velkonost.lume.managers.DateConverterManager.formatDate;
+import static ru.velkonost.lume.managers.InitializationsManager.changeActivityCompat;
+import static ru.velkonost.lume.managers.InitializationsManager.initToolbar;
+import static ru.velkonost.lume.managers.InitializationsManager.inititializeAlertDialog;
+import static ru.velkonost.lume.managers.PhoneDataStorageManager.deleteText;
+import static ru.velkonost.lume.managers.PhoneDataStorageManager.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
@@ -236,12 +236,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_profile);
 
-        /** {@link Initializations1#initToolbar(Toolbar, int)}  */
+        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(ProfileActivity.this, toolbar, R.string.app_name); /** Инициализация */
 
         /**
          * Получение id пользователя.
-         * {@link PhoneDataStorage1#loadText(Context, String)}
+         * {@link PhoneDataStorageManager#loadText(Context, String)}
          **/
         userId = loadText(ProfileActivity.this, ID);
 
@@ -316,7 +316,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(ProfileActivity.this,
                                 new Intent(ProfileActivity.this, FAQBotActivity.class));
@@ -338,7 +338,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(ProfileActivity.this,
                                 new Intent(ProfileActivity.this, ProfileActivity.class));
@@ -393,7 +393,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 /**
                  * Переход на следующую активность.
-                 * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                 * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                  * */
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -401,7 +401,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(ProfileActivity.this, nextIntent);
                     }

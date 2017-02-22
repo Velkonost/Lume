@@ -38,8 +38,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.velkonost.lume.managers.Initializations1;
-import ru.velkonost.lume.managers.PhoneDataStorage1;
+import ru.velkonost.lume.managers.InitializationsManager;
+import ru.velkonost.lume.managers.PhoneDataStorageManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.descriptions.Board;
@@ -57,10 +57,10 @@ import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_BOARDS_METHOD;
-import static ru.velkonost.lume.managers.Initializations1.changeActivityCompat;
-import static ru.velkonost.lume.managers.Initializations1.initToolbar;
-import static ru.velkonost.lume.managers.PhoneDataStorage1.deleteText;
-import static ru.velkonost.lume.managers.PhoneDataStorage1.loadText;
+import static ru.velkonost.lume.managers.InitializationsManager.changeActivityCompat;
+import static ru.velkonost.lume.managers.InitializationsManager.initToolbar;
+import static ru.velkonost.lume.managers.PhoneDataStorageManager.deleteText;
+import static ru.velkonost.lume.managers.PhoneDataStorageManager.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 public class BoardsListActivity extends AppCompatActivity {
@@ -133,13 +133,13 @@ public class BoardsListActivity extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_boards);
 
-        /** {@link Initializations1#initToolbar(Toolbar, int)}  */
+        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(BoardsListActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
         initNavigationView(); /** Инициализация */
 
         /**
          * Получение id пользователя.
-         * {@link PhoneDataStorage1#loadText(Context, String)}
+         * {@link PhoneDataStorageManager#loadText(Context, String)}
          **/
         userId = loadText(BoardsListActivity.this, ID);
 
@@ -263,7 +263,7 @@ public class BoardsListActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(BoardsListActivity.this,
                                 new Intent(BoardsListActivity.this, FAQBotActivity.class));
@@ -285,7 +285,7 @@ public class BoardsListActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(BoardsListActivity.this,
                                 new Intent(BoardsListActivity.this, ProfileActivity.class));
@@ -340,7 +340,7 @@ public class BoardsListActivity extends AppCompatActivity {
 
                 /**
                  * Переход на следующую активность.
-                 * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                 * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                  * */
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -348,7 +348,7 @@ public class BoardsListActivity extends AppCompatActivity {
 
                         /**
                          * Обновляет страницу.
-                         * {@link Initializations1#changeActivityCompat(Activity, Intent)}
+                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          * */
                         changeActivityCompat(BoardsListActivity.this, nextIntent);
                     }
