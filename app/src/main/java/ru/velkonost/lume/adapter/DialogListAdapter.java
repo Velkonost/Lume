@@ -32,7 +32,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
-import static ru.velkonost.lume.managers.SetImageManager.fetchImage;
+import static ru.velkonost.lume.Managers.SetImageManager.fetchImage;
 
 public class DialogListAdapter extends ArrayAdapter {
 

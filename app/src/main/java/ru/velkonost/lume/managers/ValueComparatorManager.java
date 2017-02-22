@@ -1,4 +1,4 @@
-package ru.velkonost.lume.managers;
+package ru.velkonost.lume.Managers;
 
 import java.util.Comparator;
 import java.util.HashMap;

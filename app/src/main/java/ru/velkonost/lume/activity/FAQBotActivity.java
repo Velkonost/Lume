@@ -19,16 +19,16 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import ru.velkonost.lume.managers.InitializationsManager;
+import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
-import static ru.velkonost.lume.managers.InitializationsManager.changeActivityCompat;
-import static ru.velkonost.lume.managers.InitializationsManager.initToolbar;
-import static ru.velkonost.lume.managers.PhoneDataStorageManager.deleteText;
-import static ru.velkonost.lume.managers.PhoneDataStorageManager.loadText;
+import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
+import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
+import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
+import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
 
 public class FAQBotActivity extends AppCompatActivity {
 

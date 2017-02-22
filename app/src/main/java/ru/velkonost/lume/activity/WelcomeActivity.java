@@ -20,8 +20,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import ru.velkonost.lume.managers.InitializationsManager;
-import ru.velkonost.lume.managers.PhoneDataStorageManager;
+import ru.velkonost.lume.Managers.InitializationsManager;
+import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 
@@ -34,11 +34,11 @@ import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_REGISTRATION_METHOD;
-import static ru.velkonost.lume.managers.InitializationsManager.changeActivityCompat;
-import static ru.velkonost.lume.managers.InitializationsManager.initToolbar;
-import static ru.velkonost.lume.managers.InitializationsManager.inititializeAlertDialog;
-import static ru.velkonost.lume.managers.PhoneDataStorageManager.loadText;
-import static ru.velkonost.lume.managers.PhoneDataStorageManager.saveText;
+import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
+import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
+import static ru.velkonost.lume.Managers.InitializationsManager.inititializeAlertDialog;
+import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
+import static ru.velkonost.lume.Managers.PhoneDataStorageManager.saveText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 import static ru.velkonost.lume.net.ServerConnection.hasConnection;
 

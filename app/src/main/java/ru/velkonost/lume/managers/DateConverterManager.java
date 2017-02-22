@@ -1,4 +1,4 @@
-package ru.velkonost.lume.managers;
+package ru.velkonost.lume.Managers;
 
 import static ru.velkonost.lume.Constants.HYPHEN;
 

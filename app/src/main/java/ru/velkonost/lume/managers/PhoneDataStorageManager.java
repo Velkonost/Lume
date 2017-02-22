@@ -1,4 +1,4 @@
-package ru.velkonost.lume.managers;
+package ru.velkonost.lume.Managers;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -1,4 +1,4 @@
-package ru.velkonost.lume.managers;
+package ru.velkonost.lume.Managers;
 
 import android.app.Activity;
 import android.app.AlertDialog;

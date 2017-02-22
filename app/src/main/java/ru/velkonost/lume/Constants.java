@@ -1,7 +1,7 @@
 package ru.velkonost.lume;
 
 
-import ru.velkonost.lume.managers.PhoneDataStorageManager;
+import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 
 /**
  * @author Velkonost

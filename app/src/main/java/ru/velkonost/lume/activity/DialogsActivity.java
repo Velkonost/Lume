@@ -32,8 +32,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.velkonost.lume.managers.InitializationsManager;
-import ru.velkonost.lume.managers.PhoneDataStorageManager;
+import ru.velkonost.lume.Managers.InitializationsManager;
+import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
 import ru.velkonost.lume.descriptions.DialogContact;
@@ -54,10 +54,10 @@ import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_DIALOGS_METHOD;
 import static ru.velkonost.lume.Constants.USER_ID;
-import static ru.velkonost.lume.managers.InitializationsManager.changeActivityCompat;
-import static ru.velkonost.lume.managers.InitializationsManager.initToolbar;
-import static ru.velkonost.lume.managers.PhoneDataStorageManager.deleteText;
-import static ru.velkonost.lume.managers.PhoneDataStorageManager.loadText;
+import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
+import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
+import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
+import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
