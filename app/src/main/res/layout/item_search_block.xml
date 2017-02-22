@@ -34,14 +34,12 @@
                     android:id="@+id/userName"
                     android:textColor="@color/colorBlack"
                     android:textSize="16sp"
-                    android:text="Вася Пупкин"
                     android:layout_marginBottom="1dp"
                     android:lines="1"/>
                 <ru.velkonost.lume.patterns.ScrollingTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/userLogin"
-                    android:text="Velkonost"
                     android:layout_marginBottom="3dp"
                     android:lines="1"/>
                 <ru.velkonost.lume.patterns.ScrollingTextView
@@ -49,7 +47,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/livingPlace"
                     android:textSize="13sp"
-                    android:text="Russia, Omsk"
                     android:lines="1"/>
             </LinearLayout>
 

@@ -111,5 +111,8 @@
     <string name="cancel">Cancel</string>
     <string name="create">Create</string>
 
+    <string name="go_search">Search contacts</string>
+    <string name="enter_name_login_surname">Enter part of name, login…</string>
+
 
 </resources>

@@ -1,16 +1,23 @@
 package ru.velkonost.lume.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
@@ -23,7 +30,7 @@ import ru.velkonost.lume.activity.SearchActivity;
 import ru.velkonost.lume.adapter.ContactListAdapter;
 import ru.velkonost.lume.descriptions.Contact;
 
-import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
+import static ru.velkonost.lume.Constants.SEARCH;
 
 public class ContactsFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_contact;
@@ -50,7 +57,7 @@ public class ContactsFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
 
         FastScrollRecyclerView recyclerView = (FastScrollRecyclerView)
@@ -64,8 +71,62 @@ public class ContactsFragment extends Fragment {
         fabGoSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeActivityCompat(getActivity(),
-                        new Intent(context, SearchActivity.class));
+
+                LinearLayout layout = new LinearLayout(context);
+                layout.setOrientation(LinearLayout.VERTICAL);
+
+                LinearLayout.LayoutParams  params =
+                        new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(dp2px(5), dp2px(20), dp2px(5), dp2px(20));
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(getResources().getString(R.string.go_search));
+
+                final EditText inputName
+                        = (EditText) getLayoutInflater(savedInstanceState)
+                        .inflate(R.layout.item_edittext_style, null);
+                inputName.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
+                inputName.setLayoutParams(params);
+
+                inputName.setHint(getResources().getString(R.string.enter_name_login_surname));
+                inputName.setInputType(InputType.TYPE_CLASS_TEXT);
+                layout.addView(inputName);
+
+                builder.setView(layout)
+                        .setPositiveButton(getResources().getString(R.string.search_empty),
+                                new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                if (inputName.getText().toString().length() != 0) {
+
+                                    Intent intent = new Intent(context, SearchActivity.class);
+                                    intent.putExtra(SEARCH, inputName.getText().toString());
+
+                                    context.startActivity(intent);
+
+                                    getActivity().overridePendingTransition(R.anim.activity_right_in,
+                                            R.anim.activity_diagonaltranslate);
+
+                                } else dialog.cancel();
+
+                            }
+                        })
+                        .setNegativeButton(getResources().getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+
+                AlertDialog alert = builder.create();
+                alert.show();
+
+
+
             }
         });
 
@@ -92,6 +153,11 @@ public class ContactsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                context.getResources().getDisplayMetrics());
     }
 
     public void search(String text, boolean empty, boolean let) {

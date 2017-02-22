@@ -108,4 +108,7 @@
     <string name="cancel">Отмена</string>
     <string name="create">Создать</string>
 
+    <string name="go_search">Поиск контактов</string>
+    <string name="enter_name_login_surname">Введите часть имени, логина…</string>
+
 </resources>
