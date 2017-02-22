@@ -24,7 +24,7 @@
             android:orientation="vertical"
             android:padding="16dp"
             android:id="@+id/linearLayoutPlaceLiving">
-            <TextView
+            <ru.velkonost.lume.patterns.SecretTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/titleCardPlaceLiving"
@@ -33,7 +33,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <TextView
+                <ru.velkonost.lume.patterns.SecretTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/descriptionCardPlaceLiving"

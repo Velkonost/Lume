@@ -53,6 +53,7 @@ import ru.velkonost.lume.Managers.Initializations;
 import ru.velkonost.lume.Managers.PhoneDataStorage;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.TypefaceUtil;
+import ru.velkonost.lume.patterns.SecretTextView;
 
 import static ru.velkonost.lume.Constants.ADDRESSEE_ID;
 import static ru.velkonost.lume.Constants.ADD_CONTACT;
@@ -721,8 +722,10 @@ public class ProfileActivity extends AppCompatActivity {
                          **/
                         viewUserPlaceLiving = ltInflater
                                 .inflate(R.layout.item_profile_place_living, linLayout, false);
-                        TextView userPlaceLiving = (TextView) viewUserPlaceLiving
+                        SecretTextView userPlaceLiving = (SecretTextView) viewUserPlaceLiving
                                 .findViewById(R.id.descriptionCardPlaceLiving);
+                        SecretTextView titleUserPlaceLiving = (SecretTextView) viewUserPlaceLiving
+                                .findViewById(R.id.titleCardPlaceLiving);
 
                         /**
                          * Формируется место проживания из имеющихся данных.
@@ -741,11 +744,20 @@ public class ProfileActivity extends AppCompatActivity {
                         if (!sUserPlaceLiving.equals(""))
                             linLayout.addView(viewUserPlaceLiving);
 
+                        titleUserPlaceLiving.setDuration(1000);
+                        titleUserPlaceLiving.show();
+
+                        userPlaceLiving.setDuration(1500);
+                        userPlaceLiving.show();
 
 
                         /** Формирование даты рождения владельца открытого профиля */
                         viewUserBirthday = ltInflater.inflate(R.layout.item_profile_birthday, linLayout, false);
-                        TextView userBirthday = (TextView) viewUserBirthday.findViewById(R.id.descriptionCardBirthday);
+                        SecretTextView userBirthday = (SecretTextView) viewUserBirthday
+                                .findViewById(R.id.descriptionCardBirthday);
+
+                        SecretTextView titleUserBirthday = (SecretTextView) viewUserBirthday
+                                .findViewById(R.id.titleCardBirthday);
 
                         String sUserBirthday = dataJsonObj.getString(BIRTHDAY).length() != 0
                                 ? dataJsonObj.getString(BIRTHDAY)
@@ -762,6 +774,11 @@ public class ProfileActivity extends AppCompatActivity {
                         if (!formattedUserBirthday.equals("00-00-0000"))
                             linLayout.addView(viewUserBirthday);
 
+                        titleUserBirthday.setDuration(1500);
+                        titleUserBirthday.show();
+
+                        userBirthday.setDuration(1500);
+                        userBirthday.show();
 
 
                         /** Формирование места учебы пользователя */
@@ -779,12 +796,22 @@ public class ProfileActivity extends AppCompatActivity {
 
                             viewUserPlaceWork = ltInflater.inflate(R.layout.item_profile_place_work,
                                     linLayout, false);
-                            TextView userPlaceWork = (TextView) viewUserPlaceWork
+                            SecretTextView userPlaceWork = (SecretTextView) viewUserPlaceWork
                                     .findViewById(R.id.descriptionCardPlaceWork);
+
+                            SecretTextView titleUserPlaceWork = (SecretTextView) viewUserPlaceWork
+                                    .findViewById(R.id.titleCardPlaceWork);
+
                             userPlaceWork.setText(sUserPlaceWork);
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserPlaceWork);
+
+                            titleUserPlaceWork.setDuration(2000);
+                            titleUserPlaceWork.show();
+
+                            userPlaceWork.setDuration(2000);
+                            userPlaceWork.show();
                         }
 
                         /** Если указано только место учебы */
@@ -792,12 +819,22 @@ public class ProfileActivity extends AppCompatActivity {
 
                             viewUserPlaceStudy = ltInflater.inflate(R.layout.item_profile_place_study,
                                     linLayout, false);
-                            TextView userPlaceStudy = (TextView) viewUserPlaceStudy
+                            SecretTextView userPlaceStudy = (SecretTextView) viewUserPlaceStudy
                                     .findViewById(R.id.descriptionCardPlaceStudy);
+
+                            SecretTextView titleUserPlaceStudy = (SecretTextView) viewUserPlaceStudy
+                                    .findViewById(R.id.titleCardPlaceStudy);
+
                             userPlaceStudy.setText(sUserPlaceStudy);
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserPlaceStudy);
+
+                            titleUserPlaceStudy.setDuration(2000);
+                            titleUserPlaceStudy.show();
+
+                            userPlaceStudy.setDuration(2000);
+                            userPlaceStudy.show();
                         }
 
                         /** Если указаны место работы и место учебы */
@@ -807,16 +844,36 @@ public class ProfileActivity extends AppCompatActivity {
                                     .inflate(R.layout.item_profile_place_study_and_work,
                                             linLayout, false);
 
-                            TextView userPlaceStudy = (TextView) viewUserPlaceStudyAndWork.
-                                    findViewById(R.id.descriptionCardPlaceStudy);
+                            SecretTextView userPlaceStudy = (SecretTextView) viewUserPlaceStudyAndWork
+                                    .findViewById(R.id.descriptionCardPlaceStudy);
+
+                            SecretTextView titleUserPlaceStudy = (SecretTextView) viewUserPlaceStudyAndWork
+                                    .findViewById(R.id.titleCardPlaceStudy);
+
                             userPlaceStudy.setText(sUserPlaceStudy);
 
-                            TextView userPlaceWork = (TextView) viewUserPlaceStudyAndWork.
-                                    findViewById(R.id.descriptionCardPlaceWork);
+                            SecretTextView userPlaceWork = (SecretTextView) viewUserPlaceStudyAndWork
+                                    .findViewById(R.id.descriptionCardPlaceWork);
+
+                            SecretTextView titleUserPlaceWork = (SecretTextView) viewUserPlaceStudyAndWork
+                                    .findViewById(R.id.titleCardPlaceWork);
+
                             userPlaceWork.setText(sUserPlaceWork);
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserPlaceStudyAndWork);
+
+                            titleUserPlaceWork.setDuration(2000);
+                            titleUserPlaceWork.show();
+
+                            userPlaceWork.setDuration(2000);
+                            userPlaceWork.show();
+
+                            titleUserPlaceStudy.setDuration(2000);
+                            titleUserPlaceStudy.show();
+
+                            userPlaceStudy.setDuration(2000);
+                            userPlaceStudy.show();
                         }
 
                         /** Формирование рабочего email пользователя */
@@ -830,12 +887,22 @@ public class ProfileActivity extends AppCompatActivity {
                             viewUserWorkingEmail = ltInflater
                                     .inflate(R.layout.item_profile_working_email, linLayout, false);
 
-                            final TextView userWorkingEmail = (TextView) viewUserWorkingEmail
+                            final SecretTextView userWorkingEmail = (SecretTextView) viewUserWorkingEmail
                                     .findViewById(R.id.descriptionCardWorkingEmail);
+
+                            SecretTextView titleUserWorkingEmail = (SecretTextView) viewUserWorkingEmail
+                                    .findViewById(R.id.titleCardWorkingEmail);
+
                             userWorkingEmail.setText(sUserWorkingEmail);
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserWorkingEmail);
+
+                            titleUserWorkingEmail.setDuration(3000);
+                            titleUserWorkingEmail.show();
+
+                            userWorkingEmail.setDuration(3000);
+                            userWorkingEmail.show();
 
                         }
 

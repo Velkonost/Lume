@@ -22,7 +22,7 @@
             android:orientation="vertical"
             android:padding="16dp"
             android:id="@+id/linearLayoutWorkingEmail">
-            <TextView
+            <ru.velkonost.lume.patterns.SecretTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/titleCardWorkingEmail"
@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textIsSelectable="true">
-                <TextView
+                <ru.velkonost.lume.patterns.SecretTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/descriptionCardWorkingEmail"
