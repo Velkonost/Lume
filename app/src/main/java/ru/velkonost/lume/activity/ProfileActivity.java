@@ -557,6 +557,9 @@ public class ProfileActivity extends AppCompatActivity {
                                     }
 
                                     ProfileActivity.this.startActivity(fullScreenIntent);
+                                    overridePendingTransition(R.anim.activity_right_in,
+                                            R.anim.activity_diagonaltranslate);
+
                                 }
                                 else {
                                     /**
@@ -599,6 +602,9 @@ public class ProfileActivity extends AppCompatActivity {
 
                                                                     ProfileActivity.this
                                                                             .startActivity(fullScreenIntent);
+                                                                    overridePendingTransition(R.anim.activity_right_in,
+                                                                            R.anim.activity_diagonaltranslate);
+
                                                                     break;
 
                                                                 case 1:
@@ -693,7 +699,11 @@ public class ProfileActivity extends AppCompatActivity {
                                             intent.putExtra(DIALOG_ID, dataJsonObj.getInt(DIALOG_ID));
                                             intent.putExtra(ID, Integer.parseInt(userId));
                                             intent.putExtra(NAME, sUserName);
+
                                             ProfileActivity.this.startActivity(intent);
+                                            overridePendingTransition(R.anim.activity_right_in,
+                                                    R.anim.activity_diagonaltranslate);
+
                                         } else {
                                             CreateDialog mCreateDialog = new CreateDialog();
                                             mCreateDialog.execute();
@@ -1151,6 +1161,8 @@ public class ProfileActivity extends AppCompatActivity {
                 intent.putExtra(DIALOG_ID, dataJsonObj.getInt(DIALOG_ID));
                 intent.putExtra(ID, profileIdString);
                 ProfileActivity.this.startActivity(intent);
+                overridePendingTransition(R.anim.activity_right_in,
+                        R.anim.activity_diagonaltranslate);
 
             } catch (JSONException e) {
                 e.printStackTrace();

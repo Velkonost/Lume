@@ -28,7 +28,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
-public class AddColumnFragment extends AbstractTabFragment {
+public class AddColumnFragment extends BaseTabFragment {
     private static final int LAYOUT = R.layout.fragment_add_column;
 
     private EditText createColumnName;
@@ -78,7 +78,12 @@ public class AddColumnFragment extends AbstractTabFragment {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra(BOARD_ID, Integer.parseInt(boardId));
                     context.startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.activity_right_in,
+                            R.anim.activity_diagonaltranslate);
+
                     getActivity().finish();
+                    getActivity().overridePendingTransition(R.anim.activity_right_in,
+                            R.anim.activity_diagonaltranslate);
                 }
         }
 

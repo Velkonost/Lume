@@ -52,7 +52,7 @@ import static ru.velkonost.lume.Managers.PhoneDataStorage.loadText;
 import static ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter.tabsColumnOrder;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
-public class ColumnFragment extends AbstractTabFragment {
+public class ColumnFragment extends BaseTabFragment {
     private static final int LAYOUT = R.layout.fragment_column;
 
     private int columnId;

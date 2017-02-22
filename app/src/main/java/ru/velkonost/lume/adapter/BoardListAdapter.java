@@ -59,6 +59,7 @@ public class BoardListAdapter extends RecyclerView.Adapter<BoardListAdapter.Boar
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(BOARD_ID, item.getId());
                 context.startActivity(intent);
+
             }
         });
 

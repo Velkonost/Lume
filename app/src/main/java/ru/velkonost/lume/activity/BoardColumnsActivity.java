@@ -180,7 +180,12 @@ public class BoardColumnsActivity extends AppCompatActivity {
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     intent.putExtra(BOARD_ID, Integer.parseInt(boardId));
                                     BoardColumnsActivity.this.startActivity(intent);
+                                    overridePendingTransition(R.anim.activity_right_in,
+                                            R.anim.activity_diagonaltranslate);
+
                                     finish();
+                                    overridePendingTransition(R.anim.activity_right_in,
+                                            R.anim.activity_diagonaltranslate);
 
                                 } else dialog.cancel();
 
@@ -252,7 +257,13 @@ public class BoardColumnsActivity extends AppCompatActivity {
                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                             intent.putExtra(BOARD_ID, Integer.parseInt(boardId));
                                             BoardColumnsActivity.this.startActivity(intent);
+                                            overridePendingTransition(R.anim.activity_right_in,
+                                                    R.anim.activity_diagonaltranslate);
+
                                             finish();
+                                            overridePendingTransition(R.anim.activity_right_in,
+                                                    R.anim.activity_diagonaltranslate);
+
                                         } else dialog.cancel();
 
                                     }

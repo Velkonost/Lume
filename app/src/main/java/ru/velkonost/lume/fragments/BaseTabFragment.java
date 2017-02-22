@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-public class AbstractTabFragment extends Fragment {
+public class BaseTabFragment extends Fragment {
 
     private String title;
     protected Context context;

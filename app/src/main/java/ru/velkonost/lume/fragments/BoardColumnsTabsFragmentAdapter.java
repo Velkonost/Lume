@@ -14,7 +14,7 @@ import ru.velkonost.lume.descriptions.BoardColumn;
 
 public class BoardColumnsTabsFragmentAdapter extends FragmentPagerAdapter {
 
-    private Map<Integer, AbstractTabFragment> tabs;
+    private Map<Integer, BaseTabFragment> tabs;
     public static Map<Integer, Integer> tabsColumnOrder;
     private Context context;
     public static int last = 0;

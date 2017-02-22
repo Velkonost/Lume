@@ -157,6 +157,8 @@ public class MessageActivity extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(ID, addresseeId);
                 MessageActivity.this.startActivity(intent);
+                overridePendingTransition(R.anim.activity_right_in,
+                        R.anim.activity_diagonaltranslate);
             }
         });
 

@@ -23,7 +23,6 @@ public class Initializations {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(header)
                 .setMessage(description)
-//                .setIcon(R.drawable.ic_android_cat) МОЖНО ДОБАВИТЬ ИКОНКУ!
                 .setCancelable(false)
                 .setNegativeButton(btnName,
                         new DialogInterface.OnClickListener() {
@@ -91,10 +90,10 @@ public class Initializations {
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
         a.finish();
-        a.overridePendingTransition(0, 0);
+        a.overridePendingTransition(R.anim.activity_right_in, R.anim.activity_diagonaltranslate);
 
         a.startActivity(intent);
-        a.overridePendingTransition(0, 0);
+        a.overridePendingTransition(R.anim.activity_right_in, R.anim.activity_diagonaltranslate);
     }
 
 
@@ -106,16 +105,15 @@ public class Initializations {
         if (currentIntent.filterEquals(nextIntent)) {
             a.finish();
         }
-        a.overridePendingTransition(0, 0);
+        a.overridePendingTransition(R.anim.activity_right_in, R.anim.activity_diagonaltranslate);
 
         a.startActivity(nextIntent);
-        a.overridePendingTransition(0, 0);
+        a.overridePendingTransition(R.anim.activity_right_in, R.anim.activity_diagonaltranslate);
     }
 
     public static void initSearch(final Activity activity, MaterialSearchView searchView) {
 
         searchView.setEllipsize(true);
-        //реализуем поиск по всем персонам и избранному
 
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override

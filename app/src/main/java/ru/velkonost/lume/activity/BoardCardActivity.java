@@ -446,8 +446,13 @@ public class BoardCardActivity extends AppCompatActivity {
                                         intent.putExtra(CARD_ID, cardId);
                                         intent.putExtra(CARD_NAME, cardName);
                                         BoardCardActivity.this.startActivity(intent);
+                                        overridePendingTransition(R.anim.activity_right_in,
+                                                R.anim.activity_diagonaltranslate);
 
                                         finish();
+                                        overridePendingTransition(R.anim.activity_right_in,
+                                                R.anim.activity_diagonaltranslate);
+
                                     }
                                 })
                         .create().show();
