@@ -52,7 +52,7 @@ import java.util.HashMap;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.TypefaceUtil;
+import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.patterns.SecretTextView;
 
 import static ru.velkonost.lume.Constants.ADDRESSEE_ID;

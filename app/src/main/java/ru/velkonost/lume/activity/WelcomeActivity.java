@@ -23,7 +23,7 @@ import java.io.IOException;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.TypefaceUtil;
+import ru.velkonost.lume.Managers.TypefaceUtil;
 
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.EQUALS;

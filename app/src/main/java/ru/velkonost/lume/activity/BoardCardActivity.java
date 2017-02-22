@@ -59,7 +59,7 @@ import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.Managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.TypefaceUtil;
+import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.adapter.CardInviteListAdapter;
 import ru.velkonost.lume.adapter.CardMoveListAdapter;
 import ru.velkonost.lume.descriptions.BoardColumn;

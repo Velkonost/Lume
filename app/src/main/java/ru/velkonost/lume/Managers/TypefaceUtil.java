@@ -1,4 +1,4 @@
-package ru.velkonost.lume;
+package ru.velkonost.lume.Managers;
 
 import android.content.Context;
 import android.graphics.Typeface;

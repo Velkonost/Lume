@@ -39,7 +39,7 @@ import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.Managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.TypefaceUtil;
+import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.descriptions.SearchContact;
 import ru.velkonost.lume.fragments.SearchFragment;
 

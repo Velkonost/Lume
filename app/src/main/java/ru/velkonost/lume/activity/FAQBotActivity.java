@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.TypefaceUtil;
+import ru.velkonost.lume.Managers.TypefaceUtil;
 
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
