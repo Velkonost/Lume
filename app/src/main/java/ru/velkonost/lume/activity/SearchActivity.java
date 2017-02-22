@@ -318,7 +318,7 @@ public class SearchActivity extends AppCompatActivity {
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_search);
                 drawer.closeDrawer(GravityCompat.START);
 
-                return true;
+                return false;
             }
         });
     }

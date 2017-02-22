@@ -450,7 +450,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_columns);
                 drawer.closeDrawer(GravityCompat.START);
 
-                return true;
+                return false;
             }
         });
     }

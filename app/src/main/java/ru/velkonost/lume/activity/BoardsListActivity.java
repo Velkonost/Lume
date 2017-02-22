@@ -361,7 +361,7 @@ public class BoardsListActivity extends AppCompatActivity {
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_boards);
                 drawer.closeDrawer(GravityCompat.START);
 
-                return true;
+                return false;
             }
         });
     }

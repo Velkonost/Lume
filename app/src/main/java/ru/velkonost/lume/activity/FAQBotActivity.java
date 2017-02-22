@@ -226,7 +226,7 @@ public class FAQBotActivity extends AppCompatActivity {
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_bot);
                 drawer.closeDrawer(GravityCompat.START);
 
-                return true;
+                return false;
             }
         });
     }

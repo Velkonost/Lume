@@ -620,7 +620,7 @@ public class BoardCardActivity extends AppCompatActivity {
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_card);
                 drawer.closeDrawer(GravityCompat.START);
 
-                return true;
+                return false;
             }
         });
     }

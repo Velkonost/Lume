@@ -52,10 +52,12 @@ public class DialogsFragment extends Fragment {
     }
 
     private void adjustGridView(GridView gridView) {
+
         gridView.setColumnWidth(200);
-        gridView.setNumColumns(GridView.AUTO_FIT);
         gridView.setHorizontalSpacing(5);
-        gridView.setStretchMode(GridView.STRETCH_SPACING_UNIFORM);
+        gridView.setNumColumns(GridView.AUTO_FIT);
+
+        gridView.setStretchMode(GridView.STRETCH_SPACING);
     }
 
     public void refreshContacts (List<DialogContact> mContacts) {
