@@ -48,13 +48,13 @@ public class DialogsFragment extends Fragment {
         adapter = new DialogListAdapter(getActivity(), mContacts);
         gridView.setAdapter(adapter);
         adjustGridView(gridView);
+
         return view;
     }
 
     private void adjustGridView(GridView gridView) {
 
         gridView.setColumnWidth(200);
-        gridView.setHorizontalSpacing(5);
         gridView.setNumColumns(GridView.AUTO_FIT);
 
         gridView.setStretchMode(GridView.STRETCH_SPACING);
