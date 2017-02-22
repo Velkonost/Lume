@@ -695,6 +695,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                                     try {
                                         if (dataJsonObj.getInt(DIALOG_ID) != -1){
+
                                             Intent intent = new Intent(ProfileActivity.this, MessageActivity.class);
                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                             intent.putExtra(DIALOG_ID, dataJsonObj.getInt(DIALOG_ID));
