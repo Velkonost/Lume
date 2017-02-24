@@ -194,6 +194,8 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private ImageView imageArrowSend;
 
+    private String textComment;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -476,6 +478,8 @@ public class BoardCardActivity extends AppCompatActivity {
 
     public void addComment(View view) {
         if (mEditTextComment.getText().toString().length() == 0) return;
+
+        textComment = mEditTextComment.getText().toString();
 
         AddComment addComment = new AddComment();
         addComment.execute();
@@ -884,6 +888,8 @@ public class BoardCardActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Object... strings) {
 
+            String commentToAdd = textComment;
+
             /**
              * Формирование адреса, по которому необходимо обратиться.
              **/
@@ -895,7 +901,7 @@ public class BoardCardActivity extends AppCompatActivity {
              */
             @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId
                     + AMPERSAND + ID + EQUALS + userId
-                    + AMPERSAND + TEXT + EQUALS + mEditTextComment.getText().toString();
+                    + AMPERSAND + TEXT + EQUALS + textComment;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
