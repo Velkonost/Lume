@@ -123,6 +123,8 @@ public class MessageActivity extends AppCompatActivity {
 
     private ImageView imageArrowSend;
 
+    private String textMessage;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -399,6 +401,8 @@ public class MessageActivity extends AppCompatActivity {
     public void sendMessage(View view) {
         if (editMessage.getText().toString().length() == 0) return;
 
+        textMessage = editMessage.getText().toString();
+
         SendMessage sendMessage = new SendMessage();
         sendMessage.execute();
 
@@ -633,6 +637,8 @@ public class MessageActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Object... strings) {
 
+            String textToSend = textMessage;
+
             /**
              * Формирование адреса, по которому необходимо обратиться.
              **/
@@ -644,7 +650,7 @@ public class MessageActivity extends AppCompatActivity {
              */
             @SuppressWarnings("WrongThread") String params = DIALOG_ID + EQUALS + dialogId
                     + AMPERSAND + ID + EQUALS + userId
-                    + AMPERSAND + TEXT + EQUALS + editMessage.getText().toString();
+                    + AMPERSAND + TEXT + EQUALS + textToSend;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
