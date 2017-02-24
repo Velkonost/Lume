@@ -110,6 +110,7 @@ public class Constants {
         public static final String SERVER_GET_CONTACTS_METHOD = "/getContacts";
         public static final String SERVER_UPLOAD_IMAGE_METHOD = "/editImage";
         public static final String SERVER_EDIT_PARAMETERS_METHOD = "/edit";
+        public static final String SERVER_SHORT_EDIT_PARAMETERS_METHOD = "/short_edit";
 
         public static final String SERVER_CREATE_DIALOG_METHOD = "/createDialog";
         public static final String SERVER_SHOW_DIALOGS_METHOD = "/showDialogs";

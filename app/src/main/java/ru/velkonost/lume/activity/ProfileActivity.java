@@ -1,7 +1,9 @@
 package ru.velkonost.lume.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,13 +24,18 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.kosalgeek.android.photoutil.CameraPhoto;
 import com.kosalgeek.android.photoutil.GalleryPhoto;
@@ -47,12 +54,14 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
-import ru.velkonost.lume.R;
 import ru.velkonost.lume.Managers.TypefaceUtil;
+import ru.velkonost.lume.R;
 import ru.velkonost.lume.patterns.SecretTextView;
 
 import static ru.velkonost.lume.Constants.ADDRESSEE_ID;
@@ -68,6 +77,7 @@ import static ru.velkonost.lume.Constants.DIALOG_ID;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.GALLERY_REQUEST;
 import static ru.velkonost.lume.Constants.GET_DATA;
+import static ru.velkonost.lume.Constants.GET_EDIT_RESULT;
 import static ru.velkonost.lume.Constants.GET_ID;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.IMAGE;
@@ -95,14 +105,17 @@ import static ru.velkonost.lume.Constants.URL.SERVER_GET_DATA_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
+import static ru.velkonost.lume.Constants.URL.SERVER_SHORT_EDIT_PARAMETERS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_UPLOAD_IMAGE_METHOD;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
 import static ru.velkonost.lume.Managers.DateConverterManager.formatDate;
+import static ru.velkonost.lume.Managers.DateConverterManager.formatDateBack;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
 import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
 import static ru.velkonost.lume.Managers.InitializationsManager.inititializeAlertDialog;
+import static ru.velkonost.lume.Managers.InitializationsManager.inititializeAlertDialogWithRefresh;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
@@ -212,6 +225,24 @@ public class ProfileActivity extends AppCompatActivity {
 
     private TextView navHeaderLogin;
 
+    /**
+     * Свойство - элемент для выбора даты.
+     */
+    private DatePickerDialog dateBirdayDatePicker;
+
+    private String sUserPlaceLiving;
+    private String sUserPlaceStudy;
+    private String sUserPlaceWork;
+    private String sUserBirthday;
+    private String sUserWorkingEmail;
+
+    private SecretTextView userBirthday;
+
+    private EditText editPlaceLiving;
+    private EditText editUserPlaceStudy;
+    private EditText editUserPlaceWork;
+    private EditText editUserWorkingEmail;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,7 +268,7 @@ public class ProfileActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.activity_profile);
 
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
-        initToolbar(ProfileActivity.this, toolbar, R.string.app_name); /** Инициализация */
+        initToolbar(ProfileActivity.this, toolbar, ""); /** Инициализация */
 
         /**
          * Получение id пользователя.
@@ -288,6 +319,7 @@ public class ProfileActivity extends AppCompatActivity {
         mGetData.execute();
     }
 
+
     /**
      * Рисует боковую панель навигации.
      **/
@@ -335,6 +367,17 @@ public class ProfileActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
+                        if ((profileIdString.equals(userId))) {
+                            sUserPlaceLiving = editPlaceLiving.getText().toString();
+                            sUserPlaceStudy = editUserPlaceStudy.getText().toString();
+                            sUserPlaceWork = editUserPlaceWork.getText().toString();
+                            sUserBirthday = userBirthday.getText().toString();
+                            sUserWorkingEmail = editUserWorkingEmail.getText().toString();
+
+                            new PostData().execute();
+
+                        }
 
                         /**
                          * Обновляет страницу.
@@ -436,6 +479,24 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         deleteText(ProfileActivity.this, USER_ID);
+
+        if ((profileIdString.equals(userId))) {
+
+            sUserPlaceLiving = editPlaceLiving.getText().toString();
+            sUserPlaceStudy = editUserPlaceStudy.getText().toString();
+            sUserPlaceWork = editUserPlaceWork.getText().toString();
+            sUserBirthday = userBirthday.getText().toString();
+            sUserWorkingEmail = editUserWorkingEmail.getText().toString();
+
+            new PostData().execute();
+
+        }
+
+    }
+
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                ProfileActivity.this.getResources().getDisplayMetrics());
     }
 
     /**
@@ -728,16 +789,25 @@ public class ProfileActivity extends AppCompatActivity {
                         SecretTextView titleUserPlaceLiving = (SecretTextView) viewUserPlaceLiving
                                 .findViewById(R.id.titleCardPlaceLiving);
 
+                        editPlaceLiving = (EditText) viewUserPlaceLiving
+                                .findViewById(R.id.editPlaceLiving);
+
                         /**
                          * Формируется место проживания из имеющихся данных.
                          **/
-                        String sUserPlaceLiving = dataJsonObj.getString(CITY).length() != 0
+                        sUserPlaceLiving = dataJsonObj.getString(CITY).length() != 0
                                 ? dataJsonObj.getString(COUNTRY).length() != 0
                                 ? dataJsonObj.getString(CITY) + ", " + dataJsonObj.getString(COUNTRY)
                                 : dataJsonObj.getString(CITY)
                                 : "";
 
                         userPlaceLiving.setText(sUserPlaceLiving);
+                        editPlaceLiving.setText(sUserPlaceLiving);
+
+                        if (profileIdString.equals(userId)) {
+                            ((ViewSwitcher) viewUserPlaceLiving
+                                    .findViewById(R.id.switcherPlaceLiving)).showNext();
+                        }
 
                         /**
                          * Если данные введены, то добавляем элемент в контейнер.
@@ -754,13 +824,13 @@ public class ProfileActivity extends AppCompatActivity {
 
                         /** Формирование даты рождения владельца открытого профиля */
                         viewUserBirthday = ltInflater.inflate(R.layout.item_profile_birthday, linLayout, false);
-                        SecretTextView userBirthday = (SecretTextView) viewUserBirthday
+                        userBirthday = (SecretTextView) viewUserBirthday
                                 .findViewById(R.id.descriptionCardBirthday);
 
                         SecretTextView titleUserBirthday = (SecretTextView) viewUserBirthday
                                 .findViewById(R.id.titleCardBirthday);
 
-                        String sUserBirthday = dataJsonObj.getString(BIRTHDAY).length() != 0
+                        sUserBirthday = dataJsonObj.getString(BIRTHDAY).length() != 0
                                 ? dataJsonObj.getString(BIRTHDAY)
                                 : "";
 
@@ -770,6 +840,53 @@ public class ProfileActivity extends AppCompatActivity {
                          **/
                         String formattedUserBirthday = formatDate(sUserBirthday);
                         userBirthday.setText(formattedUserBirthday);
+
+                        if (profileIdString.equals(userId)) {
+                            LinearLayout.LayoutParams params
+                                    = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                            params.setMargins(dp2px(10), 0, 0, 0);
+
+                            userBirthday.setLayoutParams(params);
+
+                            userBirthday.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                    /**
+                                     * Использует для получения даты.
+                                     */
+                                    Calendar newCalendar = Calendar.getInstance();
+
+                                    /**
+                                     * Требуется для дальнейшего преобразования даты в строку.
+                                     */
+                                    @SuppressLint("SimpleDateFormat") final SimpleDateFormat dateFormat
+                                            = new SimpleDateFormat("dd-MM-yyyy");
+
+                                    /**
+                                     * Создает объект и инициализирует обработчиком события выбора даты и данными для даты по умолчанию.
+                                     */
+                                    dateBirdayDatePicker = new DatePickerDialog(ProfileActivity.this,
+                                            new DatePickerDialog.OnDateSetListener() {
+                                        // функция onDateSet обрабатывает шаг 2: отображает выбранные нами данные в элементе EditText
+                                        @Override
+                                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                            Calendar newCal = Calendar.getInstance();
+                                            newCal.set(year, monthOfYear, dayOfMonth);
+                                            userBirthday.setText(dateFormat.format(newCal.getTime()));
+                                        }
+                                    },
+                                            newCalendar.get(Calendar.YEAR),
+                                            newCalendar.get(Calendar.MONTH),
+                                            newCalendar.get(Calendar.DAY_OF_MONTH));
+
+
+                                    dateBirdayDatePicker.show();
+                                }
+                            });
+                        }
 
                         /** Если владелец открытого профиля указывал дату своего рождения */
                         if (!formattedUserBirthday.equals("00-00-0000") || profileIdString.equals(userId))
@@ -783,17 +900,19 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                         /** Формирование места учебы пользователя */
-                        String sUserPlaceStudy = dataJsonObj.getString(STUDY).length() != 0
+                        sUserPlaceStudy = dataJsonObj.getString(STUDY).length() != 0
                                 ? dataJsonObj.getString(STUDY)
                                 : "";
 
                         /** Формирование текущего места работы пользователя */
-                        String sUserPlaceWork = dataJsonObj.getString(WORK).length() != 0
+                        sUserPlaceWork = dataJsonObj.getString(WORK).length() != 0
                                 ? dataJsonObj.getString(WORK)
                                 : "";
 
                         /** Если указано только место работы */
-                        if (sUserPlaceStudy.equals("") && !sUserPlaceWork.equals("")) {
+                        if (sUserPlaceStudy.equals("")
+                                && !sUserPlaceWork.equals("")
+                                && !profileIdString.equals(userId)) {
 
                             viewUserPlaceWork = ltInflater.inflate(R.layout.item_profile_place_work,
                                     linLayout, false);
@@ -816,7 +935,9 @@ public class ProfileActivity extends AppCompatActivity {
                         }
 
                         /** Если указано только место учебы */
-                        if (sUserPlaceWork.equals("") && !sUserPlaceStudy.equals("")) {
+                        if (sUserPlaceWork.equals("")
+                                && !sUserPlaceStudy.equals("")
+                                && !profileIdString.equals(userId)) {
 
                             viewUserPlaceStudy = ltInflater.inflate(R.layout.item_profile_place_study,
                                     linLayout, false);
@@ -852,7 +973,11 @@ public class ProfileActivity extends AppCompatActivity {
                             SecretTextView titleUserPlaceStudy = (SecretTextView) viewUserPlaceStudyAndWork
                                     .findViewById(R.id.titleCardPlaceStudy);
 
+                            editUserPlaceStudy = (EditText) viewUserPlaceStudyAndWork
+                                    .findViewById(R.id.editPlaceStudy);
+
                             userPlaceStudy.setText(sUserPlaceStudy);
+                            editUserPlaceStudy.setText(sUserPlaceStudy);
 
                             SecretTextView userPlaceWork = (SecretTextView) viewUserPlaceStudyAndWork
                                     .findViewById(R.id.descriptionCardPlaceWork);
@@ -860,7 +985,19 @@ public class ProfileActivity extends AppCompatActivity {
                             SecretTextView titleUserPlaceWork = (SecretTextView) viewUserPlaceStudyAndWork
                                     .findViewById(R.id.titleCardPlaceWork);
 
+                            editUserPlaceWork = (EditText) viewUserPlaceStudyAndWork
+                                    .findViewById(R.id.editPlaceWork);
+
                             userPlaceWork.setText(sUserPlaceWork);
+                            editUserPlaceWork.setText(sUserPlaceWork);
+
+                            if (profileIdString.equals(userId)) {
+                                ((ViewSwitcher) viewUserPlaceStudyAndWork
+                                        .findViewById(R.id.switcherPlaceStudy)).showNext();
+
+                                ((ViewSwitcher) viewUserPlaceStudyAndWork
+                                        .findViewById(R.id.switcherPlaceWork)).showNext();
+                            }
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserPlaceStudyAndWork);
@@ -879,7 +1016,7 @@ public class ProfileActivity extends AppCompatActivity {
                         }
 
                         /** Формирование рабочего email пользователя */
-                        String sUserWorkingEmail = dataJsonObj.getString(WORK_EMAIL).length() != 0
+                        sUserWorkingEmail = dataJsonObj.getString(WORK_EMAIL).length() != 0
                                 ? dataJsonObj.getString(WORK_EMAIL)
                                 : "";
 
@@ -895,7 +1032,16 @@ public class ProfileActivity extends AppCompatActivity {
                             SecretTextView titleUserWorkingEmail = (SecretTextView) viewUserWorkingEmail
                                     .findViewById(R.id.titleCardWorkingEmail);
 
+                            editUserWorkingEmail = (EditText) viewUserWorkingEmail
+                                    .findViewById(R.id.editWorkingEmail);
+
                             userWorkingEmail.setText(sUserWorkingEmail);
+                            editUserWorkingEmail.setText(sUserWorkingEmail);
+
+                            if (profileIdString.equals(userId)) {
+                                ((ViewSwitcher) viewUserWorkingEmail
+                                        .findViewById(R.id.switcherWorkingEmail)).showNext();
+                            }
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserWorkingEmail);
@@ -1233,6 +1379,127 @@ public class ProfileActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.activity_right_in,
                         R.anim.activity_diagonaltranslate);
 
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Класс для отправки измененных данных о пользователе на сервер.
+     */
+    private class PostData extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
+                    + SERVER_SHORT_EDIT_PARAMETERS_METHOD;
+
+
+            String live = sUserPlaceLiving;
+
+            String city = "";
+            String country = "";
+
+
+            int i = 0;
+            while (i < live.length() && live.charAt(i) != ',') {
+                city += String.valueOf(live.charAt(i));
+                i ++;
+            }
+
+            i ++;
+            for (int j = i; j < live.length(); j++) {
+                country += String.valueOf(live.charAt(j));
+            }
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = USER_ID + EQUALS + userId
+                    + AMPERSAND + CITY + EQUALS + city
+                    + AMPERSAND + COUNTRY + EQUALS + country
+                    + AMPERSAND + STUDY + EQUALS + sUserPlaceStudy
+                    + AMPERSAND + WORK + EQUALS + sUserPlaceWork
+                    + AMPERSAND + WORK_EMAIL + EQUALS + sUserWorkingEmail
+                    + AMPERSAND + BIRTHDAY + EQUALS + formatDateBack(sUserBirthday);
+
+
+            /** Свойство - код ответа, полученный от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return resultJson;
+        }
+
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /**
+             * Свойство - код ответа от методов сервера.
+             *
+             * ВНИМАНИЕ!
+             *
+             * Этот параметр не имеет никакого отношения к кодам состояния.
+             * Он формируется на сервере в зависимости от результата проведения обработки данных.
+             *
+             **/
+            int resultCode;
+
+            /** Свойство - полученный JSON–объект*/
+            final JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+                resultCode = Integer.parseInt(dataJsonObj.getString(GET_EDIT_RESULT));
+
+                /**
+                 * Обработка полученного кода ответа.
+                 */
+                switch (resultCode) {
+                    /** В случае успешного выполнения */
+                    case 700:
+
+                        /**
+                         * Переходим в профиль.
+                         * Изменения прошли успешно.
+                         */
+//                        changeActivityCompat(SettingsActivity.this,
+//                                new Intent(SettingsActivity.this, ProfileActivity.class));
+
+                        break;
+                    /**
+                     * При попытке сменить пароль, текущий пароль был указан неверно.
+                     * Изменение не вступили в силу.
+                     **/
+                    case 701:
+                        /**
+                         * Формирование уведомления об ошибке.
+                         */
+                        inititializeAlertDialogWithRefresh(ProfileActivity.this,
+                                getResources().getString(R.string.password_error),
+                                getResources().getString(R.string.refill_password_field),
+                                getResources().getString(R.string.btn_ok),
+                                ProfileActivity.this);
+                        break;
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

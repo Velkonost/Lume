@@ -33,13 +33,26 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <ru.velkonost.lume.patterns.SecretTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/descriptionCardPlaceLiving"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="10pt"
-                    android:textIsSelectable="true"/>
+                <ViewSwitcher
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/switcherPlaceLiving"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ru.velkonost.lume.patterns.SecretTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/descriptionCardPlaceLiving"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="10pt"
+                        android:textIsSelectable="true"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edittext_remove_underbar"
+                        android:id="@+id/editPlaceLiving"
+                        android:textSize="10pt"
+                        android:textColor="@color/colorBlack"/>
+                </ViewSwitcher>
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
