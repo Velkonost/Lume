@@ -742,7 +742,7 @@ public class ProfileActivity extends AppCompatActivity {
                         /**
                          * Если данные введены, то добавляем элемент в контейнер.
                          **/
-                        if (!sUserPlaceLiving.equals(""))
+                        if (!sUserPlaceLiving.equals("") || profileIdString.equals(userId))
                             linLayout.addView(viewUserPlaceLiving);
 
                         titleUserPlaceLiving.setDuration(1000);
@@ -772,7 +772,7 @@ public class ProfileActivity extends AppCompatActivity {
                         userBirthday.setText(formattedUserBirthday);
 
                         /** Если владелец открытого профиля указывал дату своего рождения */
-                        if (!formattedUserBirthday.equals("00-00-0000"))
+                        if (!formattedUserBirthday.equals("00-00-0000") || profileIdString.equals(userId))
                             linLayout.addView(viewUserBirthday);
 
                         titleUserBirthday.setDuration(1500);
@@ -839,7 +839,8 @@ public class ProfileActivity extends AppCompatActivity {
                         }
 
                         /** Если указаны место работы и место учебы */
-                        if (!sUserPlaceStudy.equals("") && !sUserPlaceWork.equals("")) {
+                        if ((!sUserPlaceStudy.equals("") && !sUserPlaceWork.equals(""))
+                                || profileIdString.equals(userId)) {
 
                             viewUserPlaceStudyAndWork = ltInflater
                                     .inflate(R.layout.item_profile_place_study_and_work,
@@ -883,7 +884,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 : "";
 
                         /** Если владелец открытого профиля указал рабочий email */
-                        if (!sUserWorkingEmail.equals("")) {
+                        if (!sUserWorkingEmail.equals("") || profileIdString.equals(userId)) {
 
                             viewUserWorkingEmail = ltInflater
                                     .inflate(R.layout.item_profile_working_email, linLayout, false);
