@@ -23,6 +23,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -54,9 +55,9 @@ import java.util.TreeMap;
 import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
+import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.Managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.adapter.BoardInviteListAdapter;
 import ru.velkonost.lume.descriptions.BoardColumn;
 import ru.velkonost.lume.descriptions.BoardParticipant;
@@ -64,6 +65,7 @@ import ru.velkonost.lume.descriptions.Contact;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
 import ru.velkonost.lume.fragments.BoardParticipantsFragment;
 import ru.velkonost.lume.fragments.BoardWelcomeColumnFragment;
+import ru.velkonost.lume.fragments.BoardsFragment;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
@@ -160,6 +162,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
      **/
     private Map<String, String> contacts;
 
+    private ArrayList<String> cids;
+
 
     private RecyclerView recyclerView;
     private View popupView;
@@ -173,6 +177,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     private String boardDescription;
 
     private BoardDescriptionFragment descriptionFragment;
+
+    private BoardWelcomeColumnFragment boardWelcomeColumnFragment;
 
     private Menu menu;
 
@@ -192,6 +198,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         mContacts = new ArrayList<>();
         ids = new ArrayList<>();
         contacts = new HashMap<>();
+        cids = new ArrayList<>();
 
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -279,12 +286,13 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                             AddColumn addColumn = new AddColumn();
                             addColumn.execute();
 
-                            Intent intent = new Intent(BoardWelcomeActivity.this,
-                                    BoardWelcomeActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra(BOARD_ID, boardId);
-                            BoardWelcomeActivity.this.startActivity(intent);
-                            finish();
+
+//                            Intent intent = new Intent(BoardWelcomeActivity.this,
+//                                    BoardWelcomeActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            intent.putExtra(BOARD_ID, boardId);
+//                            BoardWelcomeActivity.this.startActivity(intent);
+//                            finish();
 
                         } else dialog.cancel();
 
@@ -711,7 +719,6 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 saveText(BoardWelcomeActivity.this, BOARD_NAME, boardName);
 
                 ArrayList<String> uids = new ArrayList<>();
-                ArrayList<String> cids = new ArrayList<>();
 
                 for (int i = 0; i < idsJSON.length(); i++) {
                     uids.add(idsJSON.getString(i));
@@ -752,7 +759,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 BoardParticipantsFragment boardParticipantsFragment
                         = BoardParticipantsFragment.getInstance(BoardWelcomeActivity.this,
                         mBoardParticipants);
-                BoardWelcomeColumnFragment boardWelcomeColumnFragment
+                boardWelcomeColumnFragment
                         = BoardWelcomeColumnFragment.getInstance(BoardWelcomeActivity.this,
                         mBoardColumns, String.valueOf(boardId));
 
@@ -763,6 +770,104 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 transaction.add(R.id.participantsContainer, boardParticipantsFragment);
                 transaction.add(R.id.columnsContainer, boardWelcomeColumnFragment);
                 transaction.commit();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class RefreshColumns extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_GET_BOARD_INFO_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + boardId;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /** Свойство - полученный JSON–объект*/
+            JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+
+                /**
+                 * Получение идентификаторов найденных пользователей.
+                 */
+                JSONArray idsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
+
+                Log.i("KEKE", String.valueOf(cids.size()));
+
+                for (int i = 0; i < idsJSON.length(); i++){
+                    if (!cids.contains(idsJSON.getString(i)))
+                        cids.add(idsJSON.getString(i));
+                    Log.i("KEKE", idsJSON.getString(i));
+                }
+
+                /**
+                 * Составление view-элементов с краткой информацией о пользователях
+                 */
+                for (int i = 0; i < cids.size(); i++) {
+                    boolean exist = false;
+
+                    /**
+                     * Получение JSON-объекта с информацией о конкретном сообщении по его идентификатору.
+                     */
+                    JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
+
+
+                    for (int j = 0; j < mBoardColumns.size(); j++){
+                        if (mBoardColumns.get(j).getId() == Integer.parseInt(cids.get(i))) {
+                            exist = true;
+                            break;
+                        }
+                    }
+
+                    if (!exist)
+                        mBoardColumns.add(new BoardColumn(
+                                Integer.parseInt(columnInfo.getString(ID)),
+                                columnInfo.getString(NAME),  i)
+                        );
+                }
+
+                /**
+                 * Добавляем фрагмент на экран.
+                 * {@link BoardsFragment}
+                 */
+                if(!isFinishing()) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    boardWelcomeColumnFragment.refreshColumns(mBoardColumns);
+                    ft.replace(R.id.columnsContainer, boardWelcomeColumnFragment);
+                    ft.commitAllowingStateLoss();
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -912,6 +1017,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         }
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
+            new RefreshColumns().execute();
         }
     }
 

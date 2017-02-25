@@ -26,6 +26,9 @@ public class BoardWelcomeColumnFragment extends Fragment {
     protected Context context;
     private String boardId;
 
+    private GridView gridView;
+    private TextView textView;
+
     public static BoardWelcomeColumnFragment getInstance(
             Context context,
             List<BoardColumn> columns,
@@ -50,8 +53,8 @@ public class BoardWelcomeColumnFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
 
-        GridView gridView = (GridView) view.findViewById(R.id.gridColumns);
-        TextView textView = (TextView) view.findViewById(R.id.noColumns);
+        gridView = (GridView) view.findViewById(R.id.gridColumns);
+        textView = (TextView) view.findViewById(R.id.noColumns);
 
         adapter = new BoardWelcomeColumnListAdapter(getActivity(), mColumns, boardId);
         gridView.setAdapter(adapter);
@@ -74,8 +77,14 @@ public class BoardWelcomeColumnFragment extends Fragment {
     }
 
     public void refreshColumns (List<BoardColumn> mColumns) {
+        gridView.setVisibility(View.VISIBLE);
+        textView.setVisibility(View.INVISIBLE);
+        textView.setTextSize(0);
+
         adapter.setData(mColumns);
         adapter.notifyDataSetChanged();
+
+
     }
 
     public void setContext (Context context) {this.context = context;}

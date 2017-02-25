@@ -47,7 +47,7 @@ public class BoardsFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewBoards);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        fabAddBoard = (FloatingActionButton) view.findViewById(R.id.btnGoSearch);
+        fabAddBoard = (FloatingActionButton) view.findViewById(R.id.btnAddBoard);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
