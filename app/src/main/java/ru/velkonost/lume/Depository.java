@@ -14,6 +14,10 @@ public class Depository {
         return mBoardColumns;
     }
 
+    public static void addBoardColumns(BoardColumn boardColumn) {
+        mBoardColumns.add(boardColumn);
+    }
+
     public static void setBoardColumns(List<BoardColumn> boardColumns) {
         mBoardColumns = boardColumns;
     }

@@ -13,19 +13,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import java.io.IOException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.activity.BoardWelcomeActivity;
+import ru.velkonost.lume.activity.BoardColumnsActivity;
+import ru.velkonost.lume.descriptions.BoardColumn;
 
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.BOARD_ID;
+import static ru.velkonost.lume.Constants.COLUMN_IDS;
+import static ru.velkonost.lume.Constants.COLUMN_ORDER;
 import static ru.velkonost.lume.Constants.EQUALS;
+import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.URL.SERVER_ADD_COLUMN_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_INFO_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
+import static ru.velkonost.lume.Constants.USER_IDS;
+import static ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter.last;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 public class AddColumnFragment extends BaseTabFragment {
@@ -33,6 +47,7 @@ public class AddColumnFragment extends BaseTabFragment {
 
     private EditText createColumnName;
     private String boardId;
+    private List<BoardColumn> mBoardColumns;
 
     public static AddColumnFragment getInstance(Context context, String boardId) {
         Bundle args = new Bundle();
@@ -74,16 +89,6 @@ public class AddColumnFragment extends BaseTabFragment {
                     AddColumn addColumn = new AddColumn();
                     addColumn.execute();
 
-                    Intent intent = new Intent(context, BoardWelcomeActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra(BOARD_ID, Integer.parseInt(boardId));
-                    context.startActivity(intent);
-                    getActivity().overridePendingTransition(R.anim.activity_right_in,
-                            R.anim.activity_diagonaltranslate);
-
-                    getActivity().finish();
-                    getActivity().overridePendingTransition(R.anim.activity_right_in,
-                            R.anim.activity_diagonaltranslate);
                 }
         }
 
@@ -131,6 +136,92 @@ public class AddColumnFragment extends BaseTabFragment {
         }
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
+            new GetBoardInfo().execute();
+        }
+    }
+    private class GetBoardInfo extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_GET_BOARD_INFO_METHOD;
+
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = BOARD_ID + EQUALS + boardId;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /** Свойство - полученный JSON–объект*/
+            JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+
+                /**
+                 * Получение идентификаторов найденных пользователей.
+                 */
+                JSONArray idsJSON = dataJsonObj.getJSONArray(USER_IDS);
+                JSONArray cidsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
+
+                ArrayList<String> cids = new ArrayList<>();
+                mBoardColumns = new ArrayList<>();
+
+
+                for (int i = 0; i < cidsJSON.length(); i++) {
+                    cids.add(cidsJSON.getString(i));
+                }
+
+                for (int i = 0; i < cids.size(); i++) {
+                    JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
+
+                    mBoardColumns.add(new BoardColumn(
+                            Integer.parseInt(columnInfo.getString(ID)),
+                            columnInfo.getString(NAME),  i)
+                    );
+                }
+
+                Depository.setBoardColumns(mBoardColumns);
+
+                Intent intent = new Intent(context, BoardColumnsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(BOARD_ID, boardId);
+                intent.putExtra(COLUMN_ORDER, last + 1);
+                context.startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.activity_right_in,
+                        R.anim.activity_diagonaltranslate);
+
+                getActivity().finish();
+                getActivity().overridePendingTransition(R.anim.activity_right_in,
+                        R.anim.activity_diagonaltranslate);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
