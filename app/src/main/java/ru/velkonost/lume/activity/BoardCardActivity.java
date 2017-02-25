@@ -901,7 +901,7 @@ public class BoardCardActivity extends AppCompatActivity {
              */
             @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId
                     + AMPERSAND + ID + EQUALS + userId
-                    + AMPERSAND + TEXT + EQUALS + textComment;
+                    + AMPERSAND + TEXT + EQUALS + commentToAdd;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";

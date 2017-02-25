@@ -206,7 +206,7 @@ public class BoardsListActivity extends AppCompatActivity {
                             AddBoard addBoard = new AddBoard();
                             addBoard.execute();
 
-                            changeActivityCompat(BoardsListActivity.this);
+//                            changeActivityCompat(BoardsListActivity.this);
 
                         } else dialog.cancel();
 
@@ -589,6 +589,7 @@ public class BoardsListActivity extends AppCompatActivity {
         }
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
+            new RefreshBoards().execute();
         }
     }
 
