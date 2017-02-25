@@ -51,6 +51,7 @@
                         android:background="@drawable/edittext_remove_underbar"
                         android:id="@+id/editPlaceLiving"
                         android:textSize="10pt"
+                        android:lines="1"
                         android:textColor="@color/colorBlack"/>
                 </ViewSwitcher>
             </LinearLayout>
