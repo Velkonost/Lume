@@ -23,7 +23,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -163,6 +162,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     private Map<String, String> contacts;
 
     private ArrayList<String> cids;
+    private ArrayList<String> uids;
 
 
     private RecyclerView recyclerView;
@@ -179,6 +179,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     private BoardDescriptionFragment descriptionFragment;
 
     private BoardWelcomeColumnFragment boardWelcomeColumnFragment;
+    private BoardParticipantsFragment boardParticipantsFragment;
 
     private Menu menu;
 
@@ -199,6 +200,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         ids = new ArrayList<>();
         contacts = new HashMap<>();
         cids = new ArrayList<>();
+        uids = new ArrayList<>();
 
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -285,14 +287,6 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                         if (columnName.length() != 0) {
                             AddColumn addColumn = new AddColumn();
                             addColumn.execute();
-
-
-//                            Intent intent = new Intent(BoardWelcomeActivity.this,
-//                                    BoardWelcomeActivity.class);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            intent.putExtra(BOARD_ID, boardId);
-//                            BoardWelcomeActivity.this.startActivity(intent);
-//                            finish();
 
                         } else dialog.cancel();
 
@@ -393,9 +387,10 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 popupWindowBoardInvite.setOnDismissListener(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
-                        if (Depository.isRefreshPopup())
-                            changeActivityCompat(BoardWelcomeActivity.this);
-                        Depository.setRefreshPopup(false);
+                        new RefreshBoardInfo().execute();
+//                        if (Depository.isRefreshPopup())
+//                            changeActivityCompat(BoardWelcomeActivity.this);
+//                        Depository.setRefreshPopup(false);
                     }
                 });
 
@@ -718,7 +713,6 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 toolbar.setTitle(boardName);
                 saveText(BoardWelcomeActivity.this, BOARD_NAME, boardName);
 
-                ArrayList<String> uids = new ArrayList<>();
 
                 for (int i = 0; i < idsJSON.length(); i++) {
                     uids.add(idsJSON.getString(i));
@@ -756,7 +750,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 saveText(BoardWelcomeActivity.this, BOARD_DESCRIPTION, boardDescription);
 
                 descriptionFragment = new BoardDescriptionFragment();
-                BoardParticipantsFragment boardParticipantsFragment
+                boardParticipantsFragment
                         = BoardParticipantsFragment.getInstance(BoardWelcomeActivity.this,
                         mBoardParticipants);
                 boardWelcomeColumnFragment
@@ -777,7 +771,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         }
     }
 
-    private class RefreshColumns extends AsyncTask<Object, Object, String> {
+    private class RefreshBoardInfo extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
 
@@ -822,15 +816,52 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 /**
                  * Получение идентификаторов найденных пользователей.
                  */
-                JSONArray idsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
+                JSONArray idsJSON = dataJsonObj.getJSONArray(USER_IDS);
+                JSONArray cidsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
 
-                Log.i("KEKE", String.valueOf(cids.size()));
 
                 for (int i = 0; i < idsJSON.length(); i++){
-                    if (!cids.contains(idsJSON.getString(i)))
-                        cids.add(idsJSON.getString(i));
-                    Log.i("KEKE", idsJSON.getString(i));
+                    if (!uids.contains(idsJSON.getString(i)))
+                        uids.add(idsJSON.getString(i));
                 }
+
+                for (int i = 0; i < cidsJSON.length(); i++){
+                    if (!cids.contains(cidsJSON.getString(i)))
+                        cids.add(cidsJSON.getString(i));
+                }
+
+                /**
+                 * Составление view-элементов с краткой информацией о пользователях
+                 */
+                for (int i = 0; i < uids.size(); i++) {
+                    boolean exist = false;
+
+
+                    /**
+                     * Получение JSON-объекта с информацией о конкретном сообщении по его идентификатору.
+                     */
+                    String participantId = uids.get(i);
+                    JSONObject userInfo = dataJsonObj.getJSONObject(participantId);
+
+
+                    for (int j = 0; j < mBoardParticipants.size(); j++){
+                        if (mBoardParticipants.get(j).getId()
+                                == Integer.parseInt(participantId
+                                .substring(0, uids.get(i).length() - 4))) {
+                            exist = true;
+                            break;
+                        }
+                    }
+
+                    if (!exist)
+                        mBoardParticipants.add(new BoardParticipant(
+                                Integer.parseInt(participantId.substring(0, uids.get(i).length() - 4)),
+                                Integer.parseInt(userInfo.getString(AVATAR)),
+                                userInfo.getString(LOGIN),
+                                BOARD_LAST_CONTRIBUTED_USER == i + 1, uids.size() - i, boardId
+                        ));
+                }
+
 
                 /**
                  * Составление view-элементов с краткой информацией о пользователях
@@ -865,6 +896,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 if(!isFinishing()) {
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     boardWelcomeColumnFragment.refreshColumns(mBoardColumns);
+                    boardParticipantsFragment.refreshParticipants(mBoardParticipants);
+                    ft.replace(R.id.participantsContainer, boardParticipantsFragment);
                     ft.replace(R.id.columnsContainer, boardWelcomeColumnFragment);
                     ft.commitAllowingStateLoss();
                 }
@@ -1017,7 +1050,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         }
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
-            new RefreshColumns().execute();
+            new RefreshBoardInfo().execute();
         }
     }
 

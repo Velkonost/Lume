@@ -21,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -205,8 +206,6 @@ public class BoardsListActivity extends AppCompatActivity {
 
                             AddBoard addBoard = new AddBoard();
                             addBoard.execute();
-
-//                            changeActivityCompat(BoardsListActivity.this);
 
                         } else dialog.cancel();
 
@@ -444,6 +443,7 @@ public class BoardsListActivity extends AppCompatActivity {
                      * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
                      */
                     String boardName = dataJsonObj.getString(bids.get(i));
+                    Log.i(boardName, bids.get(i));
                     mBoards.add(new Board(
                             Integer.parseInt(bids.get(i)), boardName
                     ));

@@ -53,6 +53,13 @@ public class BoardParticipantsFragment extends Fragment {
         return view;
     }
 
+    public void refreshParticipants (List<BoardParticipant> mParticipants) {
+
+        adapter.setData(mParticipants);
+        adapter.notifyDataSetChanged();
+
+    }
+
     public void setContext (Context context) { this.context = context; }
 
     public void setParticipants(List<BoardParticipant> mParticipants) {

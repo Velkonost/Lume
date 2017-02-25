@@ -84,7 +84,6 @@ public class BoardWelcomeColumnFragment extends Fragment {
         adapter.setData(mColumns);
         adapter.notifyDataSetChanged();
 
-
     }
 
     public void setContext (Context context) {this.context = context;}
