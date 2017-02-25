@@ -192,9 +192,12 @@ public class DialogsActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                dialogsFragment.search(query, check[0], check[1]);
-                check[1] = false;
-                searchView.clearFocus();
+
+                if (!mDialogs.isEmpty()) {
+                    dialogsFragment.search(query, check[0], check[1]);
+                    check[1] = false;
+                    searchView.clearFocus();
+                }
 
                 return true;
             }
@@ -203,9 +206,11 @@ public class DialogsActivity extends AppCompatActivity {
             public boolean onQueryTextChange(final String newText) {
                 letRefresh = newText.isEmpty();
 
-                dialogsFragment.search(newText, check[0], check[1]);
-                check[0] = true;
-                check[1] = true;
+                if (!mDialogs.isEmpty()) {
+                    dialogsFragment.search(newText, check[0], check[1]);
+                    check[0] = true;
+                    check[1] = true;
+                }
 
                 return true;
             }

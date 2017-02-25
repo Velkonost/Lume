@@ -52,6 +52,8 @@
                         android:id="@+id/editPlaceLiving"
                         android:textSize="10pt"
                         android:lines="1"
+                        android:maxLines="1"
+                        android:singleLine="true"
                         android:textColor="@color/colorBlack"/>
                 </ViewSwitcher>
             </LinearLayout>

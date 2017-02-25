@@ -50,6 +50,8 @@
                         android:background="@drawable/edittext_remove_underbar"
                         android:id="@+id/editPlaceStudy"
                         android:lines="1"
+                        android:maxLines="1"
+                        android:singleLine="true"
                         android:textSize="10pt"
                         android:textColor="@color/colorBlack"/>
                 </ViewSwitcher>
@@ -82,6 +84,8 @@
                         android:background="@drawable/edittext_remove_underbar"
                         android:id="@+id/editPlaceWork"
                         android:lines="1"
+                        android:maxLines="1"
+                        android:singleLine="true"
                         android:textSize="10pt"
                         android:textColor="@color/colorBlack"/>
                 </ViewSwitcher>

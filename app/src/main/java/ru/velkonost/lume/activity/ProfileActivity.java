@@ -44,7 +44,6 @@ import com.kosalgeek.android.photoutil.ImageLoader;
 import com.kosalgeek.asynctask.AsyncResponse;
 import com.kosalgeek.asynctask.EachExceptionsHandler;
 import com.kosalgeek.asynctask.PostResponseAsyncTask;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -118,6 +117,7 @@ import static ru.velkonost.lume.Managers.InitializationsManager.inititializeAler
 import static ru.velkonost.lume.Managers.InitializationsManager.inititializeAlertDialogWithRefresh;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
+import static ru.velkonost.lume.Managers.SetImageManager.fetchImage;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
@@ -259,7 +259,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         galleryPhoto = new GalleryPhoto(this);
         cameraPhoto = new CameraPhoto(this);
-
 
         linLayout = (LinearLayout) findViewById(R.id.profileContainer);
         ltInflater = getLayoutInflater();
@@ -587,11 +586,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                         collapsingToolbar.setTitle(sUserName);
 
-                        Picasso
-                                .with(ProfileActivity.this)
-                                .load(avatarURL)
-                                .placeholder(R.drawable.noavatar)
-                                .into(userAvatar);
+                        fetchImage(avatarURL, userAvatar, false, false);
+
                         /**
                          * Слушатель на аватар открытого профиля.
                          */
