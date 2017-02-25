@@ -69,6 +69,11 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
         });
     }
 
+    public void setData(List<Card> data) {
+        this.data = data;
+    }
+
+
     @Override
     public int getItemCount() {
         return data.size();

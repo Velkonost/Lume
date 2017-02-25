@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,12 +61,16 @@ public class ColumnFragment extends BaseTabFragment {
     private String cardName;
     private String cardDescription;
 
+    private CardListAdapter adapter;
+
     private FloatingActionButton addCardButton;
 
     protected GetData mGetData;
 
     private List<Card> data;
     private ArrayList<String> cids;
+
+    private String userId;
 
     public static ColumnFragment getInstance(Context context, int columnId, String columnName) {
         Bundle args = new Bundle();
@@ -75,6 +80,7 @@ public class ColumnFragment extends BaseTabFragment {
         fragment.setContext(context);
         fragment.setColumnId(columnId);
         fragment.setTitle(columnName);
+        fragment.initialize();
 
         return fragment;
     }
@@ -84,8 +90,6 @@ public class ColumnFragment extends BaseTabFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
 
-        data = new ArrayList<>();
-        cids = new ArrayList<>();
 
         addCardButton = (FloatingActionButton) getActivity().findViewById(R.id.btnAddCard);
         addCardButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
@@ -174,6 +178,11 @@ public class ColumnFragment extends BaseTabFragment {
         this.context = context;
     }
 
+    public void initialize() {
+        data = new ArrayList<>();
+        cids = new ArrayList<>();
+    }
+
     public void setColumnId(int columnId) {
         this.columnId = columnId;
     }
@@ -211,6 +220,8 @@ public class ColumnFragment extends BaseTabFragment {
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
 
+            initialize();
+
             /** Свойство - полученный JSON–объект*/
             JSONObject dataJsonObj;
 
@@ -227,12 +238,13 @@ public class ColumnFragment extends BaseTabFragment {
                 JSONArray cidsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
                 JSONArray uidsJSON = dataJsonObj.getJSONArray(USER_IDS);
 
-                String userId = loadText(context, ID);
+                userId = loadText(context, ID);
 
                 for (int i = 0; i < cidsJSON.length(); i++) {
                     cids.add(cidsJSON.getString(i));
                 }
 
+                Log.i("KEKE", String.valueOf(cids));
 
                 /**
                  * Составление view-элементов с краткой информацией о пользователях
@@ -250,9 +262,10 @@ public class ColumnFragment extends BaseTabFragment {
                     ));
                 }
 
+                adapter = new CardListAdapter(data, getContext());
                 RecyclerView rv = (RecyclerView) view.findViewById(R.id.recyclerViewColumn);
                 rv.setLayoutManager(new LinearLayoutManager(context));
-                rv.setAdapter(new CardListAdapter(data, getContext()));
+                rv.setAdapter(adapter);
 
                 rv.addOnScrollListener(new RecyclerView.OnScrollListener(){
                     @Override
@@ -261,6 +274,100 @@ public class ColumnFragment extends BaseTabFragment {
                         else if (dy < 0) addCardButton.show();
                     }
                 });
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class RefreshData extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_GET_COLUMN_INFO_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = COLUMN_ID + EQUALS + columnId
+                    + AMPERSAND + ID + EQUALS + userId;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /** Свойство - полученный JSON–объект*/
+            JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+
+                /**
+                 * Получение идентификаторов найденных пользователей.
+                 */
+                JSONArray cidsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
+                JSONArray uidsJSON = dataJsonObj.getJSONArray(USER_IDS);
+
+
+                for (int i = 0; i < cidsJSON.length(); i++) {
+                    if (!cids.contains(cidsJSON.getString(i)))
+                        cids.add(cidsJSON.getString(i));
+                }
+
+                Log.i("KEKE", String.valueOf(cids));
+
+
+                /**
+                 * Составление view-элементов с краткой информацией о пользователях
+                 */
+                for (int i = 0; i < cids.size(); i++) {
+                    boolean exist = false;
+
+
+                    /**
+                     * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
+                     */
+
+                    JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
+
+                    for (int j = 0; j < data.size(); j++){
+                        if (data.get(j).getId() == Integer.parseInt(cids.get(i))) {
+                            exist = true;
+                            break;
+                        }
+                    }
+
+                    if (!exist)
+                        data.add(new Card(
+                                Integer.parseInt(cids.get(i)), Integer.parseInt(columnInfo.getString(AMOUNT)),
+                                columnInfo.getString(NAME), columnInfo.getBoolean(BELONG)
+                        ));
+                }
+
+                adapter.setData(data);
+                adapter.notifyDataSetChanged();
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -302,6 +409,7 @@ public class ColumnFragment extends BaseTabFragment {
         }
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
+//            new RefreshData().execute();
         }
     }
 }
