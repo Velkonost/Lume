@@ -77,11 +77,6 @@ public class BoardColumnsActivity extends AppCompatActivity {
     private static final int LAYOUT = R.layout.activity_board_columns;
 
     /**
-     * Свойство - следующая активность.
-     */
-    private Intent nextIntent;
-
-    /**
      * Свойство - описание верхней панели инструментов приложения.
      */
     @BindView(R.id.toolbar)
@@ -105,9 +100,12 @@ public class BoardColumnsActivity extends AppCompatActivity {
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
-
-
     private int columnOrder;
+
+    /**
+     * Свойство - следующая активность.
+     */
+    private Intent nextIntent;
 
     private String boardId;
     private String columnName;
