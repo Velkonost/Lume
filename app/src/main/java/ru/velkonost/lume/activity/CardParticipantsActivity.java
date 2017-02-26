@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.Managers.ValueComparatorManager;
@@ -66,27 +68,31 @@ public class CardParticipantsActivity extends AppCompatActivity {
     private static final int LAYOUT = R.layout.activity_board_participant;
 
     /**
-     * Свойство - следующая активность.
-     */
-    private Intent nextIntent;
-
-    /**
      * Свойство - описание верхней панели инструментов приложения.
      */
-    private Toolbar toolbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     /**
      * Свойство - описание {@link SearchActivity#LAYOUT}
      */
-    private DrawerLayout drawerLayout;
+    @BindView(R.id.activity_board_participant)
+    DrawerLayout drawerLayout;
 
+    @BindView(R.id.navigation)
+    NavigationView navigationView;
     /**
      * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
      */
     private String userId;
 
-
     private int boardId;
+
+
+    /**
+     * Свойство - следующая активность.
+     */
+    private Intent nextIntent;
 
     /**
      * Идентификаторы досок, к которым принадлежит авторизованный пользователь.
@@ -119,6 +125,7 @@ public class CardParticipantsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
@@ -126,10 +133,6 @@ public class CardParticipantsActivity extends AppCompatActivity {
         mBoardParticipants = new ArrayList<>();
         ids = new ArrayList<>();
         contacts = new HashMap<>();
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_participant);
 
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(CardParticipantsActivity.this, toolbar, R.string.menu_item_participants); /** Инициализация */
@@ -158,9 +161,8 @@ public class CardParticipantsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_participant);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -176,13 +178,12 @@ public class CardParticipantsActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
+
         navHeaderLogin.setText(loadText(CardParticipantsActivity.this, LOGIN));
 
-        ImageView askQuestion = (ImageView) header.findViewById(R.id.askQuestion);
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,8 +201,7 @@ public class CardParticipantsActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_participant);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
@@ -222,8 +222,7 @@ public class CardParticipantsActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_participant);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
             }
         });
@@ -288,8 +287,7 @@ public class CardParticipantsActivity extends AppCompatActivity {
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(CardParticipantsActivity.this, ID).equals("")) finishAffinity();
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_participant);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
                 return false;
             }
