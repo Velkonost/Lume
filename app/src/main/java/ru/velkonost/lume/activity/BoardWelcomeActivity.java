@@ -164,6 +164,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     private ArrayList<String> cids;
     private ArrayList<String> uids;
 
+    private boolean invitePerson;
+
 
     private RecyclerView recyclerView;
     private View popupView;
@@ -285,6 +287,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                         columnName = input.getText().toString();
 
                         if (columnName.length() != 0) {
+                            invitePerson = false;
                             AddColumn addColumn = new AddColumn();
                             addColumn.execute();
 
@@ -387,10 +390,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 popupWindowBoardInvite.setOnDismissListener(new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
+                        invitePerson = true;
                         new RefreshBoardInfo().execute();
-//                        if (Depository.isRefreshPopup())
-//                            changeActivityCompat(BoardWelcomeActivity.this);
-//                        Depository.setRefreshPopup(false);
                     }
                 });
 
@@ -895,8 +896,12 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                  */
                 if(!isFinishing()) {
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    boardWelcomeColumnFragment.refreshColumns(mBoardColumns);
-                    boardParticipantsFragment.refreshParticipants(mBoardParticipants);
+
+                    if (!invitePerson)
+                        boardWelcomeColumnFragment.refreshColumns(mBoardColumns);
+                    else
+                        boardParticipantsFragment.refreshParticipants(mBoardParticipants);
+
                     ft.replace(R.id.participantsContainer, boardParticipantsFragment);
                     ft.replace(R.id.columnsContainer, boardWelcomeColumnFragment);
                     ft.commitAllowingStateLoss();
