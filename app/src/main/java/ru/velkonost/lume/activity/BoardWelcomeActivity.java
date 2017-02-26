@@ -51,6 +51,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
@@ -103,19 +105,27 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     private static final int LAYOUT = R.layout.activity_board_welcome;
 
     /**
-     * Свойство - следующая активность.
-     */
-    private Intent nextIntent;
-
-    /**
      * Свойство - описание верхней панели инструментов приложения.
      */
-    private Toolbar toolbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     /**
      * Свойство - описание {@link SearchActivity#LAYOUT}
      */
-    private DrawerLayout drawerLayout;
+    @BindView(R.id.activity_board_welcome)
+    DrawerLayout drawerLayout;
+
+    @BindView(R.id.editBoardName)
+    EditText editBoardName;
+
+    @BindView(R.id.navigation)
+    NavigationView navigationView;
+
+
+    private RecyclerView recyclerView;
+    private View popupView;
+    public static PopupWindow popupWindowBoardInvite;
 
     /**
      * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
@@ -123,20 +133,20 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     private String userId;
 
 
-    private int boardId;
-
     /**
-     * Идентификаторы досок, к которым принадлежит авторизованный пользователь.
-     **/
-//    private ArrayList<String> bids;
+     * Свойство - следующая активность.
+     */
+    private Intent nextIntent;
+
+    private int boardId;
 
     /**
      * Свойство - экзмепляр класса {@link GetBoardInfo}
      */
     protected GetBoardInfo mGetBoardInfo;
 
-    private GetContacts mGetContacts;
 
+    private GetContacts mGetContacts;
 
     /**
      * Свойство - список контактов.
@@ -156,30 +166,21 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     /**
      * Контакты авторизованного пользователя.
      *
-     * Ключ - идентификатор пользователя.
-     * Значение - его полное имя или логин.
+     * @Ключ - идентификатор пользователя.
+     * @Значение - его полное имя или логин.
      **/
     private Map<String, String> contacts;
-
     private ArrayList<String> cids;
+
     private ArrayList<String> uids;
 
     private boolean invitePerson;
-
-
-    private RecyclerView recyclerView;
-    private View popupView;
-    public static PopupWindow popupWindowBoardInvite;
-
-
-    private EditText editBoardName;
 
     private String boardName;
     private String columnName;
     private String boardDescription;
 
     private BoardDescriptionFragment descriptionFragment;
-
     private BoardWelcomeColumnFragment boardWelcomeColumnFragment;
     private BoardParticipantsFragment boardParticipantsFragment;
 
@@ -190,6 +191,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
@@ -203,13 +205,6 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         contacts = new HashMap<>();
         cids = new ArrayList<>();
         uids = new ArrayList<>();
-
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_welcome);
-
-        editBoardName = (EditText) findViewById(R.id.editBoardName);
 
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(BoardWelcomeActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
@@ -238,10 +233,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         popupWindowBoardInvite = new PopupWindow(popupView,
                 WRAP_CONTENT, height - dp2px(120));
 
-
-        recyclerView = (RecyclerView) popupView
-                .findViewById(R.id.recyclerViewBoardInvite);
-
+        recyclerView = ButterKnife.findById(popupView, R.id.recyclerViewBoardInvite);
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -315,9 +307,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_welcome);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             changeActivityCompat(BoardWelcomeActivity.this,
                     new Intent(BoardWelcomeActivity.this, BoardsListActivity.class));
@@ -470,13 +461,12 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
+
         navHeaderLogin.setText(loadText(BoardWelcomeActivity.this, LOGIN));
 
-        ImageView askQuestion = (ImageView) header.findViewById(R.id.askQuestion);
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -494,8 +484,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_welcome);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
@@ -516,8 +505,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_welcome);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
             }
         });
@@ -582,8 +570,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(BoardWelcomeActivity.this, ID).equals("")) finishAffinity();
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_welcome);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
                 return false;
             }

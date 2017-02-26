@@ -9,13 +9,11 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -43,8 +41,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
-import ru.velkonost.lume.R;
 import ru.velkonost.lume.Managers.TypefaceUtil;
+import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Board;
 import ru.velkonost.lume.fragments.BoardsFragment;
 
@@ -115,15 +113,8 @@ public class BoardsListActivity extends AppCompatActivity {
 
     private TimerCheckBoardsState timer;
 
-    private FloatingActionButton addNewBoard;
-
     private String boardName;
     private String boardDescription;
-
-    /**
-     * Свойство - опинсание view-элемента, служащего для обновления страницы.
-     **/
-    protected SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
