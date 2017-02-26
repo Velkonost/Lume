@@ -38,6 +38,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.TypefaceUtil;
@@ -82,26 +84,36 @@ public class BoardColumnsActivity extends AppCompatActivity {
     /**
      * Свойство - описание верхней панели инструментов приложения.
      */
-    private Toolbar toolbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     /**
      * Свойство - описание {@link SearchActivity#LAYOUT}
      */
-    private DrawerLayout drawerLayout;
+    @BindView(R.id.activity_board_columns)
+    DrawerLayout drawerLayout;
 
-    private ViewPager viewPager;
+    @BindView(R.id.btnAddCard)
+    FloatingActionButton addCardButton;
+
+    @BindView(R.id.viewPagerColumns)
+    ViewPager viewPager;
+
+    @BindView(R.id.tabLayout)
+    TabLayout tabLayout;
+
+    @BindView(R.id.navigation)
+    NavigationView navigationView;
+
+
 
     private int columnOrder;
 
     private String boardId;
     private String columnName;
-
-    private TabLayout tabLayout;
-
     private String currentColumnName;
-    private int currentColumnPosition;
 
-    private FloatingActionButton addCardButton;
+    private int currentColumnPosition;
 
     private List<BoardColumn> mBoardColumns;
 
@@ -110,12 +122,9 @@ public class BoardColumnsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_columns);
 
         Intent intent = getIntent();
         columnOrder = intent.getExtras().getInt(COLUMN_ORDER);
@@ -126,8 +135,6 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 loadText(BoardColumnsActivity.this, BOARD_NAME)); /** Инициализация */
         initTabs();
         initNavigationView(); /** Инициализация */
-
-        addCardButton = (FloatingActionButton) findViewById(R.id.btnAddCard);
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -226,15 +233,12 @@ public class BoardColumnsActivity extends AppCompatActivity {
     }
 
     private void initTabs() {
-        viewPager = (ViewPager) findViewById(R.id.viewPagerColumns);
         final BoardColumnsTabsFragmentAdapter adapter
                 = new BoardColumnsTabsFragmentAdapter(this, getSupportFragmentManager(), boardId);
 
         viewPager.setAdapter(adapter);
 
         viewPager.setCurrentItem(columnOrder);
-
-        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
 
         tabLayout.setupWithViewPager(viewPager);
 
@@ -320,9 +324,8 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_columns);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
             finish();
@@ -339,13 +342,12 @@ public class BoardColumnsActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+
         navHeaderLogin.setText(loadText(BoardColumnsActivity.this, LOGIN));
 
-        ImageView askQuestion = (ImageView) header.findViewById(R.id.askQuestion);
+        ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -363,8 +365,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_columns);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
@@ -385,8 +386,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_columns);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
             }
         });
@@ -451,8 +451,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(BoardColumnsActivity.this, ID).equals("")) finishAffinity();
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_columns);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
                 return false;
             }
