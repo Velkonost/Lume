@@ -54,12 +54,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
+import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.Managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.adapter.CardInviteListAdapter;
 import ru.velkonost.lume.adapter.CardMoveListAdapter;
 import ru.velkonost.lume.descriptions.BoardColumn;
@@ -116,19 +118,43 @@ public class BoardCardActivity extends AppCompatActivity {
     private static final int LAYOUT = R.layout.activity_board_card;
 
     /**
-     * Свойство - следующая активность.
-     */
-    private Intent nextIntent;
-
-    /**
      * Свойство - описание верхней панели инструментов приложения.
      */
-    private Toolbar toolbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     /**
      * Свойство - описание {@link SearchActivity#LAYOUT}
      */
-    private DrawerLayout drawerLayout;
+    @BindView(R.id.activity_board_card)
+    DrawerLayout drawerLayout;
+
+    @BindView(R.id.editComment)
+    EditText mEditTextComment;
+
+    @BindView(R.id.editCardName)
+    EditText editCardName;
+
+    @BindView(R.id.imageView)
+    ImageView imageArrowSend;
+
+    @BindView(R.id.navigation)
+    NavigationView navigationView;
+
+    private View popupViewInvite;
+
+    private View popupViewColumns;
+
+    public static PopupWindow popupWindowCardInvite;
+
+    private RecyclerView recyclerViewInvite;
+
+    private RecyclerView recyclerViewColumns;
+
+    /**
+     * Свойство - следующая активность.
+     */
+    private Intent nextIntent;
 
     private int cardId;
 
@@ -141,31 +167,19 @@ public class BoardCardActivity extends AppCompatActivity {
     private ArrayList<String> commentIds;
 
     private CardCommentsFragment mCommentsFragment;
-
     private TimerCheckComments mTimerCheckComments;
-
-    private EditText mEditTextComment;
-
     private String userId;
-
-    private RecyclerView recyclerViewInvite;
-    private View popupViewInvite;
-    public static PopupWindow popupWindowCardInvite;
-
-    private RecyclerView recyclerViewColumns;
-
-    private View popupViewColumns;
 
     public static PopupWindow popupWindowColumns;
 
     private List<Contact> mContacts;
-
     private List<BoardColumn> mBoardColumns;
 
     /**
      * Идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
      **/
     private ArrayList<String> ids;
+
     private ArrayList<String> cids;
 
     /**
@@ -184,15 +198,11 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private String cardName;
 
-    private EditText editCardName;
-
     private String cardDescription;
 
     private BoardDescriptionFragment descriptionFragment;
 
     private Menu menu;
-
-    private ImageView imageArrowSend;
 
     private String textComment;
 
@@ -202,6 +212,7 @@ public class BoardCardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
@@ -216,14 +227,6 @@ public class BoardCardActivity extends AppCompatActivity {
         mGetCardData = new GetCardData();
         mGetContacts = new GetContacts();
         mGetBoardColumns = new GetBoardColumns();
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_board_card);
-
-        mEditTextComment = (EditText) findViewById(R.id.editComment);
-        editCardName = (EditText) findViewById(R.id.editCardName);
-        imageArrowSend = (ImageView) findViewById(R.id.imageView);
 
         Intent intent = getIntent();
         cardName = intent.getExtras().getString(CARD_NAME);
@@ -267,11 +270,8 @@ public class BoardCardActivity extends AppCompatActivity {
                 WRAP_CONTENT, height - dp2px(120));
 
 
-        recyclerViewInvite = (RecyclerView) popupViewInvite
-                .findViewById(R.id.recyclerViewBoardInvite);
-
-        recyclerViewColumns = (RecyclerView) popupViewColumns
-                .findViewById(R.id.recyclerViewBoardInvite);
+        recyclerViewInvite = ButterKnife.findById(popupViewInvite, R.id.recyclerViewBoardInvite);
+        recyclerViewColumns = ButterKnife.findById(popupViewColumns, R.id.recyclerViewBoardInvite);
 
 
         mEditTextComment.addTextChangedListener(new TextWatcher() {
@@ -492,9 +492,8 @@ public class BoardCardActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_card);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
             finish();
@@ -511,13 +510,12 @@ public class BoardCardActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+
         navHeaderLogin.setText(loadText(BoardCardActivity.this, LOGIN));
 
-        ImageView askQuestion = (ImageView) header.findViewById(R.id.askQuestion);
+        ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -535,8 +533,7 @@ public class BoardCardActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_card);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
@@ -557,8 +554,7 @@ public class BoardCardActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_card);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
             }
         });
@@ -623,8 +619,7 @@ public class BoardCardActivity extends AppCompatActivity {
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(BoardCardActivity.this, ID).equals("")) finishAffinity();
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_board_card);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
                 return false;
             }
