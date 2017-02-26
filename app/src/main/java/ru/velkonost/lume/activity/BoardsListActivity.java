@@ -39,6 +39,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.R;
@@ -69,19 +71,19 @@ public class BoardsListActivity extends AppCompatActivity {
     private static final int LAYOUT = R.layout.activity_boards;
 
     /**
-     * Свойство - следующая активность.
-     */
-    private Intent nextIntent;
-
-    /**
      * Свойство - описание верхней панели инструментов приложения.
      */
-    private Toolbar toolbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     /**
      * Свойство - описание {@link SearchActivity#LAYOUT}
      */
-    private DrawerLayout drawerLayout;
+    @BindView(R.id.activity_boards)
+    DrawerLayout drawerLayout;
+
+    @BindView(R.id.navigation)
+    NavigationView navigationView;
 
     /**
      * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
@@ -97,6 +99,11 @@ public class BoardsListActivity extends AppCompatActivity {
      * Свойство - экзмепляр класса {@link GetBoards}
      */
     protected GetBoards mGetBoards;
+
+    /**
+     * Свойство - следующая активность.
+     */
+    private Intent nextIntent;
 
     /**
      * Свойство - список контактов.
@@ -123,6 +130,7 @@ public class BoardsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
@@ -130,9 +138,7 @@ public class BoardsListActivity extends AppCompatActivity {
         bids = new ArrayList<>();
         mBoards = new ArrayList<>();
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_boards);
 
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(BoardsListActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
@@ -245,13 +251,14 @@ public class BoardsListActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
 
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
+
         navHeaderLogin.setText(loadText(BoardsListActivity.this, LOGIN));
 
-        ImageView askQuestion = (ImageView) header.findViewById(R.id.askQuestion);
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -269,8 +276,7 @@ public class BoardsListActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_boards);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
@@ -291,8 +297,7 @@ public class BoardsListActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_boards);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
             }
         });
@@ -357,8 +362,7 @@ public class BoardsListActivity extends AppCompatActivity {
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(BoardsListActivity.this, ID).equals("")) finishAffinity();
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_boards);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
                 return false;
             }
