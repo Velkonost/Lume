@@ -16,6 +16,8 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Contact;
@@ -126,23 +128,17 @@ public class CardInviteListAdapter extends RecyclerView.Adapter<CardInviteListAd
 
     class CardInviteViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout mRelativeLayout;
         String id;
-        TextView userName;
-        TextView userLogin;
-        ImageView userWithoutName;
-        ImageView userAvatar;
+
+        @BindView(R.id.relativeLayoutContact) LinearLayout mRelativeLayout;
+        @BindView(R.id.userName) TextView userName;
+        @BindView(R.id.userLogin) TextView userLogin;
+        @BindView(R.id.userWithoutName) ImageView userWithoutName;
+        @BindView(R.id.userAvatar) ImageView userAvatar;
 
         CardInviteViewHolder(View itemView) {
             super(itemView);
-
-            mRelativeLayout = (LinearLayout) itemView.findViewById(R.id.relativeLayoutContact);
-
-            userName = (TextView) itemView.findViewById(R.id.userName);
-            userLogin = (TextView) itemView.findViewById(R.id.userLogin);
-            userWithoutName = (ImageView) itemView.findViewById(R.id.userWithoutName);
-            userAvatar = (ImageView) itemView.findViewById(R.id.userAvatar);
-
+            ButterKnife.bind(this, itemView);
         }
     }
 

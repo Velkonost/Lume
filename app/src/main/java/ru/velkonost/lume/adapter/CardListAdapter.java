@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.BoardCardActivity;
 import ru.velkonost.lume.descriptions.Card;
@@ -81,21 +83,14 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
 
     public static class CardListViewHolder extends RecyclerView.ViewHolder {
 
-        CardView cardView;
-
-        TextView title;
-        TextView amount;
-
-        ImageView isBelong;
+        @BindView(R.id.cardView) CardView cardView;
+        @BindView(R.id.title) TextView title;
+        @BindView(R.id.numberParticipants) TextView amount;
+        @BindView(R.id.isYouParticipant) ImageView isBelong;
 
         public CardListViewHolder(View itemView) {
             super(itemView);
-
-            cardView = (CardView) itemView.findViewById(R.id.cardView);
-            title = (TextView) itemView.findViewById(R.id.title);
-            amount = (TextView) itemView.findViewById(R.id.numberParticipants);
-
-            isBelong = (ImageView) itemView.findViewById(R.id.isYouParticipant);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

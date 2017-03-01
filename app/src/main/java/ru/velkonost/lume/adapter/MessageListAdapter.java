@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Message;
 
@@ -102,12 +104,11 @@ public class MessageListAdapter
 
     class MessageViewHolder extends RecyclerView.ViewHolder {
 
-        TextView mTextView;
+        @BindView(R.id.messageText) TextView mTextView;
 
         MessageViewHolder(View itemView) {
             super(itemView);
-
-            mTextView = (TextView) itemView.findViewById(R.id.messageText);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

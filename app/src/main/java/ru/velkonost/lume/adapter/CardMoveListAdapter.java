@@ -13,6 +13,8 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.BoardColumn;
@@ -92,17 +94,14 @@ public class CardMoveListAdapter extends RecyclerView.Adapter<CardMoveListAdapte
 
     class CardMoveViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout mRelativeLayout;
         String id;
-        TextView userName;
+
+        @BindView(R.id.relativeLayoutContact) LinearLayout mRelativeLayout;
+        @BindView(R.id.userName) TextView userName;
 
         CardMoveViewHolder(View itemView) {
             super(itemView);
-
-            mRelativeLayout = (LinearLayout) itemView.findViewById(R.id.relativeLayoutContact);
-
-            userName = (TextView) itemView.findViewById(R.id.userName);
-
+            ButterKnife.bind(this, itemView);
         }
     }
 

@@ -12,6 +12,8 @@ import android.widget.ImageView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.ProfileActivity;
 import ru.velkonost.lume.descriptions.BoardParticipant;
@@ -88,11 +90,11 @@ public class BoardParticipantsHorizontalListAdapter
 
     class BoardParticipantsViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView userAvatar;
+        @BindView(R.id.avatar) ImageView userAvatar;
 
         BoardParticipantsViewHolder(View itemView) {
             super(itemView);
-            userAvatar = (ImageView) itemView.findViewById(R.id.avatar);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

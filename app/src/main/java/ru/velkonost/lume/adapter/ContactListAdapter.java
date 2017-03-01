@@ -19,6 +19,8 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.ProfileActivity;
 import ru.velkonost.lume.descriptions.Contact;
@@ -134,23 +136,17 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     class ContactViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout mRelativeLayout;
         String id;
-        TextView userName;
-        TextView userLogin;
-        ImageView userWithoutName;
-        ImageView userAvatar;
+
+        @BindView(R.id.relativeLayoutContact) LinearLayout mRelativeLayout;
+        @BindView(R.id.userName) TextView userName;
+        @BindView(R.id.userLogin) TextView userLogin;
+        @BindView(R.id.userWithoutName) ImageView userWithoutName;
+        @BindView(R.id.userAvatar) ImageView userAvatar;
 
         ContactViewHolder(View itemView) {
             super(itemView);
-
-            mRelativeLayout = (LinearLayout) itemView.findViewById(R.id.relativeLayoutContact);
-
-            userName = (TextView) itemView.findViewById(R.id.userName);
-            userLogin = (TextView) itemView.findViewById(R.id.userLogin);
-            userWithoutName = (ImageView) itemView.findViewById(R.id.userWithoutName);
-            userAvatar = (ImageView) itemView.findViewById(R.id.userAvatar);
-
+            ButterKnife.bind(this, itemView);
         }
     }
 }

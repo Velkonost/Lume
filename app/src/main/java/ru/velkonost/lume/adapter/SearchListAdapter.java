@@ -18,6 +18,8 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.ProfileActivity;
 import ru.velkonost.lume.descriptions.SearchContact;
@@ -135,27 +137,17 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Se
 
     class SearchViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout mRelativeLayout;
         String id;
 
-        TextView livingPlace;
-        TextView userName;
-        TextView userLogin;
-
-        ImageView userAvatar;
-
+        @BindView(R.id.relativeLayoutSearch) LinearLayout mRelativeLayout;
+        @BindView(R.id.livingPlace) TextView livingPlace;
+        @BindView(R.id.userName) TextView userName;
+        @BindView(R.id.userLogin) TextView userLogin;
+        @BindView(R.id.userAvatar) ImageView userAvatar;
 
         SearchViewHolder(View itemView) {
             super(itemView);
-
-            mRelativeLayout = (LinearLayout) itemView.findViewById(R.id.relativeLayoutSearch);
-
-            userName = (TextView) itemView.findViewById(R.id.userName);
-            userLogin = (TextView) itemView.findViewById(R.id.userLogin);
-            livingPlace = (TextView) itemView.findViewById(R.id.livingPlace);
-
-            userAvatar = (ImageView) itemView.findViewById(R.id.userAvatar);
-
+            ButterKnife.bind(this, itemView);
         }
     }
 }

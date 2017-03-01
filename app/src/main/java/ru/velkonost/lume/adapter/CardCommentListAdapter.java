@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.CardComment;
 
@@ -60,16 +62,13 @@ public class CardCommentListAdapter
 
     class CardCommentViewHolder extends RecyclerView.ViewHolder {
 
-        TextView userName;
-        TextView commentDate;
-        TextView commentText;
+        @BindView(R.id.userName) TextView userName;
+        @BindView(R.id.commentDate) TextView commentDate;
+        @BindView(R.id.messageText) TextView commentText;
 
         CardCommentViewHolder(View itemView) {
             super(itemView);
-
-            userName = (TextView) itemView.findViewById(R.id.userName);
-            commentDate = (TextView) itemView.findViewById(R.id.commentDate);
-            commentText = (TextView) itemView.findViewById(R.id.messageText);
+            ButterKnife.bind(this, itemView);
         }
     }
 }
