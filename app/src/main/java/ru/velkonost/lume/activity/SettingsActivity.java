@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.Managers.TypefaceUtil;
@@ -95,11 +97,13 @@ public class SettingsActivity extends AppCompatActivity {
     /**
      * Свойство - описание верхней панели инструментов приложения.
      */
+    @BindView(R.id.toolbar)
     private Toolbar toolbar;
 
     /**
      * Свойство - описание {@link SearchActivity#LAYOUT}
      */
+    @BindView(R.id.activity_settings)
     private DrawerLayout drawerLayout;
 
     /**
@@ -130,37 +134,75 @@ public class SettingsActivity extends AppCompatActivity {
     /**
      * Свойство - поля для ввода данных о пользователе, которые он желает изменить.
      */
-    protected EditText editName; /** Имя пользователя */
-    protected EditText editSurname; /** Фамилия пользователя */
+    @BindView(R.id.editName)
+    EditText editName; /** Имя пользователя */
 
-    protected TextView editBirthday; /** День рождения пользователя */
+    @BindView(R.id.editSurname)
+    EditText editSurname; /** Фамилия пользователя */
 
-    protected EditText prevPassword; /** Текущий пароль пользователя */
-    protected EditText newPassword; /** Новый пароль пользователя */
+    @BindView(R.id.editBirthday)
+    TextView editBirthday; /** День рождения пользователя */
 
-    protected EditText editCity; /** Город проживания пользователя */
-    protected EditText editCountry; /** Страна проживания пользователя */
+    @BindView(R.id.prevPassword)
+    EditText prevPassword; /** Текущий пароль пользователя */
 
-    protected EditText editStudy; /** Место учебы пользователя */
-    protected EditText editWork; /** Место работы пользователя */
+    @BindView(R.id.newPassword)
+    EditText newPassword; /** Новый пароль пользователя */
 
-    protected EditText editEmail; /** Основной email пользователя */
-    protected EditText editWorkEmail; /** email, который виден другим пользователям*/
+    @BindView(R.id.editCity)
+    EditText editCity; /** Город проживания пользователя */
+
+    @BindView(R.id.editCountry)
+    EditText editCountry; /** Страна проживания пользователя */
+
+    @BindView(R.id.editStudy)
+    EditText editStudy; /** Место учебы пользователя */
+
+    @BindView(R.id.editWork)
+    EditText editWork; /** Место работы пользователя */
+
+    @BindView(R.id.editEmail)
+    EditText editEmail; /** Основной email пользователя */
+
+    @BindView(R.id.editWorkEmail)
+    EditText editWorkEmail; /** email, который виден другим пользователям*/
 
     private Animation rotateArrowOpen, rotateArrowClose;
 
-    private TextView personalInfo;
-    private TextView accountInfo;
+    @BindView(R.id.personalInfo)
+    TextView personalInfo;
 
-    private ImageView userAvatar;
-    private TextView userLogin;
+    @BindView(R.id.accountInfo)
+    TextView accountInfo;
 
-    private LinearLayout divPersonalHeader, divAccountHeader;
-    private LinearLayout divPersonal, divAccount;
+    @BindView(R.id.avatar)
+    ImageView userAvatar;
+
+    @BindView(R.id.login)
+    TextView userLogin;
+
+    @BindView(R.id.div_personal_header)
+    LinearLayout divPersonalHeader;
+
+    @BindView(R.id.div_account_header)
+    LinearLayout divAccountHeader;
+
+    @BindView(R.id.div_personal)
+    LinearLayout divPersonal;
+
+    @BindView(R.id.div_account)
+    LinearLayout divAccount;
 
     private boolean personalOpen = false, accountOpen = false;
 
-    private ImageView imageArrowPersonal, imageArrowAccount;
+    @BindView(R.id.image_arrow_personal)
+    ImageView imageArrowPersonal;
+
+    @BindView(R.id.image_arrow_account)
+    ImageView imageArrowAccount;
+
+    @BindView(R.id.navigation)
+    NavigationView navigationView;
 
 
     @Override
@@ -168,41 +210,15 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_settings);
 
         userId = loadText(SettingsActivity.this, ID);
 
         /** Инициализация экземпляров классов */
         mGetData = new GetData();
         mPostData = new PostData();
-
-        editName = (EditText) findViewById(R.id.editName);
-        editSurname = (EditText) findViewById(R.id.editSurname);
-
-        editBirthday = (TextView) findViewById(R.id.editBirthday);
-
-        prevPassword = (EditText) findViewById(R.id.prevPassword);
-        newPassword = (EditText) findViewById(R.id.newPassword);
-
-        editCity = (EditText) findViewById(R.id.editCity);
-        editCountry = (EditText) findViewById(R.id.editCountry);
-
-        editStudy = (EditText) findViewById(R.id.editStudy);
-        editWork = (EditText) findViewById(R.id.editWork);
-
-        editEmail = (EditText) findViewById(R.id.editEmail);
-        editWorkEmail = (EditText) findViewById(R.id.editWorkEmail);
-
-        userAvatar = (ImageView) findViewById(R.id.avatar) ;
-        userLogin = (TextView) findViewById(R.id.login);
-
-        personalInfo = (TextView) findViewById(R.id.personalInfo);
-        accountInfo = (TextView) findViewById(R.id.accountInfo);
 
         final LinearLayout.LayoutParams layoutParamsVisible
                 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -211,12 +227,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         final LinearLayout.LayoutParams layoutParamsInvisible
                 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
-
-        divPersonalHeader = (LinearLayout) findViewById(R.id.div_personal_header);
-        divAccountHeader = (LinearLayout) findViewById(R.id.div_account_header);
-
-        divPersonal = (LinearLayout) findViewById(R.id.div_personal);
-        divAccount = (LinearLayout) findViewById(R.id.div_account);
 
         divPersonal.setLayoutParams(layoutParamsInvisible);
         divAccount.setLayoutParams(layoutParamsInvisible);
@@ -238,9 +248,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         rotateArrowOpen = AnimationUtils.loadAnimation(this, R.anim.arrow_rotation_open);
         rotateArrowClose = AnimationUtils.loadAnimation(this, R.anim.arrow_rotation_close);
-
-        imageArrowPersonal = (ImageView) findViewById(R.id.image_arrow_personal);
-        imageArrowAccount = (ImageView) findViewById(R.id.image_arrow_account);
 
         divPersonalHeader.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -401,13 +408,12 @@ public class SettingsActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
+
         navHeaderLogin.setText(loadText(SettingsActivity.this, LOGIN));
 
-        ImageView askQuestion = (ImageView) header.findViewById(R.id.askQuestion);
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -425,8 +431,7 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_settings);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
@@ -447,8 +452,7 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_settings);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
             }
         });
@@ -515,8 +519,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (loadText(SettingsActivity.this, ID).equals(""))
                     finishAffinity();
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_settings);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
                 return false;
             }
@@ -528,9 +531,8 @@ public class SettingsActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_settings);
-        if (drawer.isDrawerOpen(GravityCompat.START))
-            drawer.closeDrawer(GravityCompat.START);
+        if (drawerLayout.isDrawerOpen(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START);
         else
             super.onBackPressed();
     }
