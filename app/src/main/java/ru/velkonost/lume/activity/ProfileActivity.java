@@ -57,6 +57,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.Managers.TypefaceUtil;
@@ -138,17 +140,23 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * Свойство - описание верхней панели инструментов приложения.
      */
-    private Toolbar toolbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     /**
      * Свойство - описание {@link ProfileActivity#LAYOUT}.
      */
-    private DrawerLayout drawerLayout;
+    @BindView(R.id.activity_profile)
+    DrawerLayout drawerLayout;
+
+    @BindView(R.id.navigation)
+    NavigationView navigationView;
 
     /**
      * Свойство - view-элемент для размещения аватара пользователя.
      */
-    protected ImageView userAvatar;
+    @BindView(R.id.imageAvatar)
+    ImageView userAvatar;
 
     /**
      * Свойство - экзмепляр класса {@link GetData}
@@ -183,7 +191,8 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * Условный контейнер, в который помещаются все view-элементы, созданные программно.
      **/
-    private LinearLayout linLayout;
+    @BindView(R.id.profileContainer)
+    LinearLayout linLayout;
     private LayoutInflater ltInflater;
 
     /**
@@ -207,6 +216,7 @@ public class ProfileActivity extends AppCompatActivity {
      **/
     protected View viewUserPlaceStudyAndWork;
 
+    @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
 
 
@@ -220,8 +230,13 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private GalleryPhoto galleryPhoto;
 
-    private FloatingActionButton btnAddIntoContacts;
-    private FloatingActionButton btnSendMessage;
+    /** Кнопка добавления/удаления владельца профиля из контактов авторизованного пользоавателя */
+    @BindView(R.id.btnAddIntoContacts)
+    FloatingActionButton btnAddIntoContacts;
+
+    /** Кнопка открытия диалога между авторизованным пользователем и владельцем открытого профиля */
+    @BindView(R.id.btnSendMessage)
+    FloatingActionButton btnSendMessage;
 
     private TextView navHeaderLogin;
 
@@ -249,6 +264,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
@@ -260,11 +276,7 @@ public class ProfileActivity extends AppCompatActivity {
         galleryPhoto = new GalleryPhoto(this);
         cameraPhoto = new CameraPhoto(this);
 
-        linLayout = (LinearLayout) findViewById(R.id.profileContainer);
         ltInflater = getLayoutInflater();
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_profile);
 
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(ProfileActivity.this, toolbar, ""); /** Инициализация */
@@ -286,8 +298,6 @@ public class ProfileActivity extends AppCompatActivity {
         profileIdString = String.valueOf(profileIdInt);
 
         initNavigationView(); /** Инициализация */
-
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.noavatar);
@@ -329,14 +339,13 @@ public class ProfileActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-
         View header = navigationView.getHeaderView(0);
 
-        navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+        navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
+
         navHeaderLogin.setText(loadText(ProfileActivity.this, LOGIN));
 
-        ImageView askQuestion = (ImageView) header.findViewById(R.id.askQuestion);
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -354,8 +363,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_profile);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
@@ -387,8 +395,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_profile);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
             }
         });
@@ -453,8 +460,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if (loadText(ProfileActivity.this, ID).equals(""))
                     finishAffinity();
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_profile);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
                 return false;
             }
@@ -463,9 +469,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_profile);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -569,8 +574,6 @@ public class ProfileActivity extends AppCompatActivity {
                         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
                                 + SERVER_AVATAR + SLASH + dataJsonObj.getString(AVATAR)
                                 + SLASH + profileIdString + JPG;
-
-                        userAvatar = (ImageView) findViewById(R.id.imageAvatar);
 
                         /**
                          * Установка имени владельца открытого профиля.
@@ -707,14 +710,6 @@ public class ProfileActivity extends AppCompatActivity {
                          **/
                         if (!profileIdString.equals(userId)) {
 
-                            /** Кнопка добавления/удаления владельца профиля из контактов авторизованного пользоавателя */
-                            btnAddIntoContacts
-                                    = (FloatingActionButton) findViewById(R.id.btnAddIntoContacts);
-
-                            /** Кнопка открытия диалога между авторизованным пользователем и владельцем открытого профиля */
-                            btnSendMessage
-                                    = (FloatingActionButton) findViewById(R.id.btnSendMessage);
-
                             btnAddIntoContacts
                                     .setBackgroundTintList(ColorStateList.valueOf(getResources()
                                             .getColor(R.color.colorPurpleDark)));
@@ -780,13 +775,15 @@ public class ProfileActivity extends AppCompatActivity {
                          **/
                         viewUserPlaceLiving = ltInflater
                                 .inflate(R.layout.item_profile_place_living, linLayout, false);
-                        SecretTextView userPlaceLiving = (SecretTextView) viewUserPlaceLiving
-                                .findViewById(R.id.descriptionCardPlaceLiving);
-                        SecretTextView titleUserPlaceLiving = (SecretTextView) viewUserPlaceLiving
-                                .findViewById(R.id.titleCardPlaceLiving);
 
-                        editPlaceLiving = (EditText) viewUserPlaceLiving
-                                .findViewById(R.id.editPlaceLiving);
+                        SecretTextView userPlaceLiving = ButterKnife.findById(viewUserPlaceLiving,
+                                R.id.descriptionCardPlaceLiving);
+
+                        SecretTextView titleUserPlaceLiving = ButterKnife.findById(viewUserPlaceLiving,
+                                R.id.titleCardPlaceLiving);
+
+                        editPlaceLiving = ButterKnife.findById(viewUserPlaceLiving,
+                                R.id.editPlaceLiving);
 
                         /**
                          * Формируется место проживания из имеющихся данных.
@@ -801,8 +798,9 @@ public class ProfileActivity extends AppCompatActivity {
                         editPlaceLiving.setText(sUserPlaceLiving);
 
                         if (profileIdString.equals(userId)) {
-                            ((ViewSwitcher) viewUserPlaceLiving
-                                    .findViewById(R.id.switcherPlaceLiving)).showNext();
+                            ViewSwitcher switcher = ButterKnife.findById(viewUserPlaceLiving,
+                                    R.id.switcherPlaceLiving);
+                            switcher.showNext();
                         }
 
                         /**
@@ -819,12 +817,14 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                         /** Формирование даты рождения владельца открытого профиля */
-                        viewUserBirthday = ltInflater.inflate(R.layout.item_profile_birthday, linLayout, false);
-                        userBirthday = (SecretTextView) viewUserBirthday
-                                .findViewById(R.id.descriptionCardBirthday);
+                        viewUserBirthday = ltInflater.inflate(R.layout.item_profile_birthday,
+                                linLayout, false);
 
-                        SecretTextView titleUserBirthday = (SecretTextView) viewUserBirthday
-                                .findViewById(R.id.titleCardBirthday);
+                        userBirthday = ButterKnife.findById(viewUserBirthday,
+                                R.id.descriptionCardBirthday);
+
+                        SecretTextView titleUserBirthday = ButterKnife.findById(viewUserBirthday,
+                                R.id.titleCardBirthday);
 
                         sUserBirthday = dataJsonObj.getString(BIRTHDAY).length() != 0
                                 ? dataJsonObj.getString(BIRTHDAY)
@@ -912,11 +912,12 @@ public class ProfileActivity extends AppCompatActivity {
 
                             viewUserPlaceWork = ltInflater.inflate(R.layout.item_profile_place_work,
                                     linLayout, false);
-                            SecretTextView userPlaceWork = (SecretTextView) viewUserPlaceWork
-                                    .findViewById(R.id.descriptionCardPlaceWork);
 
-                            SecretTextView titleUserPlaceWork = (SecretTextView) viewUserPlaceWork
-                                    .findViewById(R.id.titleCardPlaceWork);
+                            SecretTextView userPlaceWork = ButterKnife.findById(viewUserPlaceWork,
+                                    R.id.descriptionCardPlaceWork);
+
+                            SecretTextView titleUserPlaceWork = ButterKnife.findById(viewUserPlaceWork,
+                                    R.id.titleCardPlaceWork);
 
                             userPlaceWork.setText(sUserPlaceWork);
 
@@ -937,11 +938,12 @@ public class ProfileActivity extends AppCompatActivity {
 
                             viewUserPlaceStudy = ltInflater.inflate(R.layout.item_profile_place_study,
                                     linLayout, false);
-                            SecretTextView userPlaceStudy = (SecretTextView) viewUserPlaceStudy
-                                    .findViewById(R.id.descriptionCardPlaceStudy);
 
-                            SecretTextView titleUserPlaceStudy = (SecretTextView) viewUserPlaceStudy
-                                    .findViewById(R.id.titleCardPlaceStudy);
+                            SecretTextView userPlaceStudy = ButterKnife.findById(viewUserPlaceStudy,
+                                    R.id.descriptionCardPlaceStudy);
+
+                            SecretTextView titleUserPlaceStudy = ButterKnife.findById(viewUserPlaceStudy,
+                                    R.id.titleCardPlaceStudy);
 
                             userPlaceStudy.setText(sUserPlaceStudy);
 
@@ -963,36 +965,39 @@ public class ProfileActivity extends AppCompatActivity {
                                     .inflate(R.layout.item_profile_place_study_and_work,
                                             linLayout, false);
 
-                            SecretTextView userPlaceStudy = (SecretTextView) viewUserPlaceStudyAndWork
-                                    .findViewById(R.id.descriptionCardPlaceStudy);
+                            SecretTextView userPlaceStudy = ButterKnife.findById(viewUserPlaceStudyAndWork,
+                                    R.id.descriptionCardPlaceStudy);
 
-                            SecretTextView titleUserPlaceStudy = (SecretTextView) viewUserPlaceStudyAndWork
-                                    .findViewById(R.id.titleCardPlaceStudy);
+                            SecretTextView titleUserPlaceStudy = ButterKnife.findById(viewUserPlaceStudyAndWork,
+                                    R.id.titleCardPlaceStudy);
 
-                            editUserPlaceStudy = (EditText) viewUserPlaceStudyAndWork
-                                    .findViewById(R.id.editPlaceStudy);
+                            editUserPlaceStudy = ButterKnife.findById(viewUserPlaceStudyAndWork,
+                                    R.id.editPlaceStudy);
 
                             userPlaceStudy.setText(sUserPlaceStudy);
                             editUserPlaceStudy.setText(sUserPlaceStudy);
 
-                            SecretTextView userPlaceWork = (SecretTextView) viewUserPlaceStudyAndWork
-                                    .findViewById(R.id.descriptionCardPlaceWork);
+                            SecretTextView userPlaceWork = ButterKnife.findById(viewUserPlaceStudyAndWork,
+                                    R.id.descriptionCardPlaceWork);
 
-                            SecretTextView titleUserPlaceWork = (SecretTextView) viewUserPlaceStudyAndWork
-                                    .findViewById(R.id.titleCardPlaceWork);
+                            SecretTextView titleUserPlaceWork = ButterKnife.findById(viewUserPlaceStudyAndWork,
+                                    R.id.titleCardPlaceWork);
 
-                            editUserPlaceWork = (EditText) viewUserPlaceStudyAndWork
-                                    .findViewById(R.id.editPlaceWork);
+                            editUserPlaceWork = ButterKnife.findById(viewUserPlaceStudyAndWork,
+                                    R.id.editPlaceWork);
 
                             userPlaceWork.setText(sUserPlaceWork);
                             editUserPlaceWork.setText(sUserPlaceWork);
 
                             if (profileIdString.equals(userId)) {
-                                ((ViewSwitcher) viewUserPlaceStudyAndWork
-                                        .findViewById(R.id.switcherPlaceStudy)).showNext();
+                                ViewSwitcher switcher1 = ButterKnife.findById(viewUserPlaceStudyAndWork,
+                                        R.id.switcherPlaceStudy);
 
-                                ((ViewSwitcher) viewUserPlaceStudyAndWork
-                                        .findViewById(R.id.switcherPlaceWork)).showNext();
+                                ViewSwitcher switcher2 = ButterKnife.findById(viewUserPlaceStudyAndWork,
+                                        R.id.switcherPlaceWork);
+
+                                switcher1.showNext();
+                                switcher2.showNext();
                             }
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
@@ -1022,21 +1027,23 @@ public class ProfileActivity extends AppCompatActivity {
                             viewUserWorkingEmail = ltInflater
                                     .inflate(R.layout.item_profile_working_email, linLayout, false);
 
-                            final SecretTextView userWorkingEmail = (SecretTextView) viewUserWorkingEmail
-                                    .findViewById(R.id.descriptionCardWorkingEmail);
+                            final SecretTextView userWorkingEmail = ButterKnife.findById(viewUserWorkingEmail,
+                                    R.id.descriptionCardWorkingEmail);
 
-                            SecretTextView titleUserWorkingEmail = (SecretTextView) viewUserWorkingEmail
-                                    .findViewById(R.id.titleCardWorkingEmail);
+                            SecretTextView titleUserWorkingEmail = ButterKnife.findById(viewUserWorkingEmail,
+                                    R.id.titleCardWorkingEmail);
 
-                            editUserWorkingEmail = (EditText) viewUserWorkingEmail
-                                    .findViewById(R.id.editWorkingEmail);
+                            editUserWorkingEmail = ButterKnife.findById(viewUserWorkingEmail,
+                                    R.id.editWorkingEmail);
 
                             userWorkingEmail.setText(sUserWorkingEmail);
                             editUserWorkingEmail.setText(sUserWorkingEmail);
 
                             if (profileIdString.equals(userId)) {
-                                ((ViewSwitcher) viewUserWorkingEmail
-                                        .findViewById(R.id.switcherWorkingEmail)).showNext();
+                                ViewSwitcher switcher = ButterKnife.findById(viewUserWorkingEmail,
+                                        R.id.switcherWorkingEmail);
+
+                                switcher.showNext();
                             }
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
