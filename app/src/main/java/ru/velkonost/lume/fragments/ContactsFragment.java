@@ -25,6 +25,8 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.SearchActivity;
 import ru.velkonost.lume.adapter.ContactListAdapter;
@@ -41,7 +43,11 @@ public class ContactsFragment extends Fragment {
     protected View view;
     protected Context context;
 
-    private FloatingActionButton fabGoSearch;
+    @BindView(R.id.btnGoSearch)
+    FloatingActionButton fabGoSearch;
+
+    @BindView(R.id.recycleViewContact)
+    FastScrollRecyclerView recyclerView;
 
     public static ContactsFragment getInstance(Context context, List<Contact> contacts) {
         Bundle args = new Bundle();
@@ -59,15 +65,13 @@ public class ContactsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
+        ButterKnife.bind(this, view);
 
-        FastScrollRecyclerView recyclerView = (FastScrollRecyclerView)
-                view.findViewById(R.id.recycleViewContact);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         adapter = new ContactListAdapter(getActivity(), mContacts);
         recyclerView.setAdapter(adapter);
 
-        fabGoSearch = (FloatingActionButton) view.findViewById(R.id.btnGoSearch);
         fabGoSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,7 +142,7 @@ public class ContactsFragment extends Fragment {
             }
         });
 
-        final MaterialSearchView searchView = (MaterialSearchView) getActivity().findViewById(R.id.search_view);
+        final MaterialSearchView searchView = ButterKnife.findById(getActivity(), R.id.search_view);
 
         searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override

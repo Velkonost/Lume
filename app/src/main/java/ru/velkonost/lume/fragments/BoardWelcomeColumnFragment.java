@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.BoardWelcomeColumnListAdapter;
 import ru.velkonost.lume.descriptions.BoardColumn;
@@ -26,8 +28,11 @@ public class BoardWelcomeColumnFragment extends Fragment {
     protected Context context;
     private String boardId;
 
-    private GridView gridView;
-    private TextView textView;
+    @BindView(R.id.gridColumns)
+    GridView gridView;
+
+    @BindView(R.id.noColumns)
+    TextView textView;
 
     public static BoardWelcomeColumnFragment getInstance(
             Context context,
@@ -52,9 +57,7 @@ public class BoardWelcomeColumnFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
-
-        gridView = (GridView) view.findViewById(R.id.gridColumns);
-        textView = (TextView) view.findViewById(R.id.noColumns);
+        ButterKnife.bind(this, view);
 
         adapter = new BoardWelcomeColumnListAdapter(getActivity(), mColumns, boardId);
         gridView.setAdapter(adapter);

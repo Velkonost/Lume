@@ -13,6 +13,8 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.SearchListAdapter;
 import ru.velkonost.lume.descriptions.SearchContact;
@@ -25,6 +27,9 @@ public class SearchFragment extends Fragment{
     private SearchListAdapter adapter;
     protected View view;
     protected Context context;
+
+    @BindView(R.id.recycleViewSearch)
+    FastScrollRecyclerView recyclerView;
 
     public static SearchFragment getInstance(Context context, List<SearchContact> contacts) {
         Bundle args = new Bundle();
@@ -41,9 +46,8 @@ public class SearchFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
+        ButterKnife.bind(this, view);
 
-        FastScrollRecyclerView recyclerView = (FastScrollRecyclerView)
-                view.findViewById(R.id.recycleViewSearch);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         adapter = new SearchListAdapter(getActivity(), mContacts);
         recyclerView.setAdapter(adapter);

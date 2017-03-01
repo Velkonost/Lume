@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.MessageListAdapter;
 import ru.velkonost.lume.descriptions.Message;
@@ -20,7 +22,10 @@ public class MessagesFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_messages;
 
     private List<Message> mMessages;
-    private RecyclerView recyclerView;
+
+    @BindView(R.id.recyclerViewMessages)
+    RecyclerView recyclerView;
+
     private MessageListAdapter adapter;
     protected View view;
     protected Context context;
@@ -40,8 +45,9 @@ public class MessagesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
+        ButterKnife.bind(this, view);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewMessages);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         adapter = new MessageListAdapter(getActivity(), mMessages);

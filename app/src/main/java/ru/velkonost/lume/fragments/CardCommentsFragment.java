@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.CardCommentListAdapter;
 import ru.velkonost.lume.descriptions.CardComment;
@@ -22,11 +24,16 @@ public class CardCommentsFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_card_comments;
 
     private List<CardComment> mCardComments;
-    private RecyclerView recyclerView;
+
     private CardCommentListAdapter adapter;
     protected View view;
     protected Context context;
-    private CardView cv;
+
+    @BindView(R.id.cvComments)
+    CardView cv;
+
+    @BindView(R.id.recyclerViewComments)
+    RecyclerView recyclerView;
 
     public static CardCommentsFragment getInstance(Context context, List<CardComment> cardComments) {
         Bundle args = new Bundle();
@@ -43,9 +50,8 @@ public class CardCommentsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
+        ButterKnife.bind(this, view);
 
-        cv = (CardView) view.findViewById(R.id.cvComments);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewComments);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         adapter = new CardCommentListAdapter(getActivity(), mCardComments);

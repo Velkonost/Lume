@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.BoardListAdapter;
 import ru.velkonost.lume.descriptions.Board;
@@ -25,8 +27,11 @@ public class BoardsFragment extends Fragment {
     protected View view;
     protected Context context;
 
-    private FloatingActionButton fabAddBoard;
+    @BindView(R.id.btnAddBoard)
+    FloatingActionButton fabAddBoard;
 
+    @BindView(R.id.recyclerViewBoards)
+    RecyclerView recyclerView;
 
     public static BoardsFragment getInstance(Context context, List<Board> boards) {
         Bundle args = new Bundle();
@@ -43,12 +48,9 @@ public class BoardsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
+        ButterKnife.bind(this, view);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewBoards);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-
-        fabAddBoard = (FloatingActionButton) view.findViewById(R.id.btnAddBoard);
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy){

@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.CardListAdapter;
 import ru.velkonost.lume.descriptions.Card;
@@ -72,6 +74,9 @@ public class ColumnFragment extends BaseTabFragment {
 
     private String userId;
 
+    @BindView(R.id.recyclerViewColumn)
+    RecyclerView rv;
+
     public static ColumnFragment getInstance(Context context, int columnId, String columnName) {
         Bundle args = new Bundle();
         ColumnFragment fragment = new ColumnFragment();
@@ -89,9 +94,9 @@ public class ColumnFragment extends BaseTabFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
+        ButterKnife.bind(this, view);
 
-
-        addCardButton = (FloatingActionButton) getActivity().findViewById(R.id.btnAddCard);
+        addCardButton = ButterKnife.findById(getActivity(), R.id.btnAddCard);
         addCardButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
 
         addCardButton.setOnClickListener(new View.OnClickListener() {
@@ -261,7 +266,6 @@ public class ColumnFragment extends BaseTabFragment {
                 }
 
                 adapter = new CardListAdapter(data, getContext());
-                RecyclerView rv = (RecyclerView) view.findViewById(R.id.recyclerViewColumn);
                 rv.setLayoutManager(new LinearLayoutManager(context));
                 rv.setAdapter(adapter);
 

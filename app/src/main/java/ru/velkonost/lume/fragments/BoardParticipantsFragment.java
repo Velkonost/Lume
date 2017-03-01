@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.BoardParticipantsHorizontalListAdapter;
 import ru.velkonost.lume.descriptions.BoardParticipant;
@@ -24,6 +26,9 @@ public class BoardParticipantsFragment extends Fragment {
     protected Context context;
 
     private BoardParticipantsHorizontalListAdapter adapter;
+
+    @BindView(R.id.rvParticipants)
+    RecyclerView recyclerView;
 
     public static BoardParticipantsFragment getInstance(Context context, List<BoardParticipant> participants) {
         Bundle args = new Bundle();
@@ -40,11 +45,11 @@ public class BoardParticipantsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
+        ButterKnife.bind(this, view);
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvParticipants);
         recyclerView.setLayoutManager(layoutManager);
 
         adapter = new BoardParticipantsHorizontalListAdapter(getActivity(), mBoardsParticipants);

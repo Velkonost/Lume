@@ -13,6 +13,8 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.BoardParticipantsListAdapter;
 import ru.velkonost.lume.descriptions.Contact;
@@ -25,6 +27,8 @@ public class BoardAllParticipantsFragment extends Fragment {
     private BoardParticipantsListAdapter adapter;
     protected View view;
     protected Context context;
+
+    @BindView(R.id.recyclerViewAllParticipants) FastScrollRecyclerView recyclerView;
 
     public static BoardAllParticipantsFragment getInstance(Context context, List<Contact> contacts) {
         Bundle args = new Bundle();
@@ -41,12 +45,11 @@ public class BoardAllParticipantsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
-
-        FastScrollRecyclerView recyclerView = (FastScrollRecyclerView)
-                view.findViewById(R.id.recyclerViewAllParticipants);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        ButterKnife.bind(this, view);
 
         adapter = new BoardParticipantsListAdapter(getActivity(), mContacts);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
 
         return view;

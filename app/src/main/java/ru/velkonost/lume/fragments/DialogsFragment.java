@@ -12,6 +12,8 @@ import android.widget.GridView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.DialogListAdapter;
 import ru.velkonost.lume.descriptions.DialogContact;
@@ -25,6 +27,9 @@ public class DialogsFragment extends Fragment {
     private DialogListAdapter adapter;
     protected View view;
     protected Context context;
+
+    @BindView(R.id.gridDialogs)
+    GridView gridView;
 
     public static DialogsFragment getInstance(Context context, List<DialogContact> contacts) {
         Bundle args = new Bundle();
@@ -42,8 +47,7 @@ public class DialogsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
-
-        GridView gridView = (GridView) view.findViewById(R.id.gridDialogs);
+        ButterKnife.bind(this, view);
 
         adapter = new DialogListAdapter(getActivity(), mContacts);
         gridView.setAdapter(adapter);

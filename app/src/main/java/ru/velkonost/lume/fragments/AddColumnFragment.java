@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.BoardColumnsActivity;
@@ -45,7 +47,7 @@ import static ru.velkonost.lume.net.ServerConnection.getJSON;
 public class AddColumnFragment extends BaseTabFragment {
     private static final int LAYOUT = R.layout.fragment_add_column;
 
-    private EditText createColumnName;
+    @BindView(R.id.editName) EditText createColumnName;
     private String boardId;
     private List<BoardColumn> mBoardColumns;
 
@@ -65,10 +67,9 @@ public class AddColumnFragment extends BaseTabFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT, container, false);
+        ButterKnife.bind(this, view);
         setHasOptionsMenu(true);
 
-
-        createColumnName = (EditText) view.findViewById(R.id.editName);
         return view;
     }
 

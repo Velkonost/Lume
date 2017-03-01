@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
@@ -19,35 +21,29 @@ import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
 
 public class BoardDescriptionFragment extends Fragment {
 
-    private ViewSwitcher switcher;
+    @BindView(R.id.switcherBoardDescription) ViewSwitcher switcher;
     private String text;
 
-    private TextView mTextView;
-    private EditText mEditText;
+    @BindView(R.id.boardDescription) TextView mTextView;
+    @BindView(R.id.editBoardDescription) EditText mEditText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        View view = inflater.inflate(R.layout.item_board_description, container, false);
+        ButterKnife.bind(this, view);
+
         text = loadText(getActivity(), BOARD_DESCRIPTION);
 
-        View view = inflater.inflate(R.layout.item_board_description, container, false);
-
-        switcher = (ViewSwitcher) view.findViewById(R.id.switcherBoardDescription);
-
-        mTextView = (TextView) view.findViewById(R.id.boardDescription);
-        mEditText = (EditText) view.findViewById(R.id.editBoardDescription);
-
-        ((TextView) view.findViewById(R.id.boardDescription))
-                .setText(
+        mTextView.setText(
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
                                 ? Html.fromHtml(text,
                                 Html.FROM_HTML_MODE_LEGACY)
                                 : Html.fromHtml(text)
                 );
 
-        ((EditText) view.findViewById(R.id.editBoardDescription))
-                .setText(
+        mEditText.setText(
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
                                 ? Html.fromHtml(text,
                                 Html.FROM_HTML_MODE_LEGACY)
