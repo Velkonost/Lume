@@ -20,6 +20,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.R;
@@ -56,31 +58,30 @@ public class WelcomeActivity extends AppCompatActivity {
     private Intent mIntentNext;
 
     /** Cвойство - введенный пользователем логин */
-    private EditText inputLogin;
+    @BindView(R.id.loginLogIn)
+    EditText inputLogin;
+
     /** Cвойство - введенный пользователем пароль */
-    private EditText inputPassword;
+    @BindView(R.id.passwordLogIn)
+    EditText inputPassword;
 
     /**
      * Свойство - описание верхней панели инструментов приложения.
      */
-    private Toolbar toolbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(WelcomeActivity.this, toolbar, ""); /** Инициализация */
-
-        /** Прикрепляет поля к view-элементам */
-        inputLogin = (EditText) findViewById(R.id.loginLogIn);
-        inputPassword = (EditText) findViewById(R.id.passwordLogIn);
 
 
         Drawable drawableLogin = inputLogin.getBackground(); // get current EditText drawable
