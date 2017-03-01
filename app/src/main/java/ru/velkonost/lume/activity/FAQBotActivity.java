@@ -61,6 +61,7 @@ public class FAQBotActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 

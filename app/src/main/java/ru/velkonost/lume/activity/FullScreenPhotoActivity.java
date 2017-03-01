@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 
+import butterknife.BindView;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.Managers.TypefaceUtil;
 
@@ -30,6 +31,12 @@ import static ru.velkonost.lume.Managers.SetImageManager.fetchImage;
 public class FullScreenPhotoActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_full_screen_photo;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.fullImage)
+    ImageView imageView;
 
 
     @Override
@@ -57,9 +64,6 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
          */
         String userAvatar = (String) intent.getExtras().get(AVATAR);
 
-
-        ImageView imageView = (ImageView) findViewById(R.id.fullImage);
-
         /**
          * Составляем адрес, по которому следует загрузить картинку.
          */
@@ -76,7 +80,6 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
         /**
          * Инициализация тулбара.
          */
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setTitle(imageTitle);
         setSupportActionBar(toolbar);
 
