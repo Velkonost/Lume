@@ -244,8 +244,6 @@ public class ColumnFragment extends BaseTabFragment {
                     cids.add(cidsJSON.getString(i));
                 }
 
-                Log.i("KEKE", String.valueOf(cids));
-
                 /**
                  * Составление view-элементов с краткой информацией о пользователях
                  */

@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.R;
@@ -71,19 +73,26 @@ public class DialogsActivity extends AppCompatActivity {
     private static final int LAYOUT = R.layout.activity_dialogs;
 
     /**
-     * Свойство - следующая активность.
-     */
-    private Intent nextIntent;
-
-    /**
      * Свойство - описание верхней панели инструментов приложения.
      */
-    private Toolbar toolbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     /**
      * Свойство - описание {@link SearchActivity#LAYOUT}
      */
-    private DrawerLayout drawerLayout;
+    @BindView(R.id.activity_dialogs)
+    DrawerLayout drawerLayout;
+
+    /**
+     * Свойство - строка поиска.
+     * {@link MaterialSearchView}
+     */
+    @BindView(R.id.search_view)
+    MaterialSearchView searchView;
+
+    @BindView(R.id.navigation)
+    NavigationView navigationView;
 
     /**
      * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
@@ -91,10 +100,9 @@ public class DialogsActivity extends AppCompatActivity {
     private String userId;
 
     /**
-     * Свойство - строка поиска.
-     * {@link MaterialSearchView}
+     * Свойство - следующая активность.
      */
-    private MaterialSearchView searchView;
+    private Intent nextIntent;
 
     /**
      * Идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
@@ -123,15 +131,12 @@ public class DialogsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(LAYOUT);
+        ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
         mGetDialogs = new GetDialogs();
         ids = new ArrayList<>();
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_dialogs);
 
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(DialogsActivity.this, toolbar, R.string.menu_item_messages); /** Инициализация */
@@ -142,7 +147,6 @@ public class DialogsActivity extends AppCompatActivity {
          * {@link MaterialSearchView}
          * {@link InitializationsManager#initSearch(Activity, MaterialSearchView)}
          **/
-        searchView = (MaterialSearchView) findViewById(R.id.search_view);
         initSearchDialog(this, searchView);
         searchView.setCursorDrawable(R.drawable.cursor_drawable);
 
@@ -250,13 +254,12 @@ public class DialogsActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
-
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = (TextView) header.findViewById(R.id.userNameHeader);
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
+
         navHeaderLogin.setText(loadText(DialogsActivity.this, LOGIN));
 
-        ImageView askQuestion = (ImageView) header.findViewById(R.id.askQuestion);
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -274,8 +277,7 @@ public class DialogsActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_dialogs);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
@@ -296,8 +298,7 @@ public class DialogsActivity extends AppCompatActivity {
                     }
                 }, 350);
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_dialogs);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
             }
         });
@@ -363,8 +364,7 @@ public class DialogsActivity extends AppCompatActivity {
                 if (loadText(DialogsActivity.this, ID).equals(""))
                     finishAffinity();
 
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_dialogs);
-                drawer.closeDrawer(GravityCompat.START);
+                drawerLayout.closeDrawer(GravityCompat.START);
 
                 return false;
             }
@@ -403,9 +403,8 @@ public class DialogsActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_dialogs);
-        if (drawer.isDrawerOpen(GravityCompat.START))
-            drawer.closeDrawer(GravityCompat.START);
+        if (drawerLayout.isDrawerOpen(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START);
         else if (searchView.isSearchOpen())
             searchView.closeSearch();
         else
