@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.BoardWelcomeActivity;
 import ru.velkonost.lume.descriptions.Board;
@@ -74,14 +76,12 @@ public class BoardListAdapter extends RecyclerView.Adapter<BoardListAdapter.Boar
 
     class BoardViewHolder extends RecyclerView.ViewHolder {
 
-        RelativeLayout mRelativeLayout;
-        TextView boardName;
+        @BindView(R.id.relativeLayoutBoard) RelativeLayout mRelativeLayout;
+        @BindView(R.id.boardName) TextView boardName;
 
         BoardViewHolder(View itemView) {
             super(itemView);
-
-            mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayoutBoard);
-            boardName = (TextView) itemView.findViewById(R.id.boardName);
+            ButterKnife.bind(this, itemView);
         }
     }
 }
