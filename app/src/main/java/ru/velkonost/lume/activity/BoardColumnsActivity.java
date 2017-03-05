@@ -1,6 +1,7 @@
 package ru.velkonost.lume.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -25,6 +26,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -113,26 +115,12 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     private int currentColumnPosition;
 
-    private List<BoardColumn> mBoardColumns;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(LAYOUT);
-        ButterKnife.bind(this);
-        setTheme(R.style.AppTheme_Cursor);
-        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
-
-        Intent intent = getIntent();
-        columnOrder = intent.getExtras().getInt(COLUMN_ORDER);
-        boardId = intent.getExtras().getString(BOARD_ID);
-
-        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
-        initToolbar(BoardColumnsActivity.this, toolbar,
-                loadText(BoardColumnsActivity.this, BOARD_NAME)); /** Инициализация */
-        initTabs();
-        initNavigationView(); /** Инициализация */
+        setBase();
+        getExtras();
+        initialize();
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -144,11 +132,59 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     }
 
+    private void setBase() {
+
+        setContentView(LAYOUT);
+        ButterKnife.bind(this);
+        setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
+
+    }
+
+    private void getExtras() {
+
+        Intent intent = getIntent();
+        columnOrder = intent.getExtras().getInt(COLUMN_ORDER);
+        boardId = intent.getExtras().getString(BOARD_ID);
+
+    }
+
+    private void initialize() {
+
+        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
+        initToolbar(BoardColumnsActivity.this, toolbar,
+                loadText(BoardColumnsActivity.this, BOARD_NAME)); /** Инициализация */
+        initTabs();
+        initNavigationView(); /** Инициализация */
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_board_column, menu);
         return true;
+    }
+
+    private void goWelcomeActivity() {
+        Intent intent = new Intent(BoardColumnsActivity.this,
+                BoardWelcomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(BOARD_ID, Integer.parseInt(boardId));
+        BoardColumnsActivity.this.startActivity(intent);
+        overridePendingTransition(R.anim.activity_right_in,
+                R.anim.activity_diagonaltranslate);
+
+        finish();
+        overridePendingTransition(R.anim.activity_right_in,
+                R.anim.activity_diagonaltranslate);
+    }
+
+    private void setInputNameSettings(EditText inputName, LinearLayout.LayoutParams  params) {
+        inputName.setTextColor(ContextCompat.getColor(BoardColumnsActivity.this, R.color.colorBlack));
+        inputName.setText(currentColumnName);
+        inputName.setInputType(InputType.TYPE_CLASS_TEXT);
+        inputName.setLayoutParams(params);
     }
 
     @Override
@@ -175,36 +211,18 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 final EditText inputName
                         = (EditText) getLayoutInflater().inflate(R.layout.item_edittext_style, null);
 
-                inputName.setTextColor(ContextCompat.getColor(BoardColumnsActivity.this, R.color.colorBlack));
-                inputName.setText(currentColumnName);
-                inputName.setInputType(InputType.TYPE_CLASS_TEXT);
-                inputName.setLayoutParams(params);
+                setInputNameSettings(inputName, params);
+
                 layout.addView(inputName);
 
                 builder.setView(layout)
-
                         .setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 currentColumnName = inputName.getText().toString();
-
                                 if (currentColumnName.length() != 0) {
-
-                                    ChangeColumnSettings changeColumnSettings = new ChangeColumnSettings();
-                                    changeColumnSettings.execute();
-
-                                    Intent intent = new Intent(BoardColumnsActivity.this,
-                                            BoardWelcomeActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.putExtra(BOARD_ID, Integer.parseInt(boardId));
-                                    BoardColumnsActivity.this.startActivity(intent);
-                                    overridePendingTransition(R.anim.activity_right_in,
-                                            R.anim.activity_diagonaltranslate);
-
-                                    finish();
-                                    overridePendingTransition(R.anim.activity_right_in,
-                                            R.anim.activity_diagonaltranslate);
-
+                                    new ChangeColumnSettings().execute();
+                                    goWelcomeActivity();
                                 } else dialog.cancel();
 
                             }
@@ -215,7 +233,6 @@ public class BoardColumnsActivity extends AppCompatActivity {
                                 dialog.cancel();
                             }
                         });
-
 
                 AlertDialog alert = builder.create();
                 alert.show();
@@ -251,7 +268,8 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
                     if (!dialogOpen[0]) {
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(BoardColumnsActivity.this);
+                        AlertDialog.Builder builder
+                                = new AlertDialog.Builder(BoardColumnsActivity.this);
                         builder.setTitle(getResources().getString(R.string.create_column));
 
                         final EditText input = new EditText(BoardColumnsActivity.this);
@@ -263,14 +281,8 @@ public class BoardColumnsActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         columnName = input.getText().toString();
 
-                                        if (columnName.length() != 0) {
-                                            AddColumn addColumn = new AddColumn();
-                                            addColumn.execute();
-
-
-
-
-                                        } else dialog.cancel();
+                                        if (columnName.length() != 0) new AddColumn().execute();
+                                        else dialog.cancel();
 
                                     }
                                 })
@@ -296,6 +308,16 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 }
             });
 
+        setViewPagerListener();
+
+        if (adapter.getCount() < MAX_COLUMNS_IN_FIXED_MODE)
+            tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        else tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+    }
+
+    private void setViewPagerListener() {
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -313,11 +335,6 @@ public class BoardColumnsActivity extends AppCompatActivity {
             }
         });
 
-        if (adapter.getCount() < MAX_COLUMNS_IN_FIXED_MODE)
-            tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        else
-            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-
     }
 
     @Override
@@ -330,20 +347,45 @@ public class BoardColumnsActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Рисует боковую панель навигации.
-     **/
-    private void initNavigationView() {
+    private void hideKeyBoard() {
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        getCurrentFocus().clearFocus();
 
+    }
+
+    private ActionBarDrawerToggle initializeToogle() {
+        return new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar,
+                R.string.view_navigation_open, R.string.view_navigation_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                hideKeyBoard();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                hideKeyBoard();
+            }
+        };
+    }
+
+    private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        initializeNavHeaderLogin(header);
+        initializeNavHeaderAskQuestion(header);
+    }
 
-        navHeaderLogin.setText(loadText(BoardColumnsActivity.this, LOGIN));
+    private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
 
@@ -367,6 +409,13 @@ public class BoardColumnsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void initializeNavHeaderLogin(View header) {
+
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(BoardColumnsActivity.this, LOGIN));
+
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -388,6 +437,10 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -456,6 +509,20 @@ public class BoardColumnsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Рисует боковую панель навигации.
+     **/
+    private void initNavigationView() {
+
+        ActionBarDrawerToggle toggle = initializeToogle();
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        initializeNavHeader();
+        setNavigationViewListener();
+    }
+
+
     private class GetBoardInfo extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -506,7 +573,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 JSONArray cidsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
 
                 ArrayList<String> cids = new ArrayList<>();
-                mBoardColumns = new ArrayList<>();
+                List<BoardColumn> boardColumns = new ArrayList<>();
 
 
                 for (int i = 0; i < cidsJSON.length(); i++) {
@@ -516,13 +583,13 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 for (int i = 0; i < cids.size(); i++) {
                     JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
 
-                    mBoardColumns.add(new BoardColumn(
+                    boardColumns.add(new BoardColumn(
                             Integer.parseInt(columnInfo.getString(ID)),
                             columnInfo.getString(NAME),  i)
                     );
                 }
 
-                Depository.setBoardColumns(mBoardColumns);
+                Depository.setBoardColumns(boardColumns);
 
                 Intent intent = new Intent(BoardColumnsActivity.this,
                         BoardColumnsActivity.class);

@@ -210,7 +210,6 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private String textComment;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -581,7 +580,6 @@ public class BoardCardActivity extends AppCompatActivity {
             finish();
         }
     }
-
 
     private ActionBarDrawerToggle initializeToogle() {
         return new ActionBarDrawerToggle(
