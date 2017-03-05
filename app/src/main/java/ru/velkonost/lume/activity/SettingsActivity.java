@@ -98,13 +98,13 @@ public class SettingsActivity extends AppCompatActivity {
      * Свойство - описание верхней панели инструментов приложения.
      */
     @BindView(R.id.toolbar)
-    private Toolbar toolbar;
+    Toolbar toolbar;
 
     /**
      * Свойство - описание {@link SearchActivity#LAYOUT}
      */
     @BindView(R.id.activity_settings)
-    private DrawerLayout drawerLayout;
+    DrawerLayout drawerLayout;
 
     /**
      * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
