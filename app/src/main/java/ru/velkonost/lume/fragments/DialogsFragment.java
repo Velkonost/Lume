@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.adapter.DialogListAdapter;
+import ru.velkonost.lume.adapter.DialogListAdapterRv;
 import ru.velkonost.lume.descriptions.DialogContact;
 
 public class DialogsFragment extends Fragment {
@@ -24,12 +26,12 @@ public class DialogsFragment extends Fragment {
 
     private List<DialogContact> mContacts;
     private List<DialogContact> mContactsCopy;
-    private DialogListAdapter adapter;
+    private DialogListAdapterRv adapter;
     protected View view;
     protected Context context;
 
     @BindView(R.id.gridDialogs)
-    GridView gridView;
+    RecyclerView rv;
 
     public static DialogsFragment getInstance(Context context, List<DialogContact> contacts) {
         Bundle args = new Bundle();
@@ -49,9 +51,12 @@ public class DialogsFragment extends Fragment {
         view = inflater.inflate(LAYOUT, container, false);
         ButterKnife.bind(this, view);
 
-        adapter = new DialogListAdapter(getActivity(), mContacts);
-        gridView.setAdapter(adapter);
-        adjustGridView(gridView);
+        adapter = new DialogListAdapterRv(mContacts, context);
+        GridLayoutManager glm = new GridLayoutManager(getActivity(), 3);
+        rv.setLayoutManager(glm);
+
+        rv.setAdapter(adapter);
+//        adjustGridView(gridView);
 
         return view;
     }
