@@ -29,6 +29,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.eyalbira.loadingdots.LoadingDots;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,6 +84,9 @@ public class BoardsListActivity extends AppCompatActivity {
 
     @BindView(R.id.navigation)
     NavigationView navigationView;
+
+    @BindView(R.id.loadingDots)
+    LoadingDots loadingDots;
 
     /**
      * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
@@ -453,6 +458,8 @@ public class BoardsListActivity extends AppCompatActivity {
                         = BoardsFragment.getInstance(BoardsListActivity.this, mBoards);
                 ft.add(R.id.llboards, mBoardsFragment);
                 ft.commit();
+
+                loadingDots.setVisibility(View.INVISIBLE);
 
             } catch (JSONException e) {
                 e.printStackTrace();

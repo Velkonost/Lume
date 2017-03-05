@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.eyalbira.loadingdots.LoadingDots;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,6 +78,9 @@ public class ColumnFragment extends BaseTabFragment {
 
     @BindView(R.id.recyclerViewColumn)
     RecyclerView rv;
+
+    @BindView(R.id.loadingDots)
+    LoadingDots loadingDots;
 
     public static ColumnFragment getInstance(Context context, int columnId, String columnName) {
         Bundle args = new Bundle();
@@ -276,6 +281,8 @@ public class ColumnFragment extends BaseTabFragment {
                         else if (dy < 0) addCardButton.show();
                     }
                 });
+
+                loadingDots.setVisibility(View.INVISIBLE);
 
             } catch (JSONException e) {
                 e.printStackTrace();

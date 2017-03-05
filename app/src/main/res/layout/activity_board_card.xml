@@ -50,6 +50,22 @@
 
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
+        <com.eyalbira.loadingdots.LoadingDots
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/loadingDots"
+            app:LoadingDots_auto_play="true"
+            app:LoadingDots_dots_color="@color/colorPrimary"
+            app:LoadingDots_dots_count="5"
+            app:LoadingDots_dots_size="16dp"
+            app:LoadingDots_dots_space="5dp"
+            app:LoadingDots_loop_duration="800"
+            app:LoadingDots_loop_start_delay="100"
+            app:LoadingDots_jump_duration="200"
+            app:LoadingDots_jump_height="14dp"
+            android:layout_gravity="center"
+            android:gravity="center"/>
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -65,6 +81,7 @@
             app:layout_anchorGravity="bottom"
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true">
+
             <FrameLayout
                 android:id="@+id/descriptionContainer"
                 android:layout_width="fill_parent"

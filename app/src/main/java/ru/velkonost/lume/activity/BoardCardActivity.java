@@ -38,6 +38,8 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.eyalbira.loadingdots.LoadingDots;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -137,6 +139,9 @@ public class BoardCardActivity extends AppCompatActivity {
 
     @BindView(R.id.imageView)
     ImageView imageArrowSend;
+
+    @BindView(R.id.loadingDots)
+    LoadingDots loadingDots;
 
     @BindView(R.id.navigation)
     NavigationView navigationView;
@@ -761,8 +766,9 @@ public class BoardCardActivity extends AppCompatActivity {
                 transaction.add(R.id.descriptionContainer, descriptionFragment);
                 transaction.add(R.id.participantsContainer, cardParticipantsFragment);
                 transaction.add(R.id.commentsContainer, mCommentsFragment);
-
                 transaction.commit();
+
+                loadingDots.setVisibility(View.INVISIBLE);
 
             } catch (JSONException | ParseException e) {
                 e.printStackTrace();

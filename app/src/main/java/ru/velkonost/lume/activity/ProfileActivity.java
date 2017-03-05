@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.eyalbira.loadingdots.LoadingDots;
 import com.kosalgeek.android.photoutil.CameraPhoto;
 import com.kosalgeek.android.photoutil.GalleryPhoto;
 import com.kosalgeek.android.photoutil.ImageBase64;
@@ -158,6 +159,9 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.imageAvatar)
     ImageView userAvatar;
 
+    @BindView(R.id.loadingDots)
+    LoadingDots loadingDots;
+
     /**
      * Свойство - экзмепляр класса {@link GetData}
      */
@@ -239,6 +243,8 @@ public class ProfileActivity extends AppCompatActivity {
     FloatingActionButton btnSendMessage;
 
     private TextView navHeaderLogin;
+
+    private String sUserName;
 
     /**
      * Свойство - элемент для выбора даты.
@@ -581,7 +587,7 @@ public class ProfileActivity extends AppCompatActivity {
                          * Если имя и фамилия не найдены,
                          * то устанавливается логин + показывается иконка {@link userWithoutName}
                          **/
-                        final String sUserName = dataJsonObj.getString(NAME).length() == 0
+                        sUserName = dataJsonObj.getString(NAME).length() == 0
                                 ? dataJsonObj.getString(LOGIN)
                                 : dataJsonObj.getString(SURNAME).length() == 0
                                 ? dataJsonObj.getString(LOGIN)
@@ -1057,6 +1063,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                         }
 
+                        loadingDots.setVisibility(View.INVISIBLE);
+
                         break;
                     /**
                      * Произошла неожиданная ошибка.
@@ -1378,6 +1386,7 @@ public class ProfileActivity extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(DIALOG_ID, dataJsonObj.getInt(DIALOG_ID));
                 intent.putExtra(ID, profileIdString);
+                intent.putExtra(NAME, sUserName);
                 ProfileActivity.this.startActivity(intent);
                 overridePendingTransition(R.anim.activity_right_in,
                         R.anim.activity_diagonaltranslate);

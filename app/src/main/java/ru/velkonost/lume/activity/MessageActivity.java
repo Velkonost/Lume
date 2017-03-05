@@ -25,6 +25,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.eyalbira.loadingdots.LoadingDots;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,6 +98,9 @@ public class MessageActivity extends AppCompatActivity {
 
     @BindView(R.id.navigation)
     NavigationView navigationView;
+
+    @BindView(R.id.loadingDots)
+    LoadingDots loadingDots;
 
     /**
      * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
@@ -522,6 +527,8 @@ public class MessageActivity extends AppCompatActivity {
                         = MessagesFragment.getInstance(MessageActivity.this, mMessages);
                 ft.add(R.id.llmessage, mMessagesFragment);
                 ft.commit();
+
+                loadingDots.setVisibility(View.INVISIBLE);
 
             } catch (JSONException e) {
                 e.printStackTrace();

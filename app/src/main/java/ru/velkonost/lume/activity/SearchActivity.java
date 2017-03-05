@@ -20,6 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.eyalbira.loadingdots.LoadingDots;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import org.json.JSONArray;
@@ -98,6 +99,9 @@ public class SearchActivity extends AppCompatActivity {
 
     @BindView(R.id.navigation)
     NavigationView navigationView;
+
+    @BindView(R.id.loadingDots)
+    LoadingDots loadingDots;
 
     /**
      * Свойство - информация, по которой собирается искать пользователь.
@@ -483,6 +487,8 @@ public class SearchActivity extends AppCompatActivity {
                         = SearchFragment.getInstance(SearchActivity.this, mSearchContacts);
                 ft.add(R.id.llsearch, searchFragment);
                 ft.commit();
+
+                loadingDots.setVisibility(View.INVISIBLE);
 
             } catch (JSONException e) {
                 e.printStackTrace();

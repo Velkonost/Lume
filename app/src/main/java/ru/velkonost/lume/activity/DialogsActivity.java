@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.eyalbira.loadingdots.LoadingDots;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import org.json.JSONArray;
@@ -93,6 +94,9 @@ public class DialogsActivity extends AppCompatActivity {
 
     @BindView(R.id.navigation)
     NavigationView navigationView;
+
+    @BindView(R.id.loadingDots)
+    LoadingDots loadingDots;
 
     /**
      * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
@@ -506,6 +510,8 @@ public class DialogsActivity extends AppCompatActivity {
                         = DialogsFragment.getInstance(DialogsActivity.this, mDialogs);
                 ft.add(R.id.lldialog, dialogsFragment);
                 ft.commit();
+
+                loadingDots.setVisibility(View.INVISIBLE);
 
             } catch (JSONException e) {
                 e.printStackTrace();

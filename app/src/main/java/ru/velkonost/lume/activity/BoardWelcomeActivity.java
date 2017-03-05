@@ -38,6 +38,8 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.eyalbira.loadingdots.LoadingDots;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -121,6 +123,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     @BindView(R.id.navigation)
     NavigationView navigationView;
+
+    @BindView(R.id.loadingDots)
+    LoadingDots loadingDots;
 
 
     private RecyclerView recyclerView;
@@ -752,6 +757,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 transaction.add(R.id.participantsContainer, boardParticipantsFragment);
                 transaction.add(R.id.columnsContainer, boardWelcomeColumnFragment);
                 transaction.commit();
+
+                loadingDots.setVisibility(View.INVISIBLE);
 
             } catch (JSONException e) {
                 e.printStackTrace();

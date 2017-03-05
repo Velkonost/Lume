@@ -27,6 +27,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.eyalbira.loadingdots.LoadingDots;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -203,6 +205,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     @BindView(R.id.navigation)
     NavigationView navigationView;
+
+    @BindView(R.id.loadingDots)
+    LoadingDots loadingDots;
 
 
     @Override
@@ -628,6 +633,8 @@ public class SettingsActivity extends AppCompatActivity {
                                 + SLASH + userId + JPG;
 
                         fetchImage(avatarURL, userAvatar, true, false);
+
+                        loadingDots.setVisibility(View.INVISIBLE);
 
                         break;
                     /**

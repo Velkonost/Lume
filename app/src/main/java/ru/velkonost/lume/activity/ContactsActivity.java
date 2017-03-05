@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.eyalbira.loadingdots.LoadingDots;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import org.json.JSONArray;
@@ -101,6 +102,9 @@ public class ContactsActivity extends AppCompatActivity {
 
     @BindView(R.id.navigation)
     NavigationView navigationView;
+
+    @BindView(R.id.loadingDots)
+    LoadingDots loadingDots;
 
     private FloatingActionButton fabGoSearch;
 
@@ -547,6 +551,8 @@ public class ContactsActivity extends AppCompatActivity {
                         = ContactsFragment.getInstance(ContactsActivity.this, mContacts);
                 ft.add(R.id.llcontact, contactsFragment);
                 ft.commit();
+
+                loadingDots.setVisibility(View.INVISIBLE);
 
             } catch (JSONException e) {
                 e.printStackTrace();
