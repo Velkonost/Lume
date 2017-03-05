@@ -60,7 +60,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.Managers.InitializationsManager;
-import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.Managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
@@ -215,38 +214,9 @@ public class BoardCardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(LAYOUT);
-        ButterKnife.bind(this);
-        setTheme(R.style.AppTheme_Cursor);
-        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
-
-        mCardParticipants = new ArrayList<>();
-        mContacts = new ArrayList<>();
-        mBoardColumns = new ArrayList<>();
-        ids = new ArrayList<>();
-        cids = new ArrayList<>();
-        contacts = new HashMap<>();
-
-        mCardComments = new ArrayList<>();
-        mGetCardData = new GetCardData();
-        mGetContacts = new GetContacts();
-        mGetBoardColumns = new GetBoardColumns();
-
-        Intent intent = getIntent();
-        cardName = intent.getExtras().getString(CARD_NAME);
-        cardId = intent.getExtras().getInt(CARD_ID);
-
-        /**
-         * Получение id пользователя.
-         * {@link PhoneDataStorageManager#loadText(Context, String)}
-         **/
-        userId = loadText(BoardCardActivity.this, ID);
-        boardId = Depository.getBoardId();
-
-        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
-        initToolbar(BoardCardActivity.this, toolbar, cardName); /** Инициализация */
-        initNavigationView(); /** Инициализация */
+        setBase();
+        getData();
+        initialize();
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -256,28 +226,93 @@ public class BoardCardActivity extends AppCompatActivity {
             }
         });
 
+        setEditTextCommentListener();
+        executeTasks();
+        startTimer();
+
+    }
+
+    private void setBase() {
+
+        setContentView(LAYOUT);
+        ButterKnife.bind(this);
+        setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
+
+    }
+
+    private void initialize() {
+        mCardParticipants = new ArrayList<>();
+        mContacts = new ArrayList<>();
+        mBoardColumns = new ArrayList<>();
+        ids = new ArrayList<>();
+        cids = new ArrayList<>();
+        mCardComments = new ArrayList<>();
+        contacts = new HashMap<>();
+
+        mGetCardData = new GetCardData();
+        mGetContacts = new GetContacts();
+        mGetBoardColumns = new GetBoardColumns();
+
+        initToolbar(BoardCardActivity.this, toolbar, cardName);
+        initNavigationView();
+        initializePopups();
+    }
+
+    private void getData() {
+        getFromFile();
+        getFromDepository();
+        getExtras();
+    }
+
+    private void getFromFile() {
+        boardId = Depository.getBoardId();
+    }
+
+    private void getFromDepository() {
+        userId = loadText(BoardCardActivity.this, ID);
+    }
+
+    private void getExtras() {
+        Intent intent = getIntent();
+        cardName = intent.getExtras().getString(CARD_NAME);
+        cardId = intent.getExtras().getInt(CARD_ID);
+    }
+
+    private void initializePopups() {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int width = size.x;
         int height = size.y;
 
         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
 
-        popupViewInvite = layoutInflater.inflate(popup_board_invite_list, null);
-        popupViewColumns = layoutInflater.inflate(popup_board_invite_list, null);
+        initializePopupInvite(layoutInflater, height);
+        initializePopupColumns(layoutInflater, height);
+    }
 
+    private void initializePopupInvite(LayoutInflater layoutInflater, int height) {
+
+        popupViewInvite = layoutInflater.inflate(popup_board_invite_list, null);
         popupWindowCardInvite = new PopupWindow(popupViewInvite,
                 WRAP_CONTENT, height - dp2px(120));
 
+        recyclerViewInvite = ButterKnife.findById(popupViewInvite, R.id.recyclerViewBoardInvite);
+
+
+    }
+
+    private void initializePopupColumns(LayoutInflater layoutInflater, int height) {
+
+        popupViewColumns = layoutInflater.inflate(popup_board_invite_list, null);
         popupWindowColumns = new PopupWindow(popupViewColumns,
                 WRAP_CONTENT, height - dp2px(120));
 
-
-        recyclerViewInvite = ButterKnife.findById(popupViewInvite, R.id.recyclerViewBoardInvite);
         recyclerViewColumns = ButterKnife.findById(popupViewColumns, R.id.recyclerViewBoardInvite);
+    }
 
+    private void setEditTextCommentListener() {
 
         mEditTextComment.addTextChangedListener(new TextWatcher() {
 
@@ -302,10 +337,15 @@ public class BoardCardActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void executeTasks() {
         mGetCardData.execute();
         mGetContacts.execute();
         mGetBoardColumns.execute();
+    }
 
+    private void startTimer() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -314,9 +354,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
             }
         }, 5000);
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -331,6 +369,116 @@ public class BoardCardActivity extends AppCompatActivity {
                 BoardCardActivity.this.getResources().getDisplayMetrics());
     }
 
+    private void showAgreeMenu() {
+        menu.findItem(R.id.action_settings).setVisible(false);
+        menu.findItem(R.id.action_move).setVisible(false);
+        menu.findItem(R.id.action_invite).setVisible(false);
+        menu.findItem(R.id.action_leave).setVisible(false);
+
+        menu.findItem(R.id.action_agree).setVisible(true);
+    }
+
+    private void hideAgreeMenu() {
+        menu.findItem(R.id.action_settings).setVisible(true);
+        menu.findItem(R.id.action_invite).setVisible(true);
+        menu.findItem(R.id.action_move).setVisible(true);
+        menu.findItem(R.id.action_leave).setVisible(true);
+
+        menu.findItem(R.id.action_agree).setVisible(false);
+    }
+
+    private void setAgreeMenuListener() {
+
+        menu.findItem(R.id.action_agree).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                acceptCardChanges();
+                new ChangeCardSettings().execute();
+                hideKeyBoard();
+
+                return false;
+            }
+        });
+    }
+
+    private void acceptCardChanges() {
+
+        cardName = editCardName.getText().toString();
+        cardDescription = descriptionFragment.getText();
+
+        toolbar.setTitle(cardName);
+        descriptionFragment.changeText();
+        descriptionFragment.showNext();
+
+        editCardName.setVisibility(View.INVISIBLE);
+
+        hideAgreeMenu();
+    }
+
+    private void hideKeyBoard() {
+
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        getCurrentFocus().clearFocus();
+
+    }
+
+    private void setPopupColumnsListener() {
+
+        popupWindowColumns.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                if (Depository.isRefreshPopup())
+                    changeActivityCompat(BoardCardActivity.this);
+                Depository.setRefreshPopup(false);
+
+            }
+        });
+
+        popupColumnsShow();
+
+    }
+
+    private void setPopupInviteListener() {
+
+        popupWindowCardInvite.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                if (Depository.isRefreshPopup())
+                    changeActivityCompat(BoardCardActivity.this);
+                Depository.setRefreshPopup(false);
+
+            }
+        });
+
+        popupInviteShow();
+    }
+
+    private void popupColumnsShow() {
+
+        popupWindowColumns.setTouchable(true);
+        popupWindowColumns.setFocusable(true);
+        popupWindowColumns.setBackgroundDrawable(new ColorDrawable(getResources()
+                .getColor(android.R.color.transparent)));
+        popupWindowColumns.setOutsideTouchable(true);
+
+        popupWindowColumns.showAtLocation(popupViewColumns, Gravity.CENTER, 0, 0);
+
+    }
+
+    private void popupInviteShow() {
+
+        popupWindowCardInvite.setTouchable(true);
+        popupWindowCardInvite.setFocusable(true);
+        popupWindowCardInvite.setBackgroundDrawable(new ColorDrawable(getResources()
+                .getColor(android.R.color.transparent)));
+        popupWindowCardInvite.setOutsideTouchable(true);
+
+        popupWindowCardInvite.showAtLocation(popupViewInvite, Gravity.CENTER, 0, 0);
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -341,94 +489,20 @@ public class BoardCardActivity extends AppCompatActivity {
                 toolbar.setTitle("");
                 editCardName.setVisibility(View.VISIBLE);
                 editCardName.setText(cardName);
-
                 descriptionFragment.showNext();
 
-
-                menu.findItem(R.id.action_settings).setVisible(false);
-                menu.findItem(R.id.action_move).setVisible(false);
-                menu.findItem(R.id.action_invite).setVisible(false);
-                menu.findItem(R.id.action_leave).setVisible(false);
-
-                menu.findItem(R.id.action_agree).setVisible(true);
-
-                menu.findItem(R.id.action_agree).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-
-                        cardName = editCardName.getText().toString();
-                        cardDescription = descriptionFragment.getText();
-
-                        toolbar.setTitle(cardName);
-                        descriptionFragment.changeText();
-                        descriptionFragment.showNext();
-
-                        editCardName.setVisibility(View.INVISIBLE);
-
-                        menu.findItem(R.id.action_settings).setVisible(true);
-                        menu.findItem(R.id.action_invite).setVisible(true);
-                        menu.findItem(R.id.action_move).setVisible(true);
-                        menu.findItem(R.id.action_leave).setVisible(true);
-
-                        menu.findItem(R.id.action_agree).setVisible(false);
-
-                        ChangeCardSettings changeCardSettings = new ChangeCardSettings();
-                        changeCardSettings.execute();
-
-
-                        InputMethodManager inputMethodManager = (InputMethodManager)
-                                getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                        getCurrentFocus().clearFocus();
-
-                        return false;
-                    }
-                });
-
+                showAgreeMenu();
+                setAgreeMenuListener();
 
                 break;
             case R.id.action_move:
 
-                popupWindowColumns.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                    @Override
-                    public void onDismiss() {
-                        if (Depository.isRefreshPopup())
-                            changeActivityCompat(BoardCardActivity.this);
-                        Depository.setRefreshPopup(false);
-
-                    }
-                });
-
-
-                popupWindowColumns.setTouchable(true);
-                popupWindowColumns.setFocusable(true);
-                popupWindowColumns.setBackgroundDrawable(new ColorDrawable(getResources()
-                        .getColor(android.R.color.transparent)));
-                popupWindowColumns.setOutsideTouchable(true);
-
-                popupWindowColumns.showAtLocation(popupViewColumns, Gravity.CENTER, 0, 0);
+                setPopupColumnsListener();
 
                 break;
             case R.id.action_invite:
 
-                popupWindowCardInvite.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                    @Override
-                    public void onDismiss() {
-                        if (Depository.isRefreshPopup())
-                            changeActivityCompat(BoardCardActivity.this);
-                        Depository.setRefreshPopup(false);
-
-                    }
-                });
-
-
-                popupWindowCardInvite.setTouchable(true);
-                popupWindowCardInvite.setFocusable(true);
-                popupWindowCardInvite.setBackgroundDrawable(new ColorDrawable(getResources()
-                        .getColor(android.R.color.transparent)));
-                popupWindowCardInvite.setOutsideTouchable(true);
-
-                popupWindowCardInvite.showAtLocation(popupViewInvite, Gravity.CENTER, 0, 0);
+                setPopupInviteListener();
 
                 break;
             case R.id.action_leave:
@@ -448,19 +522,7 @@ public class BoardCardActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int id) {
                                         LeaveCard leaveCard = new LeaveCard();
                                         leaveCard.execute();
-
-                                        Intent intent = new Intent(BoardCardActivity.this,
-                                                BoardCardActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        intent.putExtra(CARD_ID, cardId);
-                                        intent.putExtra(CARD_NAME, cardName);
-                                        BoardCardActivity.this.startActivity(intent);
-                                        overridePendingTransition(R.anim.activity_right_in,
-                                                R.anim.activity_diagonaltranslate);
-
-                                        finish();
-                                        overridePendingTransition(R.anim.activity_right_in,
-                                                R.anim.activity_diagonaltranslate);
+                                        refreshActivity();
 
                                     }
                                 })
@@ -472,7 +534,22 @@ public class BoardCardActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void refreshActivity() {
 
+        Intent intent = new Intent(BoardCardActivity.this,
+                BoardCardActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(CARD_ID, cardId);
+        intent.putExtra(CARD_NAME, cardName);
+        BoardCardActivity.this.startActivity(intent);
+        overridePendingTransition(R.anim.activity_right_in,
+                R.anim.activity_diagonaltranslate);
+
+        finish();
+        overridePendingTransition(R.anim.activity_right_in,
+                R.anim.activity_diagonaltranslate);
+
+    }
 
     @Override
     protected void onStop() {
@@ -505,20 +582,37 @@ public class BoardCardActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Рисует боковую панель навигации.
-     **/
-    private void initNavigationView() {
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+    private ActionBarDrawerToggle initializeToogle() {
+        return new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar,
+                R.string.view_navigation_open, R.string.view_navigation_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
 
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                hideKeyBoard();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                hideKeyBoard();
+            }
+        };
+    }
+
+    private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        initializeNavHeaderLogin(header);
+        initializeNavHeaderAskQuestion(header);
+    }
 
-        navHeaderLogin.setText(loadText(BoardCardActivity.this, LOGIN));
+    private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
 
@@ -542,6 +636,13 @@ public class BoardCardActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void initializeNavHeaderLogin(View header) {
+
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(BoardCardActivity.this, LOGIN));
+
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -563,6 +664,10 @@ public class BoardCardActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -631,7 +736,20 @@ public class BoardCardActivity extends AppCompatActivity {
         });
     }
 
-    public class TimerCheckComments extends CountDownTimer {
+    /**
+     * Рисует боковую панель навигации.
+     **/
+    private void initNavigationView() {
+
+        ActionBarDrawerToggle toggle = initializeToogle();
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        initializeNavHeader();
+        setNavigationViewListener();
+    }
+
+    private class TimerCheckComments extends CountDownTimer {
 
         TimerCheckComments(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
@@ -680,13 +798,13 @@ public class BoardCardActivity extends AppCompatActivity {
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
 
-            /** Свойство - полученный JSON–объект*/
+            /* Свойство - полученный JSON–объект */
             JSONObject dataJsonObj;
 
             try {
 
-                /**
-                 * Получение JSON-объекта по строке.
+                /*
+                  Получение JSON-объекта по строке.
                  */
                 dataJsonObj = new JSONObject(strJson);
 
@@ -733,7 +851,8 @@ public class BoardCardActivity extends AppCompatActivity {
 
                     JSONObject commentInfo = dataJsonObj.getJSONObject(commentId);
 
-                    String formattedCommentDate = formatDate(commentInfo.getString(DATE).substring(0, 10));
+                    String formattedCommentDate
+                            = formatDate(commentInfo.getString(DATE).substring(0, 10));
 
                     mCardComments.add(new CardComment(
                             Integer.parseInt(commentId.substring(0, commentId.length() - 7)),
