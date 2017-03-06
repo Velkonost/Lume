@@ -187,7 +187,7 @@ public class ContactsActivity extends AppCompatActivity {
          * {@link MaterialSearchView}
          * {@link InitializationsManager#initSearch(Activity, MaterialSearchView)}
          **/
-        initSearchContacts(this, searchView);
+        initSearchContacts(searchView);
         searchView.setCursorDrawable(R.drawable.cursor_drawable);
 
         initSwipeRefresh();
@@ -284,7 +284,7 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
 
-    private void initSearchContacts(final Activity activity, final MaterialSearchView searchView) {
+    private void initSearchContacts(final MaterialSearchView searchView) {
 
         searchView.setEllipsize(true);
         final boolean[] check = {false, true};
