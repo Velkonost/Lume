@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -268,53 +269,9 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(LAYOUT);
-        ButterKnife.bind(this);
-        setTheme(R.style.AppTheme_Cursor);
-        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
-
-
-        /** Инициализация экземпляров классов */
-        mGetData = new GetData();
-        mAddContact = new AddContact();
-
-        galleryPhoto = new GalleryPhoto(this);
-        cameraPhoto = new CameraPhoto(this);
-
-        ltInflater = getLayoutInflater();
-
-        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
-        initToolbar(ProfileActivity.this, toolbar, ""); /** Инициализация */
-
-        /**
-         * Получение id пользователя.
-         * {@link PhoneDataStorageManager#loadText(Context, String)}
-         **/
-        userId = loadText(ProfileActivity.this, ID);
-
-        Intent intent = getIntent();
-
-        /**
-         * Проверка:
-         * Принадлежит открытый профиль пользователю,
-         *      авторизованному на данном устройстве или нет?
-         * */
-        profileIdInt = intent.getIntExtra(ID, Integer.parseInt(userId));
-        profileIdString = String.valueOf(profileIdInt);
-
-        initNavigationView(); /** Инициализация */
-
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-                R.drawable.noavatar);
-
-        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-            @Override
-            public void onGenerated(Palette palette) {
-                collapsingToolbar.setContentScrimColor(ContextCompat
-                        .getColor(ProfileActivity.this, R.color.colorPrimary));
-            }
-        });
+        setBase();
+        getData();
+        initialization();
 
         /**
          * Кнопка возврата на предыдущую активность, если текущий профиль не принадлежит пользователю,
@@ -331,27 +288,125 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         /** Обращаемся к серверу */
+        executeTasks();
+    }
+
+    private void setBase() {
+
+        setContentView(LAYOUT);
+        ButterKnife.bind(this);
+        setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
+
+    }
+
+    private void getData() {
+        getFromFile();
+        getExtras();
+    }
+
+    private void getFromFile() {
+
+        /**
+         * Получение id пользователя.
+         * {@link PhoneDataStorageManager#loadText(Context, String)}
+         **/
+        userId = loadText(ProfileActivity.this, ID);
+
+    }
+
+    private void getExtras() {
+
+        Intent intent = getIntent();
+
+        /**
+         * Проверка:
+         * Принадлежит открытый профиль пользователю,
+         *      авторизованному на данном устройстве или нет?
+         * */
+        profileIdInt = intent.getIntExtra(ID, Integer.parseInt(userId));
+        profileIdString = String.valueOf(profileIdInt);
+
+    }
+
+    private void initialization() {
+
+        /** Инициализация экземпляров классов */
+        mGetData = new GetData();
+        mAddContact = new AddContact();
+
+        galleryPhoto = new GalleryPhoto(this);
+        cameraPhoto = new CameraPhoto(this);
+
+        ltInflater = getLayoutInflater();
+
+        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
+        initToolbar(ProfileActivity.this, toolbar, ""); /** Инициализация */
+        initNavigationView(); /** Инициализация */
+        initCollapsingToolbarPalette();
+
+    }
+
+    private void executeTasks() {
         mGetData.execute();
     }
 
+    private void initCollapsingToolbarPalette() {
 
-    /**
-     * Рисует боковую панель навигации.
-     **/
-    private void initNavigationView() {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                R.drawable.noavatar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                collapsingToolbar.setContentScrimColor(ContextCompat
+                        .getColor(ProfileActivity.this, R.color.colorPrimary));
+            }
+        });
 
+    }
+
+    private void hideKeyBoard() {
+
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        getCurrentFocus().clearFocus();
+
+    }
+
+    private ActionBarDrawerToggle initializeToggle() {
+        return new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar,
+                R.string.view_navigation_open, R.string.view_navigation_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                hideKeyBoard();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                hideKeyBoard();
+            }
+        };
+    }
+
+    private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
+        initializeNavHeaderLogin(header);
+        initializeNavHeaderAskQuestion(header);
+    }
 
-        navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+    private void initializeNavHeaderAskQuestion(View header) {
+
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
-
-        navHeaderLogin.setText(loadText(ProfileActivity.this, LOGIN));
-
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -373,6 +428,13 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void initializeNavHeaderLogin(View header) {
+
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(ProfileActivity.this, LOGIN));
+
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -380,17 +442,6 @@ public class ProfileActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
-                        if ((profileIdString.equals(userId))) {
-                            sUserPlaceLiving = editPlaceLiving.getText().toString();
-                            sUserPlaceStudy = editUserPlaceStudy.getText().toString();
-                            sUserPlaceWork = editUserPlaceWork.getText().toString();
-                            sUserBirthday = userBirthday.getText().toString();
-                            sUserWorkingEmail = editUserWorkingEmail.getText().toString();
-
-                            new PostData().execute();
-
-                        }
 
                         /**
                          * Обновляет страницу.
@@ -405,6 +456,10 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -462,15 +517,28 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }, 350);
 
+
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
-                if (loadText(ProfileActivity.this, ID).equals(""))
-                    finishAffinity();
+                if (loadText(ProfileActivity.this, ID).equals("")) finishAffinity();
 
                 drawerLayout.closeDrawer(GravityCompat.START);
 
                 return false;
             }
         });
+    }
+
+    /**
+     * Рисует боковую панель навигации.
+     **/
+    private void initNavigationView() {
+
+        ActionBarDrawerToggle toggle = initializeToggle();
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        initializeNavHeader();
+        setNavigationViewListener();
     }
 
     @Override
