@@ -36,9 +36,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.InitializationsManager;
-import ru.velkonost.lume.Managers.PhoneDataStorageManager;
-import ru.velkonost.lume.R;
 import ru.velkonost.lume.Managers.TypefaceUtil;
+import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.DialogContact;
 import ru.velkonost.lume.fragments.DialogsFragment;
 
@@ -133,14 +132,35 @@ public class DialogsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setBase();
+        getData();
+        initialize();
 
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        executeTasks();
+        startTimer();
+
+    }
+
+    private void setBase() {
         setContentView(LAYOUT);
         ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
+    }
+
+    private void initialize() {
 
         mGetDialogs = new GetDialogs();
         ids = new ArrayList<>();
+        mDialogs = new ArrayList<>();
 
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(DialogsActivity.this, toolbar, R.string.menu_item_messages); /** Инициализация */
@@ -151,26 +171,28 @@ public class DialogsActivity extends AppCompatActivity {
          * {@link MaterialSearchView}
          * {@link InitializationsManager#initSearch(Activity, MaterialSearchView)}
          **/
-        initSearchDialog(this, searchView);
+        initSearchDialog(searchView);
         searchView.setCursorDrawable(R.drawable.cursor_drawable);
 
+    }
+
+    private void getData() {
+        getFromFile();
+    }
+
+    private void getFromFile() {
         /**
          * Получение id пользователя.
          * {@link PhoneDataStorageManager#loadText(Context, String)}
          **/
         userId = loadText(DialogsActivity.this, ID);
+    }
 
-        mDialogs = new ArrayList<>();
-
-        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
+    private void executeTasks() {
         mGetDialogs.execute();
+    }
+
+    private void startTimer() {
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -182,7 +204,6 @@ public class DialogsActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -190,7 +211,7 @@ public class DialogsActivity extends AppCompatActivity {
             timer.cancel();
     }
 
-    private void initSearchDialog(final Activity activity, final MaterialSearchView searchView) {
+    private void initSearchDialog(final MaterialSearchView searchView) {
 
         searchView.setEllipsize(true);
         final boolean[] check = {false, true};
@@ -225,13 +246,59 @@ public class DialogsActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Рисует боковую панель навигации.
-     **/
-    private void initNavigationView() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close){
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        /**
+         * Устанавливает меню для строки поиска.
+         */
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView.setMenuItem(item);
+
+        /**
+         * Вешает слушателя для открытия строки по нажатию.
+         */
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown () {
+                searchView.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onSearchViewClosed() {
+                letRefresh = true;
+            }
+        });
+        return true;
+    }
+
+    /**
+     * При нажатии на кнопку "Назад" поиск закрывется.
+     */
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START);
+        else if (searchView.isSearchOpen())
+            searchView.closeSearch();
+        else
+            super.onBackPressed();
+    }
+
+    private void hideKeyBoard() {
+
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        getCurrentFocus().clearFocus();
+
+    }
+
+    private ActionBarDrawerToggle initializeToggle() {
+        return new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar,
+                R.string.view_navigation_open, R.string.view_navigation_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -240,30 +307,26 @@ public class DialogsActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
+                hideKeyBoard();
             }
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
+                hideKeyBoard();
             }
         };
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+    }
 
+    private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        initializeNavHeaderLogin(header);
+        initializeNavHeaderAskQuestion(header);
+    }
+
+    private void initializeNavHeaderAskQuestion(View header) {
+
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
-
-        navHeaderLogin.setText(loadText(DialogsActivity.this, LOGIN));
-
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -284,6 +347,13 @@ public class DialogsActivity extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
+
+    }
+
+    private void initializeNavHeaderLogin(View header) {
+
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(DialogsActivity.this, LOGIN));
 
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -306,6 +376,10 @@ public class DialogsActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -365,8 +439,7 @@ public class DialogsActivity extends AppCompatActivity {
 
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
-                if (loadText(DialogsActivity.this, ID).equals(""))
-                    finishAffinity();
+                if (loadText(DialogsActivity.this, ID).equals("")) finishAffinity();
 
                 drawerLayout.closeDrawer(GravityCompat.START);
 
@@ -375,47 +448,20 @@ public class DialogsActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu, menu);
-
-        /**
-         * Устанавливает меню для строки поиска.
-         */
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
-
-        /**
-         * Вешает слушателя для открытия строки по нажатию.
-         */
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown () {
-                searchView.setVisibility(View.VISIBLE);
-            }
-            @Override
-            public void onSearchViewClosed() {
-                letRefresh = true;
-            }
-        });
-        return true;
-    }
-
     /**
-     * При нажатии на кнопку "Назад" поиск закрывется.
-     */
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START))
-            drawerLayout.closeDrawer(GravityCompat.START);
-        else if (searchView.isSearchOpen())
-            searchView.closeSearch();
-        else
-            super.onBackPressed();
+     * Рисует боковую панель навигации.
+     **/
+    private void initNavigationView() {
+
+        ActionBarDrawerToggle toggle = initializeToggle();
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        initializeNavHeader();
+        setNavigationViewListener();
     }
 
-    public class TimerCheckDialogsState extends CountDownTimer {
+    private class TimerCheckDialogsState extends CountDownTimer {
 
         TimerCheckDialogsState(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
