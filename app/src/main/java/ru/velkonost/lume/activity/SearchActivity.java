@@ -40,9 +40,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
+import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.Managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.descriptions.SearchContact;
 import ru.velkonost.lume.fragments.SearchFragment;
 
@@ -142,15 +142,26 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setBase();
+        getData();
+        initialization();
+        executeTasks();
+    }
+
+    private void setBase() {
 
         setContentView(LAYOUT);
         ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
-        mGetData = new GetData();
-        ids = new ArrayList<>();
-        searchContacts = new HashMap<>();
+    }
+
+    private void getData() {
+        getExtras();
+    }
+
+    private void getExtras() {
 
         /**
          * Получение данных, которые вводил пользователь.
@@ -160,6 +171,14 @@ public class SearchActivity extends AppCompatActivity {
         whatSearch = intent.getStringExtra(SEARCH); /** Формирование заголовка тулбара */
         if (whatSearch == null) whatSearch = getResources().getString(R.string.search_empty);
         else whatSearch = getResources().getString(R.string.search) + " " + whatSearch;
+
+    }
+
+    private void initialization() {
+        mGetData = new GetData();
+        ids = new ArrayList<>();
+        searchContacts = new HashMap<>();
+        mSearchContacts = new ArrayList<>();
 
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(SearchActivity.this, toolbar, whatSearch); /** Инициализация */
@@ -173,17 +192,63 @@ public class SearchActivity extends AppCompatActivity {
         initSearch(this, searchView);
         searchView.setCursorDrawable(R.drawable.cursor_drawable);
 
-        mSearchContacts = new ArrayList<>();
+    }
 
+    private void executeTasks() {
         mGetData.execute();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        /**
+         * Устанавливает меню для строки поиска.
+         */
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView.setMenuItem(item);
+
+        /**
+         * Вешает слушателя для открытия строки по нажатию.
+         */
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown () {
+                searchView.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onSearchViewClosed() {}
+        });
+        return true;
+    }
+
     /**
-     * Рисует боковую панель навигации.
-     **/
-    private void initNavigationView() {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close){
+     * При нажатии на кнопку "Назад" поиск закрывется.
+     */
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START);
+        else if (searchView.isSearchOpen())
+            searchView.closeSearch();
+        else
+            super.onBackPressed();
+    }
+
+    private void hideKeyBoard() {
+
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        getCurrentFocus().clearFocus();
+
+    }
+
+    private ActionBarDrawerToggle initializeToggle() {
+        return new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar,
+                R.string.view_navigation_open, R.string.view_navigation_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -192,30 +257,26 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
+                hideKeyBoard();
             }
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
+                hideKeyBoard();
             }
         };
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+    }
 
+    private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        initializeNavHeaderLogin(header);
+        initializeNavHeaderAskQuestion(header);
+    }
+
+    private void initializeNavHeaderAskQuestion(View header) {
+
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
-
-        navHeaderLogin.setText(loadText(SearchActivity.this, LOGIN));
-
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,6 +297,13 @@ public class SearchActivity extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
+
+    }
+
+    private void initializeNavHeaderLogin(View header) {
+
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(SearchActivity.this, LOGIN));
 
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,6 +326,10 @@ public class SearchActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -317,8 +389,7 @@ public class SearchActivity extends AppCompatActivity {
 
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
-                if (loadText(SearchActivity.this, ID).equals(""))
-                    finishAffinity();
+                if (loadText(SearchActivity.this, ID).equals("")) finishAffinity();
 
                 drawerLayout.closeDrawer(GravityCompat.START);
 
@@ -327,42 +398,17 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu, menu);
-
-        /**
-         * Устанавливает меню для строки поиска.
-         */
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
-
-        /**
-         * Вешает слушателя для открытия строки по нажатию.
-         */
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown () {
-                searchView.setVisibility(View.VISIBLE);
-            }
-            @Override
-            public void onSearchViewClosed() {}
-        });
-        return true;
-    }
-
     /**
-     * При нажатии на кнопку "Назад" поиск закрывется.
-     */
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START))
-            drawerLayout.closeDrawer(GravityCompat.START);
-        else if (searchView.isSearchOpen())
-            searchView.closeSearch();
-        else
-            super.onBackPressed();
+     * Рисует боковую панель навигации.
+     **/
+    private void initNavigationView() {
+
+        ActionBarDrawerToggle toggle = initializeToggle();
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        initializeNavHeader();
+        setNavigationViewListener();
     }
 
     /**
