@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,8 +23,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
-import ru.velkonost.lume.R;
 import ru.velkonost.lume.Managers.TypefaceUtil;
+import ru.velkonost.lume.R;
 
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.EQUALS;
@@ -74,35 +73,40 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(LAYOUT);
-        ButterKnife.bind(this);
-        setTheme(R.style.AppTheme_Cursor);
-        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
-
-        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
-        initToolbar(WelcomeActivity.this, toolbar, ""); /** Инициализация */
-
-
-        Drawable drawableLogin = inputLogin.getBackground(); // get current EditText drawable
-        drawableLogin.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP); // change the drawable color
-
-        Drawable drawablePassword = inputPassword.getBackground(); // get current EditText drawable
-        drawablePassword.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP); // change the drawable color
-
-        if (Build.VERSION.SDK_INT > 16) {
-            inputLogin.setBackground(drawableLogin); // set the new drawable to EditText
-            inputPassword.setBackground(drawablePassword); // set the new drawable to EditText
-        } else {
-            inputLogin.setBackgroundDrawable(drawableLogin); // use setBackgroundDrawable because setBackground required API 16
-            inputPassword.setBackgroundDrawable(drawablePassword); // use setBackgroundDrawable because setBackground required API 16
-        }
+        setBase();
+        initialization();
 
         /**
          * Проверяет интернет-соединение на данном устройстве.
          * {@link WelcomeActivity#checkConnection()}
          **/
         checkConnection();
+    }
+
+    private void setBase() {
+
+        setContentView(LAYOUT);
+        ButterKnife.bind(this);
+        setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
+
+    }
+
+    private void initialization() {
+        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
+        initToolbar(WelcomeActivity.this, toolbar, ""); /** Инициализация */
+        initInputs();
+    }
+
+    private void initInputs() {
+        Drawable drawableLogin = inputLogin.getBackground(); // get current EditText drawable
+        drawableLogin.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP); // change the drawable color
+
+        Drawable drawablePassword = inputPassword.getBackground(); // get current EditText drawable
+        drawablePassword.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP); // change the drawable color
+
+        inputLogin.setBackground(drawableLogin); // set the new drawable to EditText
+        inputPassword.setBackground(drawablePassword); // set the new drawable to EditText
     }
 
     @Override
@@ -131,7 +135,6 @@ public class WelcomeActivity extends AppCompatActivity {
             /**
              * Закрашивает кнопки, делает некликабельными.
              */
-
             inputLogin.setEnabled(false);
             inputPassword.setEnabled(false);
         }
@@ -146,20 +149,14 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getGroupId();
 
-        switch (id){
-            case 0:
+        /**
+         * Отправляем данные на сервер.
+         */
+        if (inputLogin.getText().length() != 0
+                && inputPassword.getText().length() != 0)
+            new SignIn().execute();
 
-                /**
-                 * Отправляем данные на сервер.
-                 */
-                if (inputLogin.getText().length() != 0
-                        && inputPassword.getText().length() != 0)
-                    new SignIn().execute();
-
-                break;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -185,7 +182,7 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     }
 
-    class SignIn extends AsyncTask<Object, Object, String> {
+    private class SignIn extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
             /**
