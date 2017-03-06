@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import butterknife.BindView;
-import ru.velkonost.lume.R;
 import ru.velkonost.lume.Managers.TypefaceUtil;
+import ru.velkonost.lume.R;
 
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.ID;
@@ -42,10 +42,7 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(LAYOUT);
-        setTheme(R.style.AppTheme_Cursor);
-        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
+        setBase();
 
         Intent intent = getIntent();
 
@@ -90,8 +87,15 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+    }
 
+    private void setBase() {
+
+        setContentView(LAYOUT);
+        setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
     }
+
 }
 
