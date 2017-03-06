@@ -189,6 +189,24 @@ public class BoardsListActivity extends AppCompatActivity {
 
     }
 
+    private void setInputNameParams(EditText inputName, LinearLayout.LayoutParams  params) {
+
+        inputName.setTextColor(ContextCompat.getColor(BoardsListActivity.this, R.color.colorBlack));
+        inputName.setLayoutParams(params);
+        inputName.setHint(getResources().getString(R.string.enter_board_name));
+        inputName.setInputType(InputType.TYPE_CLASS_TEXT);
+
+    }
+
+    private void setInputDescParams(EditText inputDesc, LinearLayout.LayoutParams  params) {
+
+        inputDesc.setLayoutParams(params);
+
+        inputDesc.setTextColor(ContextCompat.getColor(BoardsListActivity.this, R.color.colorBlack));
+        inputDesc.setHint(getResources().getString(R.string.enter_board_description));
+
+    }
+
     public void createBoardOnClick(View view) {
 
         LinearLayout layout = new LinearLayout(BoardsListActivity.this);
@@ -204,19 +222,14 @@ public class BoardsListActivity extends AppCompatActivity {
 
         final EditText inputName
                 = (EditText) getLayoutInflater().inflate(R.layout.item_edittext_style, null);
-        inputName.setTextColor(ContextCompat.getColor(BoardsListActivity.this, R.color.colorBlack));
-        inputName.setLayoutParams(params);
-
-        inputName.setHint(getResources().getString(R.string.enter_board_name));
-        inputName.setInputType(InputType.TYPE_CLASS_TEXT);
-        layout.addView(inputName);
 
         final EditText inputDesc
                 = (EditText) getLayoutInflater().inflate(R.layout.item_edittext_style, null);
-        inputDesc.setLayoutParams(params);
 
-        inputDesc.setTextColor(ContextCompat.getColor(BoardsListActivity.this, R.color.colorBlack));
-        inputDesc.setHint(getResources().getString(R.string.enter_board_description));
+        setInputNameParams(inputName, params);
+        setInputDescParams(inputDesc, params);
+
+        layout.addView(inputName);
         layout.addView(inputDesc);
 
         builder.setView(layout)
@@ -226,12 +239,8 @@ public class BoardsListActivity extends AppCompatActivity {
                         boardName = inputName.getText().toString();
                         boardDescription = inputDesc.getText().toString();
 
-                        if (boardName.length() != 0) {
-
-                            AddBoard addBoard = new AddBoard();
-                            addBoard.execute();
-
-                        } else dialog.cancel();
+                        if (boardName.length() != 0) new AddBoard().execute();
+                        else dialog.cancel();
 
                     }
                 })
@@ -241,7 +250,6 @@ public class BoardsListActivity extends AppCompatActivity {
                         dialog.cancel();
                     }
                 });
-
 
         AlertDialog alert = builder.create();
         alert.show();
@@ -433,7 +441,6 @@ public class BoardsListActivity extends AppCompatActivity {
         initializeNavHeader();
         setNavigationViewListener();
     }
-
 
     private class TimerCheckBoardsState extends CountDownTimer {
 
