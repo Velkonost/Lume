@@ -39,9 +39,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.Constants;
 import ru.velkonost.lume.Managers.InitializationsManager;
-import ru.velkonost.lume.Managers.PhoneDataStorageManager;
-import ru.velkonost.lume.R;
 import ru.velkonost.lume.Managers.TypefaceUtil;
+import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Message;
 import ru.velkonost.lume.fragments.MessagesFragment;
 
@@ -144,23 +143,79 @@ public class MessageActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setBase();
+        getData();
+        initialization();
+        setListeners();
+
+        /**
+         * Кнопка возврата на предыдущую активность.
+         */
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        executeTasks();
+        startTimer();
+
+    }
+
+    private void setBase() {
+
         setContentView(LAYOUT);
         ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
-        mGetMessages = new GetMessages();
-        mids = new ArrayList<>();
-        mMessages = new ArrayList<>();
+    }
 
+    private void getData() {
+        getFromFile();
+        getExtras();
+    }
+
+    private void getFromFile() {
+        /**
+         * Получение id пользователя.
+         * {@link PhoneDataStorageManager#loadText(Context, String)}
+         **/
+        userId = loadText(MessageActivity.this, ID);
+    }
+
+    private void getExtras() {
         Intent intent = getIntent();
         dialogId = intent.getIntExtra(DIALOG_ID, 0);
         addresseeId = intent.getIntExtra(ID, 0);
         collocutorName = intent.getStringExtra(NAME);
+    }
+
+    private void initialization() {
+
+        mGetMessages = new GetMessages();
+        mids = new ArrayList<>();
+        mMessages = new ArrayList<>();
+
 
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(MessageActivity.this, toolbar, collocutorName); /** Инициализация */
         initNavigationView(); /** Инициализация */
+
+    }
+
+    private void executeTasks() {
+        mGetMessages.execute();
+    }
+
+    private void setListeners() {
+        setToolbarListener();
+        setEditMessageListener();
+    }
+
+    private void setToolbarListener() {
 
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,33 +229,9 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-        /**
-         * Получение id пользователя.
-         * {@link PhoneDataStorageManager#loadText(Context, String)}
-         **/
-        userId = loadText(MessageActivity.this, ID);
+    }
 
-        /**
-         * Кнопка возврата на предыдущую активность.
-         */
-        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-        mGetMessages.execute();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                timer = new TimerCheckMessagesState(100000000, 5000);
-                timer.start();
-
-            }
-        }, 5000);
+    private void setEditMessageListener() {
 
         editMessage.addTextChangedListener(new TextWatcher() {
 
@@ -235,6 +266,19 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    private void startTimer() {
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                timer = new TimerCheckMessagesState(100000000, 5000);
+                timer.start();
+
+            }
+        }, 5000);
+
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -251,13 +295,43 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Рисует боковую панель навигации.
-     **/
-    private void initNavigationView() {
+    public void sendMessage(View view) {
+        if (editMessage.getText().toString().length() == 0) return;
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close){
+        textMessage = editMessage.getText().toString();
+        new SendMessage().execute();
+
+        editMessage.setText("");
+        new RefreshMessages().execute();
+    }
+
+    public void clickOnEditText(View view) {
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                mMessagesFragment.refreshRecyclerView(mMessages);
+                ft.replace(R.id.llmessage, mMessagesFragment);
+                ft.commit();
+            }
+        }, 500);
+
+    }
+
+    private void hideKeyBoard() {
+
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        getCurrentFocus().clearFocus();
+
+    }
+
+    private ActionBarDrawerToggle initializeToggle() {
+        return new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar,
+                R.string.view_navigation_open, R.string.view_navigation_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -266,30 +340,26 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
+                hideKeyBoard();
             }
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
+                hideKeyBoard();
             }
         };
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+    }
 
+    private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        initializeNavHeaderLogin(header);
+        initializeNavHeaderAskQuestion(header);
+    }
+
+    private void initializeNavHeaderAskQuestion(View header) {
+
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
-
-        navHeaderLogin.setText(loadText(MessageActivity.this, LOGIN));
-
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -310,6 +380,13 @@ public class MessageActivity extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
+
+    }
+
+    private void initializeNavHeaderLogin(View header) {
+
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(MessageActivity.this, LOGIN));
 
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -332,6 +409,10 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -391,8 +472,7 @@ public class MessageActivity extends AppCompatActivity {
 
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
-                if (loadText(MessageActivity.this, ID).equals(""))
-                    finishAffinity();
+                if (loadText(MessageActivity.this, ID).equals("")) finishAffinity();
 
                 drawerLayout.closeDrawer(GravityCompat.START);
 
@@ -401,36 +481,20 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    public void sendMessage(View view) {
-        if (editMessage.getText().toString().length() == 0) return;
+    /**
+     * Рисует боковую панель навигации.
+     **/
+    private void initNavigationView() {
 
-        textMessage = editMessage.getText().toString();
+        ActionBarDrawerToggle toggle = initializeToggle();
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.execute();
-
-        editMessage.setText("");
-
-        RefreshMessages mRefreshMessages = new RefreshMessages();
-        mRefreshMessages.execute();
+        initializeNavHeader();
+        setNavigationViewListener();
     }
 
-    public void clickOnEditText(View view) {
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                mMessagesFragment.refreshRecyclerView(mMessages);
-                ft.replace(R.id.llmessage, mMessagesFragment);
-                ft.commit();
-            }
-        }, 500);
-
-    }
-
-
-    public class TimerCheckMessagesState extends CountDownTimer {
+    private class TimerCheckMessagesState extends CountDownTimer {
 
         TimerCheckMessagesState(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
