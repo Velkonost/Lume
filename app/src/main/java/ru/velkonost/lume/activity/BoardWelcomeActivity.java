@@ -70,7 +70,7 @@ import ru.velkonost.lume.fragments.BoardParticipantsFragment;
 import ru.velkonost.lume.fragments.BoardWelcomeColumnFragment;
 import ru.velkonost.lume.fragments.BoardsFragment;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static android.widget.ListPopupWindow.WRAP_CONTENT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
@@ -194,11 +194,50 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setBase();
+        getData();
+        initialize();
+
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        executeTasks();
+
+    }
+
+    private void setBase() {
 
         setContentView(LAYOUT);
         ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
+
+    }
+
+    private void getData() {
+        getFromFile();
+        getExtras();
+    }
+
+    private void getFromFile() {
+        /**
+         * Получение id пользователя.
+         * {@link PhoneDataStorageManager#loadText(Context, String)}
+         **/
+        userId = loadText(BoardWelcomeActivity.this, ID);
+    }
+
+    private void getExtras() {
+        Intent intent = getIntent();
+        boardId = intent.getIntExtra(BOARD_ID, 0);
+    }
+
+    private void initialize() {
 
         mGetBoardInfo = new GetBoardInfo();
         mGetContacts = new GetContacts();
@@ -214,24 +253,25 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(BoardWelcomeActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
         initNavigationView(); /** Инициализация */
+        initializePopups();
 
-        /**
-         * Получение id пользователя.
-         * {@link PhoneDataStorageManager#loadText(Context, String)}
-         **/
-        userId = loadText(BoardWelcomeActivity.this, ID);
+    }
 
-        Intent intent = getIntent();
-        boardId = intent.getIntExtra(BOARD_ID, 0);
+    private void initializePopups() {
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int width = size.x;
         int height = size.y;
 
         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        initializePopupInvite(layoutInflater, height);
+
+    }
+
+    private void initializePopupInvite(LayoutInflater layoutInflater, int height) {
 
         popupView = layoutInflater.inflate(popup_board_invite_list, null);
 
@@ -240,17 +280,20 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
         recyclerView = ButterKnife.findById(popupView, R.id.recyclerViewBoardInvite);
 
-        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+    }
 
-
+    private void executeTasks() {
         mGetBoardInfo.execute();
         mGetContacts.execute();
+    }
+
+    private void setInputParams(EditText input, LinearLayout.LayoutParams  params) {
+
+        input.setTextColor(ContextCompat.getColor(BoardWelcomeActivity.this, R.color.colorBlack));
+        input.setLayoutParams(params);
+
+        input.setHint(getResources().getString(R.string.enter_board_name));
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
 
     }
 
@@ -270,11 +313,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
         final EditText input
                 = (EditText) getLayoutInflater().inflate(R.layout.item_edittext_style, null);
-        input.setTextColor(ContextCompat.getColor(BoardWelcomeActivity.this, R.color.colorBlack));
-        input.setLayoutParams(params);
 
-        input.setHint(getResources().getString(R.string.enter_board_name));
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        setInputParams(input, params);
         layout.addView(input);
 
         builder.setView(layout)
@@ -285,8 +325,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
                         if (columnName.length() != 0) {
                             invitePerson = false;
-                            AddColumn addColumn = new AddColumn();
-                            addColumn.execute();
+                            new AddColumn().execute();
 
                         } else dialog.cancel();
 
@@ -329,6 +368,67 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         return true;
     }
 
+    private void showAgreeMenu() {
+        menu.findItem(R.id.action_settings).setVisible(false);
+        menu.findItem(R.id.action_invite).setVisible(false);
+        menu.findItem(R.id.action_leave).setVisible(false);
+        menu.findItem(R.id.action_agree).setVisible(true);
+    }
+
+    private void hideAgreeMenu() {
+
+        menu.findItem(R.id.action_settings).setVisible(true);
+        menu.findItem(R.id.action_invite).setVisible(true);
+        menu.findItem(R.id.action_leave).setVisible(true);
+        menu.findItem(R.id.action_agree).setVisible(false);
+
+    }
+
+    private void hideKeyBoard() {
+
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        getCurrentFocus().clearFocus();
+
+    }
+
+    private void setAgreeMenuListener() {
+        menu.findItem(R.id.action_agree).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                boardName = editBoardName.getText().toString();
+                boardDescription = descriptionFragment.getText();
+
+                toolbar.setTitle(boardName);
+                descriptionFragment.changeText();
+                descriptionFragment.showNext();
+
+                editBoardName.setVisibility(View.INVISIBLE);
+
+                hideAgreeMenu();
+                new ChangeBoardSettings().execute();
+
+                hideKeyBoard();
+
+                return false;
+            }
+        });
+    }
+
+    private void showPopupInvite() {
+
+        popupWindowBoardInvite.setTouchable(true);
+        popupWindowBoardInvite.setFocusable(true);
+        popupWindowBoardInvite.setBackgroundDrawable(new ColorDrawable(getResources()
+                .getColor(android.R.color.transparent)));
+        popupWindowBoardInvite.setOutsideTouchable(true);
+
+        popupWindowBoardInvite.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -342,43 +442,8 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
                 descriptionFragment.showNext();
 
-                menu.findItem(R.id.action_settings).setVisible(false);
-                menu.findItem(R.id.action_invite).setVisible(false);
-                menu.findItem(R.id.action_leave).setVisible(false);
-
-                menu.findItem(R.id.action_agree).setVisible(true);
-
-                menu.findItem(R.id.action_agree).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-
-                        boardName = editBoardName.getText().toString();
-                        boardDescription = descriptionFragment.getText();
-
-                        toolbar.setTitle(boardName);
-                        descriptionFragment.changeText();
-                        descriptionFragment.showNext();
-
-                        editBoardName.setVisibility(View.INVISIBLE);
-
-                        menu.findItem(R.id.action_settings).setVisible(true);
-                        menu.findItem(R.id.action_invite).setVisible(true);
-                        menu.findItem(R.id.action_leave).setVisible(true);
-
-                        menu.findItem(R.id.action_agree).setVisible(false);
-
-                        ChangeBoardSettings changeBoardSettings = new ChangeBoardSettings();
-                        changeBoardSettings.execute();
-
-
-                        InputMethodManager inputMethodManager = (InputMethodManager)
-                                getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                        getCurrentFocus().clearFocus();
-
-                        return false;
-                    }
-                });
+                showAgreeMenu();
+                setAgreeMenuListener();
 
                 break;
             case R.id.action_invite:
@@ -391,13 +456,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                     }
                 });
 
-                popupWindowBoardInvite.setTouchable(true);
-                popupWindowBoardInvite.setFocusable(true);
-                popupWindowBoardInvite.setBackgroundDrawable(new ColorDrawable(getResources()
-                        .getColor(android.R.color.transparent)));
-                popupWindowBoardInvite.setOutsideTouchable(true);
-
-                popupWindowBoardInvite.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                showPopupInvite();
 
                 break;
             case R.id.action_leave:
@@ -415,8 +474,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                         .setPositiveButton(getResources().getString(R.string.yes),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        LeaveBoard leaveBoard = new LeaveBoard();
-                                        leaveBoard.execute();
+                                        new LeaveBoard().execute();
 
                                         changeActivityCompat(BoardWelcomeActivity.this,
                                                 new Intent(BoardWelcomeActivity.this,
@@ -432,13 +490,10 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Рисует боковую панель навигации.
-     **/
-    private void initNavigationView() {
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close){
+    private ActionBarDrawerToggle initializeToggle() {
+        return new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar,
+                R.string.view_navigation_open, R.string.view_navigation_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -447,31 +502,26 @@ public class BoardWelcomeActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
+                hideKeyBoard();
             }
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
+                hideKeyBoard();
             }
         };
+    }
 
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
+    private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        initializeNavHeaderLogin(header);
+        initializeNavHeaderAskQuestion(header);
+    }
+
+    private void initializeNavHeaderAskQuestion(View header) {
+
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
-
-        navHeaderLogin.setText(loadText(BoardWelcomeActivity.this, LOGIN));
-
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -492,6 +542,13 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
+
+    }
+
+    private void initializeNavHeaderLogin(View header) {
+
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(BoardWelcomeActivity.this, LOGIN));
 
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -514,6 +571,10 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -580,6 +641,19 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    /**
+     * Рисует боковую панель навигации.
+     **/
+    private void initNavigationView() {
+
+        ActionBarDrawerToggle toggle = initializeToggle();
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        initializeNavHeader();
+        setNavigationViewListener();
     }
 
     private class ChangeBoardSettings extends AsyncTask<Object, Object, String> {
