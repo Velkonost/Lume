@@ -39,8 +39,8 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.InitializationsManager;
-import ru.velkonost.lume.R;
 import ru.velkonost.lume.Managers.TypefaceUtil;
+import ru.velkonost.lume.R;
 
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
@@ -72,13 +72,13 @@ import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
 import static ru.velkonost.lume.Managers.DateConverterManager.formatDate;
 import static ru.velkonost.lume.Managers.DateConverterManager.formatDateBack;
-import static ru.velkonost.lume.Managers.SetImageManager.fetchImage;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
 import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
 import static ru.velkonost.lume.Managers.InitializationsManager.inititializeAlertDialog;
 import static ru.velkonost.lume.Managers.InitializationsManager.inititializeAlertDialogWithRefresh;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
+import static ru.velkonost.lume.Managers.SetImageManager.fetchImage;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
 /**
@@ -213,33 +213,9 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(LAYOUT);
-        ButterKnife.bind(this);
-        setTheme(R.style.AppTheme_Cursor);
-        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
-
-        userId = loadText(SettingsActivity.this, ID);
-
-        /** Инициализация экземпляров классов */
-        mGetData = new GetData();
-        mPostData = new PostData();
-
-        final LinearLayout.LayoutParams layoutParamsVisible
-                = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-
-
-        final LinearLayout.LayoutParams layoutParamsInvisible
-                = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
-
-        divPersonal.setLayoutParams(layoutParamsInvisible);
-        divAccount.setLayoutParams(layoutParamsInvisible);
-
-        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
-        initToolbar(SettingsActivity.this, toolbar, getResources().getString(R.string.settings)); /** Инициализация */
-        initNavigationView(); /** Инициализация */
-        initDateBirthdayDatePicker(); /** Инициализация */
+        setBase();
+        getData();
+        initialization();
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -249,10 +225,71 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        mGetData.execute();
+        executeTasks();
+    }
 
+    private void setBase() {
+        setContentView(LAYOUT);
+        ButterKnife.bind(this);
+        setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
+    }
+
+    private void getData() {
+        getFromFile();
+    }
+
+    private void getFromFile() {
+        userId = loadText(SettingsActivity.this, ID);
+    }
+
+    private void initialization() {
+        /** Инициализация экземпляров классов */
+        mGetData = new GetData();
+        mPostData = new PostData();
+
+        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
+        initToolbar(SettingsActivity.this, toolbar,
+                getResources().getString(R.string.settings)); /** Инициализация */
+        initNavigationView(); /** Инициализация */
+        initDateBirthdayDatePicker(); /** Инициализация */
+        initAnimations();
+        initDivs();
+    }
+
+    private void initAnimations() {
         rotateArrowOpen = AnimationUtils.loadAnimation(this, R.anim.arrow_rotation_open);
         rotateArrowClose = AnimationUtils.loadAnimation(this, R.anim.arrow_rotation_close);
+    }
+
+    private void initDivs() {
+
+        final LinearLayout.LayoutParams layoutParamsVisible
+                = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        final LinearLayout.LayoutParams layoutParamsInvisible
+                = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
+
+        divPersonal.setLayoutParams(layoutParamsInvisible);
+        divAccount.setLayoutParams(layoutParamsInvisible);
+
+        setHeadersListeners(layoutParamsVisible, layoutParamsInvisible);
+
+    }
+
+    private void setHeadersListeners(
+            LinearLayout.LayoutParams layoutParamsVisible,
+            LinearLayout.LayoutParams layoutParamsInvisible
+    ) {
+        setPersonalListener(layoutParamsVisible, layoutParamsInvisible);
+        setAccountListener(layoutParamsVisible, layoutParamsInvisible);
+    }
+
+    private void setPersonalListener(
+            final LinearLayout.LayoutParams layoutParamsVisible,
+            final LinearLayout.LayoutParams layoutParamsInvisible
+    ) {
 
         divPersonalHeader.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,6 +318,13 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void setAccountListener(
+            final LinearLayout.LayoutParams layoutParamsVisible,
+            final LinearLayout.LayoutParams layoutParamsInvisible
+    ) {
+
         divAccountHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -306,23 +350,20 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
+    }
 
-
-
+    private void executeTasks() {
+        mGetData.execute();
     }
 
     /**
      * Слушатель для даты рождения.
      **/
     public  void chooseDate(View w){
-        switch (w.getId()){
-            case R.id.editBirthday:
-                /**
-                 * Отображает календарь для выбора даты.
-                 **/
-                dateBirdayDatePicker.show();
-                break;
-        }
+        /**
+         * Отображает календарь для выбора даты.
+         **/
+        dateBirdayDatePicker.show();
     }
 
     /**
@@ -365,27 +406,43 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getGroupId();
+        /**
+         * Приводим дату к виду, в котором она хранится на сервере.
+         */
+        formattedBirthday = formatDateBack(editBirthday.getText().toString());
 
-        switch (id){
-            case 0:
-                /**
-                 * Приводим дату к виду, в котором она хранится на сервере.
-                 */
-                formattedBirthday = formatDateBack(editBirthday.getText().toString());
+        /**
+         * Отправляем данные на сервер.
+         */
+        mPostData.execute();
 
-                /**
-                 * Отправляем данные на сервер.
-                 */
-                mPostData.execute();
-                break;
-        }
         return super.onOptionsItemSelected(item);
     }
 
-    private void initNavigationView() {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close){
+    /**
+     * При нажатии на кнопку "Назад" поиск закрывется.
+     */
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START);
+        else
+            super.onBackPressed();
+    }
+
+    private void hideKeyBoard() {
+
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        getCurrentFocus().clearFocus();
+
+    }
+
+    private ActionBarDrawerToggle initializeToggle() {
+        return new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar,
+                R.string.view_navigation_open, R.string.view_navigation_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -394,31 +451,26 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
+                hideKeyBoard();
             }
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
+                hideKeyBoard();
             }
         };
+    }
 
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
+    private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        initializeNavHeaderLogin(header);
+        initializeNavHeaderAskQuestion(header);
+    }
+
+    private void initializeNavHeaderAskQuestion(View header) {
+
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
-
-        navHeaderLogin.setText(loadText(SettingsActivity.this, LOGIN));
-
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -439,6 +491,13 @@ public class SettingsActivity extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
+
+    }
+
+    private void initializeNavHeaderLogin(View header) {
+
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(SettingsActivity.this, LOGIN));
 
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -462,11 +521,14 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void setNavigationViewListener() {
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-
                 drawerLayout.closeDrawers();
 
                 /** Инициализируем намерение на следующую активность */
@@ -521,8 +583,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
-                if (loadText(SettingsActivity.this, ID).equals(""))
-                    finishAffinity();
+                if (loadText(SettingsActivity.this, ID).equals("")) finishAffinity();
 
                 drawerLayout.closeDrawer(GravityCompat.START);
 
@@ -532,14 +593,16 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     /**
-     * При нажатии на кнопку "Назад" поиск закрывется.
-     */
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START))
-            drawerLayout.closeDrawer(GravityCompat.START);
-        else
-            super.onBackPressed();
+     * Рисует боковую панель навигации.
+     **/
+    private void initNavigationView() {
+
+        ActionBarDrawerToggle toggle = initializeToggle();
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        initializeNavHeader();
+        setNavigationViewListener();
     }
 
     /**
