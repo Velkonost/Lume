@@ -42,9 +42,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
+import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.Managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.descriptions.Contact;
 import ru.velkonost.lume.fragments.ContactsFragment;
 
@@ -147,15 +147,36 @@ public class ContactsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setBase();
+        getData();
+        initialize();
+
+        executeTasks();
+
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
+    private void setBase() {
 
         setContentView(LAYOUT);
         ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
+    }
+
+    private void initialize() {
+
         mGetData = new GetData();
         ids = new ArrayList<>();
         contacts = new HashMap<>();
+        mContacts = new ArrayList<>();
 
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(ContactsActivity.this, toolbar, R.string.menu_item_contacts); /** Инициализация */
@@ -169,6 +190,29 @@ public class ContactsActivity extends AppCompatActivity {
         initSearchContacts(this, searchView);
         searchView.setCursorDrawable(R.drawable.cursor_drawable);
 
+        initSwipeRefresh();
+
+    }
+
+    private void getData() {
+        getFromFile();
+    }
+
+    private void getFromFile() {
+
+        /**
+         * Получение id пользователя.
+         * {@link PhoneDataStorageManager#loadText(Context, String)}
+         **/
+        userId = loadText(ContactsActivity.this, ID);
+
+    }
+
+    private void executeTasks() {
+        mGetData.execute();
+    }
+
+    private void initSwipeRefresh() {
         /**
          *  Установка цветной палитры,
          *  цвета которой будут заменять друг друга в зависимости от прогресса.
@@ -196,32 +240,89 @@ public class ContactsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu, menu);
+
         /**
-         * Получение id пользователя.
-         * {@link PhoneDataStorageManager#loadText(Context, String)}
-         **/
-        userId = loadText(ContactsActivity.this, ID);
+         * Устанавливает меню для строки поиска.
+         */
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView.setMenuItem(item);
 
-        mContacts = new ArrayList<>();
-
-        mGetData.execute();
-
-        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        /**
+         * Вешает слушателя для открытия строки по нажатию.
+         */
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
-            public void onClick(View v) {
-                onBackPressed();
+            public void onSearchViewShown () {
+                searchView.setVisibility(View.VISIBLE);
+                fabGoSearch.hide();
+            }
+            @Override
+            public void onSearchViewClosed() {
+                fabGoSearch.show();
+            }
+        });
+        return true;
+    }
+
+    /**
+     * При нажатии на кнопку "Назад" поиск закрывется.
+     */
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START);
+        else if (searchView.isSearchOpen())
+            searchView.closeSearch();
+        else
+            super.onBackPressed();
+    }
+
+
+    private void initSearchContacts(final Activity activity, final MaterialSearchView searchView) {
+
+        searchView.setEllipsize(true);
+        final boolean[] check = {false, true};
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                contactsFragment.search(query, check[0], check[1]);
+                check[1] = false;
+                searchView.clearFocus();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(final String newText) {
+                contactsFragment.search(newText, check[0], check[1]);
+                check[0] = true;
+                check[1] = true;
+
+                return true;
             }
         });
     }
 
-    /**
-     * Рисует боковую панель навигации.
-     **/
-    private void initNavigationView() {
+    private void hideKeyBoard() {
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close){
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        getCurrentFocus().clearFocus();
+
+    }
+
+    private ActionBarDrawerToggle initializeToggle() {
+        return new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar,
+                R.string.view_navigation_open, R.string.view_navigation_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -230,31 +331,26 @@ public class ContactsActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
+                hideKeyBoard();
             }
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                InputMethodManager inputMethodManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                getCurrentFocus().clearFocus();
+                hideKeyBoard();
             }
         };
+    }
 
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
+    private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        initializeNavHeaderLogin(header);
+        initializeNavHeaderAskQuestion(header);
+    }
+
+    private void initializeNavHeaderAskQuestion(View header) {
+
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
-
-        navHeaderLogin.setText(loadText(ContactsActivity.this, LOGIN));
-
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -275,6 +371,13 @@ public class ContactsActivity extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
+
+    }
+
+    private void initializeNavHeaderLogin(View header) {
+
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(ContactsActivity.this, LOGIN));
 
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -297,6 +400,10 @@ public class ContactsActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -356,8 +463,7 @@ public class ContactsActivity extends AppCompatActivity {
 
 
                 /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
-                if (loadText(ContactsActivity.this, ID).equals(""))
-                    finishAffinity();
+                if (loadText(ContactsActivity.this, ID).equals("")) finishAffinity();
 
                 drawerLayout.closeDrawer(GravityCompat.START);
 
@@ -366,74 +472,17 @@ public class ContactsActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu, menu);
-
-        /**
-         * Устанавливает меню для строки поиска.
-         */
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
-
-        /**
-         * Вешает слушателя для открытия строки по нажатию.
-         */
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown () {
-                searchView.setVisibility(View.VISIBLE);
-                fabGoSearch.hide();
-            }
-            @Override
-            public void onSearchViewClosed() {
-                fabGoSearch.show();
-            }
-        });
-        return true;
-    }
-
-
     /**
-     * При нажатии на кнопку "Назад" поиск закрывется.
-     */
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START))
-            drawerLayout.closeDrawer(GravityCompat.START);
-        else if (searchView.isSearchOpen())
-            searchView.closeSearch();
-        else
-            super.onBackPressed();
-    }
+     * Рисует боковую панель навигации.
+     **/
+    private void initNavigationView() {
 
-    private void initSearchContacts(final Activity activity, final MaterialSearchView searchView) {
+        ActionBarDrawerToggle toggle = initializeToggle();
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
-        searchView.setEllipsize(true);
-        final boolean[] check = {false, true};
-
-
-
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                contactsFragment.search(query, check[0], check[1]);
-                check[1] = false;
-                searchView.clearFocus();
-
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(final String newText) {
-                contactsFragment.search(newText, check[0], check[1]);
-                check[0] = true;
-                check[1] = true;
-
-                return true;
-            }
-        });
+        initializeNavHeader();
+        setNavigationViewListener();
     }
 
     /**
