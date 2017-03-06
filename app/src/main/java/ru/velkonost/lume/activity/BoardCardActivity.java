@@ -414,15 +414,6 @@ public class BoardCardActivity extends AppCompatActivity {
         hideAgreeMenu();
     }
 
-    private void hideKeyBoard() {
-
-        InputMethodManager inputMethodManager = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        getCurrentFocus().clearFocus();
-
-    }
-
     private void setPopupColumnsListener() {
 
         popupWindowColumns.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -579,6 +570,15 @@ public class BoardCardActivity extends AppCompatActivity {
             super.onBackPressed();
             finish();
         }
+    }
+
+    private void hideKeyBoard() {
+
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        getCurrentFocus().clearFocus();
+
     }
 
     private ActionBarDrawerToggle initializeToggle() {

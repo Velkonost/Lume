@@ -24,6 +24,7 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -124,28 +125,9 @@ public class BoardsListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(LAYOUT);
-        ButterKnife.bind(this);
-        setTheme(R.style.AppTheme_Cursor);
-        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
-
-        mGetBoards = new GetBoards();
-        bids = new ArrayList<>();
-        mBoards = new ArrayList<>();
-
-
-
-        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
-        initToolbar(BoardsListActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
-        initNavigationView(); /** Инициализация */
-
-        /**
-         * Получение id пользователя.
-         * {@link PhoneDataStorageManager#loadText(Context, String)}
-         **/
-        userId = loadText(BoardsListActivity.this, ID);
-
+        setBase();
+        getData();
+        initialize();
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -155,7 +137,46 @@ public class BoardsListActivity extends AppCompatActivity {
             }
         });
 
+        executeTasks();
+        startTimer();
+    }
+
+    private void setBase() {
+        setContentView(LAYOUT);
+        ButterKnife.bind(this);
+        setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
+    }
+
+    private void initialize() {
+        mGetBoards = new GetBoards();
+        bids = new ArrayList<>();
+        mBoards = new ArrayList<>();
+
+        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
+        initToolbar(BoardsListActivity.this, toolbar, R.string.menu_item_boards); /** Инициализация */
+        initNavigationView(); /** Инициализация */
+    }
+
+    private void getData() {
+        getFromFile();
+    }
+
+    private void executeTasks() {
         mGetBoards.execute();
+    }
+
+    private void getFromFile() {
+
+        /**
+         * Получение id пользователя.
+         * {@link PhoneDataStorageManager#loadText(Context, String)}
+         **/
+        userId = loadText(BoardsListActivity.this, ID);
+
+    }
+
+    private void startTimer() {
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -165,6 +186,7 @@ public class BoardsListActivity extends AppCompatActivity {
 
             }
         }, 10000);
+
     }
 
     public void createBoardOnClick(View view) {
@@ -237,24 +259,47 @@ public class BoardsListActivity extends AppCompatActivity {
         if (timer != null) timer.cancel();
     }
 
-    /**
-     * Рисует боковую панель навигации.
-     **/
-    private void initNavigationView() {
+    private void hideKeyBoard() {
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        getCurrentFocus().clearFocus();
 
+    }
 
+    private ActionBarDrawerToggle initializeToggle() {
+        return new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar,
+                R.string.view_navigation_open, R.string.view_navigation_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                hideKeyBoard();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                hideKeyBoard();
+            }
+        };
+    }
+
+    private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
+        initializeNavHeaderLogin(header);
+        initializeNavHeaderAskQuestion(header);
+    }
 
-        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+    private void initializeNavHeaderAskQuestion(View header) {
+
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
-
-        navHeaderLogin.setText(loadText(BoardsListActivity.this, LOGIN));
-
 
         askQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -275,6 +320,13 @@ public class BoardsListActivity extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
+
+    }
+
+    private void initializeNavHeaderLogin(View header) {
+
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(BoardsListActivity.this, LOGIN));
 
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -297,6 +349,10 @@ public class BoardsListActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -365,8 +421,21 @@ public class BoardsListActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Рисует боковую панель навигации.
+     **/
+    private void initNavigationView() {
 
-    public class TimerCheckBoardsState extends CountDownTimer {
+        ActionBarDrawerToggle toggle = initializeToggle();
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        initializeNavHeader();
+        setNavigationViewListener();
+    }
+
+
+    private class TimerCheckBoardsState extends CountDownTimer {
 
         TimerCheckBoardsState(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
