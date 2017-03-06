@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,9 +39,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.PhoneDataStorageManager;
+import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.Managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.descriptions.Contact;
 import ru.velkonost.lume.fragments.BoardAllParticipantsFragment;
 import ru.velkonost.lume.fragments.ContactsFragment;
@@ -128,20 +129,9 @@ public class BoardParticipantsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(LAYOUT);
-        ButterKnife.bind(this);
-        setTheme(R.style.AppTheme_Cursor);
-        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
-
-        mGetData = new GetData();
-        mBoardParticipants = new ArrayList<>();
-        ids = new ArrayList<>();
-        contacts = new HashMap<>();
-
-        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
-        initToolbar(BoardParticipantsActivity.this, toolbar, R.string.menu_item_participants); /** Инициализация */
-        initNavigationView(); /** Инициализация */
+        setBase();
+        getData();
+        initialize();
 
         toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -151,17 +141,49 @@ public class BoardParticipantsActivity extends AppCompatActivity {
             }
         });
 
+        executeTasks();
+
+    }
+
+    private void setBase() {
+        setContentView(LAYOUT);
+        ButterKnife.bind(this);
+        setTheme(R.style.AppTheme_Cursor);
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
+    }
+
+    private void getData() {
+        getFromFile();
+        getExtras();
+    }
+
+    private void executeTasks() {
+        mGetData.execute();
+    }
+
+    private void getFromFile() {
         /**
          * Получение id пользователя.
          * {@link PhoneDataStorageManager#loadText(Context, String)}
          **/
         userId = loadText(BoardParticipantsActivity.this, ID);
+    }
 
+    private void getExtras() {
         Intent intent = getIntent();
         boardId = intent.getIntExtra(BOARD_ID, 0);
+    }
 
-        mGetData.execute();
+    private void initialize() {
+        mGetData = new GetData();
+        mBoardParticipants = new ArrayList<>();
+        ids = new ArrayList<>();
+        contacts = new HashMap<>();
 
+        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
+        initToolbar(BoardParticipantsActivity.this, toolbar,
+                R.string.menu_item_participants); /** Инициализация */
+        initNavigationView(); /** Инициализация */
     }
 
     @Override
@@ -173,21 +195,45 @@ public class BoardParticipantsActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Рисует боковую панель навигации.
-     **/
-    private void initNavigationView() {
+    private void hideKeyBoard() {
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        getCurrentFocus().clearFocus();
 
+    }
 
+    private ActionBarDrawerToggle initializeToggle() {
+        return new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar,
+                R.string.view_navigation_open, R.string.view_navigation_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                hideKeyBoard();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                hideKeyBoard();
+            }
+        };
+    }
+
+    private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
-        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        initializeNavHeaderLogin(header);
+        initializeNavHeaderAskQuestion(header);
+    }
 
-        navHeaderLogin.setText(loadText(BoardParticipantsActivity.this, LOGIN));
+    private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
 
@@ -211,6 +257,13 @@ public class BoardParticipantsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void initializeNavHeaderLogin(View header) {
+
+        TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
+        navHeaderLogin.setText(loadText(BoardParticipantsActivity.this, LOGIN));
+
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -232,6 +285,10 @@ public class BoardParticipantsActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @SuppressWarnings("NullableProblems")
@@ -298,6 +355,19 @@ public class BoardParticipantsActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    /**
+     * Рисует боковую панель навигации.
+     **/
+    private void initNavigationView() {
+
+        ActionBarDrawerToggle toggle = initializeToggle();
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        initializeNavHeader();
+        setNavigationViewListener();
     }
 
     private class GetData extends AsyncTask<Object, Object, String> {

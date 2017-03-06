@@ -522,7 +522,6 @@ public class BoardColumnsActivity extends AppCompatActivity {
         setNavigationViewListener();
     }
 
-
     private class GetBoardInfo extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
