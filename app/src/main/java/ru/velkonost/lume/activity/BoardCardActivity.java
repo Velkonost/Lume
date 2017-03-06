@@ -581,7 +581,7 @@ public class BoardCardActivity extends AppCompatActivity {
         }
     }
 
-    private ActionBarDrawerToggle initializeToogle() {
+    private ActionBarDrawerToggle initializeToggle() {
         return new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar,
                 R.string.view_navigation_open, R.string.view_navigation_close) {
@@ -739,7 +739,7 @@ public class BoardCardActivity extends AppCompatActivity {
      **/
     private void initNavigationView() {
 
-        ActionBarDrawerToggle toggle = initializeToogle();
+        ActionBarDrawerToggle toggle = initializeToggle();
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
