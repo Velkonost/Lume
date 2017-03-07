@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.adapter.DialogListAdapterRv;
+import ru.velkonost.lume.adapter.DialogListAdapter;
 import ru.velkonost.lume.descriptions.DialogContact;
 
 public class DialogsFragment extends Fragment {
@@ -26,12 +26,12 @@ public class DialogsFragment extends Fragment {
 
     private List<DialogContact> mContacts;
     private List<DialogContact> mContactsCopy;
-    private DialogListAdapterRv adapter;
+    private DialogListAdapter adapter;
     protected View view;
     protected Context context;
 
     @BindView(R.id.gridDialogs)
-    RecyclerView rv;
+    GridView rv;
 
     public static DialogsFragment getInstance(Context context, List<DialogContact> contacts) {
         Bundle args = new Bundle();
@@ -51,27 +51,30 @@ public class DialogsFragment extends Fragment {
         view = inflater.inflate(LAYOUT, container, false);
         ButterKnife.bind(this, view);
 
-        adapter = new DialogListAdapterRv(mContacts, context);
+        adapter = new DialogListAdapter(context, mContacts);
         GridLayoutManager glm = new GridLayoutManager(getActivity(), 3);
-        rv.setLayoutManager(glm);
+//        rv.setLayoutManager(glm);
 
+        adjustGridView(rv);
         rv.setAdapter(adapter);
-//        adjustGridView(gridView);
 
         return view;
     }
 
     private void adjustGridView(GridView gridView) {
 
-        gridView.setColumnWidth(200);
-        gridView.setNumColumns(GridView.AUTO_FIT);
-
+        gridView.setColumnWidth(dp2px(100));
+        gridView.setNumColumns(3);
         gridView.setStretchMode(GridView.STRETCH_SPACING);
+    }
+
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                context.getResources().getDisplayMetrics());
     }
 
     public void refreshContacts (List<DialogContact> mContacts) {
         adapter.setData(mContacts);
-        adapter.notifyDataSetChanged();
     }
 
     public void search(String text, boolean empty, boolean let) {
@@ -95,7 +98,6 @@ public class DialogsFragment extends Fragment {
             }
         }
     }
-
 
     public void setContext (Context context) {this.context = context;}
 
