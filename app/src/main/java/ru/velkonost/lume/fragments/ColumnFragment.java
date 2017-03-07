@@ -40,6 +40,7 @@ import ru.velkonost.lume.descriptions.Card;
 import static ru.velkonost.lume.Constants.AMOUNT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.BELONG;
+import static ru.velkonost.lume.Constants.CARD_COLOR;
 import static ru.velkonost.lume.Constants.COLUMN_ID;
 import static ru.velkonost.lume.Constants.COLUMN_IDS;
 import static ru.velkonost.lume.Constants.DESCRIPTION;
@@ -264,12 +265,20 @@ public class ColumnFragment extends BaseTabFragment {
                      */
                     JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
 
+                    int columnOrder = ((ViewPager) getActivity()
+                            .findViewById(R.id.viewPagerColumns))
+                            .getCurrentItem();
+
+
                     data.add(new Card(
                             Integer.parseInt(cids.get(i)), Integer.parseInt(columnInfo.getString(AMOUNT)),
-                            columnInfo.getString(NAME), columnInfo.getBoolean(BELONG)
+                            columnInfo.getString(NAME), columnInfo.getBoolean(BELONG),
+                            columnInfo.getInt(CARD_COLOR), columnOrder
                     ));
                 }
 
+
+//                Log.i("KEKE0", String.valueOf(columnOrder));
                 adapter = new CardListAdapter(data, getContext());
                 rv.setLayoutManager(new LinearLayoutManager(context));
                 rv.setAdapter(adapter);
@@ -368,10 +377,15 @@ public class ColumnFragment extends BaseTabFragment {
                         }
                     }
 
+                    int columnOrder = ((ViewPager) getActivity()
+                            .findViewById(R.id.viewPagerColumns))
+                            .getCurrentItem();
+
                     if (!exist)
                         data.add(new Card(
                                 Integer.parseInt(cids.get(i)), Integer.parseInt(columnInfo.getString(AMOUNT)),
-                                columnInfo.getString(NAME), columnInfo.getBoolean(BELONG)
+                                columnInfo.getString(NAME), columnInfo.getBoolean(BELONG),
+                                columnInfo.getInt(CARD_COLOR), columnOrder
                         ));
                 }
 

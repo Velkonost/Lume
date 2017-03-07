@@ -17,6 +17,7 @@ public class Constants {
 
     public static final String AMOUNT = "amount";
     public static final String BELONG = "belong";
+    public static final String CARD_COLOR = "card_color";
 
     public static final String LOGIN = "login";
     public static final String REGISTRATION = "registration";
@@ -131,6 +132,7 @@ public class Constants {
         public static final String SERVER_INVITE_IN_CARD_METHOD = "/inviteInCard";
         public static final String SERVER_CHANGE_BOARD_SETTINGS_METHOD = "/changeBoardSettings";
         public static final String SERVER_CHANGE_CARD_SETTINGS_METHOD = "/changeCardSettings";
+        public static final String SERVER_CHANGE_CARD_COLOR_METHOD = "/changeCardColor";
         public static final String SERVER_GET_BOARD_PARTICIPANTS_TO_INVITE_METHOD = "/getInBoardToInvite";
         public static final String SERVER_GET_BOARD_COLUMNS_METHOD = "/getBoardColumns";
         public static final String SERVER_MOVE_CARD_METHOD = "/moveCard";

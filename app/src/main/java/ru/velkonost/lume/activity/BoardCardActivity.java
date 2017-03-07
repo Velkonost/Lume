@@ -25,6 +25,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -39,6 +40,10 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.eyalbira.loadingdots.LoadingDots;
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.OnColorSelectedListener;
+import com.flask.colorpicker.builder.ColorPickerClickListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -74,16 +79,19 @@ import ru.velkonost.lume.fragments.CardCommentsFragment;
 import ru.velkonost.lume.fragments.CardParticipantsFragment;
 import ru.velkonost.lume.fragments.MessagesFragment;
 
+import static android.graphics.Color.WHITE;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
 import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.BOARD_LAST_CONTRIBUTED_USER;
+import static ru.velkonost.lume.Constants.CARD_COLOR;
 import static ru.velkonost.lume.Constants.CARD_DESCRIPTION;
 import static ru.velkonost.lume.Constants.CARD_ID;
 import static ru.velkonost.lume.Constants.CARD_NAME;
 import static ru.velkonost.lume.Constants.COLUMN_IDS;
+import static ru.velkonost.lume.Constants.COLUMN_ORDER;
 import static ru.velkonost.lume.Constants.COMMENT;
 import static ru.velkonost.lume.Constants.COMMENT_IDS;
 import static ru.velkonost.lume.Constants.DATE;
@@ -95,6 +103,7 @@ import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.TEXT;
 import static ru.velkonost.lume.Constants.URL.SERVER_CARD_ADD_COMMENT_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_CHANGE_CARD_COLOR_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_CHANGE_CARD_SETTINGS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_COLUMNS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_PARTICIPANTS_TO_INVITE_METHOD;
@@ -210,6 +219,10 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private String textComment;
 
+    private int backgroundColor;
+
+    private int columnOrder;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -265,17 +278,18 @@ public class BoardCardActivity extends AppCompatActivity {
     }
 
     private void getFromFile() {
-        boardId = Depository.getBoardId();
+        userId = loadText(BoardCardActivity.this, ID);
     }
 
     private void getFromDepository() {
-        userId = loadText(BoardCardActivity.this, ID);
+        boardId = Depository.getBoardId();
     }
 
     private void getExtras() {
         Intent intent = getIntent();
         cardName = intent.getExtras().getString(CARD_NAME);
         cardId = intent.getExtras().getInt(CARD_ID);
+        columnOrder = intent.getExtras().getInt(COLUMN_ORDER);
     }
 
     private void initializePopups() {
@@ -510,8 +524,7 @@ public class BoardCardActivity extends AppCompatActivity {
                         .setNegativeButton(getResources().getString(R.string.yes),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        LeaveCard leaveCard = new LeaveCard();
-                                        leaveCard.execute();
+                                        new LeaveCard().execute();
                                         refreshActivity();
 
                                     }
@@ -519,6 +532,37 @@ public class BoardCardActivity extends AppCompatActivity {
                         .create().show();
 
                 break;
+            case R.id.action_change_color:
+
+                ColorPickerDialogBuilder
+                        .with(BoardCardActivity.this)
+                        .setTitle(getResources().getString(R.string.choose_color))
+                        .initialColor(WHITE)
+                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                        .density(12)
+                        .setOnColorSelectedListener(new OnColorSelectedListener() {
+                            @Override
+                            public void onColorSelected(int selectedColor) {}
+                        })
+                        .setPositiveButton(getResources().getString(R.string.btn_ok),
+                                new ColorPickerClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int selectedColor,
+                                                Integer[] allColors) {
+                                backgroundColor = selectedColor;
+                                new ChangeCardColor().execute();
+                                drawerLayout.setBackgroundColor(backgroundColor);
+                            }
+                        })
+                        .setNegativeButton(getResources().getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {}
+                        })
+                        .build()
+                        .show();
+                break;
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -567,7 +611,11 @@ public class BoardCardActivity extends AppCompatActivity {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            Intent intent = new Intent(BoardCardActivity.this, BoardColumnsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(COLUMN_ORDER, columnOrder);
+            intent.putExtra(BOARD_ID, boardId);
+            BoardCardActivity.this.startActivity(intent);
             finish();
         }
     }
@@ -814,6 +862,8 @@ public class BoardCardActivity extends AppCompatActivity {
 
                 cardDescription = dataJsonObj.getString(CARD_DESCRIPTION);
 
+                backgroundColor = dataJsonObj.getInt(CARD_COLOR);
+                drawerLayout.setBackgroundColor(backgroundColor);
 
                 ArrayList<String> uids = new ArrayList<>();
                 commentIds = new ArrayList<>();
@@ -1270,6 +1320,40 @@ public class BoardCardActivity extends AppCompatActivity {
             @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId
                     + AMPERSAND + CARD_NAME + EQUALS + cardName
                     + AMPERSAND + CARD_DESCRIPTION + EQUALS + cardDescription;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+        }
+    }
+    private class ChangeCardColor extends AsyncTask<Object, Object, String> {
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_CHANGE_CARD_COLOR_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId
+                    + AMPERSAND + CARD_COLOR + EQUALS + backgroundColor;
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";

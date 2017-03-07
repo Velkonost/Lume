@@ -10,6 +10,9 @@ public class Card implements Parcelable {
     private String name;
     private String description;
 
+    private int color;
+    private int columnOrder;
+
     private boolean isBelong;
 
     private int[] userIds;
@@ -25,11 +28,13 @@ public class Card implements Parcelable {
         this.name = name;
     }
 
-    public Card(int id, int amountParticipants, String name, boolean isBelong) {
+    public Card(int id, int amountParticipants, String name, boolean isBelong, int color, int columnOrder) {
         this.id = id;
         this.amountParticipants = amountParticipants;
         this.name = name;
         this.isBelong = isBelong;
+        this.color = color;
+        this.columnOrder = columnOrder;
     }
 
     public Card(int id, String name, int[] userIds) {
@@ -98,6 +103,22 @@ public class Card implements Parcelable {
 
     public boolean isBelong() {
         return isBelong;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public int getColumnOrder() {
+        return columnOrder;
+    }
+
+    public void setColumnOrder(int columnOrder) {
+        this.columnOrder = columnOrder;
     }
 }
 

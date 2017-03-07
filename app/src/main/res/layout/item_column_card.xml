@@ -15,50 +15,61 @@
         card:cardElevation="2dp"
         card:cardUseCompatPadding="true">
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/isYouParticipant"
-            android:background="@drawable/is_i_participant"
-            android:layout_margin="10dp"
-            android:layout_gravity="right|top"
-            android:visibility="invisible"/>
 
-        <TextView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/numberParticipants"
-            android:background="@drawable/card_number_participants"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:textAlignment="center"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:layout_gravity="right|bottom"
-            android:visibility="invisible"/>
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical">
+            android:id="@+id/rlCard"
+            android:layout_margin="5dp"/>
 
-            <ru.velkonost.lume.patterns.ScrollingTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/title"
-                android:textSize="8pt"
-                android:textColor="@color/colorBlack"
-                android:lines="1"
-                android:gravity="center"
-                android:layout_marginTop="10dp"
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/isYouParticipant"
+                android:background="@drawable/is_i_participant"
+                android:layout_margin="10dp"
+                android:layout_gravity="right|top"
+                android:visibility="invisible"/>
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/numberParticipants"
+                android:background="@drawable/card_number_participants"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
                 android:textAlignment="center"
-                android:layout_marginRight="30dp"/>
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_gravity="right|bottom"
+                android:visibility="invisible"/>
 
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <ru.velkonost.lume.patterns.ScrollingTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/title"
+                    android:textSize="8pt"
+                    android:textColor="@color/colorBlack"
+                    android:lines="1"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:textAlignment="center"
+                    android:layout_marginRight="30dp"/>
+
+            </LinearLayout>
+
+
+
+
 
     </android.support.v7.widget.CardView>
 

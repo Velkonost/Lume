@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -21,6 +23,7 @@ import ru.velkonost.lume.descriptions.Card;
 
 import static ru.velkonost.lume.Constants.CARD_ID;
 import static ru.velkonost.lume.Constants.CARD_NAME;
+import static ru.velkonost.lume.Constants.COLUMN_ORDER;
 import static ru.velkonost.lume.Constants.MARQUEE_REPEAT_LIMIT;
 
 public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardListViewHolder> {
@@ -59,13 +62,16 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
             holder.isBelong.setVisibility(View.VISIBLE);
         }
 
+        int backgroundColor = item.getColor();
+        holder.mRelativeLayout.setBackgroundColor(backgroundColor);
+
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, BoardCardActivity.class);
                 intent.putExtra(CARD_ID, id);
                 intent.putExtra(CARD_NAME, item.getName());
-
+                intent.putExtra(COLUMN_ORDER, item.getColumnOrder());
                 mContext.startActivity(intent);
             }
         });
@@ -75,20 +81,20 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
         this.data = data;
     }
 
-
     @Override
     public int getItemCount() {
         return data.size();
     }
 
-    public static class CardListViewHolder extends RecyclerView.ViewHolder {
+    static class CardListViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.cardView) CardView cardView;
+        @BindView(R.id.rlCard) RelativeLayout mRelativeLayout;
         @BindView(R.id.title) TextView title;
         @BindView(R.id.numberParticipants) TextView amount;
         @BindView(R.id.isYouParticipant) ImageView isBelong;
 
-        public CardListViewHolder(View itemView) {
+        CardListViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

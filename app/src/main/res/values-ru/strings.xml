@@ -85,6 +85,7 @@
     <string name="ask_confirmation">Вы уверены?</string>
 
     <string name="menu_action_settings">Настройки</string>
+    <string name="menu_action_change_color">Фон</string>
     <string name="menu_action_move">Переместить</string>
     <string name="menu_action_invite">Пригласить</string>
     <string name="menu_action_leave">Покинуть</string>
@@ -110,5 +111,7 @@
 
     <string name="go_search">Поиск контактов</string>
     <string name="enter_name_login_surname">Введите часть имени, логина…</string>
+
+    <string name="choose_color">Выберите цвет</string>
 
 </resources>
