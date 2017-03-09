@@ -57,7 +57,6 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -87,6 +86,7 @@ import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.IMAGE;
 import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.LOGIN;
+import static ru.velkonost.lume.Constants.MAX_DATE;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.RESULT.ERROR;
 import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_CONNECTION;
@@ -1010,7 +1010,7 @@ public class ProfileActivity extends AppCompatActivity {
                                             newCalendar.get(Calendar.MONTH),
                                             newCalendar.get(Calendar.DAY_OF_MONTH));
 
-                                    dateBirdayDatePicker.getDatePicker().setMaxDate(new Date().getTime());
+                                    dateBirdayDatePicker.getDatePicker().setMaxDate(MAX_DATE);
                                     dateBirdayDatePicker.show();
                                 }
                             });

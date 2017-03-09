@@ -54,6 +54,7 @@ import static ru.velkonost.lume.Constants.GET_EDIT_RESULT;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.LOGIN;
+import static ru.velkonost.lume.Constants.MAX_DATE;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.NEW_PASSWORD;
 import static ru.velkonost.lume.Constants.PREV_PASSWORD;
@@ -68,16 +69,22 @@ import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Constants.USER_ID;
+import static ru.velkonost.lume.Constants.USER_PLACE_LIVING;
+import static ru.velkonost.lume.Constants.USER_PLACE_STUDY;
+import static ru.velkonost.lume.Constants.USER_PLACE_WORK;
+import static ru.velkonost.lume.Constants.USER_WORKING_EMAIL;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
 import static ru.velkonost.lume.Managers.DateConverterManager.formatDate;
 import static ru.velkonost.lume.Managers.DateConverterManager.formatDateBack;
+import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
 import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
 import static ru.velkonost.lume.Managers.InitializationsManager.inititializeAlertDialog;
 import static ru.velkonost.lume.Managers.InitializationsManager.inititializeAlertDialogWithRefresh;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
+import static ru.velkonost.lume.Managers.PhoneDataStorageManager.saveText;
 import static ru.velkonost.lume.Managers.SetImageManager.fetchImage;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
@@ -396,6 +403,7 @@ public class SettingsActivity extends AppCompatActivity {
                 newCalendar.get(Calendar.YEAR),
                 newCalendar.get(Calendar.MONTH),
                 newCalendar.get(Calendar.DAY_OF_MONTH));
+        dateBirdayDatePicker.getDatePicker().setMaxDate(MAX_DATE);
     }
 
     @Override
@@ -410,6 +418,17 @@ public class SettingsActivity extends AppCompatActivity {
          * Приводим дату к виду, в котором она хранится на сервере.
          */
         formattedBirthday = formatDateBack(editBirthday.getText().toString());
+
+        String sUserPlaceLiving = editCity.getText().toString().length() != 0
+                ? editCountry.getText().toString().length() != 0
+                ? editCity.getText().toString() + ", " + editCountry.getText().toString()
+                : editCity.getText().toString()
+                : "";
+
+        saveText(SettingsActivity.this, USER_PLACE_LIVING, sUserPlaceLiving);
+        saveText(SettingsActivity.this, USER_PLACE_STUDY, editStudy.getText().toString());
+        saveText(SettingsActivity.this, USER_PLACE_WORK, editWork.getText().toString());
+        saveText(SettingsActivity.this, USER_WORKING_EMAIL, editWorkEmail.getText().toString());
 
         /**
          * Отправляем данные на сервер.
@@ -675,21 +694,21 @@ public class SettingsActivity extends AppCompatActivity {
                          * Устанавливает в поля текущие данные пользователя.
                          */
 
-                        editName.setText(dataJsonObj.getString(NAME));
-                        editSurname.setText(dataJsonObj.getString(SURNAME));
+                        editName.setText(fromHtml(dataJsonObj.getString(NAME)));
+                        editSurname.setText(fromHtml(dataJsonObj.getString(SURNAME)));
 
                         editBirthday.setText(formatDate(dataJsonObj.getString(BIRTHDAY)));
 
-                        editStudy.setText(dataJsonObj.getString(STUDY));
-                        editWork.setText(dataJsonObj.getString(WORK));
+                        editStudy.setText(fromHtml(dataJsonObj.getString(STUDY)));
+                        editWork.setText(fromHtml(dataJsonObj.getString(WORK)));
 
-                        editCity.setText(dataJsonObj.getString(CITY));
-                        editCountry.setText(dataJsonObj.getString(COUNTRY));
+                        editCity.setText(fromHtml(dataJsonObj.getString(CITY)));
+                        editCountry.setText(fromHtml(dataJsonObj.getString(COUNTRY)));
 
-                        editEmail.setText(dataJsonObj.getString(EMAIL));
-                        editWorkEmail.setText(dataJsonObj.getString(WORK_EMAIL));
+                        editEmail.setText(fromHtml(dataJsonObj.getString(EMAIL)));
+                        editWorkEmail.setText(fromHtml(dataJsonObj.getString(WORK_EMAIL)));
 
-                        userLogin.setText(dataJsonObj.getString(LOGIN));
+                        userLogin.setText(fromHtml(dataJsonObj.getString(LOGIN)));
 
                         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
                                 + SERVER_AVATAR + SLASH + dataJsonObj.getString(AVATAR)

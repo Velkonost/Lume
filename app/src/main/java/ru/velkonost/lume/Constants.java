@@ -94,6 +94,9 @@ public class Constants {
     public static final String USER_WORKING_EMAIL = "user_working_email";
 
 
+    public static final long MAX_DATE = 1000000000000L;
+
+
     public static final int REMIND_TODO_INDEX = 0;
     public static final int REMIND_DONE_INDEX = 1;
 
