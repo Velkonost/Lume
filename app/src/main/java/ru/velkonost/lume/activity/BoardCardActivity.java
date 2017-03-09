@@ -25,7 +25,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -115,6 +114,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.USER;
 import static ru.velkonost.lume.Constants.USER_IDS;
 import static ru.velkonost.lume.Managers.DateConverterManager.formatDate;
+import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
 import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
@@ -387,6 +387,7 @@ public class BoardCardActivity extends AppCompatActivity {
         menu.findItem(R.id.action_move).setVisible(false);
         menu.findItem(R.id.action_invite).setVisible(false);
         menu.findItem(R.id.action_leave).setVisible(false);
+        menu.findItem(R.id.action_change_color).setVisible(false);
 
         menu.findItem(R.id.action_agree).setVisible(true);
     }
@@ -396,6 +397,7 @@ public class BoardCardActivity extends AppCompatActivity {
         menu.findItem(R.id.action_invite).setVisible(true);
         menu.findItem(R.id.action_move).setVisible(true);
         menu.findItem(R.id.action_leave).setVisible(true);
+        menu.findItem(R.id.action_change_color).setVisible(true);
 
         menu.findItem(R.id.action_agree).setVisible(false);
     }
@@ -419,7 +421,7 @@ public class BoardCardActivity extends AppCompatActivity {
         cardName = editCardName.getText().toString();
         cardDescription = descriptionFragment.getText();
 
-        toolbar.setTitle(cardName);
+        toolbar.setTitle(fromHtml(cardName));
         descriptionFragment.changeText();
         descriptionFragment.showNext();
 
@@ -492,7 +494,7 @@ public class BoardCardActivity extends AppCompatActivity {
 
                 toolbar.setTitle("");
                 editCardName.setVisibility(View.VISIBLE);
-                editCardName.setText(cardName);
+                editCardName.setText(fromHtml(cardName));
                 descriptionFragment.showNext();
 
                 showAgreeMenu();
@@ -687,7 +689,7 @@ public class BoardCardActivity extends AppCompatActivity {
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
-        navHeaderLogin.setText(loadText(BoardCardActivity.this, LOGIN));
+        navHeaderLogin.setText(fromHtml(loadText(BoardCardActivity.this, LOGIN)));
 
         navHeaderLogin.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -94,6 +94,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_LEAVE_BOARD_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.USER_IDS;
+import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
 import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
@@ -777,7 +778,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 boardName = dataJsonObj.getString(BOARD_NAME);
                 boardDescription = dataJsonObj.getString(BOARD_DESCRIPTION);
 
-                toolbar.setTitle(boardName);
+                toolbar.setTitle(fromHtml(boardName));
                 saveText(BoardWelcomeActivity.this, BOARD_NAME, boardName);
 
 

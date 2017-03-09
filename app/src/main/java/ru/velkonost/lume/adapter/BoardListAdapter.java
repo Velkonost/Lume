@@ -20,6 +20,7 @@ import ru.velkonost.lume.descriptions.Board;
 
 import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.MARQUEE_REPEAT_LIMIT;
+import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 
 public class BoardListAdapter extends RecyclerView.Adapter<BoardListAdapter.BoardViewHolder>{
 
@@ -48,7 +49,7 @@ public class BoardListAdapter extends RecyclerView.Adapter<BoardListAdapter.Boar
     public void onBindViewHolder(BoardViewHolder holder, int position) {
         final Board item = data.get(position);
 
-        holder.boardName.setText(item.getName());
+        holder.boardName.setText(fromHtml(item.getName()));
         holder.boardName.setSelected(true);
         holder.boardName.setEllipsize(TextUtils.TruncateAt.MARQUEE);
         holder.boardName.setHorizontallyScrolling(true);

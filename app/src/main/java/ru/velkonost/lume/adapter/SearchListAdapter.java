@@ -32,6 +32,7 @@ import static ru.velkonost.lume.Constants.URL.SERVER_AVATAR;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
+import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 import static ru.velkonost.lume.Managers.SetImageManager.fetchImage;
 import static ru.velkonost.lume.Managers.SetImageManager.getCircleMaskedBitmap;
 
@@ -60,11 +61,13 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Se
         SearchContact item = data.get(position);
         holder.id = item.getId();
         holder.userName.setText(
-                item.getName().length() == 0
-                        ? item.getLogin()
-                        : item.getSurname().length() == 0
-                        ? item.getLogin()
-                        : item.getName() + " " + item.getSurname()
+                fromHtml(
+                    item.getName().length() == 0
+                            ? item.getLogin()
+                            : item.getSurname().length() == 0
+                            ? item.getLogin()
+                            : item.getName() + " " + item.getSurname()
+                )
         );
 
         holder.userName.setSelected(true);

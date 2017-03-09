@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +24,7 @@ import static ru.velkonost.lume.Constants.CARD_ID;
 import static ru.velkonost.lume.Constants.CARD_NAME;
 import static ru.velkonost.lume.Constants.COLUMN_ORDER;
 import static ru.velkonost.lume.Constants.MARQUEE_REPEAT_LIMIT;
+import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 
 public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardListViewHolder> {
 
@@ -49,7 +49,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
 
         final int id = item.getId();
 
-        holder.title.setText(item.getName());
+        holder.title.setText(fromHtml(item.getName()));
         holder.title.setSelected(true);
         holder.title.setEllipsize(TextUtils.TruncateAt.MARQUEE);
         holder.title.setHorizontallyScrolling(true);

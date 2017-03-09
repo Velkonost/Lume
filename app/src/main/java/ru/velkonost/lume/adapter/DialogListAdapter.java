@@ -18,6 +18,7 @@ import com.androidadvance.topsnackbar.TSnackbar;
 
 import java.util.List;
 
+import ru.velkonost.lume.Managers.HtmlConverterManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.MessageActivity;
 import ru.velkonost.lume.activity.ProfileActivity;
@@ -111,11 +112,13 @@ public class DialogListAdapter extends ArrayAdapter {
             public boolean onLongClick(View v) {
 
                 TSnackbar snackbar = TSnackbar.make(parent,
-                        dialogContact.getName().length() == 0
+                        HtmlConverterManager.fromHtml(
+                                dialogContact.getName().length() == 0
                                 ? dialogContact.getLogin()
                                 : dialogContact.getSurname().length() == 0
                                 ? dialogContact.getLogin()
-                                : dialogContact.getName() + " " + dialogContact.getSurname(),
+                                : dialogContact.getName() + " " + dialogContact.getSurname()
+                        ),
                         TSnackbar.LENGTH_SHORT);
 
                 snackbar.setActionTextColor(Color.WHITE);
