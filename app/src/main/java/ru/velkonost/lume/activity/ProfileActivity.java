@@ -24,6 +24,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -57,6 +58,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -115,6 +117,7 @@ import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Constants.WORK_EMAIL;
 import static ru.velkonost.lume.Managers.DateConverterManager.formatDate;
 import static ru.velkonost.lume.Managers.DateConverterManager.formatDateBack;
+import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
 import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
 import static ru.velkonost.lume.Managers.InitializationsManager.inititializeAlertDialog;
@@ -559,6 +562,7 @@ public class ProfileActivity extends AppCompatActivity {
         deleteText(ProfileActivity.this, USER_ID);
 
         if ((profileIdString.equals(userId))) {
+            Log.i("KEKE", "123");
 
             sUserPlaceLiving = editPlaceLiving.getText().toString();
             sUserPlaceStudy = editUserPlaceStudy.getText().toString();
@@ -569,7 +573,24 @@ public class ProfileActivity extends AppCompatActivity {
             new PostData().execute();
 
         }
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if ((profileIdString.equals(userId))) {
+            Log.i("KEKE", "3");
+
+            sUserPlaceLiving = editPlaceLiving.getText().toString();
+            sUserPlaceStudy = editUserPlaceStudy.getText().toString();
+            sUserPlaceWork = editUserPlaceWork.getText().toString();
+            sUserBirthday = userBirthday.getText().toString();
+            sUserWorkingEmail = editUserWorkingEmail.getText().toString();
+
+            new PostData().execute();
+
+        }
     }
 
     private int dp2px(int dp) {
@@ -868,8 +889,8 @@ public class ProfileActivity extends AppCompatActivity {
                                 : dataJsonObj.getString(CITY)
                                 : "";
 
-                        userPlaceLiving.setText(sUserPlaceLiving);
-                        editPlaceLiving.setText(sUserPlaceLiving);
+                        userPlaceLiving.setText(fromHtml(sUserPlaceLiving));
+                        editPlaceLiving.setText(fromHtml(sUserPlaceLiving));
 
                         if (profileIdString.equals(userId)) {
                             ViewSwitcher switcher = ButterKnife.findById(viewUserPlaceLiving,
@@ -952,7 +973,7 @@ public class ProfileActivity extends AppCompatActivity {
                                             newCalendar.get(Calendar.MONTH),
                                             newCalendar.get(Calendar.DAY_OF_MONTH));
 
-
+                                    dateBirdayDatePicker.getDatePicker().setMaxDate(new Date().getTime());
                                     dateBirdayDatePicker.show();
                                 }
                             });
@@ -993,7 +1014,7 @@ public class ProfileActivity extends AppCompatActivity {
                             SecretTextView titleUserPlaceWork = ButterKnife.findById(viewUserPlaceWork,
                                     R.id.titleCardPlaceWork);
 
-                            userPlaceWork.setText(sUserPlaceWork);
+                            userPlaceWork.setText(fromHtml(sUserPlaceWork));
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserPlaceWork);
@@ -1019,7 +1040,7 @@ public class ProfileActivity extends AppCompatActivity {
                             SecretTextView titleUserPlaceStudy = ButterKnife.findById(viewUserPlaceStudy,
                                     R.id.titleCardPlaceStudy);
 
-                            userPlaceStudy.setText(sUserPlaceStudy);
+                            userPlaceStudy.setText(fromHtml(sUserPlaceStudy));
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserPlaceStudy);
@@ -1048,8 +1069,8 @@ public class ProfileActivity extends AppCompatActivity {
                             editUserPlaceStudy = ButterKnife.findById(viewUserPlaceStudyAndWork,
                                     R.id.editPlaceStudy);
 
-                            userPlaceStudy.setText(sUserPlaceStudy);
-                            editUserPlaceStudy.setText(sUserPlaceStudy);
+                            userPlaceStudy.setText(fromHtml(sUserPlaceStudy));
+                            editUserPlaceStudy.setText(fromHtml(sUserPlaceStudy));
 
                             SecretTextView userPlaceWork = ButterKnife.findById(viewUserPlaceStudyAndWork,
                                     R.id.descriptionCardPlaceWork);
@@ -1060,8 +1081,8 @@ public class ProfileActivity extends AppCompatActivity {
                             editUserPlaceWork = ButterKnife.findById(viewUserPlaceStudyAndWork,
                                     R.id.editPlaceWork);
 
-                            userPlaceWork.setText(sUserPlaceWork);
-                            editUserPlaceWork.setText(sUserPlaceWork);
+                            userPlaceWork.setText(fromHtml(sUserPlaceWork));
+                            editUserPlaceWork.setText(fromHtml(sUserPlaceWork));
 
                             if (profileIdString.equals(userId)) {
                                 ViewSwitcher switcher1 = ButterKnife.findById(viewUserPlaceStudyAndWork,
@@ -1110,8 +1131,8 @@ public class ProfileActivity extends AppCompatActivity {
                             editUserWorkingEmail = ButterKnife.findById(viewUserWorkingEmail,
                                     R.id.editWorkingEmail);
 
-                            userWorkingEmail.setText(sUserWorkingEmail);
-                            editUserWorkingEmail.setText(sUserWorkingEmail);
+                            userWorkingEmail.setText(fromHtml(sUserWorkingEmail));
+                            editUserWorkingEmail.setText(fromHtml(sUserWorkingEmail));
 
                             if (profileIdString.equals(userId)) {
                                 ViewSwitcher switcher = ButterKnife.findById(viewUserWorkingEmail,
