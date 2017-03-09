@@ -87,6 +87,12 @@ public class Constants {
     public static final String PARTICIPANTS = "participants";
     public static final String POSITION = "position";
 
+    public static final String USER_PLACE_LIVING = "user_place_living";
+    public static final String USER_BIRTHDAY = "user_birthday";
+    public static final String USER_PLACE_WORK = "user_place_work";
+    public static final String USER_PLACE_STUDY = "user_place_study";
+    public static final String USER_WORKING_EMAIL = "user_working_email";
+
 
     public static final int REMIND_TODO_INDEX = 0;
     public static final int REMIND_DONE_INDEX = 1;
