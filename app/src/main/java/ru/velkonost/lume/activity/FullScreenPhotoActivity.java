@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.R;
 
@@ -92,6 +93,7 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
     private void setBase() {
 
         setContentView(LAYOUT);
+        ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
