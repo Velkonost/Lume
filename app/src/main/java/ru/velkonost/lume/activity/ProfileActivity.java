@@ -111,7 +111,6 @@ import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHORT_EDIT_PARAMETERS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_UPLOAD_IMAGE_METHOD;
-import static ru.velkonost.lume.Constants.USER_BIRTHDAY;
 import static ru.velkonost.lume.Constants.USER_ID;
 import static ru.velkonost.lume.Constants.USER_PLACE_LIVING;
 import static ru.velkonost.lume.Constants.USER_PLACE_STUDY;
@@ -916,11 +915,11 @@ public class ProfileActivity extends AppCompatActivity {
                                 : "";
 
 
+                        userPlaceLiving.setText(fromHtml(sUserPlaceLiving));
+
                         if (loadText(ProfileActivity.this, USER_PLACE_LIVING).equals("")) {
-                            userPlaceLiving.setText(fromHtml(sUserPlaceLiving));
                             editPlaceLiving.setText(fromHtml(sUserPlaceLiving));
                         } else {
-                            userPlaceLiving.setText(fromHtml(loadText(ProfileActivity.this, USER_PLACE_LIVING)));
                             editPlaceLiving.setText(fromHtml(loadText(ProfileActivity.this, USER_PLACE_LIVING)));
                         }
 
@@ -963,11 +962,7 @@ public class ProfileActivity extends AppCompatActivity {
                          **/
                         String formattedUserBirthday = formatDate(sUserBirthday);
 
-                        if (loadText(ProfileActivity.this, USER_BIRTHDAY).equals("")) {
-                            userBirthday.setText(formattedUserBirthday);
-                        } else {
-                            userBirthday.setText(loadText(ProfileActivity.this, USER_BIRTHDAY));
-                        }
+                        userBirthday.setText(formattedUserBirthday);
 
                         if (profileIdString.equals(userId)) {
                             LinearLayout.LayoutParams params
@@ -1051,11 +1046,7 @@ public class ProfileActivity extends AppCompatActivity {
                             SecretTextView titleUserPlaceWork = ButterKnife.findById(viewUserPlaceWork,
                                     R.id.titleCardPlaceWork);
 
-                            if (loadText(ProfileActivity.this, USER_PLACE_WORK).equals("")) {
-                                userPlaceWork.setText(fromHtml(sUserPlaceWork));
-                            } else {
-                                userPlaceWork.setText(fromHtml(loadText(ProfileActivity.this, USER_PLACE_WORK)));
-                            }
+                            userPlaceWork.setText(fromHtml(sUserPlaceWork));
 
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
@@ -1082,11 +1073,8 @@ public class ProfileActivity extends AppCompatActivity {
                             SecretTextView titleUserPlaceStudy = ButterKnife.findById(viewUserPlaceStudy,
                                     R.id.titleCardPlaceStudy);
 
-                            if (loadText(ProfileActivity.this, USER_PLACE_STUDY).equals("")) {
-                                userPlaceStudy.setText(fromHtml(sUserPlaceStudy));
-                            } else {
-                                userPlaceStudy.setText(fromHtml(loadText(ProfileActivity.this, USER_PLACE_STUDY)));
-                            }
+                            userPlaceStudy.setText(fromHtml(sUserPlaceStudy));
+
 
                             /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserPlaceStudy);
@@ -1115,11 +1103,10 @@ public class ProfileActivity extends AppCompatActivity {
                             editUserPlaceStudy = ButterKnife.findById(viewUserPlaceStudyAndWork,
                                     R.id.editPlaceStudy);
 
+                            userPlaceStudy.setText(fromHtml(sUserPlaceStudy));
                             if (loadText(ProfileActivity.this, USER_PLACE_STUDY).equals("")) {
-                                userPlaceStudy.setText(fromHtml(sUserPlaceStudy));
                                 editUserPlaceStudy.setText(fromHtml(sUserPlaceStudy));
                             } else  {
-                                userPlaceStudy.setText(fromHtml(loadText(ProfileActivity.this, USER_PLACE_STUDY)));
                                 editUserPlaceStudy.setText(fromHtml(loadText(ProfileActivity.this, USER_PLACE_STUDY)));
                             }
 
@@ -1132,11 +1119,10 @@ public class ProfileActivity extends AppCompatActivity {
                             editUserPlaceWork = ButterKnife.findById(viewUserPlaceStudyAndWork,
                                     R.id.editPlaceWork);
 
+                            userPlaceWork.setText(fromHtml(sUserPlaceWork));
                             if (loadText(ProfileActivity.this, USER_PLACE_WORK).equals("")) {
-                                userPlaceWork.setText(fromHtml(sUserPlaceWork));
                                 editUserPlaceWork.setText(fromHtml(sUserPlaceWork));
                             } else {
-                                userPlaceWork.setText(fromHtml(loadText(ProfileActivity.this, USER_PLACE_WORK)));
                                 editUserPlaceWork.setText(fromHtml(loadText(ProfileActivity.this, USER_PLACE_WORK)));
                             }
 
@@ -1188,11 +1174,10 @@ public class ProfileActivity extends AppCompatActivity {
                                     R.id.editWorkingEmail);
 
 
+                            userWorkingEmail.setText(fromHtml(sUserWorkingEmail));
                             if (loadText(ProfileActivity.this, USER_WORKING_EMAIL).equals("")) {
-                                userWorkingEmail.setText(fromHtml(sUserWorkingEmail));
                                 editUserWorkingEmail.setText(fromHtml(sUserWorkingEmail));
                             } else {
-                                userWorkingEmail.setText(fromHtml(loadText(ProfileActivity.this, USER_WORKING_EMAIL)));
                                 editUserWorkingEmail.setText(fromHtml(loadText(ProfileActivity.this, USER_WORKING_EMAIL)));
                             }
 
