@@ -135,8 +135,8 @@ public class BoardColumnsActivity extends AppCompatActivity {
     private void setBase() {
 
         setContentView(LAYOUT);
-        ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
+        ButterKnife.bind(this);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
 
     }
