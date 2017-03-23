@@ -592,6 +592,13 @@ public class SettingsActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 
+                        if (loadText(SettingsActivity.this, ID).equals("")) {
+                            deleteText(SettingsActivity.this, USER_PLACE_LIVING);
+                            deleteText(SettingsActivity.this, USER_PLACE_STUDY);
+                            deleteText(SettingsActivity.this, USER_PLACE_WORK);
+                            deleteText(SettingsActivity.this, USER_WORKING_EMAIL);
+                        }
+
                         /**
                          * Обновляет страницу.
                          * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}

@@ -61,6 +61,10 @@ import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_BOARDS_METHOD;
+import static ru.velkonost.lume.Constants.USER_PLACE_LIVING;
+import static ru.velkonost.lume.Constants.USER_PLACE_STUDY;
+import static ru.velkonost.lume.Constants.USER_PLACE_WORK;
+import static ru.velkonost.lume.Constants.USER_WORKING_EMAIL;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
 import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
@@ -409,6 +413,13 @@ public class BoardsListActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
+                        if (loadText(BoardsListActivity.this, ID).equals("")) {
+                            deleteText(BoardsListActivity.this, USER_PLACE_LIVING);
+                            deleteText(BoardsListActivity.this, USER_PLACE_STUDY);
+                            deleteText(BoardsListActivity.this, USER_PLACE_WORK);
+                            deleteText(BoardsListActivity.this, USER_WORKING_EMAIL);
+                        }
 
                         /**
                          * Обновляет страницу.

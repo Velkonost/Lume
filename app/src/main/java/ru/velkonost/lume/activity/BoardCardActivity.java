@@ -113,6 +113,10 @@ import static ru.velkonost.lume.Constants.URL.SERVER_LEAVE_CARD_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.USER;
 import static ru.velkonost.lume.Constants.USER_IDS;
+import static ru.velkonost.lume.Constants.USER_PLACE_LIVING;
+import static ru.velkonost.lume.Constants.USER_PLACE_STUDY;
+import static ru.velkonost.lume.Constants.USER_PLACE_WORK;
+import static ru.velkonost.lume.Constants.USER_WORKING_EMAIL;
 import static ru.velkonost.lume.Managers.DateConverterManager.formatDate;
 import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
@@ -764,6 +768,13 @@ public class BoardCardActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
+                        if (loadText(BoardCardActivity.this, ID).equals("")) {
+                            deleteText(BoardCardActivity.this, USER_PLACE_LIVING);
+                            deleteText(BoardCardActivity.this, USER_PLACE_STUDY);
+                            deleteText(BoardCardActivity.this, USER_PLACE_WORK);
+                            deleteText(BoardCardActivity.this, USER_WORKING_EMAIL);
+                        }
 
                         /**
                          * Обновляет страницу.

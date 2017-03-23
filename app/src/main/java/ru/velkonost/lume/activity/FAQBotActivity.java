@@ -27,6 +27,10 @@ import ru.velkonost.lume.R;
 
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
+import static ru.velkonost.lume.Constants.USER_PLACE_LIVING;
+import static ru.velkonost.lume.Constants.USER_PLACE_STUDY;
+import static ru.velkonost.lume.Constants.USER_PLACE_WORK;
+import static ru.velkonost.lume.Constants.USER_WORKING_EMAIL;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
 import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
@@ -242,6 +246,13 @@ public class FAQBotActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
+                        if (loadText(FAQBotActivity.this, ID).equals("")) {
+                            deleteText(FAQBotActivity.this, USER_PLACE_LIVING);
+                            deleteText(FAQBotActivity.this, USER_PLACE_STUDY);
+                            deleteText(FAQBotActivity.this, USER_PLACE_WORK);
+                            deleteText(FAQBotActivity.this, USER_WORKING_EMAIL);
+                        }
 
                         /**
                          * Обновляет страницу.

@@ -94,6 +94,10 @@ import static ru.velkonost.lume.Constants.URL.SERVER_KANBAN_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_LEAVE_BOARD_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.USER_IDS;
+import static ru.velkonost.lume.Constants.USER_PLACE_LIVING;
+import static ru.velkonost.lume.Constants.USER_PLACE_STUDY;
+import static ru.velkonost.lume.Constants.USER_PLACE_WORK;
+import static ru.velkonost.lume.Constants.USER_WORKING_EMAIL;
 import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
 import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
@@ -624,6 +628,13 @@ public class BoardWelcomeActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
+                        if (loadText(BoardWelcomeActivity.this, ID).equals("")) {
+                            deleteText(BoardWelcomeActivity.this, USER_PLACE_LIVING);
+                            deleteText(BoardWelcomeActivity.this, USER_PLACE_STUDY);
+                            deleteText(BoardWelcomeActivity.this, USER_PLACE_WORK);
+                            deleteText(BoardWelcomeActivity.this, USER_WORKING_EMAIL);
+                        }
 
                         /**
                          * Обновляет страницу.

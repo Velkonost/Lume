@@ -61,6 +61,10 @@ import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SEND_MESSAGE_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_SHOW_MESSAGES_METHOD;
 import static ru.velkonost.lume.Constants.USER;
+import static ru.velkonost.lume.Constants.USER_PLACE_LIVING;
+import static ru.velkonost.lume.Constants.USER_PLACE_STUDY;
+import static ru.velkonost.lume.Constants.USER_PLACE_WORK;
+import static ru.velkonost.lume.Constants.USER_WORKING_EMAIL;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
 import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
@@ -461,6 +465,13 @@ public class MessageActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
+                        if (loadText(MessageActivity.this, ID).equals("")) {
+                            deleteText(MessageActivity.this, USER_PLACE_LIVING);
+                            deleteText(MessageActivity.this, USER_PLACE_STUDY);
+                            deleteText(MessageActivity.this, USER_PLACE_WORK);
+                            deleteText(MessageActivity.this, USER_WORKING_EMAIL);
+                        }
 
                         /**
                          * Обновляет страницу.

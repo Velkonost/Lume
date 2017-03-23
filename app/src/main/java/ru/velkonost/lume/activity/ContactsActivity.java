@@ -59,6 +59,10 @@ import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_CONTACTS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
+import static ru.velkonost.lume.Constants.USER_PLACE_LIVING;
+import static ru.velkonost.lume.Constants.USER_PLACE_STUDY;
+import static ru.velkonost.lume.Constants.USER_PLACE_WORK;
+import static ru.velkonost.lume.Constants.USER_WORKING_EMAIL;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
 import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
@@ -452,6 +456,13 @@ public class ContactsActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
+                        if (loadText(ContactsActivity.this, ID).equals("")) {
+                            deleteText(ContactsActivity.this, USER_PLACE_LIVING);
+                            deleteText(ContactsActivity.this, USER_PLACE_STUDY);
+                            deleteText(ContactsActivity.this, USER_PLACE_WORK);
+                            deleteText(ContactsActivity.this, USER_WORKING_EMAIL);
+                        }
 
                         /**
                          * Обновляет страницу.

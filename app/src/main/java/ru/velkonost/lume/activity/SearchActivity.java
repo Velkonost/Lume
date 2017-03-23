@@ -61,6 +61,10 @@ import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_SEARCH_METHOD;
+import static ru.velkonost.lume.Constants.USER_PLACE_LIVING;
+import static ru.velkonost.lume.Constants.USER_PLACE_STUDY;
+import static ru.velkonost.lume.Constants.USER_PLACE_WORK;
+import static ru.velkonost.lume.Constants.USER_WORKING_EMAIL;
 import static ru.velkonost.lume.Constants.WORK;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
 import static ru.velkonost.lume.Managers.InitializationsManager.initSearch;
@@ -378,6 +382,13 @@ public class SearchActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
+                        if (loadText(SearchActivity.this, ID).equals("")) {
+                            deleteText(SearchActivity.this, USER_PLACE_LIVING);
+                            deleteText(SearchActivity.this, USER_PLACE_STUDY);
+                            deleteText(SearchActivity.this, USER_PLACE_WORK);
+                            deleteText(SearchActivity.this, USER_WORKING_EMAIL);
+                        }
 
                         /**
                          * Обновляет страницу.

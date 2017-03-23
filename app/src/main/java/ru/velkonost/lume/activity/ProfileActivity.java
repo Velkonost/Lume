@@ -523,6 +523,7 @@ public class ProfileActivity extends AppCompatActivity {
                      **/
                     case R.id.navigationLogout:
                         deleteText(ProfileActivity.this, ID);
+
                         nextIntent = new Intent(ProfileActivity.this, WelcomeActivity.class);
                         break;
                 }
@@ -548,6 +549,13 @@ public class ProfileActivity extends AppCompatActivity {
                             saveText(ProfileActivity.this, USER_PLACE_STUDY, sUserPlaceStudy);
                             saveText(ProfileActivity.this, USER_PLACE_WORK, sUserPlaceWork);
                             saveText(ProfileActivity.this, USER_WORKING_EMAIL, sUserWorkingEmail);
+
+                            if (loadText(ProfileActivity.this, ID).equals("")) {
+                                deleteText(ProfileActivity.this, USER_PLACE_LIVING);
+                                deleteText(ProfileActivity.this, USER_PLACE_STUDY);
+                                deleteText(ProfileActivity.this, USER_PLACE_WORK);
+                                deleteText(ProfileActivity.this, USER_WORKING_EMAIL);
+                            }
 
                             new PostData().execute();
 
