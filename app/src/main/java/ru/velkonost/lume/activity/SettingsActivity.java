@@ -110,7 +110,7 @@ public class SettingsActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     /**
-     * Свойство - описание {@link SearchActivity#LAYOUT}
+     * Свойство - описание {@link SettingsActivity#LAYOUT}
      */
     @BindView(R.id.activity_settings)
     DrawerLayout drawerLayout;
@@ -133,7 +133,7 @@ public class SettingsActivity extends AppCompatActivity {
     /**
      * Свойство - элемент для выбора даты.
      */
-    private DatePickerDialog dateBirdayDatePicker;
+    private DatePickerDialog dateBirthdayDatePicker;
 
     /**
      * Свойство - отформатированная дата рождения, которую ввел пользователь.
@@ -178,27 +178,51 @@ public class SettingsActivity extends AppCompatActivity {
 
     private Animation rotateArrowOpen, rotateArrowClose;
 
+    /**
+     * Свойство - заголок блока с персональной информацией
+     **/
     @BindView(R.id.personalInfo)
     TextView personalInfo;
 
+    /**
+     * Свойство - заголовок блока с информацией об аккаунте
+     */
     @BindView(R.id.accountInfo)
     TextView accountInfo;
 
+    /**
+     * Свойство - аватар пользователя
+     */
     @BindView(R.id.avatar)
     ImageView userAvatar;
 
+    /**
+     * Свойство - логин пользователя
+     */
     @BindView(R.id.login)
     TextView userLogin;
 
+    /**
+     * Свойство - блок заголовка с персональной информацией
+     */
     @BindView(R.id.div_personal_header)
     LinearLayout divPersonalHeader;
 
+    /**
+     * Свойство - блок заголовка с информацией об аккаунте
+     */
     @BindView(R.id.div_account_header)
     LinearLayout divAccountHeader;
 
+    /**
+     * Свойство - блок с персональной информацией
+     */
     @BindView(R.id.div_personal)
     LinearLayout divPersonal;
 
+    /**
+     * Свойство - блок с информацией об аккаунте
+     */
     @BindView(R.id.div_account)
     LinearLayout divAccount;
 
@@ -210,9 +234,15 @@ public class SettingsActivity extends AppCompatActivity {
     @BindView(R.id.image_arrow_account)
     ImageView imageArrowAccount;
 
+    /**
+     * Свойство - боковая панель
+     */
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
+    /**
+     * Свойство - элемент, символизирующий загрузку данных
+     */
     @BindView(R.id.loadingDots)
     LoadingDots loadingDots;
 
@@ -235,6 +265,9 @@ public class SettingsActivity extends AppCompatActivity {
         executeTasks();
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
         setContentView(LAYOUT);
         ButterKnife.bind(this);
@@ -242,14 +275,23 @@ public class SettingsActivity extends AppCompatActivity {
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
     }
 
+    /**
+     * Получение данных (отсутствует получение с интернета)
+     */
     private void getData() {
         getFromFile();
     }
 
+    /**
+     * Получение данных из специального файла приложения
+     */
     private void getFromFile() {
         userId = loadText(SettingsActivity.this, ID);
     }
 
+    /**
+     * Инициализация основных элементов
+     */
     private void initialization() {
         /** Инициализация экземпляров классов */
         mGetData = new GetData();
@@ -264,11 +306,17 @@ public class SettingsActivity extends AppCompatActivity {
         initDivs();
     }
 
+    /**
+     * Инициализация анимации
+     */
     private void initAnimations() {
         rotateArrowOpen = AnimationUtils.loadAnimation(this, R.anim.arrow_rotation_open);
         rotateArrowClose = AnimationUtils.loadAnimation(this, R.anim.arrow_rotation_close);
     }
 
+    /**
+     * Инициализация блоков
+     */
     private void initDivs() {
 
         final LinearLayout.LayoutParams layoutParamsVisible
@@ -285,6 +333,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателей на заголовки блоков
+     * @param layoutParamsVisible - открытое состояние блока
+     * @param layoutParamsInvisible - скрытое состояние блока
+     */
     private void setHeadersListeners(
             LinearLayout.LayoutParams layoutParamsVisible,
             LinearLayout.LayoutParams layoutParamsInvisible
@@ -293,6 +346,11 @@ public class SettingsActivity extends AppCompatActivity {
         setAccountListener(layoutParamsVisible, layoutParamsInvisible);
     }
 
+    /**
+     * Установка слушателя на заголовок блока персональной информации
+     * @param layoutParamsVisible - открытое состояние блока
+     * @param layoutParamsInvisible - скрытое состояние блока
+     */
     private void setPersonalListener(
             final LinearLayout.LayoutParams layoutParamsVisible,
             final LinearLayout.LayoutParams layoutParamsInvisible
@@ -327,6 +385,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на заголовок блока с информацией об аккаунте
+     * @param layoutParamsVisible - открытое состояние блока
+     * @param layoutParamsInvisible - скрытое состояние блока
+     */
     private void setAccountListener(
             final LinearLayout.LayoutParams layoutParamsVisible,
             final LinearLayout.LayoutParams layoutParamsInvisible
@@ -359,6 +422,9 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Вызов процессов, происходящих в параллельных потоках
+     */
     private void executeTasks() {
         mGetData.execute();
     }
@@ -366,11 +432,11 @@ public class SettingsActivity extends AppCompatActivity {
     /**
      * Слушатель для даты рождения.
      **/
-    public  void chooseDate(View w){
+    public void chooseDate(View w){
         /**
          * Отображает календарь для выбора даты.
          **/
-        dateBirdayDatePicker.show();
+        dateBirthdayDatePicker.show();
     }
 
     /**
@@ -391,7 +457,7 @@ public class SettingsActivity extends AppCompatActivity {
         /**
          * Создает объект и инициализирует обработчиком события выбора даты и данными для даты по умолчанию.
          */
-        dateBirdayDatePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+        dateBirthdayDatePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             // функция onDateSet обрабатывает шаг 2: отображает выбранные нами данные в элементе EditText
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -403,7 +469,7 @@ public class SettingsActivity extends AppCompatActivity {
                 newCalendar.get(Calendar.YEAR),
                 newCalendar.get(Calendar.MONTH),
                 newCalendar.get(Calendar.DAY_OF_MONTH));
-        dateBirdayDatePicker.getDatePicker().setMaxDate(MAX_DATE);
+        dateBirthdayDatePicker.getDatePicker().setMaxDate(MAX_DATE);
     }
 
     @Override
@@ -449,6 +515,9 @@ public class SettingsActivity extends AppCompatActivity {
             super.onBackPressed();
     }
 
+    /**
+     * Скрытие клавиатуры
+     */
     private void hideKeyBoard() {
 
         InputMethodManager inputMethodManager = (InputMethodManager)
@@ -481,12 +550,19 @@ public class SettingsActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Инициализация заголовка боковой панели
+     */
     private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
         initializeNavHeaderLogin(header);
         initializeNavHeaderAskQuestion(header);
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
@@ -513,6 +589,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
@@ -542,6 +622,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на боковую панель
+     */
     private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -619,7 +702,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     /**
-     * Рисует боковую панель навигации.
+     * Инициализация боковой панели навигации.
      **/
     private void initNavigationView() {
 

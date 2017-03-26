@@ -3,13 +3,41 @@ package ru.velkonost.lume.descriptions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * @author Velkonost
+ *
+ * Модель участника доски
+ */
 public class BoardParticipant implements Parcelable {
 
+    /**
+     * Свойство - идентификатор
+     */
     private int id;
+
+    /**
+     * Свойство - номер папки, в которой располагается аватар
+     */
     private int avatar;
+
+    /**
+     * Свойство - логин
+     */
     private String login;
+
+    /**
+     * Свойство - проверка, является ли контакт последним в списке
+     */
     private boolean last;
+
+    /**
+     * Свойство - количество, сколько участников осталось после контакта
+     */
     private int reminded;
+
+    /**
+     * Свойство - идентификатор доски
+     */
     private int boardId;
 
     public BoardParticipant(int id, int avatar, String login, boolean last, int reminded, int boardId) {

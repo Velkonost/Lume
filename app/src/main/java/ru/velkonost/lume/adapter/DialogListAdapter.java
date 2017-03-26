@@ -35,9 +35,18 @@ import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Managers.SetImageManager.fetchImage;
 
+/**
+ * @author Velkonost
+ *
+ * Список диалогов пользователя
+ */
 public class DialogListAdapter extends ArrayAdapter {
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<DialogContact> data;
+
     private Context mContext;
 
     public DialogListAdapter(Context context, List<DialogContact> data) {

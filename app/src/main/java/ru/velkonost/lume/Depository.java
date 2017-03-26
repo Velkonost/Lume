@@ -3,7 +3,13 @@ package ru.velkonost.lume;
 import java.util.List;
 
 import ru.velkonost.lume.descriptions.BoardColumn;
-
+/**
+ *
+ * @author Velkonost
+ *
+ * Временное хранилище данных
+ *
+ **/
 public class Depository {
 
     private static List<BoardColumn> mBoardColumns;

@@ -88,35 +88,53 @@ public class MessageActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     /**
-     * Свойство - описание {@link SearchActivity#LAYOUT}
+     * Свойство - описание {@link MessageActivity#LAYOUT}
      */
     @BindView(R.id.activity_messages)
     DrawerLayout drawerLayout;
 
+    /**
+     * Свойство - поле для редактирования нового сообщения
+     */
     @BindView(R.id.editMessage)
     EditText editMessage;
 
+    /**
+     * Свойство - отправка нового сообщения по нажатию
+     */
     @BindView(R.id.imageArrowSend)
     ImageView imageArrowSend;
 
+    /**
+     * Свойство - боковая панель навигации
+     */
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
+    /**
+     * Свойство - элемент, символизирующий загрузку данных
+     */
     @BindView(R.id.loadingDots)
     LoadingDots loadingDots;
 
     /**
-     * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
+     * Свойство - идентификатор пользователя, авторизованного на данном устройстве
      */
     private String userId;
 
     /**
-     * Свойство - следующая активность.
+     * Свойство - следующая активность
      */
     private Intent nextIntent;
 
+    /**
+     * Свойство - идентификатор получателя
+     */
     private int addresseeId;
 
+    /**
+     * Свойство - идентификатор диалога
+     */
     private int dialogId;
 
     /**
@@ -130,17 +148,22 @@ public class MessageActivity extends AppCompatActivity {
     protected GetMessages mGetMessages;
 
     /**
-     * Свойство - список контактов.
+     * Свойство - список сообщений
      * {@link Message}
      */
     private List<Message> mMessages;
 
     private MessagesFragment mMessagesFragment;
-
     private TimerCheckMessagesState timer;
 
+    /**
+     * Свойство - имя (или логин) получателя
+     */
     private String collocutorName;
 
+    /**
+     * Свойство - содержание сообщения
+     */
     private String textMessage;
 
     @Override
@@ -168,6 +191,9 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
 
         setContentView(LAYOUT);
@@ -177,11 +203,17 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Получение данных (отсутствует получение с интернета)
+     */
     private void getData() {
         getFromFile();
         getExtras();
     }
 
+    /**
+     * Получение данных из специального файла приложения
+     */
     private void getFromFile() {
         /**
          * Получение id пользователя.
@@ -190,6 +222,9 @@ public class MessageActivity extends AppCompatActivity {
         userId = loadText(MessageActivity.this, ID);
     }
 
+    /**
+     * Получение данных из предыдущей активности
+     */
     private void getExtras() {
         Intent intent = getIntent();
         dialogId = intent.getIntExtra(DIALOG_ID, 0);
@@ -197,6 +232,9 @@ public class MessageActivity extends AppCompatActivity {
         collocutorName = intent.getStringExtra(NAME);
     }
 
+    /**
+     * Инитиализация основных элементов
+     */
     private void initialization() {
 
         mGetMessages = new GetMessages();
@@ -210,15 +248,24 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Вызов процессов, происходящих в параллельных потоках
+     */
     private void executeTasks() {
         mGetMessages.execute();
     }
 
+    /**
+     * Установка слушателей
+     */
     private void setListeners() {
         setToolbarListener();
         setEditMessageListener();
     }
 
+    /**
+     * Установка слушателя на {@link MessageActivity#toolbar}
+     */
     private void setToolbarListener() {
 
         toolbar.setOnClickListener(new View.OnClickListener() {
@@ -235,6 +282,9 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на {@link MessageActivity#editMessage}
+     */
     private void setEditMessageListener() {
 
         editMessage.addTextChangedListener(new TextWatcher() {
@@ -270,6 +320,9 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Запуск таймера для проверки состояния списка сообщений
+     */
     private void startTimer() {
 
         new Handler().postDelayed(new Runnable() {
@@ -299,6 +352,10 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Отправка нового сообщения
+     * @param view
+     */
     public void sendMessage(View view) {
         if (editMessage.getText().toString().length() == 0) return;
 
@@ -309,6 +366,12 @@ public class MessageActivity extends AppCompatActivity {
         new RefreshMessages().execute();
     }
 
+    /**
+     * Слушатель, запускающий обновление при нажатии на поле редактирования нового сообщения
+     * Необходим для приведения внешнего вида в порядок после открытия клавиатуры
+     *
+     * @param view
+     */
     public void clickOnEditText(View view) {
 
         new Handler().postDelayed(new Runnable() {
@@ -323,6 +386,9 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Скрытие клавиатуры
+     */
     private void hideKeyBoard() {
 
         InputMethodManager inputMethodManager = (InputMethodManager)
@@ -355,12 +421,19 @@ public class MessageActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Инициализация заголовка боковой панели
+     */
     private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
         initializeNavHeaderLogin(header);
         initializeNavHeaderAskQuestion(header);
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
@@ -387,6 +460,10 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
@@ -416,6 +493,9 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на боковую панель
+     */
     private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -493,7 +573,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     /**
-     * Рисует боковую панель навигации.
+     * Инициализация боковой панели навигации.
      **/
     private void initNavigationView() {
 
@@ -505,6 +585,9 @@ public class MessageActivity extends AppCompatActivity {
         setNavigationViewListener();
     }
 
+    /**
+     * Таймер для обновления состояния списка сообщений
+     */
     private class TimerCheckMessagesState extends CountDownTimer {
 
         TimerCheckMessagesState(long millisInFuture, long countDownInterval) {
@@ -522,6 +605,9 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Получения информации о сообщениях данного диалога
+     */
     private class GetMessages extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -610,6 +696,10 @@ public class MessageActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Обновление состояния списка сообщений
+     */
     private class RefreshMessages extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -713,6 +803,10 @@ public class MessageActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Отправка сообщения
+     */
     private class SendMessage extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {

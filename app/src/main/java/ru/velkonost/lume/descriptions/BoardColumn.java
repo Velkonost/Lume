@@ -3,10 +3,26 @@ package ru.velkonost.lume.descriptions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * @author Velkonost
+ *
+ * Модель колонки доски
+ */
 public class BoardColumn implements Parcelable {
 
+    /**
+     * Свойство - идентификатор
+     */
     private int id;
+
+    /**
+     * Свойство - название
+     */
     private String name;
+
+    /**
+     * Свойство - положение в доске
+     */
     private int order;
 
     public BoardColumn(int id, String name, int order) {

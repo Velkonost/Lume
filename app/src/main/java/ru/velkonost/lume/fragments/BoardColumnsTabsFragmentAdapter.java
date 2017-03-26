@@ -12,19 +12,38 @@ import java.util.Map;
 import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.descriptions.BoardColumn;
 
+/**
+ * @author Velkonost
+ *
+ * Список колонок в виде табов, получение их содержимого
+ */
 public class BoardColumnsTabsFragmentAdapter extends FragmentPagerAdapter {
 
+    /**
+     * Свойство - список табов-колонок
+     */
     private Map<Integer, BaseTabFragment> tabs;
-    public static Map<Integer, Integer> tabsColumnOrder;
-    private Context context;
+
+    /**
+     * Свойство - порядок колонок
+     *
+     * Идентификатор - позиция
+     */
+    static Map<Integer, Integer> tabsColumnOrder;
+
+    /**
+     * Свойство - позиция последней колонки
+     */
     public static int last = 0;
 
+    /**
+     * Свойство - идентификатор доски
+     */
     private String boardId;
 
     public BoardColumnsTabsFragmentAdapter(Context context, FragmentManager fm, String boardId) {
         super(fm);
 
-        this.context = context;
         this.boardId = boardId;
 
         initTabsMap(context);
@@ -45,6 +64,9 @@ public class BoardColumnsTabsFragmentAdapter extends FragmentPagerAdapter {
         return tabs.size();
     }
 
+    /**
+     * Составление табов
+     */
     private void initTabsMap(Context context) {
         tabs = new HashMap<>();
         tabsColumnOrder = new HashMap<>();

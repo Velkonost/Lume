@@ -3,16 +3,56 @@ package ru.velkonost.lume.descriptions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * @author Velkonost
+ *
+ * Модель диалога
+ */
 public class DialogContact implements Parcelable {
 
+    /**
+     * Свойство - идентификатор пользователя
+     */
     private String id;
+
+    /**
+     * Свойство - идентификатор диалога
+     */
     private String dialogId;
+
+    /**
+     * Свойство - имя адресата
+     */
     private String name;
+
+    /**
+     * Свойство - фамилия адресата
+     */
     private String surname;
+
+    /**
+     * Свойство - логин адресата
+     */
     private String login;
+
+    /**
+     * Свойство - количество непрочитанных авторизованным пользователем сообщений
+     */
     private int unreadMessages;
+
+    /**
+     * Свойство - номер папки, в которой располагается аватар
+     */
     private int avatar;
+
+    /**
+     * Свойство - проверка на наличие аватара
+     */
     private boolean isAvatar;
+
+    /**
+     * Свойство - проверка на наличие в диалоге сообщений
+     */
     private boolean isEmpty;
 
     public DialogContact(String id, String dialogId, String name, String surname, String login,

@@ -3,13 +3,41 @@ package ru.velkonost.lume.descriptions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * @author Velkonost
+ *
+ * Модель комментария карточки
+ */
 public class CardComment implements Parcelable {
 
+    /**
+     * Свойство - идентификатор
+     */
     private int id;
+
+    /**
+     * Свойство - идентификатор пользователя, создавшего комментарий
+     */
     private int userId;
+
+    /**
+     * Свойство - идентификатор карточки, к которой принадлежит комментарий
+     */
     private int cardId;
+
+    /**
+     * Свойство - содержание
+     */
     private String mText;
+
+    /**
+     * Свойство - дата создания
+     */
     private String mDate;
+
+    /**
+     * Свойство - имя (или логин) пользователя, создавшего комментарий
+     */
     private String userName;
 
     public CardComment(int id, String userName, int cardId, String text, String date) {

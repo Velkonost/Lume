@@ -16,15 +16,23 @@ import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.CardComment;
 
+/**
+ * @author Velkonost
+ *
+ * Список комментариев карточки
+ */
 public class CardCommentListAdapter
         extends RecyclerView.Adapter<CardCommentListAdapter.CardCommentViewHolder> {
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<CardComment> data;
+
     private LayoutInflater inflater;
-    private Context context;
 
     public CardCommentListAdapter(Context context, List<CardComment> data) {
-        this.context = context;
+
         this.data = data;
 
         inflater = LayoutInflater.from(context);

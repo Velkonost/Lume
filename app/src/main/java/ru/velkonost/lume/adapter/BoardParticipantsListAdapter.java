@@ -35,12 +35,22 @@ import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Managers.SetImageManager.fetchImage;
 import static ru.velkonost.lume.Managers.SetImageManager.getCircleMaskedBitmap;
 
+/**
+ * @author Velkonost
+ *
+ * Список участников доски
+ */
 public class BoardParticipantsListAdapter
         extends RecyclerView.Adapter<BoardParticipantsListAdapter.BoardParticipantsViewHolder>
         implements FastScrollRecyclerView.SectionedAdapter{
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<Contact> data;
+
     private LayoutInflater inflater;
+
     private Context context;
 
     public BoardParticipantsListAdapter(Context context, List<Contact> data) {

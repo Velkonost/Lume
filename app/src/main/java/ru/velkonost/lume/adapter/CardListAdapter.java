@@ -26,9 +26,18 @@ import static ru.velkonost.lume.Constants.COLUMN_ORDER;
 import static ru.velkonost.lume.Constants.MARQUEE_REPEAT_LIMIT;
 import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 
+/**
+ * @author Velkonost
+ *
+ * Список карточек
+ */
 public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardListViewHolder> {
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<Card> data;
+
     private Context mContext;
 
     public CardListAdapter(List<Card> data, Context mContext) {

@@ -31,16 +31,31 @@ import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.activity.BoardCardActivity.popupWindowColumns;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
+/**
+ * @author Velkonost
+ *
+ * Список колонок доски, в которые можно переместить карточку
+ */
 public class CardMoveListAdapter extends RecyclerView.Adapter<CardMoveListAdapter.CardMoveViewHolder> {
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<BoardColumn> data;
+
     private LayoutInflater inflater;
-    private Context context;
+
+    /**
+     * Свойство - идентификатор карточки
+     */
     private int cardId;
+
+    /**
+     * Свойство - идентификатор колонки
+     */
     private int curColumnId;
 
     public CardMoveListAdapter(Context context, List<BoardColumn> data, int cardId) {
-        this.context = context;
         this.data = data;
         this.cardId = cardId;
 
@@ -105,6 +120,9 @@ public class CardMoveListAdapter extends RecyclerView.Adapter<CardMoveListAdapte
         }
     }
 
+    /**
+     * Перемещение карточки
+     */
     private class Move extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {

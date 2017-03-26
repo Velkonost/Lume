@@ -33,9 +33,15 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_full_screen_photo;
 
+    /**
+     * Свойство - описание верхней панели инструментов приложения
+     */
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    /**
+     * Свойство - фото на весь экран
+     */
     @BindView(R.id.fullImage)
     ImageView imageView;
 
@@ -90,6 +96,9 @@ public class FullScreenPhotoActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
 
         setContentView(LAYOUT);

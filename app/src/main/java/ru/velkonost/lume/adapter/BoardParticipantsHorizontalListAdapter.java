@@ -28,11 +28,21 @@ import static ru.velkonost.lume.Constants.URL.SERVER_RESOURCE;
 import static ru.velkonost.lume.Managers.SetImageManager.fetchImage;
 import static ru.velkonost.lume.Managers.SetImageManager.getCircleMaskedBitmap;
 
+/**
+ * @author Velkonost
+ *
+ * Список участников доски, отображающийся горизонтально
+ */
 public class BoardParticipantsHorizontalListAdapter
         extends RecyclerView.Adapter<BoardParticipantsHorizontalListAdapter.BoardParticipantsViewHolder> {
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<BoardParticipant> data;
+
     private LayoutInflater inflater;
+
     private Context context;
 
     public BoardParticipantsHorizontalListAdapter(Context context, List<BoardParticipant> data) {

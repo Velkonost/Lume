@@ -36,6 +36,12 @@ import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
 
+/**
+ * @author Velkonost
+ *
+ * Класс, описывающий диалог пользователя с автоответчиком
+ *
+ */
 public class FAQBotActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_bot;
@@ -52,6 +58,9 @@ public class FAQBotActivity extends AppCompatActivity {
     @BindView(R.id.activity_bot)
     DrawerLayout drawerLayout;
 
+    /**
+     * Свойство - боковая панель
+     */
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
@@ -79,6 +88,9 @@ public class FAQBotActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
 
         setContentView(LAYOUT);
@@ -88,6 +100,9 @@ public class FAQBotActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инитиализация основных элементов
+     */
     private void initialization() {
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(FAQBotActivity.this, toolbar, "Задать вопрос"); /** Инициализация */
@@ -104,6 +119,9 @@ public class FAQBotActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Скрытие клавиатуры
+     */
     private void hideKeyBoard() {
 
         InputMethodManager inputMethodManager = (InputMethodManager)
@@ -136,12 +154,19 @@ public class FAQBotActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Инициализация заголовка боковой панели
+     */
     private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
         initializeNavHeaderLogin(header);
         initializeNavHeaderAskQuestion(header);
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
@@ -168,6 +193,10 @@ public class FAQBotActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
@@ -197,6 +226,9 @@ public class FAQBotActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на боковую панель
+     */
     private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -274,7 +306,7 @@ public class FAQBotActivity extends AppCompatActivity {
     }
 
     /**
-     * Рисует боковую панель навигации.
+     * Инициализация боковой панели навигации.
      **/
     private void initNavigationView() {
 

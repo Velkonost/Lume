@@ -22,10 +22,10 @@ import java.net.URL;
  */
 public class ServerConnection {
 
+    /**
+     * Свойство - http-соединение
+     */
     private static HttpURLConnection httpURLConnection = null;
-    private static InputStream is = null;
-    private static BufferedReader reader = null;
-    private static byte[] data = null;
 
     /** Свойство - код ответа, полученных от сервера */
     private static String resultJson = "";
@@ -41,6 +41,9 @@ public class ServerConnection {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
+    /**
+     * Соединение, отправка данных, получение ответа
+     **/
     public static String getJSON(String sUrl, String params) throws IOException {
 
         try {
@@ -64,7 +67,7 @@ public class ServerConnection {
             httpURLConnection.setRequestProperty("Content-Length", ""
                     + Integer.toString(params.getBytes().length));
             OutputStream os = httpURLConnection.getOutputStream();
-            data = params.getBytes("UTF-8");
+            byte[] data = params.getBytes("UTF-8");
             os.write(data);
 
             /** Соединяемся */
@@ -79,9 +82,9 @@ public class ServerConnection {
             /**
              * Получение данных из потока в виде JSON-объекта.
              */
-            is = httpURLConnection.getInputStream();
+            InputStream is = httpURLConnection.getInputStream();
             StringBuilder buffer = new StringBuilder();
-            reader = new BufferedReader(new InputStreamReader(is));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
             String line;
             while ((line = reader.readLine()) != null) {

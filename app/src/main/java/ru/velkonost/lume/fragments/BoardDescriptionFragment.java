@@ -19,9 +19,18 @@ import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
 
+/**
+ * @author Velkonost
+ *
+ * Описание доски
+ */
 public class BoardDescriptionFragment extends Fragment {
 
     @BindView(R.id.switcherBoardDescription) ViewSwitcher switcher;
+
+    /**
+     * Свойство - описание доски
+     */
     private String text;
 
     @BindView(R.id.boardDescription) TextView mTextView;
@@ -55,9 +64,18 @@ public class BoardDescriptionFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Переключение с режима редактирования на режим чтения, и наоборот
+     */
     public void showNext(){ switcher.showNext(); }
-    public void setText(String text) { this.text = text; }
+
     public void changeText() { mTextView.setText(mEditText.getText().toString()); }
+
+    /**
+     * Сохранение изменений
+     */
+    public void setText(String text) { this.text = text; }
+
     public String getText() { return mEditText.getText().toString(); }
 
 

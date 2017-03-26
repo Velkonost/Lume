@@ -22,11 +22,21 @@ import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.descriptions.Message;
 
+/**
+ * @author Velkonost
+ *
+ * Список сообщений диалога
+ */
 public class MessageListAdapter
         extends RecyclerView.Adapter<MessageListAdapter.MessageViewHolder> {
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<Message> data;
+
     private LayoutInflater inflater;
+
     private Context context;
 
     public MessageListAdapter(Context context, List<Message> data) {
@@ -92,6 +102,12 @@ public class MessageListAdapter
 
     }
 
+    /**
+     * Конвертер из dp в px
+     *
+     * @param dp - значения в dp
+     * @return - значение в px
+     */
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 context.getResources().getDisplayMetrics());

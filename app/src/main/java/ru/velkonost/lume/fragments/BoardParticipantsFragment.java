@@ -18,11 +18,21 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.BoardParticipantsHorizontalListAdapter;
 import ru.velkonost.lume.descriptions.BoardParticipant;
 
+/**
+ * @author Velkonost
+ *
+ * Список участников доски
+ */
 public class BoardParticipantsFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_board_participants;
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<BoardParticipant> mBoardsParticipants;
+
     protected View view;
+
     protected Context context;
 
     private BoardParticipantsHorizontalListAdapter adapter;
@@ -58,6 +68,9 @@ public class BoardParticipantsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Обновление состояния списка участников доски
+     */
     public void refreshParticipants (List<BoardParticipant> mParticipants) {
 
         adapter.setData(mParticipants);

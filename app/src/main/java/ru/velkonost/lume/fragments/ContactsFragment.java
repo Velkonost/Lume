@@ -34,13 +34,24 @@ import ru.velkonost.lume.descriptions.Contact;
 
 import static ru.velkonost.lume.Constants.SEARCH;
 
+/**
+ * @author Velkonost
+ *
+ * Контакты пользователя
+ */
 public class ContactsFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_contact;
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<Contact> mContacts;
     private List<Contact> mContactsCopy;
+
     private ContactListAdapter adapter;
+
     protected View view;
+
     protected Context context;
 
     @BindView(R.id.btnGoSearch)
@@ -159,11 +170,24 @@ public class ContactsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Конвертер из dp в px
+     *
+     * @param dp - значения в dp
+     * @return - значение в px
+     */
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 context.getResources().getDisplayMetrics());
     }
 
+    /**
+     * Поиск среди контактов по введенной пользователем строке
+     *
+     * @param text - строка, введенная пользователем
+     * @param empty - проверка на пустоту строки
+     * @param let - разрешен ли поиск
+     */
     public void search(String text, boolean empty, boolean let) {
         if (let) {
             if (!text.isEmpty()) {
@@ -191,6 +215,10 @@ public class ContactsFragment extends Fragment {
     public void setContacts(List<Contact> mContacts) {
         this.mContacts = mContacts;
     }
+
+    /**
+     * Создание копии списка контактов
+     */
     public void setContactsCopy() {
         mContactsCopy = new ArrayList<>();
         mContactsCopy.addAll(mContacts);

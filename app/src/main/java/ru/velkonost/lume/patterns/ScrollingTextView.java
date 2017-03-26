@@ -3,9 +3,8 @@ package ru.velkonost.lume.patterns;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
-public class ScrollingTextView extends TextView {
+public class ScrollingTextView extends android.support.v7.widget.AppCompatTextView {
 
     public ScrollingTextView(Context context, AttributeSet attrs,
                              int defStyle) {

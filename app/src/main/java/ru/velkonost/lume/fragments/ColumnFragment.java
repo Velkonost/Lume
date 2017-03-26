@@ -58,28 +58,59 @@ import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
 import static ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter.tabsColumnOrder;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
+/**
+ * @author Velkonost
+ *
+ * Колонки доски, получение их карточек
+ */
 public class ColumnFragment extends BaseTabFragment {
     private static final int LAYOUT = R.layout.fragment_column;
 
+    /**
+     * Свойство - идентификатор колонки
+     */
     private int columnId;
 
+    /**
+     * Свойство - название карточки
+     */
     private String cardName;
+
+    /**
+     * Свойство - описание карточки
+     */
     private String cardDescription;
 
     private CardListAdapter adapter;
 
     private FloatingActionButton addCardButton;
 
+    /**
+     * Свойство - экземпляр класса {@link GetData}
+     */
     protected GetData mGetData;
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<Card> data;
+
+    /**
+     * Свойство - идентификаторы карточек
+     */
     private ArrayList<String> cids;
 
+    /**
+     * Свойство - идентификатор пользователя
+     */
     private String userId;
 
     @BindView(R.id.recyclerViewColumn)
     RecyclerView rv;
 
+    /**
+     * Свойство - элемент, символизирующий загрузку данных
+     */
     @BindView(R.id.loadingDots)
     LoadingDots loadingDots;
 
@@ -180,6 +211,12 @@ public class ColumnFragment extends BaseTabFragment {
         return view;
     }
 
+    /**
+     * Конвертер из dp в px
+     *
+     * @param dp - значения в dp
+     * @return - значение в px
+     */
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 context.getResources().getDisplayMetrics());
@@ -189,6 +226,9 @@ public class ColumnFragment extends BaseTabFragment {
         this.context = context;
     }
 
+    /**
+     * Инициализация основных элементов
+      */
     public void initialize() {
         data = new ArrayList<>();
         cids = new ArrayList<>();
@@ -198,6 +238,9 @@ public class ColumnFragment extends BaseTabFragment {
         this.columnId = columnId;
     }
 
+    /**
+     * Получение информации о колонке
+     */
     private class GetData extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -299,6 +342,9 @@ public class ColumnFragment extends BaseTabFragment {
         }
     }
 
+    /**
+     * Обновление данных о колонке
+     */
     private class RefreshData extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -398,6 +444,9 @@ public class ColumnFragment extends BaseTabFragment {
         }
     }
 
+    /**
+     * Добавление карточки
+     */
     private class AddCard extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {

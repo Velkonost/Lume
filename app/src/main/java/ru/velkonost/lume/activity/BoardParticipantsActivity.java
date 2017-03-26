@@ -68,6 +68,13 @@ import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
+
+/**
+ * @author Velkonost
+ *
+ * Класс, описывающий участников доски
+ *
+ */
 public class BoardParticipantsActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_board_participant;
@@ -79,14 +86,20 @@ public class BoardParticipantsActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     /**
-     * Свойство - описание {@link SearchActivity#LAYOUT}
+     * Свойство - описание {@link BoardParticipantsActivity#LAYOUT}
      */
     @BindView(R.id.activity_board_participant)
     DrawerLayout drawerLayout;
 
+    /**
+     * Свойство - боковая панель навигации
+     */
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
+    /**
+     * Свойство - элемент, символизирующий загрузку данных
+     */
     @BindView(R.id.loadingDots)
     LoadingDots loadingDots;
 
@@ -100,11 +113,13 @@ public class BoardParticipantsActivity extends AppCompatActivity {
      */
     private Intent nextIntent;
 
-
+    /**
+     * Свойство - идентификатор доски
+     */
     private int boardId;
 
     /**
-     * Идентификаторы досок, к которым принадлежит авторизованный пользователь.
+     * Свойство - списко идентификаторов участников
      **/
     private ArrayList<String> ids;
 
@@ -113,21 +128,19 @@ public class BoardParticipantsActivity extends AppCompatActivity {
      */
     protected GetData mGetData;
 
-
     /**
      * Свойство - список контактов.
-     * {@link ru.velkonost.lume.descriptions.BoardParticipant}
+     * {@link ru.velkonost.lume.descriptions.Contact}
      */
     private List<Contact> mBoardParticipants;
 
     /**
-     * Контакты авторизованного пользователя.
+     * Участники.
      *
      * Ключ - идентификатор пользователя.
      * Значение - его полное имя или логин.
      **/
     private Map<String, String> contacts;
-
 
 
     @Override
@@ -149,6 +162,9 @@ public class BoardParticipantsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
         setContentView(LAYOUT);
         ButterKnife.bind(this);
@@ -156,15 +172,24 @@ public class BoardParticipantsActivity extends AppCompatActivity {
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
     }
 
+    /**
+     * Получение данных (отсутствует получение с интернета)
+     */
     private void getData() {
         getFromFile();
         getExtras();
     }
 
+    /**
+     * Вызов процессов, происходящих в параллельных потоках
+     */
     private void executeTasks() {
         mGetData.execute();
     }
 
+    /**
+     * Получение данных из специального файла приложения
+     */
     private void getFromFile() {
         /**
          * Получение id пользователя.
@@ -173,11 +198,17 @@ public class BoardParticipantsActivity extends AppCompatActivity {
         userId = loadText(BoardParticipantsActivity.this, ID);
     }
 
+    /**
+     * Получение данных из предыдущей активности
+     */
     private void getExtras() {
         Intent intent = getIntent();
         boardId = intent.getIntExtra(BOARD_ID, 0);
     }
 
+    /**
+     * Инитиализация основных элементов
+     */
     private void initialize() {
         mGetData = new GetData();
         mBoardParticipants = new ArrayList<>();
@@ -199,6 +230,9 @@ public class BoardParticipantsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Скрытие клавиатуры
+     */
     private void hideKeyBoard() {
 
         InputMethodManager inputMethodManager = (InputMethodManager)
@@ -231,12 +265,19 @@ public class BoardParticipantsActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Инициализация заголовка боковой панели
+     */
     private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
         initializeNavHeaderLogin(header);
         initializeNavHeaderAskQuestion(header);
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
@@ -263,6 +304,10 @@ public class BoardParticipantsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
@@ -292,6 +337,9 @@ public class BoardParticipantsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на боковую панель
+     */
     private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -381,6 +429,9 @@ public class BoardParticipantsActivity extends AppCompatActivity {
         setNavigationViewListener();
     }
 
+    /**
+     * Получение информации об участниках
+     */
     private class GetData extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {

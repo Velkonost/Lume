@@ -19,10 +19,23 @@ import ru.velkonost.lume.descriptions.BoardColumn;
 import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.COLUMN_ORDER;
 
+/**
+ * @author Velkonost
+ *
+ * Список колонок доски
+ */
 public class BoardWelcomeColumnListAdapter extends ArrayAdapter {
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<BoardColumn> data;
+
     private Context mContext;
+
+    /**
+     * Свойство - идентификатор доски
+     */
     private String boardId;
 
     public BoardWelcomeColumnListAdapter(Context context, List<BoardColumn> data, String boardId) {
@@ -46,7 +59,6 @@ public class BoardWelcomeColumnListAdapter extends ArrayAdapter {
         }
 
         ((TextView) convertView.findViewById(R.id.columnName)).setText(boardColumn.getName());
-
 
         (convertView.findViewById(R.id.item_board_column)).setOnClickListener(new View.OnClickListener() {
             @Override

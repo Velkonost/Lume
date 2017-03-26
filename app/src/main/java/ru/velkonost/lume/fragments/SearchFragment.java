@@ -19,13 +19,24 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.SearchListAdapter;
 import ru.velkonost.lume.descriptions.SearchContact;
 
+/**
+ * @author Velkonost
+ *
+ * Поиск по строке
+ */
 public class SearchFragment extends Fragment{
 
     private static final int LAYOUT = R.layout.fragment_search;
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<SearchContact> mContacts;
+
     private SearchListAdapter adapter;
+
     protected View view;
+
     protected Context context;
 
     @BindView(R.id.recycleViewSearch)

@@ -95,9 +95,15 @@ public class DialogsActivity extends AppCompatActivity {
     @BindView(R.id.search_view)
     MaterialSearchView searchView;
 
+    /**
+     * Свойство - боковая панель
+     */
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
+    /**
+     * Свойство - элемент, символизирующий загрузку данных
+     */
     @BindView(R.id.loadingDots)
     LoadingDots loadingDots;
 
@@ -111,9 +117,6 @@ public class DialogsActivity extends AppCompatActivity {
      */
     private Intent nextIntent;
 
-    /**
-     * Идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
-     **/
     private ArrayList<String> ids;
 
     /**
@@ -131,6 +134,9 @@ public class DialogsActivity extends AppCompatActivity {
 
     private TimerCheckDialogsState timer;
 
+    /**
+     * Свойство - определяет, можно ли обновлять состояние списка диалогов
+     */
     private boolean letRefresh = true;
 
     @Override
@@ -153,6 +159,9 @@ public class DialogsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
         setContentView(LAYOUT);
         ButterKnife.bind(this);
@@ -160,6 +169,9 @@ public class DialogsActivity extends AppCompatActivity {
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
     }
 
+    /**
+     * Инитиализация основных элементов
+     */
     private void initialize() {
 
         mGetDialogs = new GetDialogs();
@@ -180,10 +192,16 @@ public class DialogsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Получение данных (отсутствует получение с интернета)
+     */
     private void getData() {
         getFromFile();
     }
 
+    /**
+     * Получение данных из специального файла приложения
+     */
     private void getFromFile() {
         /**
          * Получение id пользователя.
@@ -192,10 +210,16 @@ public class DialogsActivity extends AppCompatActivity {
         userId = loadText(DialogsActivity.this, ID);
     }
 
+    /**
+     * Вызов процессов, происходящих в параллельных потоках
+     */
     private void executeTasks() {
         mGetDialogs.execute();
     }
 
+    /**
+     * Запуск таймера
+     */
     private void startTimer() {
 
         new Handler().postDelayed(new Runnable() {
@@ -215,6 +239,10 @@ public class DialogsActivity extends AppCompatActivity {
             timer.cancel();
     }
 
+    /**
+     * Инициализация поиска по диалогам
+     * @param searchView
+     */
     private void initSearchDialog(final MaterialSearchView searchView) {
 
         searchView.setEllipsize(true);
@@ -290,6 +318,9 @@ public class DialogsActivity extends AppCompatActivity {
             super.onBackPressed();
     }
 
+    /**
+     * Скрытие клавиатуры
+     */
     private void hideKeyBoard() {
 
         InputMethodManager inputMethodManager = (InputMethodManager)
@@ -322,12 +353,19 @@ public class DialogsActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Инициализация заголовка боковой панели
+     */
     private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
         initializeNavHeaderLogin(header);
         initializeNavHeaderAskQuestion(header);
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
@@ -354,6 +392,10 @@ public class DialogsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
@@ -383,6 +425,9 @@ public class DialogsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на боковую панель
+     */
     private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -472,6 +517,9 @@ public class DialogsActivity extends AppCompatActivity {
         setNavigationViewListener();
     }
 
+    /**
+     * Таймер для обновления состояния списка диалогов
+     */
     private class TimerCheckDialogsState extends CountDownTimer {
 
         TimerCheckDialogsState(long millisInFuture, long countDownInterval) {
@@ -489,6 +537,9 @@ public class DialogsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Получения данных о диалогах
+     */
     private class GetDialogs extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -576,6 +627,9 @@ public class DialogsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Обновление состояния списка диалогов
+     */
     private class RefreshDialogs extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {

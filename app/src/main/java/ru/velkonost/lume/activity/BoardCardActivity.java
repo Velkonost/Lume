@@ -127,45 +127,74 @@ import static ru.velkonost.lume.Managers.PhoneDataStorageManager.saveText;
 import static ru.velkonost.lume.R.layout.popup_board_invite_list;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
+
+/**
+ * @author Velkonost
+ *
+ * Класс, описывающий открытую карточку
+ *
+ */
 public class BoardCardActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_board_card;
 
     /**
-     * Свойство - описание верхней панели инструментов приложения.
+     * Свойство - описание верхней панели инструментов приложения
      */
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     /**
-     * Свойство - описание {@link SearchActivity#LAYOUT}
+     * Свойство - описание {@link BoardCardActivity#LAYOUT}
      */
     @BindView(R.id.activity_board_card)
     DrawerLayout drawerLayout;
 
+    /**
+     * Свойство - поле для написания нового комментария
+     */
     @BindView(R.id.editComment)
     EditText mEditTextComment;
 
+    /**
+     * Свойство - поле для редактирования названия карточки
+     */
     @BindView(R.id.editCardName)
     EditText editCardName;
 
+    /**
+     * Свойство - иконка для добавления комментария
+     */
     @BindView(R.id.imageView)
     ImageView imageArrowSend;
 
+    /**
+     * Свойство - элемент, символизирующий загрузку данных
+     */
     @BindView(R.id.loadingDots)
     LoadingDots loadingDots;
 
+    /**
+     * Свойство - боковая панель
+     */
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
+    /**
+     * Свойство - отображение участников доски для приглашения в карточку
+     */
     private View popupViewInvite;
 
+    /**
+     * Свойство - отображение колонок доски для перемещения карточки
+     */
     private View popupViewColumns;
 
+
     public static PopupWindow popupWindowCardInvite;
+    public static PopupWindow popupWindowColumns;
 
     private RecyclerView recyclerViewInvite;
-
     private RecyclerView recyclerViewColumns;
 
     /**
@@ -173,30 +202,46 @@ public class BoardCardActivity extends AppCompatActivity {
      */
     private Intent nextIntent;
 
+    /**
+     * Свойство - идентификатор карточки
+     */
     private int cardId;
 
+    /**
+     * Свойство - список участников карточки
+     */
     private List<BoardParticipant> mCardParticipants;
 
+    /**
+     * Свойство - список комментариев карточки
+     */
     private List<CardComment> mCardComments;
 
-    private GetCardData mGetCardData;
-
+    /**
+     * Свойство - список индентификаторов комментариев карточки
+     */
     private ArrayList<String> commentIds;
 
     private CardCommentsFragment mCommentsFragment;
+
     private TimerCheckComments mTimerCheckComments;
-    private String userId;
-
-    public static PopupWindow popupWindowColumns;
-
-    private List<Contact> mContacts;
-    private List<BoardColumn> mBoardColumns;
 
     /**
-     * Идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
-     **/
-    private ArrayList<String> ids;
+     * Свойство - идентификатор авторизованного пользователя
+     */
+    private String userId;
 
+    /**
+     * Свойство - список участников доски
+     */
+    private List<Contact> mContacts;
+
+    /**
+     * Свойство - список колонок доски
+     */
+    private List<BoardColumn> mBoardColumns;
+
+    private ArrayList<String> ids;
     private ArrayList<String> cids;
 
     /**
@@ -207,24 +252,56 @@ public class BoardCardActivity extends AppCompatActivity {
      **/
     private Map<String, String> contacts;
 
+    /**
+     * Свойство - идентификатор доски
+     */
     private String boardId;
 
+    /**
+     * Свойство - экземпляр класса {@link GetCardData}
+     */
+    private GetCardData mGetCardData;
+
+    /**
+     * Свойство - экземпляр класса {@link GetContacts}
+     */
     private GetContacts mGetContacts;
 
+    /**
+     * Свойство - экземпляр класса {@link GetBoardColumns}
+     */
     private GetBoardColumns mGetBoardColumns;
 
+    /**
+     * Свойство - название карточки
+     */
     private String cardName;
 
+    /**
+     * Свойство - описание карточки
+     */
     private String cardDescription;
 
     private BoardDescriptionFragment descriptionFragment;
 
+    /**
+     * Свойство - меню активности
+     */
     private Menu menu;
 
+    /**
+     * Свойство - текст комментария
+     */
     private String textComment;
 
+    /**
+     * Свойство - фон карточки
+     */
     private int backgroundColor;
 
+    /**
+     * Свойство - порядок карточки в колонке
+     */
     private int columnOrder;
 
     @Override
@@ -248,6 +325,9 @@ public class BoardCardActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
 
         setContentView(LAYOUT);
@@ -257,6 +337,9 @@ public class BoardCardActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация основных элементов
+     */
     private void initialize() {
         mCardParticipants = new ArrayList<>();
         mContacts = new ArrayList<>();
@@ -275,20 +358,32 @@ public class BoardCardActivity extends AppCompatActivity {
         initializePopups();
     }
 
+    /**
+     * Получение данных (отсутствует получение с интернета)
+     */
     private void getData() {
         getFromFile();
         getFromDepository();
         getExtras();
     }
 
+    /**
+     * Получение данных из специального файла приложения
+     */
     private void getFromFile() {
         userId = loadText(BoardCardActivity.this, ID);
     }
 
+    /**
+     * Получение данных из временного хранилища приложения
+     */
     private void getFromDepository() {
         boardId = Depository.getBoardId();
     }
 
+    /**
+     * Получение данных из предыдущей активности
+     */
     private void getExtras() {
         Intent intent = getIntent();
         cardName = intent.getExtras().getString(CARD_NAME);
@@ -296,6 +391,18 @@ public class BoardCardActivity extends AppCompatActivity {
         columnOrder = intent.getExtras().getInt(COLUMN_ORDER);
     }
 
+    /**
+     * Вызов процессов, происходящих в параллельных потоках
+     */
+    private void executeTasks() {
+        mGetCardData.execute();
+        mGetContacts.execute();
+        mGetBoardColumns.execute();
+    }
+
+    /**
+     * Инициализация всплывающих окон
+     */
     private void initializePopups() {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -309,6 +416,12 @@ public class BoardCardActivity extends AppCompatActivity {
         initializePopupColumns(layoutInflater, height);
     }
 
+    /**
+     * Инициализация всплывающего окна для приглашения участников
+     *
+     * @param layoutInflater
+     * @param height - высота окна
+     */
     private void initializePopupInvite(LayoutInflater layoutInflater, int height) {
 
         popupViewInvite = layoutInflater.inflate(popup_board_invite_list, null);
@@ -320,6 +433,12 @@ public class BoardCardActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация всплывающего окна для перемещения карточки
+     *
+     * @param layoutInflater
+     * @param height - высота окна
+     */
     private void initializePopupColumns(LayoutInflater layoutInflater, int height) {
 
         popupViewColumns = layoutInflater.inflate(popup_board_invite_list, null);
@@ -329,6 +448,10 @@ public class BoardCardActivity extends AppCompatActivity {
         recyclerViewColumns = ButterKnife.findById(popupViewColumns, R.id.recyclerViewBoardInvite);
     }
 
+    /**
+     * Установка слушателя на поле для редактирования нового комментария
+     * {@link BoardCardActivity#mEditTextComment}
+     */
     private void setEditTextCommentListener() {
 
         mEditTextComment.addTextChangedListener(new TextWatcher() {
@@ -356,12 +479,9 @@ public class BoardCardActivity extends AppCompatActivity {
 
     }
 
-    private void executeTasks() {
-        mGetCardData.execute();
-        mGetContacts.execute();
-        mGetBoardColumns.execute();
-    }
-
+    /**
+     * Запуск таймера
+     */
     private void startTimer() {
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -373,6 +493,11 @@ public class BoardCardActivity extends AppCompatActivity {
         }, 5000);
     }
 
+    /**
+     * Также используется для инициализации {@link BoardCardActivity#menu}
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_board_card, menu);
@@ -381,11 +506,20 @@ public class BoardCardActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Конвертер из dp в px
+     *
+     * @param dp - значения в dp
+     * @return - значение в px
+     */
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 BoardCardActivity.this.getResources().getDisplayMetrics());
     }
 
+    /**
+     * Изменение состояний пунктов меню
+     */
     private void showAgreeMenu() {
         menu.findItem(R.id.action_settings).setVisible(false);
         menu.findItem(R.id.action_move).setVisible(false);
@@ -396,6 +530,9 @@ public class BoardCardActivity extends AppCompatActivity {
         menu.findItem(R.id.action_agree).setVisible(true);
     }
 
+    /**
+     * Изменение состояний пунктов меню
+     */
     private void hideAgreeMenu() {
         menu.findItem(R.id.action_settings).setVisible(true);
         menu.findItem(R.id.action_invite).setVisible(true);
@@ -406,6 +543,9 @@ public class BoardCardActivity extends AppCompatActivity {
         menu.findItem(R.id.action_agree).setVisible(false);
     }
 
+    /**
+     * Установка слушателя на пункт меню
+     */
     private void setAgreeMenuListener() {
 
         menu.findItem(R.id.action_agree).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -420,6 +560,9 @@ public class BoardCardActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Принятие настроек
+     */
     private void acceptCardChanges() {
 
         cardName = editCardName.getText().toString();
@@ -434,6 +577,11 @@ public class BoardCardActivity extends AppCompatActivity {
         hideAgreeMenu();
     }
 
+    /**
+     * Установка слушателя на всплывающее окно для перемещения карточки
+     *
+     * Открытие этого окна
+     */
     private void setPopupColumnsListener() {
 
         popupWindowColumns.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -450,6 +598,11 @@ public class BoardCardActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на всплывающее окно для приглашения участников
+     *
+     * Открытие этого окна
+     */
     private void setPopupInviteListener() {
 
         popupWindowCardInvite.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -465,6 +618,9 @@ public class BoardCardActivity extends AppCompatActivity {
         popupInviteShow();
     }
 
+    /**
+     * Открытие окна для перемещения карточки
+     */
     private void popupColumnsShow() {
 
         popupWindowColumns.setTouchable(true);
@@ -477,6 +633,9 @@ public class BoardCardActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Открытие карточки для приглашения участников
+     */
     private void popupInviteShow() {
 
         popupWindowCardInvite.setTouchable(true);
@@ -574,6 +733,9 @@ public class BoardCardActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Обновление активности
+     */
     private void refreshActivity() {
 
         Intent intent = new Intent(BoardCardActivity.this,
@@ -598,6 +760,10 @@ public class BoardCardActivity extends AppCompatActivity {
             mTimerCheckComments.cancel();
     }
 
+    /**
+     * Добавление комментария
+     * @param view
+     */
     public void addComment(View view) {
         if (mEditTextComment.getText().toString().length() == 0) return;
 
@@ -626,6 +792,9 @@ public class BoardCardActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Скрытие клавиатуры
+     */
     private void hideKeyBoard() {
 
         InputMethodManager inputMethodManager = (InputMethodManager)
@@ -658,12 +827,19 @@ public class BoardCardActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Инициализация заголовка боковой панели
+     */
     private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
         initializeNavHeaderLogin(header);
         initializeNavHeaderAskQuestion(header);
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
@@ -690,6 +866,10 @@ public class BoardCardActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
@@ -719,6 +899,9 @@ public class BoardCardActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на боковую панель
+     */
     private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -796,7 +979,7 @@ public class BoardCardActivity extends AppCompatActivity {
     }
 
     /**
-     * Рисует боковую панель навигации.
+     * Инициализация боковой панели навигации.
      **/
     private void initNavigationView() {
 
@@ -808,6 +991,9 @@ public class BoardCardActivity extends AppCompatActivity {
         setNavigationViewListener();
     }
 
+    /**
+     * Таймер для обновления состояния списка комментариев
+     */
     private class TimerCheckComments extends CountDownTimer {
 
         TimerCheckComments(long millisInFuture, long countDownInterval) {
@@ -825,6 +1011,9 @@ public class BoardCardActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Получение данных карточки
+     */
     private class GetCardData extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -955,6 +1144,10 @@ public class BoardCardActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Обновление состояния списка комментариев
+     */
     private class RefreshComments extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -1065,6 +1258,10 @@ public class BoardCardActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Добавление нового комментария
+     */
     private class AddComment extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -1102,6 +1299,10 @@ public class BoardCardActivity extends AppCompatActivity {
             super.onPostExecute(strJson);
         }
     }
+
+    /**
+     * Выход из карточки
+     */
     private class LeaveCard extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -1136,6 +1337,10 @@ public class BoardCardActivity extends AppCompatActivity {
             super.onPostExecute(strJson);
         }
     }
+
+    /**
+     * Получение участников доски
+     */
     private class GetContacts extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -1248,6 +1453,10 @@ public class BoardCardActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Получение колонок доски
+     */
     private class GetBoardColumns extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -1317,6 +1526,10 @@ public class BoardCardActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Изменение настроек карточки
+     */
     private class ChangeCardSettings extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -1352,6 +1565,10 @@ public class BoardCardActivity extends AppCompatActivity {
             super.onPostExecute(strJson);
         }
     }
+
+    /**
+     * Изменение фона карточки
+     */
     private class ChangeCardColor extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {

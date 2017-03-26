@@ -36,11 +36,21 @@ import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 import static ru.velkonost.lume.Managers.SetImageManager.fetchImage;
 import static ru.velkonost.lume.Managers.SetImageManager.getCircleMaskedBitmap;
 
+/**
+ * @author Velkonost
+ *
+ * Список контактов, частично или полностью соответствующих данным, по которым искал пользователь
+ */
 public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.SearchViewHolder>
         implements FastScrollRecyclerView.SectionedAdapter{
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<SearchContact> data;
+
     private LayoutInflater inflater;
+
     private Context context;
 
     public SearchListAdapter(Context context, List<SearchContact> data) {

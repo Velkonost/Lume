@@ -19,14 +19,24 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.CardCommentListAdapter;
 import ru.velkonost.lume.descriptions.CardComment;
 
+/**
+ * @author Velkonost
+ *
+ * Комментарии карточки
+ */
 public class CardCommentsFragment extends Fragment {
 
     private static final int LAYOUT = R.layout.fragment_card_comments;
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<CardComment> mCardComments;
 
     private CardCommentListAdapter adapter;
+
     protected View view;
+
     protected Context context;
 
     @BindView(R.id.cvComments)
@@ -66,6 +76,9 @@ public class CardCommentsFragment extends Fragment {
         mCardComments= cardComments;
     }
 
+    /**
+     * Обновление состояния списка комментариев карточки
+     */
     public void refreshComments(List<CardComment> mCardComments) {
 
         adapter.setData(mCardComments);

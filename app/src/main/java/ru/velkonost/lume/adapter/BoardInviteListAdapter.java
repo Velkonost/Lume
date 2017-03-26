@@ -40,16 +40,32 @@ import static ru.velkonost.lume.Managers.SetImageManager.getCircleMaskedBitmap;
 import static ru.velkonost.lume.activity.BoardWelcomeActivity.popupWindowBoardInvite;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
+/**
+ * @author Velkonost
+ *
+ * Список контактов, которые можно пригласить в доску
+ */
 public class BoardInviteListAdapter extends RecyclerView.Adapter<BoardInviteListAdapter.BoardInviteViewHolder> {
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<Contact> data;
+
     private LayoutInflater inflater;
-    private Context context;
+
+    /**
+     * Свойство - идентификатор доски
+     */
     private int boardId;
+
+    /**
+     * Свойство - идентификатор контакта
+     */
     private int curContactId;
 
     public BoardInviteListAdapter(Context context, List<Contact> data, int boardId) {
-        this.context = context;
+
         this.data = data;
         this.boardId = boardId;
 
@@ -116,8 +132,6 @@ public class BoardInviteListAdapter extends RecyclerView.Adapter<BoardInviteList
         });
     }
 
-
-
     @Override
     public int getItemCount() {
         return data.size();
@@ -144,6 +158,9 @@ public class BoardInviteListAdapter extends RecyclerView.Adapter<BoardInviteList
         }
     }
 
+    /**
+     * Приглашение контакта в доску
+     */
     private class Invite extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {

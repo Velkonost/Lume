@@ -18,16 +18,26 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.MessageListAdapter;
 import ru.velkonost.lume.descriptions.Message;
 
+/**
+ * @author Velkonost
+ *
+ * Сообщения диалога
+ */
 public class MessagesFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_messages;
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<Message> mMessages;
 
     @BindView(R.id.recyclerViewMessages)
     RecyclerView recyclerView;
 
     private MessageListAdapter adapter;
+
     protected View view;
+
     protected Context context;
 
     public static MessagesFragment getInstance(Context context, List<Message> messages) {
@@ -57,11 +67,19 @@ public class MessagesFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Обновление состояния списка сообщений
+     * @param mMessage - обновленный список сообщений
+     */
     public void refreshMessages(List<Message> mMessage) {
         adapter.setData(mMessage);
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Обновление состояния списка сообщений с прокруткой к последнему
+     * @param mMessage - обновленный список сообщений
+     */
     public void refreshRecyclerView(List<Message> mMessage) {
         adapter.setData(mMessage);
         adapter.notifyDataSetChanged();

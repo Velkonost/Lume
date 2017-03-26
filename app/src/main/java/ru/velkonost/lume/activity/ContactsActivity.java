@@ -104,12 +104,21 @@ public class ContactsActivity extends AppCompatActivity {
     @BindView(R.id.swipe_container)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
+    /**
+     * Свойство - боковая панель навигации
+     */
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
+    /**
+     * Свойство - элемент, символизирующий загрузку данных
+     */
     @BindView(R.id.loadingDots)
     LoadingDots loadingDots;
 
+    /**
+     * Свойство - открытие диалогового окна, из которого можно искать новые контакты
+     */
     private FloatingActionButton fabGoSearch;
 
     /**
@@ -117,9 +126,6 @@ public class ContactsActivity extends AppCompatActivity {
      */
     private String userId;
 
-    /**
-     * Идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
-     **/
     private ArrayList<String> ids;
 
     /**
@@ -166,6 +172,9 @@ public class ContactsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
 
         setContentView(LAYOUT);
@@ -175,6 +184,9 @@ public class ContactsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инитиализация основных элементов
+     */
     private void initialize() {
 
         mGetData = new GetData();
@@ -198,10 +210,16 @@ public class ContactsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Получение данных (отсутствует получение с интернета)
+     */
     private void getData() {
         getFromFile();
     }
 
+    /**
+     * Получение данных из специального файла приложения
+     */
     private void getFromFile() {
 
         /**
@@ -212,10 +230,17 @@ public class ContactsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Вызов процессов, происходящих в параллельных потоках
+     */
     private void executeTasks() {
         mGetData.execute();
     }
 
+    /**
+     * Инициализация элемента для обновления страницы
+     * {@link ContactsActivity#mSwipeRefreshLayout}
+     */
     private void initSwipeRefresh() {
         /**
          *  Установка цветной палитры,
@@ -287,7 +312,10 @@ public class ContactsActivity extends AppCompatActivity {
             super.onBackPressed();
     }
 
-
+    /**
+     * Инициализация поиска по контактам
+     * @param searchView
+     */
     private void initSearchContacts(final MaterialSearchView searchView) {
 
         searchView.setEllipsize(true);
@@ -314,6 +342,9 @@ public class ContactsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Скрытие клавиатуры
+     */
     private void hideKeyBoard() {
 
         InputMethodManager inputMethodManager = (InputMethodManager)
@@ -346,12 +377,19 @@ public class ContactsActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Инициализация заголовка боковой панели
+     */
     private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
         initializeNavHeaderLogin(header);
         initializeNavHeaderAskQuestion(header);
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
@@ -378,6 +416,10 @@ public class ContactsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
@@ -407,6 +449,9 @@ public class ContactsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на боковую панель
+     */
     private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -484,7 +529,7 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
     /**
-     * Рисует боковую панель навигации.
+     * Инициализация боковой панели навигации.
      **/
     private void initNavigationView() {
 

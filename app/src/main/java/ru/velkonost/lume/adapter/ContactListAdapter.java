@@ -37,22 +37,29 @@ import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 import static ru.velkonost.lume.Managers.SetImageManager.fetchImage;
 import static ru.velkonost.lume.Managers.SetImageManager.getCircleMaskedBitmap;
 
-
-public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder>
+/**
+ * @author Velkonost
+ *
+ * Список контактов пользователя
+ */
+public class ContactListAdapter
+        extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder>
         implements FastScrollRecyclerView.SectionedAdapter{
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<Contact> data;
-    private List<Contact> dataCopy;
-    private LayoutInflater inflater;
-    private Context context;
 
-    protected List<Contact> list;
+    private LayoutInflater inflater;
+
+    private Context context;
 
     public ContactListAdapter(Context context, List<Contact> data) {
         this.context = context;
         this.data = data;
 
-        dataCopy = new ArrayList<>();
+        List<Contact> dataCopy = new ArrayList<>();
         dataCopy.addAll(data);
 
         inflater = LayoutInflater.from(context);

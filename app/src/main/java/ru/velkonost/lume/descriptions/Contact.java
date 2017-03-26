@@ -3,13 +3,36 @@ package ru.velkonost.lume.descriptions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-
+/**
+ * @author Velkonost
+ *
+ * Модель контакта
+ */
 public class Contact implements Parcelable {
 
+    /**
+     * Свойство - идентификатор
+     */
     private String id;
+
+    /**
+     * Свойство - имя
+     */
     private String name;
+
+    /**
+     * Свойство - фамилия
+     */
     private String surname;
+
+    /**
+     * Свойство - логин
+     */
     private String login;
+
+    /**
+     * Свойство - номер папки, в которой располагается аватар
+     */
     private int avatar;
 
     public Contact(String id, String name, String surname, String login, int avatar) {

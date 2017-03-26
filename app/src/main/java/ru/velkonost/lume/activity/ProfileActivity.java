@@ -158,6 +158,9 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.activity_profile)
     DrawerLayout drawerLayout;
 
+    /**
+     * Свойство - боковая панель
+     */
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
@@ -167,6 +170,9 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.imageAvatar)
     ImageView userAvatar;
 
+    /**
+     * Свойство - элемент, символизирующий загрузку данных
+     */
     @BindView(R.id.loadingDots)
     LoadingDots loadingDots;
 
@@ -186,9 +192,8 @@ public class ProfileActivity extends AppCompatActivity {
     private String userId;
 
     /**
-     * Свойство - идентификатор пользователя, которому принадлежит открытый профиль.
-     * */
-    private int profileIdInt;
+      Свойство - идентификатор пользователя, которому принадлежит открытый профиль.
+     */
     private String profileIdString;
 
     /**
@@ -212,15 +217,18 @@ public class ProfileActivity extends AppCompatActivity {
      *      которые в дальнейшем могут быть добавлены в условный контейнер.
      * {@link ProfileActivity#linLayout}
      **/
-    protected View viewUserPlaceLiving; /** Свойство - место проживания пользователя */
-    protected View viewUserBirthday; /** Свойство - дата рождения пользователя */
-    private View viewUserPlaceStudy; /** Свойство - место обучения пользователя */
-    private View viewUserPlaceWork; /** Свойство - текущее место работы пользователя */
+
+    /** Свойство - место проживания пользователя */ protected View viewUserPlaceLiving;
+    /** Свойство - дата рождения пользователя */ protected View viewUserBirthday;
+    /** Свойство - место обучения пользователя */ private View viewUserPlaceStudy;
+    /** Свойство - текущее место работы пользователя */ private View viewUserPlaceWork;
+
     /**
      * Свойство - email, который пользователь данного профиля готов
      *          предоставить другим пользователя для связи с ним.
      **/
     protected View viewUserWorkingEmail;
+
     /**
      * Свойство - места обучения и работы пользователя.
      * {@link ProfileActivity#viewUserPlaceStudy} и {@link ProfileActivity#viewUserPlaceWork},
@@ -250,23 +258,31 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.btnSendMessage)
     FloatingActionButton btnSendMessage;
 
-    private TextView navHeaderLogin;
-
-    private String sUserName;
+    /**
+     * Свойство - имя (или логин) пользователя
+     */
+     private String sUserName;
 
     /**
      * Свойство - элемент для выбора даты.
      */
     private DatePickerDialog dateBirdayDatePicker;
 
-    private String sUserPlaceLiving;
-    private String sUserPlaceStudy;
-    private String sUserPlaceWork;
-    private String sUserBirthday;
-    private String sUserWorkingEmail;
+
+
+
+
+    /** Свойство - место проживания пользователя */ private String sUserPlaceLiving;
+    /** Свойство - место обучения пользователя */ private String sUserPlaceStudy;
+    /** Свойство - текущее место работы пользователя */ private String sUserPlaceWork;
+    /** Свойство - дата рождения пользователя */  private String sUserBirthday;
+    /** Свойство - рабочий email для связи */ private String sUserWorkingEmail;
 
     private SecretTextView userBirthday;
 
+    /**
+     * Поля редактирования для изменения личных данных
+     */
     private EditText editPlaceLiving;
     private EditText editUserPlaceStudy;
     private EditText editUserPlaceWork;
@@ -298,6 +314,9 @@ public class ProfileActivity extends AppCompatActivity {
         executeTasks();
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
 
         setContentView(LAYOUT);
@@ -307,11 +326,17 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Получение данных (отсутствует получение с интернета)
+     */
     private void getData() {
         getFromFile();
         getExtras();
     }
 
+    /**
+     * Получение данных из специального файла приложения
+     */
     private void getFromFile() {
 
         /**
@@ -322,6 +347,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Получение данных из предыдущей активности
+     */
     private void getExtras() {
 
         Intent intent = getIntent();
@@ -331,11 +359,15 @@ public class ProfileActivity extends AppCompatActivity {
          * Принадлежит открытый профиль пользователю,
          *      авторизованному на данном устройстве или нет?
          * */
-        profileIdInt = intent.getIntExtra(ID, Integer.parseInt(userId));
+
+        int profileIdInt = intent.getIntExtra(ID, Integer.parseInt(userId));
         profileIdString = String.valueOf(profileIdInt);
 
     }
 
+    /**
+     * Инитиализация основных элементов
+     */
     private void initialization() {
 
         /** Инициализация экземпляров классов */
@@ -354,10 +386,16 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Вызов процессов, происходящих в параллельных потоках
+     */
     private void executeTasks() {
         mGetData.execute();
     }
 
+    /**
+     * Установка цветовой палитры для {@link ProfileActivity#collapsingToolbar}
+     */
     private void initCollapsingToolbarPalette() {
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
@@ -373,6 +411,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Скрытие клавиатуры
+     */
     private void hideKeyBoard() {
 
         InputMethodManager inputMethodManager = (InputMethodManager)
@@ -405,12 +446,19 @@ public class ProfileActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Инициализация заголовка боковой панели
+     */
     private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
         initializeNavHeaderLogin(header);
         initializeNavHeaderAskQuestion(header);
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
@@ -437,6 +485,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
@@ -485,6 +537,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на боковую панель
+     */
     private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -581,7 +636,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     /**
-     * Рисует боковую панель навигации.
+     * Инициализация боковой панели навигации.
      **/
     private void initNavigationView() {
 
@@ -603,29 +658,11 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     /**
-     * При полном закрытии активности удаляем информацию о владельце открытого профиля.
-     **/
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        deleteText(ProfileActivity.this, USER_ID);
-//
-//        if ((profileIdString.equals(userId))) {
-//
-////            Log.i("KEKE", "123");
-//            sUserPlaceLiving = editPlaceLiving.getText().toString();
-//            sUserPlaceStudy = editUserPlaceStudy.getText().toString();
-//            sUserPlaceWork = editUserPlaceWork.getText().toString();
-//            sUserBirthday = userBirthday.getText().toString();
-//            sUserWorkingEmail = editUserWorkingEmail.getText().toString();
-//
-//            new PostData().execute();
-//
-//        }
-//    }
-
-
-
+     * Конвертер из dp в px
+     *
+     * @param dp - значения в dp
+     * @return - значение в px
+     */
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 ProfileActivity.this.getResources().getDisplayMetrics());
@@ -1482,6 +1519,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Создание нового диалога с пользователем
+     */
     private class CreateDialog extends AsyncTask<Object, Object, String> {
 
         @Override

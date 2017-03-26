@@ -4,10 +4,7 @@ import android.text.TextPaint;
 import android.text.style.CharacterStyle;
 import android.text.style.UpdateAppearance;
 
-public class MutableForegroundColorSpan extends CharacterStyle
-        implements UpdateAppearance {
-
-    public static final String TAG = "MutableForegroundColorSpan";
+class MutableForegroundColorSpan extends CharacterStyle implements UpdateAppearance {
 
     private int mColor;
 

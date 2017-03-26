@@ -3,18 +3,51 @@ package ru.velkonost.lume.descriptions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * @author Velkonost
+ *
+ * Модель карточки
+ */
 public class Card implements Parcelable {
 
+    /**
+     * Свойство - идентификатор
+     */
     private int id;
+
+    /**
+     * Свойство - количество участников
+     */
     private int amountParticipants;
+
+    /**
+     * Свойство - название
+     */
     private String name;
+
+    /**
+     * Свойство - описание
+     */
     private String description;
 
+    /**
+     * Свойство - цвет фона
+     */
     private int color;
+
+    /**
+     * Свойство - положение в колонке
+     */
     private int columnOrder;
 
+    /**
+     * Свойство - проверка, состоит ли авторизованный пользователь в карточке
+     */
     private boolean isBelong;
 
+    /**
+     * Свойство - список идентификаторов участников
+     */
     private int[] userIds;
 
     public Card(int id, String name) {

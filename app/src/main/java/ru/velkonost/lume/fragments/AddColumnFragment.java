@@ -44,12 +44,19 @@ import static ru.velkonost.lume.Constants.USER_IDS;
 import static ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter.last;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
+/**
+ * @author Velkonost
+ *
+ * Фрагмент для добавления новой колонки в доску
+ */
 public class AddColumnFragment extends BaseTabFragment {
     private static final int LAYOUT = R.layout.fragment_add_column;
 
+    /**
+     * Свойство - идентификатор доски
+     */
     @BindView(R.id.editName) EditText createColumnName;
     private String boardId;
-    private List<BoardColumn> mBoardColumns;
 
     public static AddColumnFragment getInstance(Context context, String boardId) {
         Bundle args = new Bundle();
@@ -101,10 +108,14 @@ public class AddColumnFragment extends BaseTabFragment {
     public void setContext(Context context) {
         this.context = context;
     }
+
     public void setBoardId(String boardId) {
         this.boardId = boardId;
     }
 
+    /**
+     * Добавление колонки
+     */
     private class AddColumn extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -140,6 +151,10 @@ public class AddColumnFragment extends BaseTabFragment {
             new GetBoardInfo().execute();
         }
     }
+
+    /**
+     * Получение информации о доске
+     */
     private class GetBoardInfo extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -190,7 +205,7 @@ public class AddColumnFragment extends BaseTabFragment {
                 JSONArray cidsJSON = dataJsonObj.getJSONArray(COLUMN_IDS);
 
                 ArrayList<String> cids = new ArrayList<>();
-                mBoardColumns = new ArrayList<>();
+                List<BoardColumn> boardColumns = new ArrayList<>();
 
 
                 for (int i = 0; i < cidsJSON.length(); i++) {
@@ -200,13 +215,13 @@ public class AddColumnFragment extends BaseTabFragment {
                 for (int i = 0; i < cids.size(); i++) {
                     JSONObject columnInfo = dataJsonObj.getJSONObject(cids.get(i));
 
-                    mBoardColumns.add(new BoardColumn(
+                    boardColumns.add(new BoardColumn(
                             Integer.parseInt(columnInfo.getString(ID)),
                             columnInfo.getString(NAME),  i)
                     );
                 }
 
-                Depository.setBoardColumns(mBoardColumns);
+                Depository.setBoardColumns(boardColumns);
 
                 Intent intent = new Intent(context, BoardColumnsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

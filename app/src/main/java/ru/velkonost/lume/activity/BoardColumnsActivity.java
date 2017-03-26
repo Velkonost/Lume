@@ -78,6 +78,12 @@ import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
 import static ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter.last;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
+/**
+ * @author Velkonost
+ *
+ * Класс, описывающий колонки открытой доски
+ *
+ */
 public class BoardColumnsActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_board_columns;
@@ -89,11 +95,14 @@ public class BoardColumnsActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     /**
-     * Свойство - описание {@link SearchActivity#LAYOUT}
+     * Свойство - описание {@link BoardColumnsActivity#LAYOUT}
      */
     @BindView(R.id.activity_board_columns)
     DrawerLayout drawerLayout;
 
+    /**
+     * Свойство - кнопка добавления карточки в колонку
+     */
     @BindView(R.id.btnAddCard)
     FloatingActionButton addCardButton;
 
@@ -103,9 +112,15 @@ public class BoardColumnsActivity extends AppCompatActivity {
     @BindView(R.id.tabLayout)
     TabLayout tabLayout;
 
+    /**
+     * Свойство - боковая панель
+     */
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
+    /**
+     * Свойство - порядок колонки в доске
+     */
     private int columnOrder;
 
     /**
@@ -113,10 +128,24 @@ public class BoardColumnsActivity extends AppCompatActivity {
      */
     private Intent nextIntent;
 
+    /**
+     * Свойство - идентификатор доски
+     */
     private String boardId;
+
+    /**
+     * Свойство - название колонки
+     */
     private String columnName;
+
+    /**
+     * Свойство - название колонки до внесения изменений
+     */
     private String currentColumnName;
 
+    /**
+     * Свойство - позиция колонки в доске
+     */
     private int currentColumnPosition;
 
     @Override
@@ -136,6 +165,9 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
 
         setContentView(LAYOUT);
@@ -145,6 +177,9 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Получение данных из предыдущей активности
+     */
     private void getExtras() {
 
         Intent intent = getIntent();
@@ -153,6 +188,9 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инитиализация основных элементов
+     */
     private void initialize() {
 
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
@@ -170,6 +208,10 @@ public class BoardColumnsActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Переход на начальную активность доски
+     * {@link BoardWelcomeActivity}
+     */
     private void goWelcomeActivity() {
         Intent intent = new Intent(BoardColumnsActivity.this,
                 BoardWelcomeActivity.class);
@@ -184,6 +226,11 @@ public class BoardColumnsActivity extends AppCompatActivity {
                 R.anim.activity_diagonaltranslate);
     }
 
+    /**
+     * Установка настроек для поля редактирования имени колонки
+     * @param inputName - поле для редактирования имени колонки
+     * @param params - layout-параметры для установки на поле
+     */
     private void setInputNameSettings(EditText inputName, LinearLayout.LayoutParams  params) {
         inputName.setTextColor(ContextCompat.getColor(BoardColumnsActivity.this, R.color.colorBlack));
         inputName.setText(currentColumnName);
@@ -246,11 +293,20 @@ public class BoardColumnsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Конвертер из dp в px
+     *
+     * @param dp - значения в dp
+     * @return - значение в px
+     */
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 BoardColumnsActivity.this.getResources().getDisplayMetrics());
     }
 
+    /**
+     * Инициализация табов с названиями колонок
+     */
     private void initTabs() {
         final BoardColumnsTabsFragmentAdapter adapter
                 = new BoardColumnsTabsFragmentAdapter(this, getSupportFragmentManager(), boardId);
@@ -320,6 +376,9 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на {@link BoardColumnsActivity#viewPager}
+     */
     private void setViewPagerListener() {
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -351,6 +410,9 @@ public class BoardColumnsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Скрытие клавиатуры
+     */
     private void hideKeyBoard() {
 
         InputMethodManager inputMethodManager = (InputMethodManager)
@@ -383,12 +445,19 @@ public class BoardColumnsActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Инициализация заголовка боковой панели
+     */
     private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
         initializeNavHeaderLogin(header);
         initializeNavHeaderAskQuestion(header);
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
@@ -415,6 +484,10 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
@@ -444,6 +517,9 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на боковую панель
+     */
     private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -521,7 +597,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
     }
 
     /**
-     * Рисует боковую панель навигации.
+     * Инициализация боковой панели навигации.
      **/
     private void initNavigationView() {
 
@@ -533,6 +609,9 @@ public class BoardColumnsActivity extends AppCompatActivity {
         setNavigationViewListener();
     }
 
+    /**
+     * Получение данных о доске
+     */
     private class GetBoardInfo extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -619,6 +698,10 @@ public class BoardColumnsActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Добавление колонки
+     */
     private class AddColumn extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -655,6 +738,10 @@ public class BoardColumnsActivity extends AppCompatActivity {
 
         }
     }
+
+    /**
+     * Изменение настроек колонки
+     */
     private class ChangeColumnSettings extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {

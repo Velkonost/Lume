@@ -71,6 +71,12 @@ import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
+/**
+ * @author Velkonost
+ *
+ * Класс, описывающий список досок, в которых состоит пользователь
+ *
+ */
 public class BoardsListActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_boards;
@@ -87,9 +93,15 @@ public class BoardsListActivity extends AppCompatActivity {
     @BindView(R.id.activity_boards)
     DrawerLayout drawerLayout;
 
+    /**
+     * Свойство - боковая панель навигации
+     */
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
+    /**
+     * Свойство - элемент, символизирующий загрузку данных
+     */
     @BindView(R.id.loadingDots)
     LoadingDots loadingDots;
 
@@ -114,7 +126,7 @@ public class BoardsListActivity extends AppCompatActivity {
     private Intent nextIntent;
 
     /**
-     * Свойство - список контактов.
+     * Свойство - список досок.
      * {@link Board}
      */
     private List<Board> mBoards;
@@ -123,7 +135,14 @@ public class BoardsListActivity extends AppCompatActivity {
 
     private TimerCheckBoardsState timer;
 
+    /**
+     * Свойство - название доски
+     */
     private String boardName;
+
+    /**
+     * Свойство - описание доски
+     */
     private String boardDescription;
 
     @Override
@@ -145,6 +164,9 @@ public class BoardsListActivity extends AppCompatActivity {
         startTimer();
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
         setContentView(LAYOUT);
         ButterKnife.bind(this);
@@ -152,6 +174,9 @@ public class BoardsListActivity extends AppCompatActivity {
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
     }
 
+    /**
+     * Инитиализация основных элементов
+     */
     private void initialize() {
         mGetBoards = new GetBoards();
         bids = new ArrayList<>();
@@ -162,14 +187,23 @@ public class BoardsListActivity extends AppCompatActivity {
         initNavigationView(); /** Инициализация */
     }
 
+    /**
+     * Получение данных (отсутствует получение с интернета)
+     */
     private void getData() {
         getFromFile();
     }
 
+    /**
+     * Вызов процессов, происходящих в параллельных потоках
+     */
     private void executeTasks() {
         mGetBoards.execute();
     }
 
+    /**
+     * Получение данных из специального файла приложения
+     */
     private void getFromFile() {
 
         /**
@@ -180,6 +214,9 @@ public class BoardsListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Запуск таймера
+     */
     private void startTimer() {
 
         new Handler().postDelayed(new Runnable() {
@@ -193,6 +230,11 @@ public class BoardsListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Настройка поля для редактирования названия доски
+     * @param inputName - поле для редактирования названия доски
+     * @param params - layout-параметры для установки
+     */
     private void setInputNameParams(EditText inputName, LinearLayout.LayoutParams  params) {
 
         inputName.setTextColor(ContextCompat.getColor(BoardsListActivity.this, R.color.colorBlack));
@@ -202,6 +244,11 @@ public class BoardsListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Настройка поля для редактирования описания доски
+     * @param inputDesc - поле для редактирования описания доски
+     * @param params - layout-параметры для установки
+     */
     private void setInputDescParams(EditText inputDesc, LinearLayout.LayoutParams  params) {
 
         inputDesc.setLayoutParams(params);
@@ -211,6 +258,10 @@ public class BoardsListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Слушатель для открытия диалогового окна, из которого создается новая доска
+     * @param view
+     */
     public void createBoardOnClick(View view) {
 
         LinearLayout layout = new LinearLayout(BoardsListActivity.this);
@@ -260,6 +311,12 @@ public class BoardsListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Конвертер из dp в px
+     *
+     * @param dp - значения в dp
+     * @return - значение в px
+     */
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 BoardsListActivity.this.getResources().getDisplayMetrics());
@@ -271,6 +328,9 @@ public class BoardsListActivity extends AppCompatActivity {
         if (timer != null) timer.cancel();
     }
 
+    /**
+     * Скрытие клавиатуры
+     */
     private void hideKeyBoard() {
 
         InputMethodManager inputMethodManager = (InputMethodManager)
@@ -303,12 +363,19 @@ public class BoardsListActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Инициализация заголовка боковой панели
+     */
     private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
         initializeNavHeaderLogin(header);
         initializeNavHeaderAskQuestion(header);
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
@@ -335,6 +402,10 @@ public class BoardsListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
@@ -364,6 +435,9 @@ public class BoardsListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на боковую панель
+     */
     private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -441,7 +515,7 @@ public class BoardsListActivity extends AppCompatActivity {
     }
 
     /**
-     * Рисует боковую панель навигации.
+     * Инициализация боковой панели навигации.
      **/
     private void initNavigationView() {
 
@@ -453,6 +527,9 @@ public class BoardsListActivity extends AppCompatActivity {
         setNavigationViewListener();
     }
 
+    /**
+     * Таймер для обновления состояния списка досок
+     */
     private class TimerCheckBoardsState extends CountDownTimer {
 
         TimerCheckBoardsState(long millisInFuture, long countDownInterval) {
@@ -470,6 +547,9 @@ public class BoardsListActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Получение информации о досках
+     */
     private class GetBoards extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -553,6 +633,10 @@ public class BoardsListActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Обновление состояния списка досок
+     */
     private class RefreshBoards extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -645,6 +729,10 @@ public class BoardsListActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Добавление новой доски
+     */
     private class AddBoard extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {

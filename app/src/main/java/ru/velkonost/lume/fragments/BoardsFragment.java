@@ -19,12 +19,23 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.BoardListAdapter;
 import ru.velkonost.lume.descriptions.Board;
 
+/**
+ * @author Velkonost
+ *
+ * Список досок, в которых участвует пользователь
+ */
 public class BoardsFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_board;
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<Board> mBoards;
+
     private BoardListAdapter adapter;
+
     protected View view;
+
     protected Context context;
 
     @BindView(R.id.btnAddBoard)
@@ -64,6 +75,9 @@ public class BoardsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Обновление состояния списка досок
+     */
     public void refreshBoards (List<Board> mBoards) {
         adapter.setData(mBoards);
         adapter.notifyDataSetChanged();

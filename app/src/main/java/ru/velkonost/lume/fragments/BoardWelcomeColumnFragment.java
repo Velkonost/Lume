@@ -18,14 +18,29 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.BoardWelcomeColumnListAdapter;
 import ru.velkonost.lume.descriptions.BoardColumn;
 
+/**
+ * @author Velkonost
+ *
+ * Колонки на первоначальной активности доски
+ */
 public class BoardWelcomeColumnFragment extends Fragment {
 
     private static final int LAYOUT = R.layout.fragment_board_welcome_columns;
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<BoardColumn> mColumns;
+
     private BoardWelcomeColumnListAdapter adapter;
+
     protected View view;
+
     protected Context context;
+
+    /**
+     * Свойство - идентификатор доски
+     */
     private String boardId;
 
     @BindView(R.id.gridColumns)
@@ -72,6 +87,9 @@ public class BoardWelcomeColumnFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Настройка layout'а
+     */
     private void adjustGridView(GridView gridView) {
         gridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
         gridView.setNumColumns(2);
@@ -79,6 +97,9 @@ public class BoardWelcomeColumnFragment extends Fragment {
 
     }
 
+    /**
+     * Обновление состояния списка колонок
+     */
     public void refreshColumns (List<BoardColumn> mColumns) {
         gridView.setVisibility(View.VISIBLE);
         textView.setVisibility(View.INVISIBLE);
@@ -90,6 +111,7 @@ public class BoardWelcomeColumnFragment extends Fragment {
     }
 
     public void setContext (Context context) {this.context = context;}
+
     public void setBoardId (String boardId) {this.boardId = boardId;}
 
     public void setColumns(List<BoardColumn> mColumns) {

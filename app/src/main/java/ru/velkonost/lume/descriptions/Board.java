@@ -4,9 +4,21 @@ package ru.velkonost.lume.descriptions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * @author Velkonost
+ *
+ * Модель доски
+ */
 public class Board implements Parcelable {
 
+    /**
+     * Свойство - идентификатор
+     */
     private int id;
+
+    /**
+     * Свойство - название
+     */
     private String name;
 
     // in the future, notification for user

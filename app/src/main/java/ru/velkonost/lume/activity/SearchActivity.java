@@ -101,9 +101,15 @@ public class SearchActivity extends AppCompatActivity {
     @BindView(R.id.activity_search)
     DrawerLayout drawerLayout;
 
+    /**
+     * Свойство - боковая панель навигации
+     */
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
+    /**
+     * Свойство - элемент, символизирующий загрузку данных
+     */
     @BindView(R.id.loadingDots)
     LoadingDots loadingDots;
 
@@ -113,7 +119,7 @@ public class SearchActivity extends AppCompatActivity {
     private String whatSearch = " ";
 
     /**
-     * Идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
+     * Свойство - идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
      **/
     private ArrayList<String> ids;
 
@@ -152,6 +158,9 @@ public class SearchActivity extends AppCompatActivity {
         executeTasks();
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
 
         setContentView(LAYOUT);
@@ -161,10 +170,16 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Получение данных (отсутствует получение с интернета)
+     */
     private void getData() {
         getExtras();
     }
 
+    /**
+     * Получение данных из предыдущей активности
+     */
     private void getExtras() {
 
         /**
@@ -178,6 +193,9 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инитиализация основных элементов
+     */
     private void initialization() {
         mGetData = new GetData();
         ids = new ArrayList<>();
@@ -198,6 +216,9 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Вызов процессов, происходящих в параллельных потоках
+     */
     private void executeTasks() {
         mGetData.execute();
     }
@@ -240,6 +261,9 @@ public class SearchActivity extends AppCompatActivity {
             super.onBackPressed();
     }
 
+    /**
+     * Скрытие клавиатуры
+     */
     private void hideKeyBoard() {
 
         InputMethodManager inputMethodManager = (InputMethodManager)
@@ -272,12 +296,19 @@ public class SearchActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Инициализация заголовка боковой панели
+     */
     private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
         initializeNavHeaderLogin(header);
         initializeNavHeaderAskQuestion(header);
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
@@ -304,6 +335,10 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
@@ -333,6 +368,9 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на боковую панель
+     */
     private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -410,7 +448,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     /**
-     * Рисует боковую панель навигации.
+     * Инициализация боковой панели навигации.
      **/
     private void initNavigationView() {
 

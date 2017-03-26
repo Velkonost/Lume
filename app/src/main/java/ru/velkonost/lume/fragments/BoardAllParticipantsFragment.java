@@ -19,13 +19,24 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.BoardParticipantsListAdapter;
 import ru.velkonost.lume.descriptions.Contact;
 
+/**
+ * @author Velkonost
+ *
+ * Список всех участников доски
+ */
 public class BoardAllParticipantsFragment extends Fragment {
 
     private static final int LAYOUT = R.layout.fragment_board_all_participants;
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<Contact> mContacts;
+
     private BoardParticipantsListAdapter adapter;
+
     protected View view;
+
     protected Context context;
 
     @BindView(R.id.recyclerViewAllParticipants) FastScrollRecyclerView recyclerView;

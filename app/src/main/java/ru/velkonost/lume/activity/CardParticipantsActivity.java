@@ -67,6 +67,12 @@ import static ru.velkonost.lume.Managers.PhoneDataStorageManager.deleteText;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
+/**
+ * @author Velkonost
+ *
+ * Класс, описывающий участников карточки
+ *
+ */
 public class CardParticipantsActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_board_participant;
@@ -78,20 +84,26 @@ public class CardParticipantsActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     /**
-     * Свойство - описание {@link SearchActivity#LAYOUT}
+     * Свойство - описание {@link CardParticipantsActivity#LAYOUT}
      */
     @BindView(R.id.activity_board_participant)
     DrawerLayout drawerLayout;
 
+    /**
+     * Свойство - боковая панель навигации
+     */
     @BindView(R.id.navigation)
     NavigationView navigationView;
+
     /**
      * Свойство - идентификатор пользователя, авторизованного на данном устройстве.
      */
     private String userId;
 
+    /**
+     * Свойство - идентификатор доски
+     */
     private int boardId;
-
 
     /**
      * Свойство - следующая активность.
@@ -99,19 +111,18 @@ public class CardParticipantsActivity extends AppCompatActivity {
     private Intent nextIntent;
 
     /**
-     * Идентификаторы досок, к которым принадлежит авторизованный пользователь.
+     * Свойство - списко идентификаторов участников
      **/
     private ArrayList<String> ids;
 
     /**
-     * Свойство - экзмепляр класса {@link BoardParticipantsActivity.GetData}
+     * Свойство - экзмепляр класса {@link GetData}
      */
     protected GetData mGetData;
 
-
     /**
      * Свойство - список контактов.
-     * {@link ru.velkonost.lume.descriptions.BoardParticipant}
+     * {@link Contact}
      */
     private List<Contact> mBoardParticipants;
 
@@ -143,6 +154,9 @@ public class CardParticipantsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
 
         setContentView(LAYOUT);
@@ -152,11 +166,17 @@ public class CardParticipantsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Получение данных (отсутствует получение с интернета)
+     */
     private void getData() {
         getFromFile();
         getExtras();
     }
 
+    /**
+     * Получение данных из специального файла приложения
+     */
     private void getFromFile() {
 
         /**
@@ -167,15 +187,24 @@ public class CardParticipantsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Получение данных из предыдущей активности
+     */
     private void getExtras() {
         Intent intent = getIntent();
         boardId = intent.getIntExtra(BOARD_ID, 0);
     }
 
+    /**
+     * Вызов процессов, происходящих в параллельных потоках
+     */
     private void executeTasks() {
         mGetData.execute();
     }
 
+    /**
+     * Инитиализация основных элементов
+     */
     private void initialize() {
 
         mGetData = new GetData();
@@ -198,6 +227,9 @@ public class CardParticipantsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Скрытие клавиатуры
+     */
     private void hideKeyBoard() {
 
         InputMethodManager inputMethodManager = (InputMethodManager)
@@ -230,12 +262,19 @@ public class CardParticipantsActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Инициализация заголовка боковой панели
+     */
     private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
         initializeNavHeaderLogin(header);
         initializeNavHeaderAskQuestion(header);
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
@@ -262,6 +301,10 @@ public class CardParticipantsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
@@ -291,6 +334,9 @@ public class CardParticipantsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на боковую панель
+     */
     private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -380,6 +426,9 @@ public class CardParticipantsActivity extends AppCompatActivity {
         setNavigationViewListener();
     }
 
+    /**
+     * Получение информации об участниках
+     */
     private class GetData extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {

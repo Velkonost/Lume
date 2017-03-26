@@ -3,23 +3,59 @@ package ru.velkonost.lume.descriptions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * @author Velkonost
+ *
+ * Модель контакта поиска
+ */
 public class SearchContact implements Parcelable {
+
+    /**
+     * Свойство - идентификатор
+     */
     private String id;
 
+    /**
+     * Свойство - имя
+     */
     private String name;
+
+    /**
+     * Свойство - фамилия
+     */
     private String surname;
+
+    /**
+     * Свойство - логин
+     */
     private String login;
 
+    /**
+     * Свойство - город проживания
+     */
     private String city;
+
+    /**
+     * Свойство - страна проживания
+     */
     private String country;
 
+    /**
+     * Свойство - место учебы
+     */
     private String study;
+
+    /**
+     * Свойство - место работы
+     */
     private String work;
 
+    /**
+     * Свойство - номер папки, в которой располагается аватар
+     */
     private int avatar;
 
-    public SearchContact() {
-    }
+    public SearchContact() {}
 
     public SearchContact(String id, String name, String surname, String login,
                          String city, String country, String study, String work, int avatar) {

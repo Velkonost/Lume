@@ -18,14 +18,22 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.BoardParticipantsHorizontalListAdapter;
 import ru.velkonost.lume.descriptions.BoardParticipant;
 
+/**
+ * @author Velkonost
+ *
+ * Участники карточки
+ */
 public class CardParticipantsFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_board_participants;
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<BoardParticipant> mBoardsParticipants;
-    protected View view;
-    protected Context context;
 
-    private BoardParticipantsHorizontalListAdapter adapter;
+    protected View view;
+
+    protected Context context;
 
     @BindView(R.id.rvParticipants)
     RecyclerView recyclerView;
@@ -52,7 +60,8 @@ public class CardParticipantsFragment extends Fragment {
 
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new BoardParticipantsHorizontalListAdapter(getActivity(), mBoardsParticipants);
+        BoardParticipantsHorizontalListAdapter adapter =
+                new BoardParticipantsHorizontalListAdapter(getActivity(), mBoardsParticipants);
         recyclerView.setAdapter(adapter);
 
         return view;

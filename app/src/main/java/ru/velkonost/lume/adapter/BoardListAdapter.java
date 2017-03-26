@@ -22,10 +22,20 @@ import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.MARQUEE_REPEAT_LIMIT;
 import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 
+/**
+ * @author Velkonost
+ *
+ * Список досок, в которых состоит пользователь
+ */
 public class BoardListAdapter extends RecyclerView.Adapter<BoardListAdapter.BoardViewHolder>{
 
+    /**
+     * Свойство - данные, с которыми необходимо работать
+     */
     private List<Board> data;
+
     private LayoutInflater inflater;
+
     private Context context;
 
     public BoardListAdapter(Context context, List<Board> data) {

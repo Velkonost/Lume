@@ -46,6 +46,7 @@ import static ru.velkonost.lume.net.ServerConnection.hasConnection;
 
 /**
  * @author Velkonost
+ *
  * Стартовая активность, предлагающая зарегистрироваться или войти.
  * Если пользователь входил ранее, то сразу перебрасывается на страницу своего профиля.
  */
@@ -56,11 +57,11 @@ public class WelcomeActivity extends AppCompatActivity {
     /** Намерение на следующую активность */
     private Intent mIntentNext;
 
-    /** Cвойство - введенный пользователем логин */
+    /** Свойство - введенный пользователем логин */
     @BindView(R.id.loginLogIn)
     EditText inputLogin;
 
-    /** Cвойство - введенный пользователем пароль */
+    /** Свойство - введенный пользователем пароль */
     @BindView(R.id.passwordLogIn)
     EditText inputPassword;
 
@@ -83,6 +84,9 @@ public class WelcomeActivity extends AppCompatActivity {
         checkConnection();
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
 
         setContentView(LAYOUT);
@@ -92,12 +96,18 @@ public class WelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация основных элементов
+     */
     private void initialization() {
         /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
         initToolbar(WelcomeActivity.this, toolbar, ""); /** Инициализация */
         initInputs();
     }
 
+    /**
+     * Инициализация полей ввода данных
+     */
     private void initInputs() {
         Drawable drawableLogin = inputLogin.getBackground(); // get current EditText drawable
         drawableLogin.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP); // change the drawable color
@@ -160,7 +170,6 @@ public class WelcomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     /**
      * Функция служит для проверки того, заходил ли пользователь с этого устройства ранее.
      * При положительном ответе перебрасывает на профиль пользователя
@@ -182,6 +191,10 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Проверка совпадения логина и пароля
+     * Иначе - регистрация нового пользователя
+     */
     private class SignIn extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {

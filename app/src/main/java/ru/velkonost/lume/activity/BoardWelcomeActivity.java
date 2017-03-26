@@ -107,6 +107,12 @@ import static ru.velkonost.lume.Managers.PhoneDataStorageManager.saveText;
 import static ru.velkonost.lume.R.layout.popup_board_invite_list;
 import static ru.velkonost.lume.net.ServerConnection.getJSON;
 
+/**
+ * @author Velkonost
+ *
+ * Класс, описывающий стартовую активность доски
+ *
+ */
 public class BoardWelcomeActivity extends AppCompatActivity {
 
     private static final int LAYOUT = R.layout.activity_board_welcome;
@@ -118,23 +124,35 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     Toolbar toolbar;
 
     /**
-     * Свойство - описание {@link SearchActivity#LAYOUT}
+     * Свойство - описание {@link BoardWelcomeActivity#LAYOUT}
      */
     @BindView(R.id.activity_board_welcome)
     DrawerLayout drawerLayout;
 
+    /**
+     * Свойство - поле для редактирования названия доски
+     */
     @BindView(R.id.editBoardName)
     EditText editBoardName;
 
+    /**
+     * Свойство - боковая панель навигации
+     */
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
+    /**
+     * Свойство - элемент, символизирующий загрузку данных
+     */
     @BindView(R.id.loadingDots)
     LoadingDots loadingDots;
 
 
-    private RecyclerView recyclerView;
+    /**
+     * Свойство - всплывающее окно для приглашение контактов в доску
+     */
     private View popupView;
+    private RecyclerView recyclerView;
     public static PopupWindow popupWindowBoardInvite;
 
     /**
@@ -148,6 +166,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
      */
     private Intent nextIntent;
 
+    /**
+     * Свойство - идентификатор доски
+     */
     private int boardId;
 
     /**
@@ -155,7 +176,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
      */
     protected GetBoardInfo mGetBoardInfo;
 
-
+    /**
+     * Свойство - экземпляр классе {@link GetContacts}
+     */
     private GetContacts mGetContacts;
 
     /**
@@ -164,14 +187,22 @@ public class BoardWelcomeActivity extends AppCompatActivity {
      */
     private List<BoardParticipant> mBoardParticipants;
 
+    /**
+     * Свойство - список колонок
+     * {@link BoardColumn}
+     */
     private List<BoardColumn> mBoardColumns;
 
+    /**
+     * Свойство - список контактов пользователя
+     * {@link Contact}
+     */
     private List<Contact> mContacts;
 
-    /**
-     * Идентификаторы пользователей, некоторые данные которых соответствуют искомой информации.
-     **/
     private ArrayList<String> ids;
+    private ArrayList<String> cids;
+    private ArrayList<String> uids;
+
 
     /**
      * Контакты авторизованного пользователя.
@@ -180,20 +211,31 @@ public class BoardWelcomeActivity extends AppCompatActivity {
      * @Значение - его полное имя или логин.
      **/
     private Map<String, String> contacts;
-    private ArrayList<String> cids;
-
-    private ArrayList<String> uids;
 
     private boolean invitePerson;
 
+    /**
+     * Свойство - название доски
+     */
     private String boardName;
+
+    /**
+     * Свойство - название колонки
+     */
     private String columnName;
+
+    /**
+     * Свойство - описание доски
+     */
     private String boardDescription;
 
     private BoardDescriptionFragment descriptionFragment;
     private BoardWelcomeColumnFragment boardWelcomeColumnFragment;
     private BoardParticipantsFragment boardParticipantsFragment;
 
+    /**
+     * Свойство - меню активности
+     */
     private Menu menu;
 
     @Override
@@ -215,6 +257,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка первоначальных настроек активности
+     */
     private void setBase() {
 
         setContentView(LAYOUT);
@@ -224,11 +269,17 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Получение данных (отсутствует получение с интернета)
+     */
     private void getData() {
         getFromFile();
         getExtras();
     }
 
+    /**
+     * Получение данных из специального файла приложения
+     */
     private void getFromFile() {
         /**
          * Получение id пользователя.
@@ -237,11 +288,17 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         userId = loadText(BoardWelcomeActivity.this, ID);
     }
 
+    /**
+     * Получение данных из предыдущей активности
+     */
     private void getExtras() {
         Intent intent = getIntent();
         boardId = intent.getIntExtra(BOARD_ID, 0);
     }
 
+    /**
+     * Инитиализация основных элементов
+     */
     private void initialize() {
 
         mGetBoardInfo = new GetBoardInfo();
@@ -262,6 +319,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация всплывающих окон
+     */
     private void initializePopups() {
 
         Display display = getWindowManager().getDefaultDisplay();
@@ -276,6 +336,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация всплывающего окна для приглашения контактов
+     */
     private void initializePopupInvite(LayoutInflater layoutInflater, int height) {
 
         popupView = layoutInflater.inflate(popup_board_invite_list, null);
@@ -287,11 +350,19 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Вызов процессов, происходящих в параллельных потоках
+     */
     private void executeTasks() {
         mGetBoardInfo.execute();
         mGetContacts.execute();
     }
 
+    /**
+     * Установка настроек для поля редактирования названия новой колонки
+     * @param input - поле для редактирования
+     * @param params - layout-параметры для установки
+     */
     private void setInputParams(EditText input, LinearLayout.LayoutParams  params) {
 
         input.setTextColor(ContextCompat.getColor(BoardWelcomeActivity.this, R.color.colorBlack));
@@ -302,6 +373,10 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Добавление новой колонки по клику
+     * @param view
+     */
     public void addColumnOnClick(View view) {
 
         LinearLayout layout = new LinearLayout(BoardWelcomeActivity.this);
@@ -349,6 +424,12 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Конвертер из dp в px
+     *
+     * @param dp - значения в dp
+     * @return - значение в px
+     */
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 BoardWelcomeActivity.this.getResources().getDisplayMetrics());
@@ -373,6 +454,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Изменение состояний пунктов меню
+     */
     private void showAgreeMenu() {
         menu.findItem(R.id.action_settings).setVisible(false);
         menu.findItem(R.id.action_invite).setVisible(false);
@@ -380,6 +464,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         menu.findItem(R.id.action_agree).setVisible(true);
     }
 
+    /**
+     * Изменение состояний пунктов меню
+     */
     private void hideAgreeMenu() {
 
         menu.findItem(R.id.action_settings).setVisible(true);
@@ -389,6 +476,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Изменение состояний пунктов меню
+     */
     private void hideKeyBoard() {
 
         InputMethodManager inputMethodManager = (InputMethodManager)
@@ -398,6 +488,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на пункт меню
+     */
     private void setAgreeMenuListener() {
         menu.findItem(R.id.action_agree).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -422,6 +515,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Открытие карточки для приглашения участников
+     */
     private void showPopupInvite() {
 
         popupWindowBoardInvite.setTouchable(true);
@@ -518,12 +614,19 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Инициализация заголовка боковой панели
+     */
     private void initializeNavHeader() {
         View header = navigationView.getHeaderView(0);
         initializeNavHeaderLogin(header);
         initializeNavHeaderAskQuestion(header);
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderAskQuestion(View header) {
 
         ImageView askQuestion = ButterKnife.findById(header, R.id.askQuestion);
@@ -550,6 +653,10 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Инициализация элемента в заголовке боковой панели
+     * @param header - заголовок боковой панели
+     */
     private void initializeNavHeaderLogin(View header) {
 
         TextView navHeaderLogin = ButterKnife.findById(header, R.id.userNameHeader);
@@ -579,6 +686,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Установка слушателя на боковую панель
+     */
     private void setNavigationViewListener() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -656,7 +766,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Рисует боковую панель навигации.
+     * Инициализация боковой панели навигации.
      **/
     private void initNavigationView() {
 
@@ -668,6 +778,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         setNavigationViewListener();
     }
 
+    /**
+     * Изменение настроек доски
+     */
     private class ChangeBoardSettings extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -703,6 +816,10 @@ public class BoardWelcomeActivity extends AppCompatActivity {
             super.onPostExecute(strJson);
         }
     }
+
+    /**
+     * Выход из доски
+     */
     private class LeaveBoard extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -737,6 +854,10 @@ public class BoardWelcomeActivity extends AppCompatActivity {
             super.onPostExecute(strJson);
         }
     }
+
+    /**
+     * Получение данных о доске
+     */
     private class GetBoardInfo extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -852,6 +973,9 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Обновление данных о доске
+     */
     private class RefreshBoardInfo extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -992,6 +1116,10 @@ public class BoardWelcomeActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Получение контактов пользователя
+     */
     private class GetContacts extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
@@ -1103,6 +1231,10 @@ public class BoardWelcomeActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Добавление новой колонки
+     */
     private class AddColumn extends AsyncTask<Object, Object, String> {
         @Override
         protected String doInBackground(Object... strings) {
