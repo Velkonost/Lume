@@ -1,5 +1,6 @@
 package ru.velkonost.lume.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
@@ -82,6 +83,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
                 intent.putExtra(CARD_NAME, item.getName());
                 intent.putExtra(COLUMN_ORDER, item.getColumnOrder());
                 mContext.startActivity(intent);
+                ((Activity)mContext).finish();
             }
         });
     }

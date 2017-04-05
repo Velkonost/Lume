@@ -47,7 +47,6 @@
                     android:ellipsize="end"
                     android:visibility="invisible"/>
 
-
             </FrameLayout>
         </android.support.design.widget.AppBarLayout>
         <com.eyalbira.loadingdots.LoadingDots
@@ -71,76 +70,155 @@
             android:layout_height="wrap_content"
             android:scrollbars="none"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/llcard"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:orientation="vertical"
-            app:layout_anchor="@id/appbarlayout"
-            app:layout_anchorGravity="bottom"
-            android:descendantFocusability="beforeDescendants"
-            android:focusableInTouchMode="true">
-
-            <FrameLayout
-                android:id="@+id/descriptionContainer"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-            </FrameLayout>
-            <FrameLayout
-                android:id="@+id/participantsContainer"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-            </FrameLayout>
-            <FrameLayout
-                android:layout_width="fill_parent"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-3dp">
-                <android.support.v7.widget.CardView
+                android:id="@+id/llcard"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:orientation="vertical"
+                app:layout_anchor="@id/appbarlayout"
+                app:layout_anchorGravity="bottom"
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true">
+
+                <TextView
+                    android:id="@+id/card_date"
                     android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="10dp"/>
+
+                <FrameLayout
+                    android:id="@+id/descriptionContainer"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+                </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/participantsContainer"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    card_view:cardPreventCornerOverlap="false"
-                    card_view:cardUseCompatPadding="true"
-                    android:layout_marginLeft="@dimen/card_margin_horizontal"
-                    android:layout_marginRight="@dimen/card_margin_horizontal">
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:minHeight="50dp"
-                            android:maxHeight="120dp"
-                            android:id="@+id/editComment"
-                            android:paddingLeft="10dp"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
-                            android:paddingRight="40dp"
-                            android:background="@drawable/edittext_remove_underbar"
-                            android:hint="Enter your comment here..."/>
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="match_parent"
-                            android:tint="@color/colorMessageBackground"
-                            android:src="@mipmap/ic_send"
-                            android:layout_alignTop="@+id/editComment"
-                            android:layout_alignBottom="@id/editComment"
-                            android:layout_alignParentEnd="true"
-                            android:id="@+id/imageView"
-                            android:onClick="addComment"/>
-                    </RelativeLayout>
-                </android.support.v7.widget.CardView>
-            </FrameLayout>
-            <FrameLayout
-                android:id="@+id/commentsContainer"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="-3dp">
-            </FrameLayout>
-        </LinearLayout>
+                    android:layout_marginTop="-3dp">
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        card_view:cardPreventCornerOverlap="false"
+                        card_view:cardUseCompatPadding="true"
+                        android:layout_marginLeft="@dimen/card_margin_horizontal"
+                        android:layout_marginRight="@dimen/card_margin_horizontal">
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="50dp"
+                                android:maxHeight="120dp"
+                                android:id="@+id/editComment"
+                                android:paddingLeft="10dp"
+                                android:paddingTop="5dp"
+                                android:paddingBottom="5dp"
+                                android:paddingRight="40dp"
+                                android:background="@drawable/edittext_remove_underbar"
+                                android:hint="Enter your comment here..."/>
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="match_parent"
+                                android:tint="@color/colorMessageBackground"
+                                android:src="@mipmap/ic_send"
+                                android:layout_alignTop="@+id/editComment"
+                                android:layout_alignBottom="@id/editComment"
+                                android:layout_alignParentEnd="true"
+                                android:id="@+id/imageView"
+                                android:onClick="addComment"/>
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+                </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/commentsContainer"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="-3dp">
+                </FrameLayout>
+            </LinearLayout>
         </ScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:visibility="invisible"
+            android:id="@+id/fog"
+            android:background="#ccffffff"/>
+
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/fab_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|right"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            app:menu_labels_style="@style/MenuLabelsStyle"
+            app:menu_labels_showAnimation="@anim/jump_from_down"
+            app:menu_labels_hideAnimation="@anim/jump_to_down"
+            app:menu_animationDelayPerItem="0"
+            app:menu_shadowColor="#444"
+            app:menu_colorNormal="@color/colorPrimary"
+            app:menu_colorPressed="#366086">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_background"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_action_search"
+                app:fab_label="уцшпкрзецшгкехцк"
+                style="@style/MenuButtonsStyle" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_account_multiple_minus"
+                app:fab_label="Menu item 1"
+                style="@style/MenuButtonsStyle" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_account_multiple_plus"
+                app:fab_label="Menu item 2"
+                style="@style/MenuButtonsStyle" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_action_search"
+                app:fab_label="уцшпкрзецшгкехцк"
+                style="@style/MenuButtonsStyle" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_action_search"
+                app:fab_label="уцшпкрзецшгкехцк"
+                style="@style/MenuButtonsStyle" />
+
+        </com.github.clans.fab.FloatingActionMenu>
+
+
     </android.support.design.widget.CoordinatorLayout>
+
+
 
 
     <android.support.design.widget.NavigationView

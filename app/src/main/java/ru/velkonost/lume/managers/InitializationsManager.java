@@ -16,8 +16,22 @@ import ru.velkonost.lume.activity.SearchActivity;
 
 import static ru.velkonost.lume.Constants.SEARCH;
 
+/**
+ * @author Velkonost
+ *
+ * Инициализаторы
+ */
 public class InitializationsManager {
 
+    /**
+     * Инициализатор диалога с одной кнопкой
+     *
+     * @param context - контекст
+     * @param header заголовок диалога
+     * @param description - описание диалога
+     * @param btnName - название кнопки
+     *
+     */
     public static void inititializeAlertDialog(Context context, String header,
                                                String description, String btnName){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -34,6 +48,16 @@ public class InitializationsManager {
         alert.show();
     }
 
+    /**
+     * Инициализация диалога с обновлением активности по нажатию на кнопку
+     *
+     * @param context - контекст
+     * @param header - заголовок диалога
+     * @param description - описание диалога
+     * @param btnName - название кнопки
+     * @param activity - активность, которую необходимо обновить
+     *
+     */
     public static void inititializeAlertDialogWithRefresh(Context context, String header,
                                                           String description, String btnName,
                                                           final Activity activity){
@@ -53,7 +77,13 @@ public class InitializationsManager {
         alert.show();
     }
 
-
+    /**
+     * Инициализация тулбара
+     *
+     * @param activity - активность
+     * @param toolbar - тулбар переданной активности
+     * @param title - заголовок тулбара
+     */
     public static void initToolbar(AppCompatActivity activity, Toolbar toolbar, int title) {
 
         toolbar.setTitle(title);
@@ -69,6 +99,14 @@ public class InitializationsManager {
         activity.setSupportActionBar(toolbar);
     }
 
+    /**
+     * Инициализация тулбара
+     *
+     * @param activity - активность
+     * @param toolbar - тулбар переданной активности
+     * @param title - заголовок тулбара
+     *
+     */
     public static void initToolbar(AppCompatActivity activity, Toolbar toolbar, String title) {
 
         toolbar.setTitle(title);
@@ -84,7 +122,12 @@ public class InitializationsManager {
         activity.setSupportActionBar(toolbar);
     }
 
-
+    /**
+     * Обновление активности
+     *
+     * @param a - активность
+     *
+     */
     public static void changeActivityCompat(final Activity a) {
         final Intent intent = a.getIntent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -96,7 +139,13 @@ public class InitializationsManager {
         a.overridePendingTransition(R.anim.activity_right_in, R.anim.activity_diagonaltranslate);
     }
 
-
+    /**
+     * Переход на новую активность
+     *
+     * @param a - старая активность
+     * @param nextIntent - намерение с новой активностью
+     *
+     */
     public static void changeActivityCompat(final Activity a, Intent nextIntent) {
         final Intent currentIntent = a.getIntent();
         nextIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -111,6 +160,13 @@ public class InitializationsManager {
         a.overridePendingTransition(R.anim.activity_right_in, R.anim.activity_diagonaltranslate);
     }
 
+    /**
+     * Инициализация элемента поиска
+     *
+     * @param activity - активность
+     * @param searchView - элемент поиска переданной активности
+     *
+     */
     public static void initSearch(final Activity activity, MaterialSearchView searchView) {
 
         searchView.setEllipsize(true);

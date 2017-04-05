@@ -64,6 +64,7 @@ import static ru.velkonost.lume.net.ServerConnection.getJSON;
  * Колонки доски, получение их карточек
  */
 public class ColumnFragment extends BaseTabFragment {
+
     private static final int LAYOUT = R.layout.fragment_column;
 
     /**

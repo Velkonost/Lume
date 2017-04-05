@@ -2,7 +2,13 @@ package ru.velkonost.lume.Managers;
 
 import static ru.velkonost.lume.Constants.HYPHEN;
 
+/**
+ * @author Velkonost
+ *
+ * Форматирование даты
+ */
 public class DateConverterManager {
+
     /**
      * Форматирование даты из вида, полученного с сервер - YYYY-MM-DD
      *                в вид, необходимый для отображения - DD-MM-YYYY
@@ -29,6 +35,10 @@ public class DateConverterManager {
                 + HYPHEN + year;
     }
 
+    /**
+     * Форматирование даты из вида, полученного с сервер - DD-MM-YYYY
+     *                в вид, необходимый для отображения - YYYY-MM-DD
+     **/
     public static String formatDateBack(String dateInStr) {
 
         String day, month, year;

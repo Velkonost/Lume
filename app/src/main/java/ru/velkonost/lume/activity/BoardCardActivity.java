@@ -1,7 +1,9 @@
 package ru.velkonost.lume.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +27,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -33,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -43,6 +47,8 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -180,6 +186,30 @@ public class BoardCardActivity extends AppCompatActivity {
     @BindView(R.id.navigation)
     NavigationView navigationView;
 
+    @BindView(R.id.fab_menu)
+    FloatingActionMenu mFloatingActionMenu;
+
+    @BindView(R.id.fab_background)
+    FloatingActionButton fabBackground;
+
+    @BindView(R.id.fab_date)
+    FloatingActionButton fabDate;
+
+    @BindView(R.id.fab_checkbox)
+    FloatingActionButton fabCheckbox;
+
+    @BindView(R.id.fab_field)
+    FloatingActionButton fabField;
+
+    @BindView(R.id.fab_map)
+    FloatingActionButton fabMap;
+
+    @BindView(R.id.fog)
+    View fogView;
+
+    @BindView(R.id.card_date)
+    TextView tvCardDate;
+
     /**
      * Свойство - отображение участников доски для приглашения в карточку
      */
@@ -304,6 +334,13 @@ public class BoardCardActivity extends AppCompatActivity {
      */
     private int columnOrder;
 
+    /**
+     * Свойство - элемент для выбора даты.
+     */
+    private DatePickerDialog datePicker;
+
+    private String cardDate;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -322,8 +359,66 @@ public class BoardCardActivity extends AppCompatActivity {
         setEditTextCommentListener();
         executeTasks();
         startTimer();
+        initDatePicker();
+
+
+        mFloatingActionMenu.setClosedOnTouchOutside(true);
+
+        mFloatingActionMenu.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
+            @Override
+            public void onMenuToggle(boolean opened) {
+                if (opened) {
+                    fogView.setVisibility(View.VISIBLE);
+                } else fogView.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        fabDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                datePicker.show();
+
+            }
+        });
 
     }
+
+    /**
+     * Инициализация календаря.
+     **/
+    private void initDatePicker(){
+        /**
+         * Использует для получения даты.
+         */
+        Calendar newCalendar = Calendar.getInstance();
+
+        /**
+         * Требуется для дальнейшего преобразования даты в строку.
+         */
+        @SuppressLint("SimpleDateFormat") final SimpleDateFormat dateFormat
+                = new SimpleDateFormat("dd-MM-yyyy");
+
+        /**
+         * Создает объект и инициализирует обработчиком события выбора даты и данными для даты по умолчанию.
+         */
+        datePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            // функция onDateSet обрабатывает шаг 2: отображает выбранные нами данные в элементе EditText
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newCal = Calendar.getInstance();
+                newCal.set(year, monthOfYear, dayOfMonth);
+                Log.i("KEKE", dateFormat.format(newCal.getTime()));
+//                editBirthday.setText(dateFormat.format(newCal.getTime()));
+            }
+        },
+                newCalendar.get(Calendar.YEAR),
+                newCalendar.get(Calendar.MONTH),
+                newCalendar.get(Calendar.DAY_OF_MONTH));
+        datePicker.getDatePicker().setMinDate(newCalendar.getTimeInMillis());
+    }
+
+
 
     /**
      * Установка первоначальных настроек активности
@@ -1063,6 +1158,39 @@ public class BoardCardActivity extends AppCompatActivity {
                 JSONArray cidsJSON = dataJsonObj.getJSONArray(COMMENT_IDS);
 
                 cardDescription = dataJsonObj.getString(CARD_DESCRIPTION);
+
+                cardDate = formatDate(dataJsonObj.getString(DATE));
+                tvCardDate.setText(cardDate);
+
+
+                int day = Integer.parseInt(cardDate.substring(0, 2));
+                int month = Integer.parseInt(cardDate.substring(3, 5));
+                int year = Integer.parseInt(cardDate.substring(6, 10));
+
+//                newCalendar.get(Calendar.YEAR),
+//                        newCalendar.get(Calendar.MONTH),
+//                        newCalendar.get(Calendar.DAY_OF_MONTH));
+
+                if (cardDate.equals(new SimpleDateFormat("dd-MM-yyyy") //сегодня
+                        .format(Calendar.getInstance().getTime()))) {
+                    tvCardDate.setBackgroundColor(ContextCompat.getColor(BoardCardActivity.this, R.color.colorGreen));
+                } else if ( //будущее
+                        (year > Calendar.getInstance().get(Calendar.YEAR))
+                        || (
+                                !(year < Calendar.getInstance().get(Calendar.YEAR))
+                                && (month > Calendar.getInstance().get(Calendar.MONTH)))
+                        || (
+                                !(year < Calendar.getInstance().get(Calendar.YEAR))
+                                && !(month < Calendar.getInstance().get(Calendar.MONTH))
+                                && (day > Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+                        )) {
+
+                    tvCardDate.setBackgroundColor(ContextCompat.getColor(BoardCardActivity.this, R.color.colorYellow));
+
+                }
+
+                else//прошедшее
+                    tvCardDate.setBackgroundColor(ContextCompat.getColor(BoardCardActivity.this, R.color.colorBlack));
 
                 backgroundColor = dataJsonObj.getInt(CARD_COLOR);
                 drawerLayout.setBackgroundColor(backgroundColor);

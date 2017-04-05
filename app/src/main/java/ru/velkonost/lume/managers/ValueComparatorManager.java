@@ -11,7 +11,7 @@ import java.util.HashMap;
  */
 public class ValueComparatorManager<K, V extends Comparable<V>> implements Comparator<K> {
 
-    HashMap<K, V> map = new HashMap<>();
+    private HashMap<K, V> map = new HashMap<>();
 
     /** Конструктор */
     public ValueComparatorManager(HashMap<K, V> map){
