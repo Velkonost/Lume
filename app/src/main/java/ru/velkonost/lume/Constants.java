@@ -52,6 +52,7 @@ public class Constants {
 
     public static final String COMMENT = "comment";
     public static final String COMMENT_IDS = "comment_ids";
+    public static final String CHECKBOX_IDS = "cb_ids";
 
     public static final String IMAGE = "image";
 
@@ -62,6 +63,8 @@ public class Constants {
     public static final String SEARCH = "search";
     public static final String STATUS = "status";
     public static final String TEXT = "text";
+    public static final String TITLE = "title";
+    public static final String DONE = "done";
     public static final String DATE = "date";
 
     public static final String NAME = "name";

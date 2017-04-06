@@ -14,7 +14,7 @@ import java.util.List;
 
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.BoardColumnsActivity;
-import ru.velkonost.lume.descriptions.BoardColumn;
+import ru.velkonost.lume.model.BoardColumn;
 
 import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.COLUMN_ORDER;

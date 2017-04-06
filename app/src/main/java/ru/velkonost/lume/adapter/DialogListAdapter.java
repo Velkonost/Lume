@@ -22,7 +22,7 @@ import ru.velkonost.lume.Managers.HtmlConverterManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.MessageActivity;
 import ru.velkonost.lume.activity.ProfileActivity;
-import ru.velkonost.lume.descriptions.DialogContact;
+import ru.velkonost.lume.model.DialogContact;
 
 import static android.provider.LiveFolders.NAME;
 import static ru.velkonost.lume.Constants.DIALOG_ID;

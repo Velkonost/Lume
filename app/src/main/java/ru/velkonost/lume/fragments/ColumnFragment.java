@@ -35,7 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.CardListAdapter;
-import ru.velkonost.lume.descriptions.Card;
+import ru.velkonost.lume.model.Card;
 
 import static ru.velkonost.lume.Constants.AMOUNT;
 import static ru.velkonost.lume.Constants.AMPERSAND;

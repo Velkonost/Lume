@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.SearchActivity;
 import ru.velkonost.lume.adapter.ContactListAdapter;
-import ru.velkonost.lume.descriptions.Contact;
+import ru.velkonost.lume.model.Contact;
 
 import static ru.velkonost.lume.Constants.SEARCH;
 

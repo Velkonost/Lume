@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.BoardWelcomeActivity;
-import ru.velkonost.lume.descriptions.Board;
+import ru.velkonost.lume.model.Board;
 
 import static ru.velkonost.lume.Constants.BOARD_ID;
 import static ru.velkonost.lume.Constants.MARQUEE_REPEAT_LIMIT;

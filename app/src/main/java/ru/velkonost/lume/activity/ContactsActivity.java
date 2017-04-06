@@ -45,7 +45,7 @@ import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.Managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.Contact;
+import ru.velkonost.lume.model.Contact;
 import ru.velkonost.lume.fragments.ContactsFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;

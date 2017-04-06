@@ -2,7 +2,7 @@ package ru.velkonost.lume;
 
 import java.util.List;
 
-import ru.velkonost.lume.descriptions.BoardColumn;
+import ru.velkonost.lume.model.BoardColumn;
 /**
  *
  * @author Velkonost

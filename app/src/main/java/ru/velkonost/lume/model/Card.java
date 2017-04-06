@@ -1,4 +1,4 @@
-package ru.velkonost.lume.descriptions;
+package ru.velkonost.lume.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

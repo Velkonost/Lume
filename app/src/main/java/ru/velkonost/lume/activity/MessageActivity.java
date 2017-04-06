@@ -41,7 +41,7 @@ import ru.velkonost.lume.Constants;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.Message;
+import ru.velkonost.lume.model.Message;
 import ru.velkonost.lume.fragments.MessagesFragment;
 
 import static ru.velkonost.lume.Constants.ADDRESSEE_ID;

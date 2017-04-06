@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.ProfileActivity;
-import ru.velkonost.lume.descriptions.SearchContact;
+import ru.velkonost.lume.model.SearchContact;
 
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.JPG;

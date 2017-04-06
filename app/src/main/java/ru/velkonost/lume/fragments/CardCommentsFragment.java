@@ -17,7 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.CardCommentListAdapter;
-import ru.velkonost.lume.descriptions.CardComment;
+import ru.velkonost.lume.model.CardComment;
 
 /**
  * @author Velkonost

@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.BoardWelcomeColumnListAdapter;
-import ru.velkonost.lume.descriptions.BoardColumn;
+import ru.velkonost.lume.model.BoardColumn;
 
 /**
  * @author Velkonost

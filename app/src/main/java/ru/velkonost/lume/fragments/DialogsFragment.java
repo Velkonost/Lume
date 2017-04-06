@@ -17,7 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.DialogListAdapter;
-import ru.velkonost.lume.descriptions.DialogContact;
+import ru.velkonost.lume.model.DialogContact;
 
 /**
  * @author Velkonost

@@ -62,9 +62,9 @@ import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.Managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.BoardInviteListAdapter;
-import ru.velkonost.lume.descriptions.BoardColumn;
-import ru.velkonost.lume.descriptions.BoardParticipant;
-import ru.velkonost.lume.descriptions.Contact;
+import ru.velkonost.lume.model.BoardColumn;
+import ru.velkonost.lume.model.BoardParticipant;
+import ru.velkonost.lume.model.Contact;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
 import ru.velkonost.lume.fragments.BoardParticipantsFragment;
 import ru.velkonost.lume.fragments.BoardWelcomeColumnFragment;
@@ -183,7 +183,7 @@ public class BoardWelcomeActivity extends AppCompatActivity {
 
     /**
      * Свойство - список контактов.
-     * {@link ru.velkonost.lume.descriptions.BoardParticipant}
+     * {@link ru.velkonost.lume.model.BoardParticipant}
      */
     private List<BoardParticipant> mBoardParticipants;
 

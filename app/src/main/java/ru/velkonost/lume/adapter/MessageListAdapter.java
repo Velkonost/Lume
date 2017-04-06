@@ -20,7 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.Message;
+import ru.velkonost.lume.model.Message;
 
 /**
  * @author Velkonost

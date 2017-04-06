@@ -17,7 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.BoardColumn;
+import ru.velkonost.lume.model.BoardColumn;
 
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.CARD_ID;

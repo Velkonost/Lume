@@ -46,7 +46,7 @@ import ru.velkonost.lume.Depository;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.BoardColumn;
+import ru.velkonost.lume.model.BoardColumn;
 import ru.velkonost.lume.fragments.BoardColumnsTabsFragmentAdapter;
 
 import static ru.velkonost.lume.Constants.AMPERSAND;

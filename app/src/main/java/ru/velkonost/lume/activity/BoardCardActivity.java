@@ -74,14 +74,15 @@ import ru.velkonost.lume.Managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.CardInviteListAdapter;
 import ru.velkonost.lume.adapter.CardMoveListAdapter;
-import ru.velkonost.lume.descriptions.BoardColumn;
-import ru.velkonost.lume.descriptions.BoardParticipant;
-import ru.velkonost.lume.descriptions.CardComment;
-import ru.velkonost.lume.descriptions.Contact;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
 import ru.velkonost.lume.fragments.CardCommentsFragment;
 import ru.velkonost.lume.fragments.CardParticipantsFragment;
 import ru.velkonost.lume.fragments.MessagesFragment;
+import ru.velkonost.lume.model.BoardColumn;
+import ru.velkonost.lume.model.BoardParticipant;
+import ru.velkonost.lume.model.CardComment;
+import ru.velkonost.lume.model.Checkbox;
+import ru.velkonost.lume.model.Contact;
 
 import static android.graphics.Color.WHITE;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -94,11 +95,13 @@ import static ru.velkonost.lume.Constants.CARD_COLOR;
 import static ru.velkonost.lume.Constants.CARD_DESCRIPTION;
 import static ru.velkonost.lume.Constants.CARD_ID;
 import static ru.velkonost.lume.Constants.CARD_NAME;
+import static ru.velkonost.lume.Constants.CHECKBOX_IDS;
 import static ru.velkonost.lume.Constants.COLUMN_IDS;
 import static ru.velkonost.lume.Constants.COLUMN_ORDER;
 import static ru.velkonost.lume.Constants.COMMENT;
 import static ru.velkonost.lume.Constants.COMMENT_IDS;
 import static ru.velkonost.lume.Constants.DATE;
+import static ru.velkonost.lume.Constants.DONE;
 import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.IDS;
@@ -106,6 +109,7 @@ import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.TEXT;
+import static ru.velkonost.lume.Constants.TITLE;
 import static ru.velkonost.lume.Constants.URL.SERVER_CARD_ADD_COMMENT_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_CARD_SET_DATE_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_CHANGE_CARD_COLOR_METHOD;
@@ -342,6 +346,12 @@ public class BoardCardActivity extends AppCompatActivity {
 
     private String cardDate;
 
+    private ArrayList<String> checkboxIds;
+
+    private List<Checkbox> mCardCheckboxes;
+
+    private CardCheckboxesFragment mCheckboxesFragment;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -511,6 +521,7 @@ public class BoardCardActivity extends AppCompatActivity {
         ids = new ArrayList<>();
         cids = new ArrayList<>();
         mCardComments = new ArrayList<>();
+        mCardCheckboxes = new ArrayList<>();
         contacts = new HashMap<>();
 
         mGetCardData = new GetCardData();
@@ -1192,6 +1203,7 @@ public class BoardCardActivity extends AppCompatActivity {
                  */
                 JSONArray idsJSON = dataJsonObj.getJSONArray(USER_IDS);
                 JSONArray cidsJSON = dataJsonObj.getJSONArray(COMMENT_IDS);
+                JSONArray checkboxIdsJSON = dataJsonObj.getJSONArray(CHECKBOX_IDS);
 
                 cardDescription = dataJsonObj.getString(CARD_DESCRIPTION);
 
@@ -1205,6 +1217,8 @@ public class BoardCardActivity extends AppCompatActivity {
 
                 ArrayList<String> uids = new ArrayList<>();
                 commentIds = new ArrayList<>();
+                checkboxIds = new ArrayList<>();
+
 
                 for (int i = 0; i < idsJSON.length(); i++) {
                     uids.add(idsJSON.getString(i));
@@ -1214,6 +1228,9 @@ public class BoardCardActivity extends AppCompatActivity {
                     commentIds.add(cidsJSON.getString(i));
                 }
 
+                for (int i = 0; i < checkboxIdsJSON.length(); i++) {
+                    checkboxIds.add(checkboxIdsJSON.getString(i));
+                }
 
                 for (int i = 0; i < uids.size(); i++) {
                     String participantId = uids.get(i);
@@ -1255,6 +1272,17 @@ public class BoardCardActivity extends AppCompatActivity {
 
                 }
 
+                for (int i = 0; i < checkboxIds.size(); i++) {
+                    String checkboxId = checkboxIds.get(i);
+
+                    JSONObject checkboxInfo = dataJsonObj.getJSONObject(checkboxId);
+
+                    mCardCheckboxes.add(new Checkbox(
+                       Integer.parseInt(checkboxId), cardId, checkboxInfo.getInt(DONE) == 1,
+                            checkboxInfo.getString(TITLE)
+                    ));
+                }
+
                 Collections.reverse(mCardComments);
 
                 saveText(BoardCardActivity.this, BOARD_DESCRIPTION, cardDescription);
@@ -1264,6 +1292,8 @@ public class BoardCardActivity extends AppCompatActivity {
                         = CardParticipantsFragment.getInstance(BoardCardActivity.this, mCardParticipants);
                 mCommentsFragment
                         = CardCommentsFragment.getInstance(BoardCardActivity.this, mCardComments);
+                mCheckboxesFragment
+                        = CardCheckboxesFragment.getInstance(BoardCardActivity.this, mCardCheckboxes);
 
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
@@ -1271,6 +1301,7 @@ public class BoardCardActivity extends AppCompatActivity {
                 transaction.add(R.id.descriptionContainer, descriptionFragment);
                 transaction.add(R.id.participantsContainer, cardParticipantsFragment);
                 transaction.add(R.id.commentsContainer, mCommentsFragment);
+                transaction.add(R.id.checkboxesContainer, mCheckboxesFragment);
                 transaction.commit();
 
                 loadingDots.setVisibility(View.INVISIBLE);

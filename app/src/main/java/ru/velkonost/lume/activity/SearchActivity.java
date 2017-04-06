@@ -43,7 +43,7 @@ import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.Managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.descriptions.SearchContact;
+import ru.velkonost.lume.model.SearchContact;
 import ru.velkonost.lume.fragments.SearchFragment;
 
 import static ru.velkonost.lume.Constants.AVATAR;

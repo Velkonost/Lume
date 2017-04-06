@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import ru.velkonost.lume.Depository;
-import ru.velkonost.lume.descriptions.BoardColumn;
+import ru.velkonost.lume.model.BoardColumn;
 
 /**
  * @author Velkonost
