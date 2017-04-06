@@ -134,6 +134,7 @@ public class Constants {
         public static final String SERVER_GET_CARD_PARTICIPANTS_METHOD = "/getCardParticipants";
         public static final String SERVER_GET_CARD_INFO_METHOD = "/getCardInfo";
         public static final String SERVER_CARD_ADD_COMMENT_METHOD = "/cardAddComment";
+        public static final String SERVER_CARD_SET_DATE_METHOD = "/setDate";
 
         public static final String SERVER_LEAVE_BOARD_METHOD = "/leaveBoard";
         public static final String SERVER_LEAVE_CARD_METHOD = "/leaveCard";

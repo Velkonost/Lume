@@ -39,4 +39,8 @@
     <color name="translucent_scrim_top_center">#0C000000</color>
     <color name="translucent_scrim_bottom">#2A000000</color>
     <color name="translucent_scrim_bottom_center">#0D000000</color>
+
+    <color name="card_date_done">#00ff00</color>
+    <color name="card_date_today">#CC0000</color>
+    <color name="card_date_soon">#e6c60d</color>
 </resources>

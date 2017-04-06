@@ -27,7 +27,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -108,6 +107,7 @@ import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.TEXT;
 import static ru.velkonost.lume.Constants.URL.SERVER_CARD_ADD_COMMENT_METHOD;
+import static ru.velkonost.lume.Constants.URL.SERVER_CARD_SET_DATE_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_CHANGE_CARD_COLOR_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_CHANGE_CARD_SETTINGS_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_GET_BOARD_COLUMNS_METHOD;
@@ -124,6 +124,7 @@ import static ru.velkonost.lume.Constants.USER_PLACE_STUDY;
 import static ru.velkonost.lume.Constants.USER_PLACE_WORK;
 import static ru.velkonost.lume.Constants.USER_WORKING_EMAIL;
 import static ru.velkonost.lume.Managers.DateConverterManager.formatDate;
+import static ru.velkonost.lume.Managers.DateConverterManager.formatDateBack;
 import static ru.velkonost.lume.Managers.HtmlConverterManager.fromHtml;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
 import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
@@ -403,13 +404,45 @@ public class BoardCardActivity extends AppCompatActivity {
          * Создает объект и инициализирует обработчиком события выбора даты и данными для даты по умолчанию.
          */
         datePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-            // функция onDateSet обрабатывает шаг 2: отображает выбранные нами данные в элементе EditText
+
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            public void onDateSet(DatePicker view, int yearr, int monthOfYear, int dayOfMonth) {
                 Calendar newCal = Calendar.getInstance();
-                newCal.set(year, monthOfYear, dayOfMonth);
-                Log.i("KEKE", dateFormat.format(newCal.getTime()));
-//                editBirthday.setText(dateFormat.format(newCal.getTime()));
+                newCal.set(yearr, monthOfYear, dayOfMonth);
+
+                cardDate = dateFormat.format(newCal.getTime());
+                tvCardDate.setText(cardDate);
+
+
+                int day = Integer.parseInt(cardDate.substring(0, 2));
+                int month = Integer.parseInt(cardDate.substring(3, 5));
+                int year = Integer.parseInt(cardDate.substring(6, 10));
+
+                if (cardDate.equals(new SimpleDateFormat("dd-MM-yyyy") //сегодня
+                        .format(Calendar.getInstance().getTime()))) {
+                    tvCardDate.setBackgroundColor(ContextCompat
+                            .getColor(BoardCardActivity.this, R.color.card_date_today));
+                } else if ( //будущее
+                        (year > Calendar.getInstance().get(Calendar.YEAR))
+                                || (
+                                !(year < Calendar.getInstance().get(Calendar.YEAR))
+                                        && (month > Calendar.getInstance().get(Calendar.MONTH)))
+                                || (
+                                !(year < Calendar.getInstance().get(Calendar.YEAR))
+                                        && !(month < Calendar.getInstance().get(Calendar.MONTH))
+                                        && (day > Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+                        )) {
+
+                    tvCardDate.setBackgroundColor(ContextCompat
+                            .getColor(BoardCardActivity.this, R.color.card_date_soon));
+
+                }
+
+                else //прошедшее
+                    tvCardDate.setBackgroundColor(ContextCompat
+                            .getColor(BoardCardActivity.this, R.color.card_date_done));
+
+                new SetDate().execute();
             }
         },
                 newCalendar.get(Calendar.YEAR),
@@ -1167,13 +1200,10 @@ public class BoardCardActivity extends AppCompatActivity {
                 int month = Integer.parseInt(cardDate.substring(3, 5));
                 int year = Integer.parseInt(cardDate.substring(6, 10));
 
-//                newCalendar.get(Calendar.YEAR),
-//                        newCalendar.get(Calendar.MONTH),
-//                        newCalendar.get(Calendar.DAY_OF_MONTH));
-
                 if (cardDate.equals(new SimpleDateFormat("dd-MM-yyyy") //сегодня
                         .format(Calendar.getInstance().getTime()))) {
-                    tvCardDate.setBackgroundColor(ContextCompat.getColor(BoardCardActivity.this, R.color.colorGreen));
+                    tvCardDate.setBackgroundColor(ContextCompat
+                            .getColor(BoardCardActivity.this, R.color.card_date_today));
                 } else if ( //будущее
                         (year > Calendar.getInstance().get(Calendar.YEAR))
                         || (
@@ -1185,12 +1215,14 @@ public class BoardCardActivity extends AppCompatActivity {
                                 && (day > Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
                         )) {
 
-                    tvCardDate.setBackgroundColor(ContextCompat.getColor(BoardCardActivity.this, R.color.colorYellow));
+                    tvCardDate.setBackgroundColor(ContextCompat
+                            .getColor(BoardCardActivity.this, R.color.card_date_soon));
 
                 }
 
-                else//прошедшее
-                    tvCardDate.setBackgroundColor(ContextCompat.getColor(BoardCardActivity.this, R.color.colorBlack));
+                else //прошедшее
+                    tvCardDate.setBackgroundColor(ContextCompat
+                            .getColor(BoardCardActivity.this, R.color.card_date_done));
 
                 backgroundColor = dataJsonObj.getInt(CARD_COLOR);
                 drawerLayout.setBackgroundColor(backgroundColor);
@@ -1712,6 +1744,42 @@ public class BoardCardActivity extends AppCompatActivity {
              */
             @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId
                     + AMPERSAND + CARD_COLOR + EQUALS + backgroundColor;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+        }
+    }
+
+    private class SetDate extends AsyncTask<Object, Object, String> {
+
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_CARD_SET_DATE_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId
+                    + AMPERSAND + DATE + EQUALS + formatDateBack(cardDate);
 
             /** Свойство - код ответа, полученных от сервера */
             String resultJson = "";
