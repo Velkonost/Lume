@@ -156,6 +156,10 @@ public class Constants {
 
         public static final String SERVER_ADD_TASK_METHOD = "/addTask";
 
+        public static final String SERVER_CARD_SET_CHECKBOX_DONE_METHOD = "/setCheckboxDone";
+        public static final String SERVER_CARD_SET_CHECKBOX_UNDONE_METHOD = "/setCheckboxUndone";
+        public static final String SERVER_CARD_ADD_CHECKBOX_METHOD = "/addCheckbox";
+
     }
 
     /** Класс констант, описывающих результаты операций */

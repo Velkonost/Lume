@@ -102,6 +102,9 @@
     <string name="enter_column_name">Введите название…</string>
     <string name="change_column_name">Изменить название колонки</string>
 
+    <string name="create_checkbox">Создать флажок</string>
+    <string name="enter_checkbox_name">Введите название задачи…</string>
+
     <string name="no_columns_message">Создать колонку</string>
 
     <string name="yes">Да</string>

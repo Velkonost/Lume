@@ -26,6 +26,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.Display;
@@ -34,10 +35,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -75,6 +78,7 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.CardInviteListAdapter;
 import ru.velkonost.lume.adapter.CardMoveListAdapter;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
+import ru.velkonost.lume.fragments.CardCheckboxesFragment;
 import ru.velkonost.lume.fragments.CardCommentsFragment;
 import ru.velkonost.lume.fragments.CardParticipantsFragment;
 import ru.velkonost.lume.fragments.MessagesFragment;
@@ -85,6 +89,7 @@ import ru.velkonost.lume.model.Checkbox;
 import ru.velkonost.lume.model.Contact;
 
 import static android.graphics.Color.WHITE;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
@@ -110,6 +115,7 @@ import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.SURNAME;
 import static ru.velkonost.lume.Constants.TEXT;
 import static ru.velkonost.lume.Constants.TITLE;
+import static ru.velkonost.lume.Constants.URL.SERVER_CARD_ADD_CHECKBOX_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_CARD_ADD_COMMENT_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_CARD_SET_DATE_METHOD;
 import static ru.velkonost.lume.Constants.URL.SERVER_CHANGE_CARD_COLOR_METHOD;
@@ -344,16 +350,30 @@ public class BoardCardActivity extends AppCompatActivity {
      */
     private DatePickerDialog datePicker;
 
+    /**
+     * Свойство - срок выполнения карточки
+     */
     private String cardDate;
 
+    /**
+     * Свойство - список идентификаторов флажков задач
+     */
     private ArrayList<String> checkboxIds;
 
+    /**
+     * Свойство - список флажков задач
+     */
     private List<Checkbox> mCardCheckboxes;
 
     private CardCheckboxesFragment mCheckboxesFragment;
 
+    /**
+     * Свойство - название нового флажка для задачи
+     */
+    private String checkboxTitle;
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setBase();
         getData();
@@ -370,11 +390,65 @@ public class BoardCardActivity extends AppCompatActivity {
         setEditTextCommentListener();
         executeTasks();
         startTimer();
-        initDatePicker();
+    }
 
+    /**
+     * Инициализация календаря для выбора нового срока выполнения карточки.
+     **/
+    private void initDatePicker(){
+        /**
+         * Использует для получения даты.
+         */
+        Calendar newCalendar = Calendar.getInstance();
 
+        /**
+         * Требуется для дальнейшего преобразования даты в строку.
+         */
+        @SuppressLint("SimpleDateFormat") final SimpleDateFormat dateFormat
+                = new SimpleDateFormat("dd-MM-yyyy");
+
+        /**
+         * Создает объект и инициализирует обработчиком события выбора даты и данными для даты по умолчанию.
+         */
+        datePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int yearr, int monthOfYear, int dayOfMonth) {
+                Calendar newCal = Calendar.getInstance();
+                newCal.set(yearr, monthOfYear, dayOfMonth);
+
+                cardDate = dateFormat.format(newCal.getTime());
+                changeCardDate(dateFormat.format(newCal.getTime()));
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(MATCH_PARENT, dp2px(48));
+                tvCardDate.setLayoutParams(params);
+
+                new SetDate().execute();
+            }
+        },
+                newCalendar.get(Calendar.YEAR),
+                newCalendar.get(Calendar.MONTH),
+                newCalendar.get(Calendar.DAY_OF_MONTH));
+        datePicker.getDatePicker().setMinDate(newCalendar.getTimeInMillis());
+    }
+
+    /**
+     * Инициализация {@link BoardCardActivity#mFloatingActionMenu}
+     */
+    private void initFabMenu() {
         mFloatingActionMenu.setClosedOnTouchOutside(true);
+        setFabMenuListener();
 
+        setFabBackgroundListener();
+        setFabCheckboxListener();
+        setFabDateListener();
+
+    }
+
+    /**
+     * Установка слушателя на всплывающее меню
+     */
+    private void setFabMenuListener() {
         mFloatingActionMenu.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
             public void onMenuToggle(boolean opened) {
@@ -384,13 +458,25 @@ public class BoardCardActivity extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    /**
+     * Установка слушателя на изменение даты карточки
+     */
+    private void setFabDateListener() {
         fabDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 datePicker.show();
             }
         });
+    }
 
+    /**
+     * Установка слушателя на изменение фона карточки
+     */
+    private void setFabBackgroundListener() {
         fabBackground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -427,40 +513,66 @@ public class BoardCardActivity extends AppCompatActivity {
     }
 
     /**
-     * Инициализация календаря для выбора нового срока выполнения карточки.
-     **/
-    private void initDatePicker(){
-        /**
-         * Использует для получения даты.
-         */
-        Calendar newCalendar = Calendar.getInstance();
-
-        /**
-         * Требуется для дальнейшего преобразования даты в строку.
-         */
-        @SuppressLint("SimpleDateFormat") final SimpleDateFormat dateFormat
-                = new SimpleDateFormat("dd-MM-yyyy");
-
-        /**
-         * Создает объект и инициализирует обработчиком события выбора даты и данными для даты по умолчанию.
-         */
-        datePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-
+     * Установка слушателя на добавление нового флажка для задаччи
+     */
+    private void setFabCheckboxListener() {
+        fabCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDateSet(DatePicker view, int yearr, int monthOfYear, int dayOfMonth) {
-                Calendar newCal = Calendar.getInstance();
-                newCal.set(yearr, monthOfYear, dayOfMonth);
+            public void onClick(View v) {
 
-                cardDate = dateFormat.format(newCal.getTime());
-                changeCardDate(dateFormat.format(newCal.getTime()));
+                LinearLayout layout = new LinearLayout(BoardCardActivity.this);
+                layout.setOrientation(LinearLayout.VERTICAL);
 
-                new SetDate().execute();
+                LinearLayout.LayoutParams params =
+                        new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(dp2px(5), dp2px(20), dp2px(5), dp2px(20));
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(BoardCardActivity.this);
+                builder.setTitle(getResources().getString(R.string.create_checkbox));
+
+                final EditText inputName
+                        = (EditText) getLayoutInflater()
+                        .inflate(R.layout.item_edittext_style, null);
+                setInputNameParams(inputName, params);
+                layout.addView(inputName);
+
+                builder.setView(layout)
+                        .setPositiveButton(getResources().getString(R.string.create),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        checkboxTitle = inputName.getText().toString();
+                                        new AddCheckbox().execute();
+                                    }
+                                })
+                        .setNegativeButton(getResources().getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
             }
-        },
-                newCalendar.get(Calendar.YEAR),
-                newCalendar.get(Calendar.MONTH),
-                newCalendar.get(Calendar.DAY_OF_MONTH));
-        datePicker.getDatePicker().setMinDate(newCalendar.getTimeInMillis());
+        });
+    }
+
+    /**
+     * Установка настроек для поля ввода названия нового флажка для задачи
+     *
+     * @param inputName - поле ввода
+     * @param params - параметры
+     */
+    private void setInputNameParams(EditText inputName, LinearLayout.LayoutParams params) {
+        inputName.setTextColor(ContextCompat.getColor(BoardCardActivity.this, R.color.colorBlack));
+        inputName.setLayoutParams(params);
+
+        inputName.setHint(getResources().getString(R.string.enter_checkbox_name));
+        inputName.setInputType(InputType.TYPE_CLASS_TEXT);
+
     }
 
     /**
@@ -531,6 +643,8 @@ public class BoardCardActivity extends AppCompatActivity {
         initToolbar(BoardCardActivity.this, toolbar, cardName);
         initNavigationView();
         initializePopups();
+        initDatePicker();
+        initFabMenu();
     }
 
     /**
@@ -1210,6 +1324,11 @@ public class BoardCardActivity extends AppCompatActivity {
                 cardDate = formatDate(dataJsonObj.getString(DATE));
                 tvCardDate.setText(cardDate);
 
+                if (cardDate.equals("00-00-0000")) {
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(MATCH_PARENT, 0);
+                    tvCardDate.setLayoutParams(params);
+                }
+
                 changeCardDate(formatDate(dataJsonObj.getString(DATE)));
 
                 backgroundColor = dataJsonObj.getInt(CARD_COLOR);
@@ -1807,6 +1926,66 @@ public class BoardCardActivity extends AppCompatActivity {
         }
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
+        }
+    }
+
+    /**
+     * Добавление нового флажка для задачи
+     */
+    private class AddCheckbox extends AsyncTask<Object, Object, String> {
+
+        @Override
+        protected String doInBackground(Object... strings) {
+
+            /**
+             * Формирование адреса, по которому необходимо обратиться.
+             **/
+            String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_KANBAN_SCRIPT
+                    + SERVER_CARD_ADD_CHECKBOX_METHOD;
+
+            /**
+             * Формирование отправных данных.
+             */
+            @SuppressWarnings("WrongThread") String params = CARD_ID + EQUALS + cardId
+                    + AMPERSAND + TITLE + EQUALS + checkboxTitle;
+
+            /** Свойство - код ответа, полученных от сервера */
+            String resultJson = "";
+
+            /**
+             * Соединяется с сервером, отправляет данные, получает ответ.
+             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             **/
+            try {
+                resultJson = getJSON(dataURL, params);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return resultJson;
+        }
+        protected void onPostExecute(String strJson) {
+            super.onPostExecute(strJson);
+
+            /** Свойство - полученный JSON–объект*/
+            JSONObject dataJsonObj;
+
+            try {
+
+                /**
+                 * Получение JSON-объекта по строке.
+                 */
+                dataJsonObj = new JSONObject(strJson);
+
+                mCardCheckboxes.add(new Checkbox(
+                        Integer.parseInt(dataJsonObj.getString(ID)), cardId,
+                        false, dataJsonObj.getString(TITLE)
+                ));
+
+                mCheckboxesFragment.refreshCheckboxes(mCardCheckboxes);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

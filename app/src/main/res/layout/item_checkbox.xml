@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        android:background="@color/colorLightGrey"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:padding="10dp"
+        android:orientation="horizontal">
+
+        <com.hanks.library.AnimateCheckBox
+            android:id="@+id/done"
+            android:layout_height="50dp"
+            android:layout_width="50dp"
+            android:layout_gravity="center"
+            android:padding="15dp"
+            app:animDuration="200"
+            app:checkedColor="@color/colorLightGrey"
+            app:lineColor="@color/colorGreen"
+            app:lineWidth="1.6dp"
+            app:unCheckColor="@color/colorLightGrey"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/title"
+            android:lines="1"
+
+            android:text="pehwhgreuwhiu"
+            android:textColor="@color/colorBlack"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:textSize="20sp"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

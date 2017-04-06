@@ -104,6 +104,9 @@
     <string name="enter_column_name">Enter name…</string>
     <string name="change_column_name">Change column name</string>
 
+    <string name="create_checkbox">Create checkbox</string>
+    <string name="enter_checkbox_name">Enter task name…</string>
+
 
     <string name="no_columns_message">Create column</string>
 
