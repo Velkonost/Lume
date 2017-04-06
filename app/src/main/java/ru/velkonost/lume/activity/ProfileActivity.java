@@ -88,6 +88,7 @@ import static ru.velkonost.lume.Constants.JPG;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.MAX_DATE;
 import static ru.velkonost.lume.Constants.NAME;
+import static ru.velkonost.lume.Constants.REGISTRATION;
 import static ru.velkonost.lume.Constants.RESULT.ERROR;
 import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_CONNECTION;
 import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_ENCODING;
@@ -175,6 +176,12 @@ public class ProfileActivity extends AppCompatActivity {
      */
     @BindView(R.id.loadingDots)
     LoadingDots loadingDots;
+
+    @BindView(R.id.fog)
+    View fogView;
+
+    @BindView(R.id.welcome_text)
+    SecretTextView welcomeText;
 
     /**
      * Свойство - экзмепляр класса {@link GetData}
@@ -268,10 +275,6 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private DatePickerDialog dateBirdayDatePicker;
 
-
-
-
-
     /** Свойство - место проживания пользователя */ private String sUserPlaceLiving;
     /** Свойство - место обучения пользователя */ private String sUserPlaceStudy;
     /** Свойство - текущее место работы пользователя */ private String sUserPlaceWork;
@@ -287,6 +290,11 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText editUserPlaceStudy;
     private EditText editUserPlaceWork;
     private EditText editUserWorkingEmail;
+
+    /**
+     * Свойство - проверка, при входе была ли произведена регистрация
+     */
+    private boolean registration;
 
 
     @Override
@@ -363,6 +371,34 @@ public class ProfileActivity extends AppCompatActivity {
         int profileIdInt = intent.getIntExtra(ID, Integer.parseInt(userId));
         profileIdString = String.valueOf(profileIdInt);
 
+        registration = intent.getIntExtra(REGISTRATION, 0) == 1;
+
+
+        if (registration) showWelcomeText();
+    }
+
+    private void showWelcomeText() {
+        fogView.setVisibility(View.VISIBLE);
+        welcomeText.setVisibility(View.VISIBLE);
+        welcomeText.setDuration(1500);
+        welcomeText.show();
+
+        setFogViewListener();
+    }
+
+    private void setFogViewListener() {
+        fogView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              hideWelcomeText();
+            }
+        });
+    }
+
+
+    private void hideWelcomeText() {
+        fogView.setVisibility(View.INVISIBLE);
+        welcomeText.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -435,12 +471,16 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+
+                hideWelcomeText();
                 hideKeyBoard();
             }
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
+
+                hideWelcomeText();
                 hideKeyBoard();
             }
         };

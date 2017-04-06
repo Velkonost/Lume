@@ -101,6 +101,28 @@
             android:src="@mipmap/ic_account_multiple_plus"
             android:visibility="invisible"/>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            android:id="@+id/fog"
+            android:background="#ccffffff"/>
+
+        <ru.velkonost.lume.patterns.SecretTextView
+            android:id="@+id/welcome_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:textSize="20sp"
+            android:lineSpacingExtra="2dp"
+            android:visibility="invisible"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:text="@string/welcome_text"
+            android:layout_marginRight="10dp"/>
+
     </android.support.design.widget.CoordinatorLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation"
