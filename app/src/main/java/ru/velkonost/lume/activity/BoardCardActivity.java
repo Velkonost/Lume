@@ -377,16 +377,47 @@ public class BoardCardActivity extends AppCompatActivity {
         fabDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 datePicker.show();
+            }
+        });
 
+        fabBackground.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ColorPickerDialogBuilder
+                        .with(BoardCardActivity.this)
+                        .setTitle(getResources().getString(R.string.choose_color))
+                        .initialColor(WHITE)
+                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                        .density(12)
+                        .setOnColorSelectedListener(new OnColorSelectedListener() {
+                            @Override
+                            public void onColorSelected(int selectedColor) {}
+                        })
+                        .setPositiveButton(getResources().getString(R.string.btn_ok),
+                                new ColorPickerClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int selectedColor,
+                                                        Integer[] allColors) {
+                                        backgroundColor = selectedColor;
+                                        new ChangeCardColor().execute();
+                                        drawerLayout.setBackgroundColor(backgroundColor);
+                                    }
+                                })
+                        .setNegativeButton(getResources().getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {}
+                                })
+                        .build()
+                        .show();
             }
         });
 
     }
 
     /**
-     * Инициализация календаря.
+     * Инициализация календаря для выбора нового срока выполнения карточки.
      **/
     private void initDatePicker(){
         /**
@@ -411,36 +442,7 @@ public class BoardCardActivity extends AppCompatActivity {
                 newCal.set(yearr, monthOfYear, dayOfMonth);
 
                 cardDate = dateFormat.format(newCal.getTime());
-                tvCardDate.setText(cardDate);
-
-
-                int day = Integer.parseInt(cardDate.substring(0, 2));
-                int month = Integer.parseInt(cardDate.substring(3, 5));
-                int year = Integer.parseInt(cardDate.substring(6, 10));
-
-                if (cardDate.equals(new SimpleDateFormat("dd-MM-yyyy") //сегодня
-                        .format(Calendar.getInstance().getTime()))) {
-                    tvCardDate.setBackgroundColor(ContextCompat
-                            .getColor(BoardCardActivity.this, R.color.card_date_today));
-                } else if ( //будущее
-                        (year > Calendar.getInstance().get(Calendar.YEAR))
-                                || (
-                                !(year < Calendar.getInstance().get(Calendar.YEAR))
-                                        && (month > Calendar.getInstance().get(Calendar.MONTH)))
-                                || (
-                                !(year < Calendar.getInstance().get(Calendar.YEAR))
-                                        && !(month < Calendar.getInstance().get(Calendar.MONTH))
-                                        && (day > Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
-                        )) {
-
-                    tvCardDate.setBackgroundColor(ContextCompat
-                            .getColor(BoardCardActivity.this, R.color.card_date_soon));
-
-                }
-
-                else //прошедшее
-                    tvCardDate.setBackgroundColor(ContextCompat
-                            .getColor(BoardCardActivity.this, R.color.card_date_done));
+                changeCardDate(dateFormat.format(newCal.getTime()));
 
                 new SetDate().execute();
             }
@@ -451,7 +453,41 @@ public class BoardCardActivity extends AppCompatActivity {
         datePicker.getDatePicker().setMinDate(newCalendar.getTimeInMillis());
     }
 
+    /**
+     * Изменение срока выполнения карточки
+     * @param cardDate - новая дата
+     */
+    private void changeCardDate(String cardDate) {
+        tvCardDate.setText(cardDate);
 
+        int day = Integer.parseInt(cardDate.substring(0, 2));
+        int month = Integer.parseInt(cardDate.substring(3, 5));
+        int year = Integer.parseInt(cardDate.substring(6, 10));
+
+        if (cardDate.equals(new SimpleDateFormat("dd-MM-yyyy") //сегодня
+                .format(Calendar.getInstance().getTime()))) {
+            tvCardDate.setBackgroundColor(ContextCompat
+                    .getColor(BoardCardActivity.this, R.color.card_date_today));
+        } else if ( //будущее
+                (year > Calendar.getInstance().get(Calendar.YEAR))
+                        || (
+                        !(year < Calendar.getInstance().get(Calendar.YEAR))
+                                && (month > Calendar.getInstance().get(Calendar.MONTH)))
+                        || (
+                        !(year < Calendar.getInstance().get(Calendar.YEAR))
+                                && !(month < Calendar.getInstance().get(Calendar.MONTH))
+                                && (day > Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+                )) {
+
+            tvCardDate.setBackgroundColor(ContextCompat
+                    .getColor(BoardCardActivity.this, R.color.card_date_soon));
+
+        }
+
+        else //прошедшее
+            tvCardDate.setBackgroundColor(ContextCompat
+                    .getColor(BoardCardActivity.this, R.color.card_date_done));
+    }
 
     /**
      * Установка первоначальных настроек активности
@@ -653,7 +689,6 @@ public class BoardCardActivity extends AppCompatActivity {
         menu.findItem(R.id.action_move).setVisible(false);
         menu.findItem(R.id.action_invite).setVisible(false);
         menu.findItem(R.id.action_leave).setVisible(false);
-        menu.findItem(R.id.action_change_color).setVisible(false);
 
         menu.findItem(R.id.action_agree).setVisible(true);
     }
@@ -666,7 +701,6 @@ public class BoardCardActivity extends AppCompatActivity {
         menu.findItem(R.id.action_invite).setVisible(true);
         menu.findItem(R.id.action_move).setVisible(true);
         menu.findItem(R.id.action_leave).setVisible(true);
-        menu.findItem(R.id.action_change_color).setVisible(true);
 
         menu.findItem(R.id.action_agree).setVisible(false);
     }
@@ -825,37 +859,6 @@ public class BoardCardActivity extends AppCompatActivity {
                         .create().show();
 
                 break;
-            case R.id.action_change_color:
-
-                ColorPickerDialogBuilder
-                        .with(BoardCardActivity.this)
-                        .setTitle(getResources().getString(R.string.choose_color))
-                        .initialColor(WHITE)
-                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                        .density(12)
-                        .setOnColorSelectedListener(new OnColorSelectedListener() {
-                            @Override
-                            public void onColorSelected(int selectedColor) {}
-                        })
-                        .setPositiveButton(getResources().getString(R.string.btn_ok),
-                                new ColorPickerClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int selectedColor,
-                                                Integer[] allColors) {
-                                backgroundColor = selectedColor;
-                                new ChangeCardColor().execute();
-                                drawerLayout.setBackgroundColor(backgroundColor);
-                            }
-                        })
-                        .setNegativeButton(getResources().getString(R.string.cancel),
-                                new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {}
-                        })
-                        .build()
-                        .show();
-                break;
-
         }
 
         return super.onOptionsItemSelected(item);
@@ -1195,34 +1198,7 @@ public class BoardCardActivity extends AppCompatActivity {
                 cardDate = formatDate(dataJsonObj.getString(DATE));
                 tvCardDate.setText(cardDate);
 
-
-                int day = Integer.parseInt(cardDate.substring(0, 2));
-                int month = Integer.parseInt(cardDate.substring(3, 5));
-                int year = Integer.parseInt(cardDate.substring(6, 10));
-
-                if (cardDate.equals(new SimpleDateFormat("dd-MM-yyyy") //сегодня
-                        .format(Calendar.getInstance().getTime()))) {
-                    tvCardDate.setBackgroundColor(ContextCompat
-                            .getColor(BoardCardActivity.this, R.color.card_date_today));
-                } else if ( //будущее
-                        (year > Calendar.getInstance().get(Calendar.YEAR))
-                        || (
-                                !(year < Calendar.getInstance().get(Calendar.YEAR))
-                                && (month > Calendar.getInstance().get(Calendar.MONTH)))
-                        || (
-                                !(year < Calendar.getInstance().get(Calendar.YEAR))
-                                && !(month < Calendar.getInstance().get(Calendar.MONTH))
-                                && (day > Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
-                        )) {
-
-                    tvCardDate.setBackgroundColor(ContextCompat
-                            .getColor(BoardCardActivity.this, R.color.card_date_soon));
-
-                }
-
-                else //прошедшее
-                    tvCardDate.setBackgroundColor(ContextCompat
-                            .getColor(BoardCardActivity.this, R.color.card_date_done));
+                changeCardDate(formatDate(dataJsonObj.getString(DATE)));
 
                 backgroundColor = dataJsonObj.getInt(CARD_COLOR);
                 drawerLayout.setBackgroundColor(backgroundColor);
@@ -1764,6 +1740,9 @@ public class BoardCardActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Изменение срока выполнения карточки
+     */
     private class SetDate extends AsyncTask<Object, Object, String> {
 
         @Override
