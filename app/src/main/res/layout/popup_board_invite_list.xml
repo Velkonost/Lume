@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@drawable/popup_board_invite"
-              android:padding="3dp"
+              android:padding="@dimen/popup_board_invite_p"
               android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView

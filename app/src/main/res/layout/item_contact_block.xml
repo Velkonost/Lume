@@ -7,15 +7,15 @@
 
     <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="@dimen/item_contact_ll_height"
     android:orientation="horizontal"
     android:id="@+id/relativeLayoutContact"
     android:background="@drawable/selector_item"
     android:clickable="true">
         <ImageView
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginLeft="16dp"
+        android:layout_width="@dimen/item_contact_avatar_width"
+        android:layout_height="@dimen/item_contact_avatar_height"
+        android:layout_marginLeft="@dimen/item_contact_avatar_ml"
         android:layout_gravity="center"
         android:id="@+id/userAvatar"/>
         <LinearLayout
@@ -23,29 +23,29 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="center"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="30dp">
+            android:layout_marginRight="@dimen/item_contact_2ll_mr"
+            android:layout_marginLeft="@dimen/item_contact_2ll_ml">
             <ru.velkonost.lume.patterns.ScrollingTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/userName"
-            android:textSize="13sp"
+            android:textSize="@dimen/item_contact_name_ts"
             android:textColor="@color/colorBlack"
             android:layout_weight="1"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="@dimen/item_contact_name_mb"
             android:lines="1"/>
             <ru.velkonost.lume.patterns.ScrollingTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/userLogin"
-            android:textSize="13sp"
-            android:layout_marginTop="3dp"
+            android:textSize="@dimen/item_contact_login_ts"
+            android:layout_marginTop="@dimen/item_contact_login_mt"
             android:layout_weight="1"
             android:lines="1"/>
         </LinearLayout>
         <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/item_contact_image_width"
+        android:layout_height="@dimen/item_contact_image_height"
         android:id="@+id/userWithoutName"/>
     </LinearLayout>
 

@@ -8,7 +8,7 @@
         android:id="@+id/recycleViewContact"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="8dp"
+        android:paddingTop="@dimen/fragment_contact_rv_pt"
         app:fastScrollTrackColor="@color/colorWhite"
         android:background="@color/colorWhite"
         app:fastScrollThumbColor="@color/colorPrimary"
@@ -16,7 +16,7 @@
         app:fastScrollPopupTextColor="@android:color/white"/>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnGoSearch"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/fragment_contact_fab_m"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_gravity="bottom|end"

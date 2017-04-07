@@ -4,8 +4,8 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:paddingTop="5dp"
-              android:paddingBottom="5dp">
+              android:paddingTop="@dimen/fragment_column_pt"
+              android:paddingBottom="@dimen/fragment_column_pb">
 
     <com.eyalbira.loadingdots.LoadingDots
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -15,12 +15,12 @@
         app:LoadingDots_auto_play="true"
         app:LoadingDots_dots_color="@color/colorPrimary"
         app:LoadingDots_dots_count="5"
-        app:LoadingDots_dots_size="16dp"
-        app:LoadingDots_dots_space="5dp"
+        app:LoadingDots_dots_size="@dimen/loading_dots_size"
+        app:LoadingDots_dots_space="@dimen/loading_dots_space"
         app:LoadingDots_loop_duration="800"
         app:LoadingDots_loop_start_delay="100"
         app:LoadingDots_jump_duration="200"
-        app:LoadingDots_jump_height="14dp"
+        app:LoadingDots_jump_height="@dimen/loading_dots_jump_height"
         android:layout_gravity="center"
         android:layout_centerInParent="true"/>
 

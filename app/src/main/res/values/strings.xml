@@ -123,7 +123,15 @@
 
     <string name="welcome_text">You are successfully registered. \n\nNow enter information about yourself, on this page or in the &quot;Settings&quot; section. \n\nWe also recommend contacting the answering machine for any questions (question mark in the side menu). \n\nClick anywhere to continue.</string>
 
+    <string name="card_fab_menu_bg">Change background</string>
+    <string name="card_fab_menu_date">Set due date</string>
+    <string name="card_fab_menu_checkbox">Add checkbox</string>
+    <string name="card_fab_menu_map">Show on the map</string>
 
+    <string name="card_edit_comment_hint">Enter your comment here…</string>
+
+    <string name="settings_personal_information">Personal information</string>
+    <string name="settings_account_information">Account information</string>
 
 
 </resources>

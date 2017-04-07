@@ -5,42 +5,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-
     <View
         android:id="@+id/line"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/line_height"
         android:layout_gravity="center"
         android:layout_centerInParent="true"
         android:background="@color/colorLightGrey"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:padding="10dp"
+        android:layout_height="@dimen/item_checkbox_ll_height"
+        android:padding="@dimen/item_checkbox_ll_p"
         android:orientation="horizontal">
 
         <com.hanks.library.AnimateCheckBox
             android:id="@+id/done"
-            android:layout_height="50dp"
-            android:layout_width="50dp"
+            android:layout_height="@dimen/item_checkbox_done_width"
+            android:layout_width="@dimen/item_checkbox_done_height"
             android:layout_gravity="center"
-            android:padding="15dp"
+            android:padding="@dimen/item_checkbox_done_p"
             app:animDuration="200"
             app:checkedColor="@color/colorLightGrey"
             app:lineColor="@color/colorGreen"
-            app:lineWidth="1.6dp"
+            app:lineWidth="@dimen/item_checkbox_done_line_width"
             app:unCheckColor="@color/colorLightGrey"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/title"
             android:lines="1"
-
-            android:text="pehwhgreuwhiu"
             android:textColor="@color/colorBlack"
             android:singleLine="true"
             android:maxLines="1"
-            android:textSize="20sp"/>
+            android:textSize="@dimen/item_checkbox_title_ts"/>
 
     </LinearLayout>
 

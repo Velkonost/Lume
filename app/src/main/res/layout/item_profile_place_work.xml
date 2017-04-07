@@ -13,8 +13,8 @@
         android:id="@+id/cardViewPlaceStudy"
         card_view:cardPreventCornerOverlap="false"
         card_view:cardUseCompatPadding="true"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="6dp"
+        android:layout_marginTop="@dimen/item_place_work_cv_mt"
+        android:layout_marginBottom="@dimen/item_place_work_cv_mb"
         android:layout_marginLeft="@dimen/card_margin_horizontal"
         android:layout_marginRight="@dimen/card_margin_horizontal"
         card:cardBackgroundColor="@color/colorWhite">
@@ -22,13 +22,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:padding="@dimen/item_place_work_ll_p"
             android:id="@+id/linearLayoutPlaceWork">
             <ru.velkonost.lume.patterns.SecretTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/titleCardPlaceWork"
-                android:paddingBottom="10dp"
+                android:paddingBottom="@dimen/item_place_work_title_pb"
                 android:text="@string/profile_title_place_work"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/descriptionCardPlaceWork"
                     android:textColor="@color/colorBlack"
-                    android:textSize="10pt"
+                    android:textSize="@dimen/item_place_work_description_ts"
                     android:textIsSelectable="true"/>
             </LinearLayout>
         </LinearLayout>

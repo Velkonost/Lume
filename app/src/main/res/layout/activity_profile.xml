@@ -12,7 +12,7 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbarlayout"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="@dimen/profile_appbar_height"
             android:background="@color/search_layover_bg"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
             <android.support.design.widget.CollapsingToolbarLayout
@@ -21,9 +21,9 @@
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 app:contentScrim="?attr/colorPrimary"
-                app:expandedTitleMarginBottom="32dp"
-                app:expandedTitleMarginEnd="64dp"
-                app:expandedTitleMarginStart="48dp"
+                app:expandedTitleMarginBottom="@dimen/profile_ctl_mb"
+                app:expandedTitleMarginEnd="@dimen/profile_ctl_me"
+                app:expandedTitleMarginStart="@dimen/profile_ctl_ms"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded.Shadow">
 
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/nestedSv"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/profile_scroll_mb"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
             <ScrollView
                 android:layout_width="match_parent"
@@ -73,16 +73,15 @@
             app:LoadingDots_auto_play="true"
             app:LoadingDots_dots_color="@color/colorPrimary"
             app:LoadingDots_dots_count="5"
-            app:LoadingDots_dots_size="16dp"
-            app:LoadingDots_dots_space="5dp"
+            app:LoadingDots_dots_size="@dimen/loading_dots_size"
+            app:LoadingDots_dots_space="@dimen/loading_dots_space"
             app:LoadingDots_loop_duration="800"
             app:LoadingDots_loop_start_delay="100"
             app:LoadingDots_jump_duration="200"
-            app:LoadingDots_jump_height="14dp"
-
+            app:LoadingDots_jump_height="@dimen/loading_dots_jump_height"
             app:layout_anchor="@+id/nestedSv"
             app:layout_anchorGravity="top|center_horizontal"
-            android:paddingTop="50dp"/>
+            android:paddingTop="@dimen/profile_loading_dots_pt"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/btnSendMessage"
@@ -90,12 +89,12 @@
             app:layout_anchorGravity="bottom|end"
             style="@style/FabStyle"
             android:src="@mipmap/ic_email_outline"
-
             android:visibility="invisible"/>
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/btnAddIntoContacts"
             app:layout_anchor="@+id/appbarlayout"
-            android:layout_margin="60dp"
+            android:layout_margin="@dimen/profile_fab_add_contact_m"
             app:layout_anchorGravity="bottom|end"
             style="@style/FabStyle"
             android:src="@mipmap/ic_account_multiple_plus"
@@ -114,14 +113,14 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
             android:textStyle="bold"
-            android:padding="10dp"
-            android:textSize="20sp"
-            android:lineSpacingExtra="2dp"
+            android:padding="@dimen/profile_welcome_text_p"
+            android:textSize="@dimen/profile_welcome_text_ts"
+            android:lineSpacingExtra="@dimen/profile_welcome_text_lse"
             android:visibility="invisible"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/profile_welcome_text_ml"
             android:text="@string/welcome_text"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="@dimen/profile_welcome_text_mr"/>
 
     </android.support.design.widget.CoordinatorLayout>
     <android.support.design.widget.NavigationView

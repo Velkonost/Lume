@@ -4,17 +4,17 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginLeft="6dp"
-    android:layout_marginRight="6dp"
+    android:layout_marginLeft="@dimen/item_dialog_rl_ml"
+    android:layout_marginRight="@dimen/item_dialog_rl_mr"
     android:id="@+id/lluser">
 
     <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="@dimen/item_dialog_avatar_width"
+        android:layout_height="@dimen/item_dialog_avatar_height"
+        android:layout_marginTop="@dimen/item_dialog_avatar_mt"
         android:background="@drawable/drawable_item_dialog"
         android:scaleType="fitXY"
-        android:padding="6dp"
+        android:padding="@dimen/item_dialog_avatar_p"
         android:id="@+id/avatar"/>
 
     <TextView
@@ -32,8 +32,8 @@
         android:layout_alignRight="@id/avatar"
         android:layout_centerInParent="true"
         android:textAlignment="center"
-        android:textSize="14sp"
-        android:padding="3dp"
+        android:textSize="@dimen/item_dialog_unread_ts"
+        android:padding="@dimen/item_dialog_unread_p"
         android:visibility="invisible"
         android:gravity="center"/>
 

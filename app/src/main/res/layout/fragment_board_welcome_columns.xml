@@ -13,7 +13,7 @@
     <GridView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/fragment_welcome_columns_gv_mt"
         android:scrollbars="none"
         android:id="@+id/gridColumns"/>
 
@@ -23,7 +23,7 @@
         android:textAlignment="center"
         android:id="@+id/noColumns"
         android:visibility="invisible"
-        android:padding="16dp"
+        android:padding="@dimen/fragment_welcome_columns_tv_p"
         android:background="@drawable/grid_item_column"
         android:onClick="addColumnOnClick"
         android:text="@string/no_columns_message"/>

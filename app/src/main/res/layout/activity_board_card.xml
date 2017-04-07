@@ -39,8 +39,8 @@
                     android:background="@color/colorPrimary"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark"
                     android:textSelectHandle="@drawable/edittext_empty_handle"
-                    android:layout_marginLeft="80dp"
-                    android:layout_marginRight="40dp"
+                    android:layout_marginLeft="@dimen/card_edit_title_ml"
+                    android:layout_marginRight="@dimen/card_edit_title_mr"
                     android:maxLines="1"
                     android:inputType="text"
                     android:scrollHorizontally="true"
@@ -57,12 +57,12 @@
             app:LoadingDots_auto_play="true"
             app:LoadingDots_dots_color="@color/colorPrimary"
             app:LoadingDots_dots_count="5"
-            app:LoadingDots_dots_size="16dp"
-            app:LoadingDots_dots_space="5dp"
+            app:LoadingDots_dots_size="@dimen/loading_dots_size"
+            app:LoadingDots_dots_space="@dimen/loading_dots_space"
             app:LoadingDots_loop_duration="800"
             app:LoadingDots_loop_start_delay="100"
             app:LoadingDots_jump_duration="200"
-            app:LoadingDots_jump_height="14dp"
+            app:LoadingDots_jump_height="@dimen/loading_dots_jump_height"
             android:layout_gravity="center"
             android:gravity="center"/>
         <ScrollView
@@ -84,10 +84,10 @@
                 <TextView
                     android:id="@+id/card_date"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="@dimen/card_date_height"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:padding="10dp"/>
+                    android:padding="@dimen/card_date_padding"/>
 
                 <FrameLayout
                     android:id="@+id/descriptionContainer"
@@ -107,7 +107,7 @@
                 <FrameLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-3dp">
+                    android:layout_marginTop="@dimen/card_frame_edit_comment_mt">
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -121,17 +121,17 @@
                             <EditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:minHeight="50dp"
-                                android:maxHeight="120dp"
+                                android:minHeight="@dimen/card_edit_comment_min_height"
+                                android:maxHeight="@dimen/card_edit_comment_max_height"
                                 android:id="@+id/editComment"
-                                android:paddingLeft="10dp"
-                                android:paddingTop="5dp"
-                                android:paddingBottom="5dp"
-                                android:paddingRight="40dp"
+                                android:paddingLeft="@dimen/card_edit_comment_pl"
+                                android:paddingTop="@dimen/card_edit_comment_pt"
+                                android:paddingBottom="@dimen/card_edit_comment_pb"
+                                android:paddingRight="@dimen/card_edit_comment_pr"
                                 android:background="@drawable/edittext_remove_underbar"
-                                android:hint="Enter your comment here..."/>
+                                android:hint="@string/card_edit_comment_hint"/>
                             <ImageView
-                                android:layout_width="40dp"
+                                android:layout_width="@dimen/card_edit_comment_image_width"
                                 android:layout_height="match_parent"
                                 android:tint="@color/colorMessageBackground"
                                 android:src="@mipmap/ic_send"
@@ -147,8 +147,8 @@
                     android:id="@+id/commentsContainer"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="-3dp">
+                    android:layout_marginTop="@dimen/card_comments_container_mt"
+                    android:layout_marginBottom="@dimen/card_comments_container_mb">
                 </FrameLayout>
             </LinearLayout>
         </ScrollView>
@@ -166,24 +166,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom|right"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginTop="@dimen/card_fab_menu_mt"
+            android:layout_marginLeft="@dimen/card_fab_menu_ml"
+            android:layout_marginBottom="@dimen/card_fab_menu_mb"
+            android:layout_marginRight="@dimen/card_fab_menu_mr"
             app:menu_labels_style="@style/MenuLabelsStyle"
             app:menu_labels_showAnimation="@anim/jump_from_down"
             app:menu_labels_hideAnimation="@anim/jump_to_down"
             app:menu_animationDelayPerItem="0"
-            app:menu_shadowColor="#444"
+            app:menu_shadowColor="@color/fab_shadow_color"
             app:menu_colorNormal="@color/colorPrimary"
-            app:menu_colorPressed="#366086">
+            app:menu_colorPressed="@color/fab_menu_pressed">
 
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/fab_background"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_action_action_search"
-                app:fab_label="уцшпкрзецшгкехцк"
+                app:fab_label="@string/card_fab_menu_bg"
                 style="@style/MenuButtonsStyle" />
 
             <com.github.clans.fab.FloatingActionButton
@@ -191,7 +191,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ic_account_multiple_minus"
-                app:fab_label="Menu item 1"
+                app:fab_label="@string/card_fab_menu_date"
                 style="@style/MenuButtonsStyle" />
 
             <com.github.clans.fab.FloatingActionButton
@@ -199,15 +199,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ic_account_multiple_plus"
-                app:fab_label="Menu item 2"
-                style="@style/MenuButtonsStyle" />
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/fab_field"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_action_action_search"
-                app:fab_label="уцшпкрзецшгкехцк"
+                app:fab_label="@string/card_fab_menu_checkbox"
                 style="@style/MenuButtonsStyle" />
 
             <com.github.clans.fab.FloatingActionButton
@@ -215,7 +207,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_action_action_search"
-                app:fab_label="уцшпкрзецшгкехцк"
+                app:fab_label="@string/card_fab_menu_map"
                 style="@style/MenuButtonsStyle" />
 
         </com.github.clans.fab.FloatingActionMenu>

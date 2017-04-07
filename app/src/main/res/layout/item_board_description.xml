@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp"
+        android:padding="@dimen/item_board_description_rl_p"
         android:id="@+id/relativeLayoutBoardDescription"
         android:background="@color/colorWhite">
         <ViewSwitcher
@@ -21,19 +21,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/boardDescription"
-                android:textSize="10pt"
+                android:textSize="@dimen/item_board_description_tv_ts"
                 android:textColor="@color/colorBlack"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"/>
+                android:paddingBottom="@dimen/item_board_description_tv_pb"
+                android:paddingLeft="@dimen/item_board_description_tv_pl"/>
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/edittext_remove_underbar"
                 android:id="@+id/editBoardDescription"
-                android:textSize="10pt"
+                android:textSize="@dimen/item_board_description_tv_ts"
                 android:textColor="@color/colorBlack"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"/>
+                android:paddingBottom="@dimen/item_board_description_tv_pb"
+                android:paddingLeft="@dimen/item_board_description_tv_pl"/>
         </ViewSwitcher>
     </RelativeLayout>
 </LinearLayout>

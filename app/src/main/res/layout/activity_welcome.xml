@@ -44,10 +44,10 @@
             android:hint="@string/login_placeholder"
             style="@style/EditText.Login"
             android:layout_below="@id/lumeImage"
-            android:layout_marginTop="40dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_marginTop="@dimen/welcome_login_mt"
+            android:layout_marginLeft="@dimen/welcome_login_ml"
+            android:layout_marginRight="@dimen/welcome_login_mr"
+            android:layout_marginBottom="@dimen/welcome_login_mb"/>
 
         <EditText
             android:layout_width="match_parent"
@@ -57,8 +57,8 @@
             android:id="@+id/passwordLogIn"
             android:hint="@string/password_placeholder"
             android:layout_below="@id/loginLogIn"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="@dimen/welcome_password_ml"
+            android:layout_marginRight="@dimen/welcome_password_mr"
             style="@style/EditText.Login"/>
         </RelativeLayout>
 

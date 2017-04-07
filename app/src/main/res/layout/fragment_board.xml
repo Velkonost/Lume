@@ -12,7 +12,7 @@
         android:background="@color/colorWhite"/>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnAddBoard"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/fragment_board_fab_m"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_gravity="bottom|end"

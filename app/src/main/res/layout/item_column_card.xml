@@ -4,44 +4,43 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginTop="5dp"
-              android:layout_marginLeft="12dp"
-              android:layout_marginRight="12dp">
+              android:layout_marginTop="@dimen/item_column_card_mt"
+              android:layout_marginLeft="@dimen/item_column_card_ml"
+              android:layout_marginRight="@dimen/item_column_card_mr">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cardView"
-        card:cardElevation="2dp"
+        card:cardElevation="@dimen/cardview_default_elevation"
         card:cardUseCompatPadding="true">
-
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/rlCard"
-            android:layout_margin="5dp"/>
+            android:layout_margin="@dimen/item_column_card_rl_m"/>
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/item_column_card_image_width"
+                android:layout_height="@dimen/item_column_card_image_height"
                 android:id="@+id/isYouParticipant"
                 android:background="@drawable/is_i_participant"
-                android:layout_margin="10dp"
+                android:layout_margin="@dimen/item_column_card_image_m"
                 android:layout_gravity="right|top"
                 android:visibility="invisible"/>
 
             <TextView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/item_column_card_number_width"
+                android:layout_height="@dimen/item_column_card_number_height"
                 android:id="@+id/numberParticipants"
                 android:background="@drawable/card_number_participants"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginTop="@dimen/item_column_card_number_mt"
+                android:layout_marginBottom="@dimen/item_column_card_number_mb"
+                android:layout_marginRight="@dimen/item_column_card_number_mr"
+                android:layout_marginLeft="@dimen/item_column_card_number_ml"
                 android:textAlignment="center"
-                android:textSize="14sp"
+                android:textSize="@dimen/item_column_card_number_ts"
                 android:gravity="center"
                 android:layout_gravity="right|bottom"
                 android:visibility="invisible"/>
@@ -49,27 +48,23 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:layout_marginTop="10dp"
+                android:padding="@dimen/item_column_card_ll_p"
+                android:layout_marginTop="@dimen/item_column_card_ll_mt"
                 android:orientation="vertical">
 
                 <ru.velkonost.lume.patterns.ScrollingTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/title"
-                    android:textSize="8pt"
+                    android:textSize="@dimen/item_column_card_title_ts"
                     android:textColor="@color/colorBlack"
                     android:lines="1"
                     android:gravity="center"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/item_column_card_title_mt"
                     android:textAlignment="center"
-                    android:layout_marginRight="30dp"/>
+                    android:layout_marginRight="@dimen/item_column_card_title_mr"/>
 
             </LinearLayout>
-
-
-
-
 
     </android.support.v7.widget.CardView>
 

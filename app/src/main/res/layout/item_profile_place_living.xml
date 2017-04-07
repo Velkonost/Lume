@@ -15,20 +15,20 @@
         card_view:cardUseCompatPadding="true"
         android:layout_marginLeft="@dimen/card_margin_horizontal"
         android:layout_marginRight="@dimen/card_margin_horizontal"
-        android:layout_marginTop="-4dp"
-        android:layout_marginBottom="-4dp"
+        android:layout_marginTop="@dimen/item_place_living_cv_mt"
+        android:layout_marginBottom="@dimen/item_place_living_cv_mb"
         card:cardBackgroundColor="@color/colorWhite">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:padding="@dimen/item_place_living_ll_p"
             android:id="@+id/linearLayoutPlaceLiving">
             <ru.velkonost.lume.patterns.SecretTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/titleCardPlaceLiving"
-                android:paddingBottom="10dp"
+                android:paddingBottom="@dimen/item_place_living_title_pb"
                 android:text="@string/profile_title_place_living"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,14 +43,14 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/descriptionCardPlaceLiving"
                         android:textColor="@color/colorBlack"
-                        android:textSize="10pt"
+                        android:textSize="@dimen/item_place_living_description_ts"
                         android:textIsSelectable="true"/>
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/edittext_remove_underbar"
                         android:id="@+id/editPlaceLiving"
-                        android:textSize="10pt"
+                        android:textSize="@dimen/item_place_living_description_ts"
                         android:lines="1"
                         android:maxLines="1"
                         android:singleLine="true"

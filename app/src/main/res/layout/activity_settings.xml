@@ -56,13 +56,13 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp">
+                    android:padding="@dimen/settings_info_div_p">
                     <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
+                        android:layout_width="@dimen/settings_avatar_width"
+                        android:layout_height="@dimen/settings_avatar_height"
                         android:id="@+id/avatar"
                         android:contentDescription="Image avatar"
-                        android:layout_margin="10dp"/>
+                        android:layout_margin="@dimen/settings_avatar_m"/>
 
                     <TextView
                         android:layout_width="match_parent"
@@ -70,7 +70,7 @@
                         android:layout_toEndOf="@id/avatar"
                         android:textAlignment="center"
                         android:id="@+id/login"
-                        android:textSize="24sp"
+                        android:textSize="@dimen/settings_login_ts"
                         android:textColor="@color/colorBlack"
                         android:layout_centerVertical="true"/>
                 </RelativeLayout>
@@ -81,8 +81,8 @@
                 android:layout_height="wrap_content"
                 card_view:cardPreventCornerOverlap="false"
                 card_view:cardUseCompatPadding="true"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="-4dp"
+                android:layout_marginTop="@dimen/settings_personal_div_cv_mt"
+                android:layout_marginBottom="@dimen/settings_personal_div_cv_mb"
                 android:layout_marginLeft="@dimen/card_margin_horizontal"
                 android:layout_marginRight="@dimen/card_margin_horizontal">
                 <LinearLayout
@@ -91,36 +91,36 @@
                     android:orientation="vertical">
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="@dimen/settings_personal_div_header_height"
                         android:id="@+id/div_personal_header">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Личная информация"
+                            android:text="@string/settings_personal_information"
                             android:background="@color/colorWhite"
-                            android:padding="10dp"
+                            android:padding="@dimen/settings_personal_info_p"
                             android:id="@+id/personalInfo"
                             android:layout_weight="1"
                             android:layout_gravity="center"
-                            android:textSize="15sp"
-                            android:layout_marginLeft="12dp"/>
+                            android:textSize="@dimen/settings_personal_info_ts"
+                            android:layout_marginLeft="@dimen/settings_personal_info_ml"/>
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/image_arrow_personal"
                             android:src="@mipmap/ic_chevron_down"
                             android:layout_gravity="center"
-                            android:layout_marginRight="12dp"/>
+                            android:layout_marginRight="@dimen/settings_personal_image_mr"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:paddingRight="12dp"
-                        android:paddingLeft="12dp"
+                        android:paddingRight="@dimen/settings_personal_div_pr"
+                        android:paddingLeft="@dimen/settings_personal_div_pl"
                         android:id="@+id/div_personal"
-                        android:paddingBottom="5dp"
-                        android:paddingTop="5dp">
+                        android:paddingBottom="@dimen/settings_personal_div_pb"
+                        android:paddingTop="@dimen/settings_personal_div_pt">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -265,7 +265,7 @@
             </android.support.v7.widget.CardView>
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/line_height"
                 android:background="@color/colorGrey"/>
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
@@ -274,7 +274,7 @@
                 card_view:cardUseCompatPadding="true"
                 android:layout_marginLeft="@dimen/card_margin_horizontal"
                 android:layout_marginRight="@dimen/card_margin_horizontal"
-                android:layout_marginTop="-4dp">
+                android:layout_marginTop="@dimen/settings_account_div_cv_pt">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -282,38 +282,38 @@
                     android:orientation="vertical">
                     <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="@dimen/settings_account_div_header_height"
                     android:id="@+id/div_account_header">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Учетная запись"
+                        android:text="@string/settings_account_information"
                         android:background="@color/colorWhite"
-                        android:padding="10dp"
+                        android:padding="@dimen/settings_account_info_p"
                         android:layout_weight="1"
-                        android:textSize="15sp"
+                        android:textSize="@dimen/settings_account_info_ts"
                         android:id="@+id/accountInfo"
                         android:layout_gravity="center"
-                        android:layout_marginLeft="12dp"/>
+                        android:layout_marginLeft="@dimen/settings_account_info_ml"/>
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/image_arrow_account"
                         android:src="@mipmap/ic_chevron_down"
                         android:layout_gravity="center"
-                        android:layout_marginRight="12dp"/>
+                        android:layout_marginRight="@dimen/settings_account_image_mr"/>
 
                 </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:paddingRight="12dp"
-                        android:paddingLeft="12dp"
+                        android:paddingRight="@dimen/settings_account_div_pr"
+                        android:paddingLeft="@dimen/settings_account_div_pl"
                         android:id="@+id/div_account"
-                        android:paddingBottom="5dp"
-                        android:paddingTop="5dp">
+                        android:paddingBottom="@dimen/settings_account_div_pb"
+                        android:paddingTop="@dimen/settings_account_div_pt">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -419,12 +419,12 @@
             app:LoadingDots_auto_play="true"
             app:LoadingDots_dots_color="@color/colorPrimary"
             app:LoadingDots_dots_count="5"
-            app:LoadingDots_dots_size="16dp"
-            app:LoadingDots_dots_space="5dp"
+            app:LoadingDots_dots_size="@dimen/loading_dots_size"
+            app:LoadingDots_dots_space="@dimen/loading_dots_space"
             app:LoadingDots_loop_duration="800"
             app:LoadingDots_loop_start_delay="100"
             app:LoadingDots_jump_duration="200"
-            app:LoadingDots_jump_height="14dp"
+            app:LoadingDots_jump_height="@dimen/loading_dots_jump_height"
             android:layout_gravity="center"/>
     </android.support.design.widget.CoordinatorLayout>
 

@@ -33,7 +33,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="50dp"
+                    android:layout_marginBottom="@dimen/message_layout_mb"
                     android:orientation="horizontal"
                     android:background="@color/colorMessageBackground"
                     android:id="@+id/llmessage"/>
@@ -41,11 +41,11 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="50dp"
-                    android:maxHeight="120dp"
+                    android:minHeight="@dimen/edit_message_min_height"
+                    android:maxHeight="@dimen/edit_message_max_height"
                     android:background="@drawable/message_edit_text"
-                    android:paddingRight="40dp"
-                    android:paddingLeft="55dp"
+                    android:paddingRight="@dimen/edit_message_pr"
+                    android:paddingLeft="@dimen/edit_message_pl"
                     android:id="@+id/editMessage"
                     android:focusableInTouchMode="true"
                     android:imeOptions="actionSend|flagNoEnterAction"
@@ -54,7 +54,7 @@
                     android:layout_alignParentStart="true"
                     android:onClick="clickOnEditText"/>
                 <ImageView
-                    android:layout_width="40dp"
+                    android:layout_width="@dimen/edit_message_image_width"
                     android:layout_height="match_parent"
                     android:src="@mipmap/ic_send"
                     android:layout_alignTop="@+id/editMessage"
@@ -71,12 +71,12 @@
             app:LoadingDots_auto_play="true"
             app:LoadingDots_dots_color="@color/colorPrimary"
             app:LoadingDots_dots_count="5"
-            app:LoadingDots_dots_size="16dp"
-            app:LoadingDots_dots_space="5dp"
+            app:LoadingDots_dots_size="@dimen/loading_dots_size"
+            app:LoadingDots_dots_space="@dimen/loading_dots_space"
             app:LoadingDots_loop_duration="800"
             app:LoadingDots_loop_start_delay="100"
             app:LoadingDots_jump_duration="200"
-            app:LoadingDots_jump_height="14dp"
+            app:LoadingDots_jump_height="@dimen/loading_dots_jump_height"
             android:layout_gravity="center"/>
     </android.support.design.widget.CoordinatorLayout>
 

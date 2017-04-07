@@ -30,10 +30,10 @@
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="@dimen/columns_tab_height"
                 android:background="@color/colorPrimary"
                 app:tabIndicatorColor="@android:color/white"
-                app:tabIndicatorHeight="2dp"
+                app:tabIndicatorHeight="@dimen/columns_tab_indicator_height"
                 app:tabSelectedTextColor="@android:color/white"
                 app:tabTextColor="@color/colorPrimaryDark"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
@@ -47,10 +47,10 @@
             android:clipChildren="false"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/btnAddCard"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="25dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginTop="@dimen/columns_fab_mt"
+            android:layout_marginLeft="@dimen/columns_fab_ml"
+            android:layout_marginBottom="@dimen/columns_fab_mb"
+            android:layout_marginRight="@dimen/columns_fab_mr"
             android:layout_gravity="bottom|right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

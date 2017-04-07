@@ -12,8 +12,8 @@
         android:id="@+id/cardViewPlaceStudy"
         card_view:cardPreventCornerOverlap="false"
         card_view:cardUseCompatPadding="true"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="6dp"
+        android:layout_marginTop="@dimen/item_place_study_and_study_cv_mt"
+        android:layout_marginBottom="@dimen/item_place_study_and_study_cv_mb"
         android:layout_marginLeft="@dimen/card_margin_horizontal"
         android:layout_marginRight="@dimen/card_margin_horizontal"
         card:cardBackgroundColor="@color/colorWhite">
@@ -21,13 +21,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:padding="@dimen/item_place_study_and_study_ll_p"
             android:id="@+id/linearLayoutPlaceStudy">
             <ru.velkonost.lume.patterns.SecretTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/titleCardPlaceStudy"
-                android:paddingBottom="10dp"
+                android:paddingBottom="@dimen/item_place_study_and_study_title_pb"
                 android:text="@string/profile_title_place_study"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,7 +42,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/descriptionCardPlaceStudy"
                         android:textColor="@color/colorBlack"
-                        android:textSize="10pt"
+                        android:textSize="@dimen/item_place_study_and_study_description_ts"
                         android:textIsSelectable="true"/>
                     <EditText
                         android:layout_width="match_parent"
@@ -52,7 +52,7 @@
                         android:lines="1"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:textSize="10pt"
+                        android:textSize="@dimen/item_place_study_and_study_description_ts"
                         android:textColor="@color/colorBlack"/>
                 </ViewSwitcher>
             </LinearLayout>
@@ -60,8 +60,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/titleCardPlaceWork"
-                android:paddingBottom="10dp"
-                android:layout_marginTop="35dp"
+                android:paddingBottom="@dimen/item_place_study_and_study_title_pb"
+                android:layout_marginTop="@dimen/item_place_study_and_study_title_mt"
                 android:text="@string/profile_title_place_work"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -76,7 +76,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/descriptionCardPlaceWork"
                         android:textColor="@color/colorBlack"
-                        android:textSize="10pt"
+                        android:textSize="@dimen/item_place_study_and_study_description_ts"
                         android:textIsSelectable="true"/>
                     <EditText
                         android:layout_width="match_parent"
@@ -86,7 +86,7 @@
                         android:lines="1"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:textSize="10pt"
+                        android:textSize="@dimen/item_place_study_and_study_description_ts"
                         android:textColor="@color/colorBlack"/>
                 </ViewSwitcher>
             </LinearLayout>

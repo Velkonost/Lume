@@ -209,9 +209,6 @@ public class BoardCardActivity extends AppCompatActivity {
     @BindView(R.id.fab_checkbox)
     FloatingActionButton fabCheckbox;
 
-    @BindView(R.id.fab_field)
-    FloatingActionButton fabField;
-
     @BindView(R.id.fab_map)
     FloatingActionButton fabMap;
 
@@ -390,6 +387,8 @@ public class BoardCardActivity extends AppCompatActivity {
         setEditTextCommentListener();
         executeTasks();
         startTimer();
+
+
     }
 
     /**
@@ -471,6 +470,19 @@ public class BoardCardActivity extends AppCompatActivity {
                 datePicker.show();
             }
         });
+
+        setTvCardDateListener();
+    }
+
+    private void setTvCardDateListener() {
+
+        tvCardDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePicker.show();
+            }
+        });
+
     }
 
     /**

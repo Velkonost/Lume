@@ -119,4 +119,14 @@
 
     <string name="welcome_text">Вы успешно зарегистрированы. \n\nТеперь укажите информацию о себе, на данной странице или в разделе &quot;Настройки&quot;. \n\nТакже рекомендуем обращаться к автоответчику по всем возникающим вопросам(знак вопроса в боковом меню). \n\nДля продолжения нажмите в любом месте</string>
 
+    <string name="card_fab_menu_bg">Изменить фон</string>
+    <string name="card_fab_menu_date">Установить срок выполнения</string>
+    <string name="card_fab_menu_checkbox">Добавить подзадачу</string>
+    <string name="card_fab_menu_map">Показать на карте</string>
+
+    <string name="card_edit_comment_hint">Добавьте комментарий…</string>
+
+    <string name="settings_personal_information">Личная информация</string>
+    <string name="settings_account_information">Учетная запись</string>
+
 </resources>
