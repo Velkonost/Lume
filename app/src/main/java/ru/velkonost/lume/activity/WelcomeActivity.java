@@ -9,9 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 import org.json.JSONException;
@@ -37,7 +35,6 @@ import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
 import static ru.velkonost.lume.Constants.URL.SERVER_REGISTRATION_METHOD;
 import static ru.velkonost.lume.Managers.InitializationsManager.changeActivityCompat;
-import static ru.velkonost.lume.Managers.InitializationsManager.initToolbar;
 import static ru.velkonost.lume.Managers.InitializationsManager.inititializeAlertDialog;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.loadText;
 import static ru.velkonost.lume.Managers.PhoneDataStorageManager.saveText;
@@ -65,12 +62,6 @@ public class WelcomeActivity extends AppCompatActivity {
     /** Свойство - введенный пользователем пароль */
     @BindView(R.id.passwordLogIn)
     EditText inputPassword;
-
-    /**
-     * Свойство - описание верхней панели инструментов приложения.
-     */
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +92,6 @@ public class WelcomeActivity extends AppCompatActivity {
      * Инициализация основных элементов
      */
     private void initialization() {
-        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
-        initToolbar(WelcomeActivity.this, toolbar, ""); /** Инициализация */
         initInputs();
     }
 
@@ -118,12 +107,6 @@ public class WelcomeActivity extends AppCompatActivity {
 
         inputLogin.setBackground(drawableLogin); // set the new drawable to EditText
         inputPassword.setBackground(drawablePassword); // set the new drawable to EditText
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_settings, menu);
-        return true;
     }
 
     /**
@@ -158,8 +141,8 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+
+    public void onRegisterBtnClick(View view) {
 
         /**
          * Отправляем данные на сервер.
@@ -167,8 +150,6 @@ public class WelcomeActivity extends AppCompatActivity {
         if (inputLogin.getText().length() != 0
                 && inputPassword.getText().length() != 0)
             new SignIn().execute();
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**

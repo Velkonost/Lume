@@ -72,7 +72,7 @@ public class DialogsFragment extends Fragment {
     private void adjustGridView(GridView gridView) {
 
         gridView.setColumnWidth(dp2px(100));
-        gridView.setNumColumns(3);
+        gridView.setNumColumns(GridView.AUTO_FIT);
         gridView.setStretchMode(GridView.STRETCH_SPACING);
     }
 

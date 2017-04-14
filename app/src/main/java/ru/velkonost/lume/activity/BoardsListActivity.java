@@ -610,7 +610,6 @@ public class BoardsListActivity extends AppCompatActivity {
                      * Получение JSON-объекта с информацией о конкретном пользователе по его идентификатору.
                      */
                     String boardName = dataJsonObj.getString(bids.get(i));
-                    Log.i(boardName, bids.get(i));
                     mBoards.add(new Board(
                             Integer.parseInt(bids.get(i)), boardName
                     ));

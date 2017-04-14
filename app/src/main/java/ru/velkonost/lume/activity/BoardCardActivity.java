@@ -28,6 +28,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -90,7 +91,6 @@ import ru.velkonost.lume.model.Contact;
 
 import static android.graphics.Color.WHITE;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
@@ -598,6 +598,10 @@ public class BoardCardActivity extends AppCompatActivity {
         int month = Integer.parseInt(cardDate.substring(3, 5));
         int year = Integer.parseInt(cardDate.substring(6, 10));
 
+        Log.i(String.valueOf(day), String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)));
+        Log.i(String.valueOf(month), String.valueOf(Calendar.getInstance().get(Calendar.MONTH)));
+        Log.i(String.valueOf(year), String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+
         if (cardDate.equals(new SimpleDateFormat("dd-MM-yyyy") //сегодня
                 .format(Calendar.getInstance().getTime()))) {
             tvCardDate.setBackgroundColor(ContextCompat
@@ -605,20 +609,18 @@ public class BoardCardActivity extends AppCompatActivity {
         } else if ( //будущее
                 (year > Calendar.getInstance().get(Calendar.YEAR))
                         || (
-                        !(year < Calendar.getInstance().get(Calendar.YEAR))
-                                && (month > Calendar.getInstance().get(Calendar.MONTH)))
+                        (!(year < Calendar.getInstance().get(Calendar.YEAR)))
+                                && (month > Calendar.getInstance().get(Calendar.MONTH) + 1))
                         || (
-                        !(year < Calendar.getInstance().get(Calendar.YEAR))
-                                && !(month < Calendar.getInstance().get(Calendar.MONTH))
+                        (!(year < Calendar.getInstance().get(Calendar.YEAR)))
+                                && (!(month < Calendar.getInstance().get(Calendar.MONTH) + 1))
                                 && (day > Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
                 )) {
 
             tvCardDate.setBackgroundColor(ContextCompat
                     .getColor(BoardCardActivity.this, R.color.card_date_soon));
 
-        }
-
-        else //прошедшее
+        } else //прошедшее
             tvCardDate.setBackgroundColor(ContextCompat
                     .getColor(BoardCardActivity.this, R.color.card_date_done));
     }
@@ -709,12 +711,13 @@ public class BoardCardActivity extends AppCompatActivity {
         Point size = new Point();
         display.getSize(size);
         int height = size.y;
+        int width = size.x;
 
         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
 
-        initializePopupInvite(layoutInflater, height);
-        initializePopupColumns(layoutInflater, height);
+        initializePopupInvite(layoutInflater, height, width);
+        initializePopupColumns(layoutInflater, height, width);
     }
 
     /**
@@ -723,15 +726,13 @@ public class BoardCardActivity extends AppCompatActivity {
      * @param layoutInflater
      * @param height - высота окна
      */
-    private void initializePopupInvite(LayoutInflater layoutInflater, int height) {
+    private void initializePopupInvite(LayoutInflater layoutInflater, int height, int width) {
 
         popupViewInvite = layoutInflater.inflate(popup_board_invite_list, null);
         popupWindowCardInvite = new PopupWindow(popupViewInvite,
-                WRAP_CONTENT, height - dp2px(120));
+                width - dp2px(60), height - dp2px(120));
 
         recyclerViewInvite = ButterKnife.findById(popupViewInvite, R.id.recyclerViewBoardInvite);
-
-
     }
 
     /**
@@ -740,11 +741,11 @@ public class BoardCardActivity extends AppCompatActivity {
      * @param layoutInflater
      * @param height - высота окна
      */
-    private void initializePopupColumns(LayoutInflater layoutInflater, int height) {
+    private void initializePopupColumns(LayoutInflater layoutInflater, int height, int width) {
 
         popupViewColumns = layoutInflater.inflate(popup_board_invite_list, null);
         popupWindowColumns = new PopupWindow(popupViewColumns,
-                WRAP_CONTENT, height - dp2px(120));
+                width - dp2px(60), height - dp2px(120));
 
         recyclerViewColumns = ButterKnife.findById(popupViewColumns, R.id.recyclerViewBoardInvite);
     }
@@ -1342,6 +1343,7 @@ public class BoardCardActivity extends AppCompatActivity {
                 }
 
                 changeCardDate(formatDate(dataJsonObj.getString(DATE)));
+                Log.i("KEKE", cardDate);
 
                 backgroundColor = dataJsonObj.getInt(CARD_COLOR);
                 drawerLayout.setBackgroundColor(backgroundColor);

@@ -62,15 +62,14 @@ import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.Managers.ValueComparatorManager;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.BoardInviteListAdapter;
-import ru.velkonost.lume.model.BoardColumn;
-import ru.velkonost.lume.model.BoardParticipant;
-import ru.velkonost.lume.model.Contact;
 import ru.velkonost.lume.fragments.BoardDescriptionFragment;
 import ru.velkonost.lume.fragments.BoardParticipantsFragment;
 import ru.velkonost.lume.fragments.BoardWelcomeColumnFragment;
 import ru.velkonost.lume.fragments.BoardsFragment;
+import ru.velkonost.lume.model.BoardColumn;
+import ru.velkonost.lume.model.BoardParticipant;
+import ru.velkonost.lume.model.Contact;
 
-import static android.widget.ListPopupWindow.WRAP_CONTENT;
 import static ru.velkonost.lume.Constants.AMPERSAND;
 import static ru.velkonost.lume.Constants.AVATAR;
 import static ru.velkonost.lume.Constants.BOARD_DESCRIPTION;
@@ -328,23 +327,24 @@ public class BoardWelcomeActivity extends AppCompatActivity {
         Point size = new Point();
         display.getSize(size);
         int height = size.y;
+        int width = size.x;
 
         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
 
-        initializePopupInvite(layoutInflater, height);
+        initializePopupInvite(layoutInflater, height, width);
 
     }
 
     /**
      * Инициализация всплывающего окна для приглашения контактов
      */
-    private void initializePopupInvite(LayoutInflater layoutInflater, int height) {
+    private void initializePopupInvite(LayoutInflater layoutInflater, int height, int width) {
 
         popupView = layoutInflater.inflate(popup_board_invite_list, null);
 
         popupWindowBoardInvite = new PopupWindow(popupView,
-                WRAP_CONTENT, height - dp2px(120));
+                width - dp2px(60), height - dp2px(120));
 
         recyclerView = ButterKnife.findById(popupView, R.id.recyclerViewBoardInvite);
 

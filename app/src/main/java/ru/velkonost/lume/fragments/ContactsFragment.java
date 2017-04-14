@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
@@ -31,6 +32,7 @@ import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.SearchActivity;
 import ru.velkonost.lume.adapter.ContactListAdapter;
 import ru.velkonost.lume.model.Contact;
+import ru.velkonost.lume.patterns.SecretTextView;
 
 import static ru.velkonost.lume.Constants.SEARCH;
 
@@ -40,6 +42,7 @@ import static ru.velkonost.lume.Constants.SEARCH;
  * Контакты пользователя
  */
 public class ContactsFragment extends Fragment {
+
     private static final int LAYOUT = R.layout.fragment_contact;
 
     /**
@@ -59,6 +62,12 @@ public class ContactsFragment extends Fragment {
 
     @BindView(R.id.recycleViewContact)
     FastScrollRecyclerView recyclerView;
+
+    @BindView(R.id.zero_contacts)
+    SecretTextView zeroContacts;
+
+    @BindView(R.id.no_contacts)
+    RelativeLayout noContactsRl;
 
     public static ContactsFragment getInstance(Context context, List<Contact> contacts) {
         Bundle args = new Bundle();
@@ -82,6 +91,14 @@ public class ContactsFragment extends Fragment {
 
         adapter = new ContactListAdapter(getActivity(), mContacts);
         recyclerView.setAdapter(adapter);
+
+
+        if (adapter.getItemCount() == 0) {
+            noContactsRl.setVisibility(View.VISIBLE);
+
+            zeroContacts.setDuration(1500);
+            zeroContacts.show();
+        }
 
         fabGoSearch.setOnClickListener(new View.OnClickListener() {
             @Override

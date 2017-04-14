@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_height="@dimen/nav_header_height"
-              android:layout_width="match_parent"
-              android:background="@color/colorPrimary"
-              android:id="@+id/navigationHeader">
+                android:orientation="horizontal"
+                android:layout_height="@dimen/nav_header_height"
+                android:layout_width="match_parent"
+                android:background="@color/colorPrimary"
+                android:id="@+id/navigationHeader"
+                android:paddingTop="@dimen/nav_header_pt">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -12,14 +13,6 @@
         android:src="@drawable/ic_help_circle"
         android:id="@+id/askQuestion"
         android:padding="@dimen/nav_header_ask_p"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/beta"
-        android:padding="@dimen/nav_header_beta_p"
-        android:layout_alignParentEnd="true"/>
-
 
     <TextView
         android:layout_width="match_parent"
@@ -30,4 +23,12 @@
         android:padding="@dimen/nav_header_name_p"
         android:layout_marginBottom="@dimen/nav_header_name_mb"
         android:layout_alignParentBottom="true"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/beta"
+        android:padding="@dimen/nav_header_beta_p"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@id/userNameHeader"/>
 </RelativeLayout>
