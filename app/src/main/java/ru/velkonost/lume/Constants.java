@@ -103,6 +103,9 @@ public class Constants {
     public static final int REMIND_TODO_INDEX = 0;
     public static final int REMIND_DONE_INDEX = 1;
 
+    public static final String LATITUDE = "latitude";
+    public static final String LONGITUDE = "longitude";
+
     /** Класс констант, относящихся исключительно к построению URL */
     public static class URL {
         public static final String SERVER_PROTOCOL = "http://";
@@ -155,6 +158,10 @@ public class Constants {
         public static final String SERVER_CHANGE_COLUMN_SETTINGS_METHOD = "/changeColumnSettings";
 
         public static final String SERVER_ADD_TASK_METHOD = "/addTask";
+
+        public static final String SERVER_GET_MAP_MARKERS_METHOD = "/getMapMarkers";
+        public static final String SERVER_ADD_MAP_MARKER_METHOD = "/addMapMarker";
+        public static final String SERVER_REMOVE_MAP_MARKER_METHOD = "/removeMapMarker";
 
         public static final String SERVER_CARD_SET_CHECKBOX_DONE_METHOD = "/setCheckboxDone";
         public static final String SERVER_CARD_SET_CHECKBOX_UNDONE_METHOD = "/setCheckboxUndone";

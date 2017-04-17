@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Lume</string>
+    <string name="map_activity_name">Place label on the card</string>
     <string name="login_placeholder">Login…</string>
     <string name="password_placeholder">Password…</string>
     <string name="btn_login">Enter</string>
@@ -132,6 +133,8 @@
 
     <string name="settings_personal_information">Personal information</string>
     <string name="settings_account_information">Account information</string>
+
+    <string name="create_marker">Create new marker</string>
 
 
 </resources>

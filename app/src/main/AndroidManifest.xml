@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
 
     <application
@@ -16,6 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:fullBackupContent="@xml/backup_descriptor">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key"/>
+
         <activity
             android:name="ru.velkonost.lume.activity.WelcomeActivity"
             android:screenOrientation="portrait"
@@ -70,6 +76,9 @@
 
         <activity android:name=".activity.FAQBotActivity"
                   android:windowSoftInputMode="stateHidden|adjustResize"
+                  android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.MapActivity"
                   android:screenOrientation="portrait"/>
 
     </application>

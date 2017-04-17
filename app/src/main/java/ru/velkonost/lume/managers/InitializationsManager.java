@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -14,6 +15,7 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.activity.SearchActivity;
 
+import static android.graphics.Color.WHITE;
 import static ru.velkonost.lume.Constants.SEARCH;
 
 /**
@@ -97,6 +99,18 @@ public class InitializationsManager {
         toolbar.inflateMenu(R.menu.menu);
 
         activity.setSupportActionBar(toolbar);
+    }
+
+    /**
+     * Инициализация тулбара
+     *
+     * @param activity - активность
+     * @param toolbar - тулбар переданной активности
+     * @param title - заголовок тулбара
+     */
+    public static void initToolbar(FragmentActivity activity, Toolbar toolbar, String title) {
+        toolbar.setTitle(title);
+        toolbar.setTitleTextColor(WHITE);
     }
 
     /**

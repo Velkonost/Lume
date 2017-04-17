@@ -55,7 +55,9 @@ public class AddColumnFragment extends BaseTabFragment {
     /**
      * Свойство - идентификатор доски
      */
-    @BindView(R.id.editName) EditText createColumnName;
+    @BindView(R.id.editName)
+    EditText createColumnName;
+
     private String boardId;
 
     public static AddColumnFragment getInstance(Context context, String boardId) {

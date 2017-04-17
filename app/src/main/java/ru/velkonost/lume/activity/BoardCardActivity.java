@@ -441,6 +441,7 @@ public class BoardCardActivity extends AppCompatActivity {
         setFabBackgroundListener();
         setFabCheckboxListener();
         setFabDateListener();
+        setFabMapListener();
 
     }
 
@@ -460,6 +461,18 @@ public class BoardCardActivity extends AppCompatActivity {
 
     }
 
+    private void setFabMapListener() {
+        fabMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(BoardCardActivity.this, MapActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(CARD_ID, cardId);
+                BoardCardActivity.this.startActivity(intent);
+            }
+        });
+    }
+
     /**
      * Установка слушателя на изменение даты карточки
      */
@@ -470,19 +483,16 @@ public class BoardCardActivity extends AppCompatActivity {
                 datePicker.show();
             }
         });
-
         setTvCardDateListener();
     }
 
     private void setTvCardDateListener() {
-
         tvCardDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 datePicker.show();
             }
         });
-
     }
 
     /**
@@ -1343,7 +1353,6 @@ public class BoardCardActivity extends AppCompatActivity {
                 }
 
                 changeCardDate(formatDate(dataJsonObj.getString(DATE)));
-                Log.i("KEKE", cardDate);
 
                 backgroundColor = dataJsonObj.getInt(CARD_COLOR);
                 drawerLayout.setBackgroundColor(backgroundColor);
