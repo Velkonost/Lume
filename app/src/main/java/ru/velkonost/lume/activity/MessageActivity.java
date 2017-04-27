@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -20,6 +21,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -41,8 +44,8 @@ import ru.velkonost.lume.Constants;
 import ru.velkonost.lume.Managers.InitializationsManager;
 import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.R;
-import ru.velkonost.lume.model.Message;
 import ru.velkonost.lume.fragments.MessagesFragment;
+import ru.velkonost.lume.model.Message;
 
 import static ru.velkonost.lume.Constants.ADDRESSEE_ID;
 import static ru.velkonost.lume.Constants.AMPERSAND;
@@ -200,7 +203,20 @@ public class MessageActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setTheme(R.style.AppTheme_Cursor);
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
+        setSystemBarBackground();
 
+    }
+
+    /**
+     * Установка цвета дли системной панели
+     */
+    private void setSystemBarBackground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorDarkPrimary));
+        }
     }
 
     /**
