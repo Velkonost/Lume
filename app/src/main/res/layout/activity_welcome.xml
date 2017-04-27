@@ -10,11 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbarlayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@null">
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -26,15 +21,13 @@
             android:clickable="true"
             android:background= "@android:color/transparent"/>
 
-    </android.support.design.widget.AppBarLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_marginTop="40dp">
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:src="@mipmap/lume"
             android:id="@+id/lumeImage"/>
 

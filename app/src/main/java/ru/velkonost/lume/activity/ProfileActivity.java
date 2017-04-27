@@ -1,5 +1,6 @@
 package ru.velkonost.lume.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,6 +8,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,9 +16,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -295,6 +299,15 @@ public class ProfileActivity extends AppCompatActivity {
      * Свойство - проверка, при входе была ли произведена регистрация
      */
     private boolean registration;
+
+    /**
+     * Адрес выбранной фотографии.
+     */
+    String selectedPhoto = null;
+
+    private Intent galleryData;
+
+    String mCurrentPhotoPath;
 
 
     @Override
@@ -892,10 +905,10 @@ public class ProfileActivity extends AppCompatActivity {
                                                                      * Включает камеру для совершения снимка.
                                                                      */
                                                                     try {
+
                                                                         startActivityForResult(
                                                                                 cameraPhoto.takePhotoIntent(),
-                                                                                CAMERA_REQUEST)
-                                                                        ;
+                                                                                CAMERA_REQUEST);
                                                                         cameraPhoto.addToGallery();
                                                                     } catch (IOException e) {
                                                                         e.printStackTrace();
@@ -1306,102 +1319,123 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        this.galleryData = data;
         /**
          * Проверка, каким способом была загружена фотография.
          */
         if (resultCode == Activity.RESULT_OK) {
 
-            /**
-             * Адрес выбранной фотографии.
-             */
-            String selectedPhoto;
+
 
             /**
              * Фото из галереи.
              */
             if (requestCode == GALLERY_REQUEST) {
 
-                /**
-                 * Устанавливает путь до фотографии.
-                 */
-                Uri uri = data.getData();
-                galleryPhoto.setPhotoUri(uri);
-                selectedPhoto = galleryPhoto.getPath();
 
-                /**
-                 * Загружает фотографию на сервер.
-                 */
-                try {
+                int permissionCheck = ContextCompat.checkSelfPermission(ProfileActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(
+                            ProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                } else {
+//                    callMethod();
+                    Uri uri = data.getData();
+                    galleryPhoto.setPhotoUri(uri);
+                    selectedPhoto = galleryPhoto.getPath();
+
 
                     /**
-                     * Данные фотографии кодируются на устройстве и раскодируют на сервере.
+                     * Устанавливает путь до фотографии.
                      */
-                    Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
-                    String encodedImage = ImageBase64.encode(bitmap);
-
-                    HashMap<String, String> postData = new HashMap<>();
-
-                    postData.put(IMAGE, encodedImage);
-                    postData.put(ID, userId);
 
 
-                    PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, new AsyncResponse() {
-                        @Override
-                        public void processFinish(String s) {
-                            if (s.contains(UPLOAD_IMAGE_SUCCESS_CODE)) {
-                                Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
-                                changeActivityCompat(ProfileActivity.this);
-                            } else {
-                                Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
+                    /**
+                     * Загружает фотографию на сервер.
+                     */
+                    try {
+
+                        /**
+                         * Данные фотографии кодируются на устройстве и раскодируют на сервере.
+                         */
+                        Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
+                        String encodedImage = ImageBase64.encode(bitmap);
+
+                        HashMap<String, String> postData = new HashMap<>();
+
+                        postData.put(IMAGE, encodedImage);
+                        postData.put(ID, userId);
+
+
+                        PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, new AsyncResponse() {
+                            @Override
+                            public void processFinish(String s) {
+                                if (s.contains(UPLOAD_IMAGE_SUCCESS_CODE)) {
+                                    Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
+                                    changeActivityCompat(ProfileActivity.this);
+                                } else {
+                                    Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                    });
+                        });
 
-                    /**
-                     * Посылаем фото на сервер.
-                     */
-                    task.execute(
-                            SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
-                                    + SERVER_UPLOAD_IMAGE_METHOD
-                    );
+                        /**
+                         * Посылаем фото на сервер.
+                         */
+                        task.execute(
+                                SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
+                                        + SERVER_UPLOAD_IMAGE_METHOD
+                        );
 
-                    /**
-                     * Обработка возможных исключений.
-                     */
-                    task.setEachExceptionsHandler(new EachExceptionsHandler() {
-                        @Override
-                        public void handleIOException(IOException e) {
-                            Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
-                        }
+                        /**
+                         * Обработка возможных исключений.
+                         */
+                        task.setEachExceptionsHandler(new EachExceptionsHandler() {
+                            @Override
+                            public void handleIOException(IOException e) {
+                                Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
+                            }
 
-                        @Override
-                        public void handleMalformedURLException(MalformedURLException e) {
-                            Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
-                        }
+                            @Override
+                            public void handleMalformedURLException(MalformedURLException e) {
+                                Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
+                            }
 
-                        @Override
-                        public void handleProtocolException(ProtocolException e) {
-                            Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
-                        }
+                            @Override
+                            public void handleProtocolException(ProtocolException e) {
+                                Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
+                            }
 
-                        @Override
-                        public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
-                            Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
+                                Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             /**
              * Фото с камеры.
              */
             } else if(requestCode == CAMERA_REQUEST) {
+
+
+//                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
+//                }
+
+
+
 
                 /**
                  * Получает путь.
@@ -1473,9 +1507,188 @@ public class ProfileActivity extends AppCompatActivity {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
+
             }
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+
+            case 0:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+
+
+                    /**
+                     * Получает путь.
+                     */
+                    selectedPhoto = cameraPhoto.getPhotoPath();
+
+                    /**
+                     * Загружает на сервер.
+                     */
+                    try {
+
+                        /**
+                         * Данные фотографии кодируются на устройстве и раскодируют на сервере.
+                         */
+                        Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
+                        String encodedImage = ImageBase64.encode(bitmap);
+
+                        HashMap<String, String> postData = new HashMap<>();
+
+                        postData.put(IMAGE, encodedImage);
+                        postData.put(ID, userId);
+
+                        PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, new AsyncResponse() {
+                            @Override
+                            public void processFinish(String s) {
+                                if (s.contains(UPLOAD_IMAGE_SUCCESS_CODE)) {
+                                    Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
+                                    changeActivityCompat(ProfileActivity.this);
+                                } else {
+                                    Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+                        /**
+                         * Посылаем фото на сервер.
+                         */
+                        task.execute(
+                                SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
+                                        + SERVER_UPLOAD_IMAGE_METHOD
+                        );
+
+                        /**
+                         * Обработка возможных исключений.
+                         */
+                        task.setEachExceptionsHandler(new EachExceptionsHandler() {
+                            @Override
+                            public void handleIOException(IOException e) {
+                                Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void handleMalformedURLException(MalformedURLException e) {
+                                Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void handleProtocolException(ProtocolException e) {
+                                Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
+                                Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+
+            case 1:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Uri uri = galleryData.getData();
+                    galleryPhoto.setPhotoUri(uri);
+                    selectedPhoto = galleryPhoto.getPath();
+
+
+                    /**
+                     * Устанавливает путь до фотографии.
+                     */
+
+
+                    /**
+                     * Загружает фотографию на сервер.
+                     */
+                    try {
+
+                        /**
+                         * Данные фотографии кодируются на устройстве и раскодируют на сервере.
+                         */
+                        Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
+                        String encodedImage = ImageBase64.encode(bitmap);
+
+                        HashMap<String, String> postData = new HashMap<>();
+
+                        postData.put(IMAGE, encodedImage);
+                        postData.put(ID, userId);
+
+
+                        PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, new AsyncResponse() {
+                            @Override
+                            public void processFinish(String s) {
+                                if (s.contains(UPLOAD_IMAGE_SUCCESS_CODE)) {
+                                    Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
+                                    changeActivityCompat(ProfileActivity.this);
+                                } else {
+                                    Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+                        /**
+                         * Посылаем фото на сервер.
+                         */
+                        task.execute(
+                                SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
+                                        + SERVER_UPLOAD_IMAGE_METHOD
+                        );
+
+                        /**
+                         * Обработка возможных исключений.
+                         */
+                        task.setEachExceptionsHandler(new EachExceptionsHandler() {
+                            @Override
+                            public void handleIOException(IOException e) {
+                                Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void handleMalformedURLException(MalformedURLException e) {
+                                Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void handleProtocolException(ProtocolException e) {
+                                Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
+                                Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+//    private void checkPermission(){
+//        int permissionCheck = ContextCompat.checkSelfPermission(ProfileActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+//
+//        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(
+//                    ProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+//        } else {
+//            callMethod();
+//        }
+//    }
 
     /**
      * Класс для изменения списка контактов пользователя, авторизованного на данном устройстве.
