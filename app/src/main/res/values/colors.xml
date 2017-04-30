@@ -48,4 +48,8 @@
 
     <color name="fab_menu_pressed">#366086</color>
     <color name="fab_shadow_color">#444</color>
+
+    <color name="tutorial_page_first">#ff6aa1ce</color>
+    <color name="tutorial_page_second">#009688</color>
+    <color name="tutorial_page_third">#675CA8</color>
 </resources>

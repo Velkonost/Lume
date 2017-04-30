@@ -33,7 +33,6 @@ import static ru.velkonost.lume.Constants.EQUALS;
 import static ru.velkonost.lume.Constants.ID;
 import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.PASSWORD;
-import static ru.velkonost.lume.Constants.REGISTRATION;
 import static ru.velkonost.lume.Constants.URL.SERVER_ACCOUNT_SCRIPT;
 import static ru.velkonost.lume.Constants.URL.SERVER_HOST;
 import static ru.velkonost.lume.Constants.URL.SERVER_PROTOCOL;
@@ -272,8 +271,8 @@ public class WelcomeActivity extends AppCompatActivity {
                          * Переход на новую активность - профиль вошедшего пользователя.
                          * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          */
-                        Intent profileIntent = new Intent(WelcomeActivity.this, ProfileActivity.class);
-                        profileIntent.putExtra(REGISTRATION, 1);
+                        Intent profileIntent = new Intent(WelcomeActivity.this, SlidingTutorialActivity.class);
+//                        profileIntent.putExtra(REGISTRATION, 1);
                         changeActivityCompat(WelcomeActivity.this, profileIntent);
                         finish();
 

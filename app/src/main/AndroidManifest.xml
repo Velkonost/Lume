@@ -92,6 +92,9 @@
         <activity android:name=".activity.MapActivity"
                   android:screenOrientation="portrait"/>
 
+        <activity android:name=".activity.SlidingTutorialActivity"
+                  android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>
