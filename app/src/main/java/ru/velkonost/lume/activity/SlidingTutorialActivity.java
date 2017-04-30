@@ -23,14 +23,30 @@ import static ru.velkonost.lume.Constants.REGISTRATION;
 
 /**
  * @author Velkonost
+ * Приветственная активность, дающая краткое понятие о смысле приложения
  */
 public class SlidingTutorialActivity extends AppCompatActivity implements View.OnClickListener {
 
+    /**
+     * Свойство - суммарное количество страниц
+     */
     private static final int TOTAL_PAGES = 3;
+
+    /**
+     * Свойство - количество уникальных страниц
+     */
     private static final int ACTUAL_PAGES_COUNT = 3;
+
+    /**
+     * Свойство - палитра цветов страниц
+     */
     private int[] mPagesColors;
 
 
+    /**
+     * Старт активности
+     * @param context
+     */
     public static void start(Context context) {
         context.startActivity(new Intent(context, SlidingTutorialActivity.class));
     }
@@ -53,6 +69,9 @@ public class SlidingTutorialActivity extends AppCompatActivity implements View.O
         }
     }
 
+    /**
+     * Инициализация слайдера
+     */
     public void replaceTutorialFragment() {
         final IndicatorOptions indicatorOptions = IndicatorOptions.newBuilder(this)
                 .build();
@@ -73,10 +92,11 @@ public class SlidingTutorialActivity extends AppCompatActivity implements View.O
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View v) {}
 
-    }
-
+    /**
+     * Слушатель слайдера
+     */
     private static final class TutorialPagesProvider implements TutorialPageOptionsProvider {
 
         @NonNull
@@ -136,6 +156,10 @@ public class SlidingTutorialActivity extends AppCompatActivity implements View.O
         }
     }
 
+
+    /**
+     * Слушатель кнопки "Пропустить"
+     */
     private static final class OnSkipClickListener implements View.OnClickListener {
 
         @NonNull
