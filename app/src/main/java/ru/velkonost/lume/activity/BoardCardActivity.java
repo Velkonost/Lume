@@ -283,6 +283,7 @@ public class BoardCardActivity extends AppCompatActivity {
     private List<BoardColumn> mBoardColumns;
 
     private ArrayList<String> ids;
+
     private ArrayList<String> cids;
 
     /**
@@ -534,7 +535,6 @@ public class BoardCardActivity extends AppCompatActivity {
                         .show();
             }
         });
-
     }
 
     /**

@@ -68,8 +68,6 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.velkonost.lume.Managers.InitializationsManager;
-import ru.velkonost.lume.Managers.PhoneDataStorageManager;
 import ru.velkonost.lume.Managers.TypefaceUtil;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.patterns.SecretTextView;
@@ -320,11 +318,9 @@ public class ProfileActivity extends AppCompatActivity {
         getData();
         initialization();
 
-
-
-        /**
-         * Кнопка возврата на предыдущую активность, если текущий профиль не принадлежит пользователю,
-         *          авторизованному на данном устройстве.
+        /*
+          Кнопка возврата на предыдущую активность, если текущий профиль не принадлежит пользователю,
+                   авторизованному на данном устройстве.
          */
         if (!(profileIdString.equals(userId))) {
             toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back_inverted);
@@ -336,7 +332,7 @@ public class ProfileActivity extends AppCompatActivity {
             });
         }
 
-        /** Обращаемся к серверу */
+        /* Обращаемся к серверу */
         executeTasks();
     }
 
@@ -347,8 +343,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         setContentView(LAYOUT);
         ButterKnife.bind(this);
+
+        /* Установка темы */
         setTheme(R.style.AppTheme_Cursor);
+
+        /* Установка шрифта */
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/Roboto-Regular.ttf");
+
         setSystemBarBackground();
 
     }
@@ -378,10 +379,10 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private void getFromFile() {
 
-        /**
-         * Получение id пользователя.
-         * {@link PhoneDataStorageManager#loadText(Context, String)}
-         **/
+        /*
+          Получение id пользователя.
+          {@link PhoneDataStorageManager#loadText(Context, String)}
+         */
         userId = loadText(ProfileActivity.this, ID);
 
     }
@@ -393,21 +394,24 @@ public class ProfileActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        /**
-         * Проверка:
-         * Принадлежит открытый профиль пользователю,
-         *      авторизованному на данном устройстве или нет?
-         * */
-
+        /*
+          Проверка:
+          Принадлежит открытый профиль пользователю,
+               авторизованному на данном устройстве или нет?
+          */
         int profileIdInt = intent.getIntExtra(ID, Integer.parseInt(userId));
         profileIdString = String.valueOf(profileIdInt);
 
+        /* Проверка: только что зарегистрировался пользователь или был сделан вход в существующий аккаунт */
         registration = intent.getIntExtra(REGISTRATION, 0) == 1;
 
-
+        /* Если только зарегистрирован, то показываем ознакомительный текст */
         if (registration) showWelcomeText();
     }
 
+    /**
+     * Показывает ознакомительный текст
+     */
     private void showWelcomeText() {
         fogView.setVisibility(View.VISIBLE);
         welcomeText.setVisibility(View.VISIBLE);
@@ -417,6 +421,9 @@ public class ProfileActivity extends AppCompatActivity {
         setFogViewListener();
     }
 
+    /**
+     * Ставит слушателя на "туман" - view-элемент
+     */
     private void setFogViewListener() {
         fogView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -427,17 +434,20 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Прячет ознакомительный текст
+     */
     private void hideWelcomeText() {
         fogView.setVisibility(View.INVISIBLE);
         welcomeText.setVisibility(View.INVISIBLE);
     }
 
     /**
-     * Инитиализация основных элементов
+     * Инициализация основных элементов
      */
     private void initialization() {
 
-        /** Инициализация экземпляров классов */
+        /* Инициализация экземпляров классов */
         mGetData = new GetData();
         mAddContact = new AddContact();
 
@@ -446,10 +456,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         ltInflater = getLayoutInflater();
 
-        /** {@link InitializationsManager#initToolbar(Toolbar, int)}  */
-        initToolbar(ProfileActivity.this, toolbar, ""); /** Инициализация */
-        initNavigationView(); /** Инициализация */
-        initCollapsingToolbarPalette();
+        /* {@link InitializationsManager#initToolbar(Toolbar, int)}  */
+        initToolbar(ProfileActivity.this, toolbar, ""); /* Инициализация */
+        initNavigationView(); /* Инициализация */
+        initCollapsingToolbarPalette(); /* Инициализация */
 
     }
 
@@ -486,7 +496,7 @@ public class ProfileActivity extends AppCompatActivity {
         InputMethodManager inputMethodManager = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        getCurrentFocus().clearFocus();
+        getCurrentFocus().clearFocus(); /* Очищение фокуса */
 
     }
 
@@ -541,10 +551,10 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 
-                        /**
-                         * Обновляет страницу.
-                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
-                         * */
+                        /*
+                          Обновляет страницу.
+                          {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
+                          */
                         changeActivityCompat(ProfileActivity.this,
                                 new Intent(ProfileActivity.this, FAQBotActivity.class));
                     }
@@ -577,12 +587,14 @@ public class ProfileActivity extends AppCompatActivity {
 
                         if ((profileIdString.equals(userId))) {
 
+                            /* Получение данных, введенных пользователем */
                             sUserPlaceLiving = editPlaceLiving.getText().toString();
                             sUserPlaceStudy = editUserPlaceStudy.getText().toString();
                             sUserPlaceWork = editUserPlaceWork.getText().toString();
                             sUserBirthday = userBirthday.getText().toString();
                             sUserWorkingEmail = editUserWorkingEmail.getText().toString();
 
+                            /* Сохранение полученных данных */
                             saveText(ProfileActivity.this, USER_PLACE_LIVING, sUserPlaceLiving);
                             saveText(ProfileActivity.this, USER_PLACE_STUDY, sUserPlaceStudy);
                             saveText(ProfileActivity.this, USER_PLACE_WORK, sUserPlaceWork);
@@ -592,10 +604,10 @@ public class ProfileActivity extends AppCompatActivity {
 
                         }
 
-                        /**
-                         * Обновляет страницу.
-                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
-                         * */
+                        /*
+                          Обновляет страницу.
+                          {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
+                          */
                         changeActivityCompat(ProfileActivity.this,
                                 new Intent(ProfileActivity.this, ProfileActivity.class));
                     }
@@ -619,34 +631,34 @@ public class ProfileActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 drawerLayout.closeDrawers();
 
-                /** Инициализируем намерение на следующую активность */
+                /* Инициализируем намерение на следующую активность */
                 switch (menuItem.getItemId()) {
 
-                    /** Переход на контакты данного пользователя */
+                    /* Переход на контакты данного пользователя */
                     case R.id.navigationContacts:
                         nextIntent = new Intent(ProfileActivity.this, ContactsActivity.class);
                         break;
 
-                    /** Переход на страницу сообщений данного пользователя */
+                    /* Переход на страницу сообщений данного пользователя */
                     case R.id.navigationMessages:
                         nextIntent = new Intent(ProfileActivity.this, DialogsActivity.class);
                         break;
 
-                    /** Переход на страницу досок карточной версии канбан-системы */
+                    /* Переход на страницу досок карточной версии канбан-системы */
                     case R.id.navigationBoards:
                         nextIntent = new Intent(ProfileActivity.this, BoardsListActivity.class);
                         break;
 
-                    /** Переход на страницу индивидуальных настроек для данного пользователя */
+                    /* Переход на страницу индивидуальных настроек для данного пользователя */
                     case R.id.navigationSettings:
                         nextIntent = new Intent(ProfileActivity.this, SettingsActivity.class);
                         break;
 
-                    /**
-                     * Завершение сессии даного пользователя на данном устройстве.
-                     * Удаляем всю информацию об авторизованном пользователе.
-                     * Переход на страницу приветствия {@link WelcomeActivity}
-                     **/
+                    /*
+                      Завершение сессии даного пользователя на данном устройстве.
+                      Удаляем всю информацию об авторизованном пользователе.
+                      Переход на страницу приветствия {@link WelcomeActivity}
+                     */
                     case R.id.navigationLogout:
                         deleteText(ProfileActivity.this, ID);
 
@@ -654,10 +666,10 @@ public class ProfileActivity extends AppCompatActivity {
                         break;
                 }
 
-                /**
-                 * Переход на следующую активность.
-                 * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
-                 * */
+                /*
+                  Переход на следующую активность.
+                  {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
+                  */
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -665,38 +677,44 @@ public class ProfileActivity extends AppCompatActivity {
                         deleteText(ProfileActivity.this, USER_ID);
 
                         if ((profileIdString.equals(userId))) {
+
+                            /* Получение данных, введенных пользователем */
                             sUserPlaceLiving = editPlaceLiving.getText().toString();
                             sUserPlaceStudy = editUserPlaceStudy.getText().toString();
                             sUserPlaceWork = editUserPlaceWork.getText().toString();
                             sUserBirthday = userBirthday.getText().toString();
                             sUserWorkingEmail = editUserWorkingEmail.getText().toString();
 
+                            /* Сохранение полученных данных */
                             saveText(ProfileActivity.this, USER_PLACE_LIVING, sUserPlaceLiving);
                             saveText(ProfileActivity.this, USER_PLACE_STUDY, sUserPlaceStudy);
                             saveText(ProfileActivity.this, USER_PLACE_WORK, sUserPlaceWork);
                             saveText(ProfileActivity.this, USER_WORKING_EMAIL, sUserWorkingEmail);
 
+                            /* Удаление сохраненных на устройстве данных при выходе из аккаунта */
                             if (loadText(ProfileActivity.this, ID).equals("")) {
+
                                 deleteText(ProfileActivity.this, USER_PLACE_LIVING);
                                 deleteText(ProfileActivity.this, USER_PLACE_STUDY);
                                 deleteText(ProfileActivity.this, USER_PLACE_WORK);
                                 deleteText(ProfileActivity.this, USER_WORKING_EMAIL);
+
                             }
 
                             new PostData().execute();
 
                         }
 
-                        /**
-                         * Обновляет страницу.
-                         * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
-                         * */
+                        /*
+                          Обновляет страницу.
+                          {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
+                          */
                         changeActivityCompat(ProfileActivity.this, nextIntent);
                     }
                 }, 350);
 
 
-                /** Если был осуществлен выход из аккаунта, то закрываем активность профиля */
+                /* Если был осуществлен выход из аккаунта, то закрываем активность профиля */
                 if (loadText(ProfileActivity.this, ID).equals("")) finishAffinity();
 
                 drawerLayout.closeDrawer(GravityCompat.START);
@@ -746,25 +764,25 @@ public class ProfileActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Object... strings) {
 
-            /**
-             * Формирование адреса, по которому необходимо обратиться.
-             **/
+            /*
+              Формирование адреса, по которому необходимо обратиться.
+             */
             String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
                     + SERVER_GET_DATA_METHOD;
 
-            /**
-             * Формирование отправных данных.
+            /*
+              Формирование отправных данных.
              */
             @SuppressWarnings("WrongThread") String params = ID + EQUALS + userId
                     + AMPERSAND + USER_ID + EQUALS + profileIdString;
 
-            /** Свойство - код ответа, полученный от сервера */
+            /* Свойство - код ответа, полученный от сервера */
             String resultJson = "";
 
-            /**
-             * Соединяется с сервером, отправляет данные, получает ответ.
-             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
-             **/
+            /*
+              Соединяется с сервером, отправляет данные, получает ответ.
+              {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             */
             try {
                 resultJson = getJSON(dataURL, params);
             } catch (IOException e) {
@@ -777,46 +795,46 @@ public class ProfileActivity extends AppCompatActivity {
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
 
-            /**
-             * Свойство - код ответа от методов сервера.
-             *
-             * ВНИМАНИЕ!
-             *
-             * Этот параметр не имеет никакого отношения к кодам состояния.
-             * Он формируется на сервере в зависимости от результата проведения обработки данных.
-             *
-             **/
+            /*
+              Свойство - код ответа от методов сервера.
+
+              ВНИМАНИЕ!
+
+              Этот параметр не имеет никакого отношения к кодам состояния.
+              Он формируется на сервере в зависимости от результата проведения обработки данных.
+
+             */
             int resultCode;
 
-            /** Свойство - полученный JSON–объект*/
+            /* Свойство - полученный JSON–объект*/
             final JSONObject dataJsonObj;
 
             try {
 
-                /**
-                 * Получение JSON-объекта по строке.
+                /*
+                  Получение JSON-объекта по строке.
                  */
                 dataJsonObj = new JSONObject(strJson);
                 resultCode = Integer.parseInt(dataJsonObj.getString(GET_DATA));
 
-                /**
-                 * Обработка полученного кода ответа.
+                /*
+                  Обработка полученного кода ответа.
                  */
                 switch (resultCode) {
-                    /** В случае успешного выполнения */
+                    /* В случае успешного выполнения */
                     case 300:
 
-                        /** Формирование адреса, по которому хранится аватар владельца открытого профиля */
+                        /* Формирование адреса, по которому хранится аватар владельца открытого профиля */
                         String avatarURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_RESOURCE
                                 + SERVER_AVATAR + SLASH + dataJsonObj.getString(AVATAR)
                                 + SLASH + profileIdString + JPG;
 
-                        /**
-                         * Установка имени владельца открытого профиля.
-                         *
-                         * Если имя и фамилия не найдены,
-                         * то устанавливается логин + показывается иконка {@link userWithoutName}
-                         **/
+                        /*
+                          Установка имени владельца открытого профиля.
+
+                          Если имя и фамилия не найдены,
+                          то устанавливается логин + показывается иконка {@link userWithoutName}
+                         */
                         sUserName = dataJsonObj.getString(NAME).length() == 0
                                 ? dataJsonObj.getString(LOGIN)
                                 : dataJsonObj.getString(SURNAME).length() == 0
@@ -827,20 +845,20 @@ public class ProfileActivity extends AppCompatActivity {
 
                         fetchImage(avatarURL, userAvatar, false, false);
 
-                        /**
-                         * Слушатель на аватар открытого профиля.
+                        /*
+                          Слушатель на аватар открытого профиля.
                          */
                         userAvatar.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
-                                /**
-                                 * Если профиль не принадлежит авторизованному пользователю.
+                                /*
+                                  Если профиль не принадлежит авторизованному пользователю.
                                  */
                                 if (!profileIdString.equals(userId)) {
-                                    /**
-                                     * То при нажатии сразу открывает аватар на весь экран.
-                                     * {@link FullScreenPhotoActivity}
+                                    /*
+                                      То при нажатии сразу открывает аватар на весь экран.
+                                      {@link FullScreenPhotoActivity}
                                      */
                                     Intent fullScreenIntent = new Intent(ProfileActivity.this, FullScreenPhotoActivity.class);
 
@@ -859,8 +877,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                                 }
                                 else {
-                                    /**
-                                     * Иначе открывает диалоговое окно.
+                                    /*
+                                      Иначе открывает диалоговое окно.
                                      */
 
                                     CharSequence[] data = {
@@ -878,9 +896,9 @@ public class ProfileActivity extends AppCompatActivity {
                                                         public void onClick(DialogInterface dialog, int which) {
                                                             switch (which) {
                                                                 case 0:
-                                                                    /**
-                                                                     * Открывает аватар на весь экран.
-                                                                     * {@link FullScreenPhotoActivity}
+                                                                    /*
+                                                                      Открывает аватар на весь экран.
+                                                                      {@link FullScreenPhotoActivity}
                                                                      */
                                                                     Intent fullScreenIntent = new Intent(
                                                                             ProfileActivity.this,
@@ -905,8 +923,8 @@ public class ProfileActivity extends AppCompatActivity {
                                                                     break;
 
                                                                 case 1:
-                                                                    /**
-                                                                     * Открывает галерею для выбора фото.
+                                                                    /*
+                                                                      Открывает галерею для выбора фото.
                                                                      */
                                                                     Intent intent = new Intent(
                                                                             Intent.ACTION_PICK,
@@ -919,8 +937,8 @@ public class ProfileActivity extends AppCompatActivity {
                                                                             GALLERY_REQUEST);
                                                                     break;
                                                                 case 2:
-                                                                    /**
-                                                                     * Включает камеру для совершения снимка.
+                                                                    /*
+                                                                      Включает камеру для совершения снимка.
                                                                      */
                                                                     try {
 
@@ -940,10 +958,10 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         });
 
-                        /**
-                         * Если профиль не принадлежит авторизованному пользователю,
-                         *      то добавляем модуль взаимодействия.
-                         **/
+                        /*
+                          Если профиль не принадлежит авторизованному пользователю,
+                               то добавляем модуль взаимодействия.
+                         */
                         if (!profileIdString.equals(userId)) {
 
                             btnAddIntoContacts
@@ -956,22 +974,22 @@ public class ProfileActivity extends AppCompatActivity {
                             btnAddIntoContacts.setVisibility(View.VISIBLE);
                             btnSendMessage.setVisibility(View.VISIBLE);
 
-                            /**
-                             * Проверка, добавил ли {@link ProfileActivity#userId}
-                             *         в контакты {@link ProfileActivity#profileId}
-                             * */
+                            /*
+                              Проверка, добавил ли {@link ProfileActivity#userId}
+                                      в контакты {@link ProfileActivity#profileId}
+                              */
                             isContact = dataJsonObj.getBoolean(CONTACT);
                             if (isContact)
                                 btnAddIntoContacts
                                         .setImageResource(R.mipmap.ic_account_multiple_minus);
 
 
-                            /** Создает обработчик событий */
+                            /* Создает обработчик событий */
                             btnAddIntoContacts.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
 
-                                    /** Открытие нового потока */
+                                    /* Открытие нового потока */
                                     mAddContact = new AddContact();
                                     mAddContact.execute();
                                 }
@@ -984,6 +1002,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     try {
                                         if (dataJsonObj.getInt(DIALOG_ID) != -1){
 
+                                            /* Переходит в диалог с пользователем */
                                             Intent intent = new Intent(ProfileActivity.this, MessageActivity.class);
                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                             intent.putExtra(DIALOG_ID, dataJsonObj.getInt(DIALOG_ID));
@@ -995,20 +1014,20 @@ public class ProfileActivity extends AppCompatActivity {
                                                     R.anim.activity_diagonaltranslate);
 
                                         } else {
+                                            /* Создает новый диалог с пользователем */
                                             CreateDialog mCreateDialog = new CreateDialog();
                                             mCreateDialog.execute();
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-
                                 }
                             });
                         }
 
-                        /**
-                         * Формирование места жительства владельца открытого профиля.
-                         **/
+                        /*
+                          Формирование места жительства владельца открытого профиля.
+                         */
                         viewUserPlaceLiving = ltInflater
                                 .inflate(R.layout.item_profile_place_living, linLayout, false);
 
@@ -1021,9 +1040,9 @@ public class ProfileActivity extends AppCompatActivity {
                         editPlaceLiving = ButterKnife.findById(viewUserPlaceLiving,
                                 R.id.editPlaceLiving);
 
-                        /**
-                         * Формируется место проживания из имеющихся данных.
-                         **/
+                        /*
+                          Формируется место проживания из имеющихся данных.
+                         */
                         sUserPlaceLiving = dataJsonObj.getString(CITY).length() != 0
                                 ? dataJsonObj.getString(COUNTRY).length() != 0
                                 ? dataJsonObj.getString(CITY) + ", " + dataJsonObj.getString(COUNTRY)
@@ -1045,9 +1064,9 @@ public class ProfileActivity extends AppCompatActivity {
                             switcher.showNext();
                         }
 
-                        /**
-                         * Если данные введены, то добавляем элемент в контейнер.
-                         **/
+                        /*
+                          Если данные введены, то добавляем элемент в контейнер.
+                         */
                         if (!sUserPlaceLiving.equals("") || profileIdString.equals(userId))
                             linLayout.addView(viewUserPlaceLiving);
 
@@ -1058,7 +1077,7 @@ public class ProfileActivity extends AppCompatActivity {
                         userPlaceLiving.show();
 
 
-                        /** Формирование даты рождения владельца открытого профиля */
+                        /* Формирование даты рождения владельца открытого профиля */
                         viewUserBirthday = ltInflater.inflate(R.layout.item_profile_birthday,
                                 linLayout, false);
 
@@ -1072,10 +1091,10 @@ public class ProfileActivity extends AppCompatActivity {
                                 ? dataJsonObj.getString(BIRTHDAY)
                                 : "";
 
-                        /**
-                         * Форматирование даты.
-                         * {@link ProfileActivity#formatDate(String)}
-                         **/
+                        /*
+                          Форматирование даты.
+                          {@link ProfileActivity#formatDate(String)}
+                         */
                         String formattedUserBirthday = formatDate(sUserBirthday);
 
                         userBirthday.setText(formattedUserBirthday);
@@ -1093,19 +1112,19 @@ public class ProfileActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View view) {
 
-                                    /**
-                                     * Использует для получения даты.
+                                    /*
+                                      Использует для получения даты.
                                      */
                                     Calendar newCalendar = Calendar.getInstance();
 
-                                    /**
-                                     * Требуется для дальнейшего преобразования даты в строку.
+                                    /*
+                                      Требуется для дальнейшего преобразования даты в строку.
                                      */
                                     @SuppressLint("SimpleDateFormat") final SimpleDateFormat dateFormat
                                             = new SimpleDateFormat("dd-MM-yyyy");
 
-                                    /**
-                                     * Создает объект и инициализирует обработчиком события выбора даты и данными для даты по умолчанию.
+                                    /*
+                                      Создает объект и инициализирует обработчиком события выбора даты и данными для даты по умолчанию.
                                      */
                                     dateBirdayDatePicker = new DatePickerDialog(ProfileActivity.this,
                                             new DatePickerDialog.OnDateSetListener() {
@@ -1127,7 +1146,7 @@ public class ProfileActivity extends AppCompatActivity {
                             });
                         }
 
-                        /** Если владелец открытого профиля указывал дату своего рождения */
+                        /* Если владелец открытого профиля указывал дату своего рождения */
                         if (!formattedUserBirthday.equals("00-00-0000") || profileIdString.equals(userId))
                             linLayout.addView(viewUserBirthday);
 
@@ -1138,17 +1157,17 @@ public class ProfileActivity extends AppCompatActivity {
                         userBirthday.show();
 
 
-                        /** Формирование места учебы пользователя */
+                        /* Формирование места учебы пользователя */
                         sUserPlaceStudy = dataJsonObj.getString(STUDY).length() != 0
                                 ? dataJsonObj.getString(STUDY)
                                 : "";
 
-                        /** Формирование текущего места работы пользователя */
+                        /* Формирование текущего места работы пользователя */
                         sUserPlaceWork = dataJsonObj.getString(WORK).length() != 0
                                 ? dataJsonObj.getString(WORK)
                                 : "";
 
-                        /** Если указано только место работы */
+                        /* Если указано только место работы */
                         if (sUserPlaceStudy.equals("")
                                 && !sUserPlaceWork.equals("")
                                 && !profileIdString.equals(userId)) {
@@ -1165,7 +1184,7 @@ public class ProfileActivity extends AppCompatActivity {
                             userPlaceWork.setText(fromHtml(sUserPlaceWork));
 
 
-                            /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
+                            /* Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserPlaceWork);
 
                             titleUserPlaceWork.setDuration(2000);
@@ -1175,7 +1194,7 @@ public class ProfileActivity extends AppCompatActivity {
                             userPlaceWork.show();
                         }
 
-                        /** Если указано только место учебы */
+                        /* Если указано только место учебы */
                         if (sUserPlaceWork.equals("")
                                 && !sUserPlaceStudy.equals("")
                                 && !profileIdString.equals(userId)) {
@@ -1192,7 +1211,7 @@ public class ProfileActivity extends AppCompatActivity {
                             userPlaceStudy.setText(fromHtml(sUserPlaceStudy));
 
 
-                            /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
+                            /* Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserPlaceStudy);
 
                             titleUserPlaceStudy.setDuration(2000);
@@ -1202,7 +1221,7 @@ public class ProfileActivity extends AppCompatActivity {
                             userPlaceStudy.show();
                         }
 
-                        /** Если указаны место работы и место учебы */
+                        /* Если указаны место работы и место учебы */
                         if ((!sUserPlaceStudy.equals("") && !sUserPlaceWork.equals(""))
                                 || profileIdString.equals(userId)) {
 
@@ -1253,7 +1272,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 switcher2.showNext();
                             }
 
-                            /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
+                            /* Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserPlaceStudyAndWork);
 
                             titleUserPlaceWork.setDuration(2000);
@@ -1269,12 +1288,12 @@ public class ProfileActivity extends AppCompatActivity {
                             userPlaceStudy.show();
                         }
 
-                        /** Формирование рабочего email пользователя */
+                        /* Формирование рабочего email пользователя */
                         sUserWorkingEmail = dataJsonObj.getString(WORK_EMAIL).length() != 0
                                 ? dataJsonObj.getString(WORK_EMAIL)
                                 : "";
 
-                        /** Если владелец открытого профиля указал рабочий email */
+                        /* Если владелец открытого профиля указал рабочий email */
                         if (!sUserWorkingEmail.equals("") || profileIdString.equals(userId)) {
 
                             viewUserWorkingEmail = ltInflater
@@ -1304,7 +1323,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 switcher.showNext();
                             }
 
-                            /** Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
+                            /* Добавление элемента в контейнер {@link ProfileActivity#linLayout} */
                             linLayout.addView(viewUserWorkingEmail);
 
                             titleUserWorkingEmail.setDuration(3000);
@@ -1318,12 +1337,12 @@ public class ProfileActivity extends AppCompatActivity {
                         loadingDots.setVisibility(View.INVISIBLE);
 
                         break;
-                    /**
-                     * Произошла неожиданная ошибка.
-                     **/
+                    /*
+                      Произошла неожиданная ошибка.
+                     */
                     case 301:
-                        /**
-                         * Формирование уведомления об ошибке.
+                        /*
+                          Формирование уведомления об ошибке.
                          */
                         inititializeAlertDialog(ProfileActivity.this,
                                 getResources().getString(R.string.server_error),
@@ -1338,50 +1357,41 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         this.galleryData = data;
-        /**
-         * Проверка, каким способом была загружена фотография.
+        /*
+          Проверка, каким способом была загружена фотография.
          */
         if (resultCode == Activity.RESULT_OK) {
 
-
-
-            /**
-             * Фото из галереи.
+            /*
+              Фото из галереи.
              */
             if (requestCode == GALLERY_REQUEST) {
 
 
-                int permissionCheck = ContextCompat.checkSelfPermission(ProfileActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+                int permissionCheck = ContextCompat.checkSelfPermission(ProfileActivity.this,
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE);
 
                 if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(
                             ProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                 } else {
-//                    callMethod();
+
                     Uri uri = data.getData();
                     galleryPhoto.setPhotoUri(uri);
                     selectedPhoto = galleryPhoto.getPath();
 
-
-                    /**
-                     * Устанавливает путь до фотографии.
-                     */
-
-
-                    /**
-                     * Загружает фотографию на сервер.
+                    /*
+                      Загружает фотографию на сервер.
                      */
                     try {
 
-                        /**
-                         * Данные фотографии кодируются на устройстве и раскодируют на сервере.
+                        /*
+                          Данные фотографии кодируются на устройстве и раскодируют на сервере.
                          */
                         Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
                         String encodedImage = ImageBase64.encode(bitmap);
@@ -1390,7 +1400,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                         postData.put(IMAGE, encodedImage);
                         postData.put(ID, userId);
-
 
                         PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, new AsyncResponse() {
                             @Override
@@ -1404,16 +1413,16 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         });
 
-                        /**
-                         * Посылаем фото на сервер.
+                        /*
+                          Посылаем фото на сервер.
                          */
                         task.execute(
                                 SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
                                         + SERVER_UPLOAD_IMAGE_METHOD
                         );
 
-                        /**
-                         * Обработка возможных исключений.
+                        /*
+                          Обработка возможных исключений.
                          */
                         task.setEachExceptionsHandler(new EachExceptionsHandler() {
                             @Override
@@ -1442,31 +1451,23 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }
 
-            /**
-             * Фото с камеры.
+            /*
+              Фото с камеры.
              */
             } else if(requestCode == CAMERA_REQUEST) {
 
-
-//                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//                    ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
-//                }
-
-
-
-
-                /**
-                 * Получает путь.
+                /*
+                  Получает путь.
                  */
                 selectedPhoto = cameraPhoto.getPhotoPath();
 
-                /**
-                 * Загружает на сервер.
+                /*
+                  Загружает на сервер.
                  */
                 try {
 
-                    /**
-                     * Данные фотографии кодируются на устройстве и раскодируют на сервере.
+                    /*
+                      Данные фотографии кодируются на устройстве и раскодируют на сервере.
                      */
                     Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
                     String encodedImage = ImageBase64.encode(bitmap);
@@ -1488,16 +1489,16 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     });
 
-                    /**
-                     * Посылаем фото на сервер.
+                    /*
+                      Посылаем фото на сервер.
                      */
                     task.execute(
                             SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
                                     + SERVER_UPLOAD_IMAGE_METHOD
                     );
 
-                    /**
-                     * Обработка возможных исключений.
+                    /*
+                      Обработка возможных исключений.
                      */
                     task.setEachExceptionsHandler(new EachExceptionsHandler() {
                         @Override
@@ -1520,8 +1521,6 @@ public class ProfileActivity extends AppCompatActivity {
                             Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
                         }
                     });
-
-
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -1538,19 +1537,18 @@ public class ProfileActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
 
-
-                    /**
-                     * Получает путь.
+                    /*
+                      Получает путь.
                      */
                     selectedPhoto = cameraPhoto.getPhotoPath();
 
-                    /**
-                     * Загружает на сервер.
+                    /*
+                      Загружает на сервер.
                      */
                     try {
 
-                        /**
-                         * Данные фотографии кодируются на устройстве и раскодируют на сервере.
+                        /*
+                          Данные фотографии кодируются на устройстве и раскодируют на сервере.
                          */
                         Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
                         String encodedImage = ImageBase64.encode(bitmap);
@@ -1572,16 +1570,16 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         });
 
-                        /**
-                         * Посылаем фото на сервер.
+                        /*
+                          Посылаем фото на сервер.
                          */
                         task.execute(
                                 SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
                                         + SERVER_UPLOAD_IMAGE_METHOD
                         );
 
-                        /**
-                         * Обработка возможных исключений.
+                        /*
+                          Обработка возможных исключений.
                          */
                         task.setEachExceptionsHandler(new EachExceptionsHandler() {
                             @Override
@@ -1614,23 +1612,21 @@ public class ProfileActivity extends AppCompatActivity {
 
             case 1:
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+
+                    /*
+                      Устанавливает путь до фотографии.
+                     */
                     Uri uri = galleryData.getData();
                     galleryPhoto.setPhotoUri(uri);
                     selectedPhoto = galleryPhoto.getPath();
 
-
-                    /**
-                     * Устанавливает путь до фотографии.
-                     */
-
-
-                    /**
-                     * Загружает фотографию на сервер.
+                    /*
+                      Загружает фотографию на сервер.
                      */
                     try {
 
-                        /**
-                         * Данные фотографии кодируются на устройстве и раскодируют на сервере.
+                        /*
+                          Данные фотографии кодируются на устройстве и раскодируют на сервере.
                          */
                         Bitmap bitmap = ImageLoader.init().from(selectedPhoto).getBitmap();
                         String encodedImage = ImageBase64.encode(bitmap);
@@ -1639,7 +1635,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                         postData.put(IMAGE, encodedImage);
                         postData.put(ID, userId);
-
 
                         PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, new AsyncResponse() {
                             @Override
@@ -1653,16 +1648,16 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         });
 
-                        /**
-                         * Посылаем фото на сервер.
+                        /*
+                          Посылаем фото на сервер.
                          */
                         task.execute(
                                 SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
                                         + SERVER_UPLOAD_IMAGE_METHOD
                         );
 
-                        /**
-                         * Обработка возможных исключений.
+                        /*
+                          Обработка возможных исключений.
                          */
                         task.setEachExceptionsHandler(new EachExceptionsHandler() {
                             @Override
@@ -1697,17 +1692,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-//    private void checkPermission(){
-//        int permissionCheck = ContextCompat.checkSelfPermission(ProfileActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE);
-//
-//        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(
-//                    ProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, android.Manifest.permission.READ_EXTERNAL_STORAGE);
-//        } else {
-//            callMethod();
-//        }
-//    }
-
     /**
      * Класс для изменения списка контактов пользователя, авторизованного на данном устройстве.
      **/
@@ -1715,25 +1699,25 @@ public class ProfileActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Object... strings) {
-            /**
-             * Формирование адреса, по которому необходимо обратиться.
-             **/
+            /*
+              Формирование адреса, по которому необходимо обратиться.
+             */
             String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
                     + SERVER_ADD_CONTACT_METHOD;
 
-            /**
-             * Формирование отправных данных.
+            /*
+              Формирование отправных данных.
              */
             @SuppressWarnings("WrongThread") String params = SEND_ID + EQUALS + userId
                     + AMPERSAND + GET_ID + EQUALS + profileIdString;
 
-            /** Свойство - код ответа, полученных от сервера */
+            /* Свойство - код ответа, полученных от сервера */
             String resultJson = "";
 
-            /**
-             * Соединяется с сервером, отправляет данные, получает ответ.
-             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
-             **/
+            /*
+              Соединяется с сервером, отправляет данные, получает ответ.
+              {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             */
             try {
                 resultJson = getJSON(dataURL, params);
             } catch (IOException e) {
@@ -1746,41 +1730,42 @@ public class ProfileActivity extends AppCompatActivity {
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
 
-            /**
-             * Свойство - код ответа от методов сервера.
-             *
-             * ВНИМАНИЕ!
-             *
-             * Этот параметр не имеет никакого отношения к кодам состояния.
-             * Он формируется на сервере в зависимости от результата проведения обработки данных.
-             *
-             **/
+            /*
+              Свойство - код ответа от методов сервера.
+
+              ВНИМАНИЕ!
+
+              Этот параметр не имеет никакого отношения к кодам состояния.
+              Он формируется на сервере в зависимости от результата проведения обработки данных.
+
+             */
             int resultCode;
 
-            /** Свойство - полученный JSON–объект*/
+            /* Свойство - полученный JSON–объект*/
             JSONObject dataJsonObj;
 
             try {
-                /**
-                 * Получение JSON-объекта по строке.
+
+                /*
+                  Получение JSON-объекта по строке.
                  */
                 dataJsonObj = new JSONObject(strJson);
                 resultCode = Integer.parseInt(dataJsonObj.getString(ADD_CONTACT));
 
                 switch (resultCode) {
 
-                    /**
-                     * Владелец открытого профиля удален из контактов пользователя,
-                     *                          авторизованного на данном устройвстве.
-                     **/
+                    /*
+                      Владелец открытого профиля удален из контактов пользователя,
+                                               авторизованного на данном устройвстве.
+                     */
                     case 401:
                         btnAddIntoContacts.setImageResource(R.mipmap.ic_account_multiple_plus);
                         break;
 
-                    /**
-                     * Владелец открытого профиля добавлен в контакты пользователя,
-                     *                          авторизованного на данном устройвстве.
-                     **/
+                    /*
+                      Владелец открытого профиля добавлен в контакты пользователя,
+                                               авторизованного на данном устройвстве.
+                     */
                     case 400:
                         btnAddIntoContacts.setImageResource(R.mipmap.ic_account_multiple_minus);
                         break;
@@ -1798,25 +1783,26 @@ public class ProfileActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Object... strings) {
-            /**
-             * Формирование адреса, по которому необходимо обратиться.
-             **/
+
+            /*
+              Формирование адреса, по которому необходимо обратиться.
+             */
             String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_DIALOG_SCRIPT
                     + SERVER_CREATE_DIALOG_METHOD;
 
-            /**
-             * Формирование отправных данных.
+            /*
+              Формирование отправных данных.
              */
             @SuppressWarnings("WrongThread") String params = SENDER_ID + EQUALS + userId
                     + AMPERSAND + ADDRESSEE_ID + EQUALS + profileIdString;
 
-            /** Свойство - код ответа, полученных от сервера */
+            /* Свойство - код ответа, полученных от сервера */
             String resultJson = "";
 
-            /**
-             * Соединяется с сервером, отправляет данные, получает ответ.
-             * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
-             **/
+            /*
+              Соединяется с сервером, отправляет данные, получает ответ.
+              {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
+             */
             try {
                 resultJson = getJSON(dataURL, params);
             } catch (IOException e) {
@@ -1829,11 +1815,12 @@ public class ProfileActivity extends AppCompatActivity {
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
 
-            /** Свойство - полученный JSON–объект*/
+            /* Свойство - полученный JSON–объект */
             JSONObject dataJsonObj;
 
             try {
-                /**
+
+                /*
                  * Получение JSON-объекта по строке.
                  */
                 dataJsonObj = new JSONObject(strJson);
@@ -1860,13 +1847,11 @@ public class ProfileActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Object... strings) {
 
-
-            /**
+            /*
              * Формирование адреса, по которому необходимо обратиться.
              **/
             String dataURL = SERVER_PROTOCOL + SERVER_HOST + SERVER_ACCOUNT_SCRIPT
                     + SERVER_SHORT_EDIT_PARAMETERS_METHOD;
-
 
             String live = sUserPlaceLiving;
 
@@ -1885,7 +1870,7 @@ public class ProfileActivity extends AppCompatActivity {
                 country += String.valueOf(live.charAt(j));
             }
 
-            /**
+            /*
              * Формирование отправных данных.
              */
             @SuppressWarnings("WrongThread") String params = USER_ID + EQUALS + userId
@@ -1897,10 +1882,10 @@ public class ProfileActivity extends AppCompatActivity {
                     + AMPERSAND + BIRTHDAY + EQUALS + formatDateBack(sUserBirthday);
 
 
-            /** Свойство - код ответа, полученный от сервера */
+            /* Свойство - код ответа, полученный от сервера */
             String resultJson = "";
 
-            /**
+            /*
              * Соединяется с сервером, отправляет данные, получает ответ.
              * {@link ru.velkonost.lume.net.ServerConnection#getJSON(String, String)}
              **/
@@ -1916,7 +1901,7 @@ public class ProfileActivity extends AppCompatActivity {
         protected void onPostExecute(String strJson) {
             super.onPostExecute(strJson);
 
-            /**
+            /*
              * Свойство - код ответа от методов сервера.
              *
              * ВНИМАНИЕ!
@@ -1927,25 +1912,25 @@ public class ProfileActivity extends AppCompatActivity {
              **/
             int resultCode;
 
-            /** Свойство - полученный JSON–объект*/
+            /* Свойство - полученный JSON–объект*/
             final JSONObject dataJsonObj;
 
             try {
 
-                /**
+                /*
                  * Получение JSON-объекта по строке.
                  */
                 dataJsonObj = new JSONObject(strJson);
                 resultCode = Integer.parseInt(dataJsonObj.getString(GET_EDIT_RESULT));
 
-                /**
+                /*
                  * Обработка полученного кода ответа.
                  */
                 switch (resultCode) {
-                    /** В случае успешного выполнения */
+                    /* В случае успешного выполнения */
                     case 700:
 
-                        /**
+                        /*
                          * Переходим в профиль.
                          * Изменения прошли успешно.
                          */
@@ -1953,13 +1938,13 @@ public class ProfileActivity extends AppCompatActivity {
 //                                new Intent(SettingsActivity.this, ProfileActivity.class));
 
                         break;
-                    /**
-                     * При попытке сменить пароль, текущий пароль был указан неверно.
-                     * Изменение не вступили в силу.
-                     **/
+                    /*
+                      При попытке сменить пароль, текущий пароль был указан неверно.
+                      Изменение не вступили в силу.
+                     */
                     case 701:
-                        /**
-                         * Формирование уведомления об ошибке.
+                        /*
+                          Формирование уведомления об ошибке.
                          */
                         inititializeAlertDialogWithRefresh(ProfileActivity.this,
                                 getResources().getString(R.string.password_error),
