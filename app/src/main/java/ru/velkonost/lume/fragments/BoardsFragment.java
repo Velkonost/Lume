@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.BoardListAdapter;
 import ru.velkonost.lume.model.Board;
+import ru.velkonost.lume.patterns.SecretTextView;
 
 /**
  * @author Velkonost
@@ -43,6 +45,12 @@ public class BoardsFragment extends Fragment {
 
     @BindView(R.id.recyclerViewBoards)
     RecyclerView recyclerView;
+
+    @BindView(R.id.zero_boards)
+    SecretTextView zeroContacts;
+
+    @BindView(R.id.no_boards)
+    RelativeLayout noContactsRl;
 
     public static BoardsFragment getInstance(Context context, List<Board> boards) {
         Bundle args = new Bundle();
@@ -72,6 +80,14 @@ public class BoardsFragment extends Fragment {
 
         adapter = new BoardListAdapter(getActivity(), mBoards);
         recyclerView.setAdapter(adapter);
+
+        if (adapter.getItemCount() == 0) {
+            noContactsRl.setVisibility(View.VISIBLE);
+
+            zeroContacts.setDuration(1500);
+            zeroContacts.show();
+        }
+
         return view;
     }
 

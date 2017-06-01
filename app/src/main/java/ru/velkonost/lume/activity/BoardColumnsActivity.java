@@ -352,7 +352,7 @@ public class BoardColumnsActivity extends AppCompatActivity {
                         input.setHint(getResources().getString(R.string.enter_column_name));
                         input.setInputType(InputType.TYPE_CLASS_TEXT);
                         builder.setView(input)
-                                .setPositiveButton(getResources().getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
+                                .setPositiveButton(getResources().getString(R.string.create_column), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         columnName = input.getText().toString();

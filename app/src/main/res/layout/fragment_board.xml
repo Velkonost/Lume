@@ -10,6 +10,59 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorWhite"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/no_boards"
+        android:visibility="invisible">
+
+        <ru.velkonost.lume.patterns.SecretTextView
+            android:id="@+id/zero_boards"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPurpleDark"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:lineSpacingExtra="2dp"
+            android:gravity="center"
+            android:text="@string/no_boards"
+            android:layout_centerInParent="true"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="100dp"
+            android:layout_marginRight="20dp"
+            android:tint="@color/colorPurpleDark"
+            android:rotation="90"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="80dp"
+            android:tint="@color/colorPurpleDark"
+            android:rotation="45"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:tint="@color/colorPurpleDark"
+            android:layout_marginRight="100dp"
+            android:layout_marginBottom="20dp"/>
+
+    </RelativeLayout>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnAddBoard"
         android:layout_margin="@dimen/fragment_board_fab_m"

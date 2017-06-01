@@ -17,7 +17,7 @@ public class DateConverterManager {
 
         String day, month, year;
 
-        /** Разделяем строку на три ключевый строки */
+        /* Разделяем строку на три ключевый строки */
         day = String.valueOf(dateInStr.charAt(dateInStr.length() - 2))
                 + dateInStr.charAt(dateInStr.length() - 1);
 
@@ -29,7 +29,7 @@ public class DateConverterManager {
                 + dateInStr.charAt(dateInStr.length() - 8)
                 + dateInStr.charAt(dateInStr.length() - 7);
 
-        /** Соединяем все воедино */
+        /* Соединяем все воедино */
         return day
                 + HYPHEN + month
                 + HYPHEN + year;
@@ -43,7 +43,7 @@ public class DateConverterManager {
 
         String day, month, year;
 
-        /** Разделяем строку на три ключевый строки */
+        /* Разделяем строку на три ключевый строки */
         year = String.valueOf(dateInStr.charAt(dateInStr.length() - 4))
                 + dateInStr.charAt(dateInStr.length() - 3)
                 + dateInStr.charAt(dateInStr.length() - 2)
@@ -55,7 +55,7 @@ public class DateConverterManager {
         day = String.valueOf(dateInStr.charAt(dateInStr.length() - 10))
                 + dateInStr.charAt(dateInStr.length() - 9);
 
-        /** Соединяем все воедино */
+        /* Соединяем все воедино */
         return year
                 + HYPHEN + month
                 + HYPHEN + day;

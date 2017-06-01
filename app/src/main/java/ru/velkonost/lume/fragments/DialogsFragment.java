@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import butterknife.ButterKnife;
 import ru.velkonost.lume.R;
 import ru.velkonost.lume.adapter.DialogListAdapter;
 import ru.velkonost.lume.model.DialogContact;
+import ru.velkonost.lume.patterns.SecretTextView;
 
 /**
  * @author Velkonost
@@ -43,6 +45,12 @@ public class DialogsFragment extends Fragment {
     @BindView(R.id.gridDialogs)
     GridView rv;
 
+    @BindView(R.id.zero_dialogs)
+    SecretTextView zeroContacts;
+
+    @BindView(R.id.no_dialogs)
+    RelativeLayout noContactsRl;
+
     public static DialogsFragment getInstance(Context context, List<DialogContact> contacts) {
         Bundle args = new Bundle();
         DialogsFragment fragment = new DialogsFragment();
@@ -65,6 +73,13 @@ public class DialogsFragment extends Fragment {
 
         adjustGridView(rv);
         rv.setAdapter(adapter);
+
+        if (adapter.getItemCount() == 0) {
+            noContactsRl.setVisibility(View.VISIBLE);
+
+            zeroContacts.setDuration(1500);
+            zeroContacts.show();
+        }
 
         return view;
     }

@@ -272,7 +272,6 @@ public class WelcomeActivity extends AppCompatActivity {
                          * {@link InitializationsManager#changeActivityCompat(Activity, Intent)}
                          */
                         Intent profileIntent = new Intent(WelcomeActivity.this, SlidingTutorialActivity.class);
-//                        profileIntent.putExtra(REGISTRATION, 1);
                         changeActivityCompat(WelcomeActivity.this, profileIntent);
                         finish();
 

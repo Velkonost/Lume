@@ -14,4 +14,24 @@
         android:layout_margin="@dimen/fragment_dialogs_gv_m"
         android:id="@+id/gridDialogs"/>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/no_dialogs"
+        android:visibility="invisible">
+
+        <ru.velkonost.lume.patterns.SecretTextView
+            android:id="@+id/zero_dialogs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPurpleDark"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:lineSpacingExtra="2dp"
+            android:gravity="center"
+            android:text="@string/no_dialogs"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
 </RelativeLayout>

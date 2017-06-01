@@ -391,8 +391,6 @@ public class BoardCardActivity extends AppCompatActivity {
         setEditTextCommentListener();
         executeTasks();
         startTimer();
-
-
     }
 
     /**

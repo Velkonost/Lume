@@ -136,5 +136,9 @@
 
     <string name="create_marker">Create new marker</string>
 
+    <string name="no_contacts">Add your first contacts</string>
+    <string name="no_dialogs">You still do not have the active dialogues</string>
+    <string name="no_boards">Place your first project</string>
+
 
 </resources>

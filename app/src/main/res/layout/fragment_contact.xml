@@ -30,7 +30,7 @@
             android:textSize="20sp"
             android:lineSpacingExtra="2dp"
             android:gravity="center"
-            android:text="Добавьте ваши первые контакты"
+            android:text="@string/no_contacts"
             android:layout_centerInParent="true"/>
 
         <ImageView
@@ -43,7 +43,6 @@
             android:layout_marginRight="20dp"
             android:tint="@color/colorPurpleDark"
             android:rotation="90"/>
-
 
         <ImageView
             android:layout_width="wrap_content"

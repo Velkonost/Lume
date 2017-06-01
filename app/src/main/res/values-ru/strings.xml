@@ -132,4 +132,8 @@
 
     <string name="create_marker">Создать маркер</string>
 
+    <string name="no_contacts">Добавьте ваши первые контакты</string>
+    <string name="no_dialogs">У вас еще нет активных диалогов</string>
+    <string name="no_boards">Разместите ваш первый проект</string>
+
 </resources>

@@ -60,6 +60,10 @@ public class DialogListAdapter extends ArrayAdapter {
         notifyDataSetChanged();
     }
 
+    public int getItemCount() {
+        return data.size();
+    }
+
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull final ViewGroup parent) {
