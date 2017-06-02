@@ -42,7 +42,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.eyalbira.loadingdots.LoadingDots;
@@ -94,12 +93,6 @@ import static ru.velkonost.lume.Constants.LOGIN;
 import static ru.velkonost.lume.Constants.MAX_DATE;
 import static ru.velkonost.lume.Constants.NAME;
 import static ru.velkonost.lume.Constants.REGISTRATION;
-import static ru.velkonost.lume.Constants.RESULT.ERROR;
-import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_CONNECTION;
-import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_ENCODING;
-import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_PROTOCOL;
-import static ru.velkonost.lume.Constants.RESULT.ERROR_WITH_URL;
-import static ru.velkonost.lume.Constants.RESULT.SUCCESS;
 import static ru.velkonost.lume.Constants.SENDER_ID;
 import static ru.velkonost.lume.Constants.SEND_ID;
 import static ru.velkonost.lume.Constants.SLASH;
@@ -1405,10 +1398,10 @@ public class ProfileActivity extends AppCompatActivity {
                             @Override
                             public void processFinish(String s) {
                                 if (s.contains(UPLOAD_IMAGE_SUCCESS_CODE)) {
-                                    Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
                                     changeActivityCompat(ProfileActivity.this);
                                 } else {
-                                    Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -1427,22 +1420,22 @@ public class ProfileActivity extends AppCompatActivity {
                         task.setEachExceptionsHandler(new EachExceptionsHandler() {
                             @Override
                             public void handleIOException(IOException e) {
-                                Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void handleMalformedURLException(MalformedURLException e) {
-                                Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void handleProtocolException(ProtocolException e) {
-                                Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
-                                Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -1481,10 +1474,10 @@ public class ProfileActivity extends AppCompatActivity {
                         @Override
                         public void processFinish(String s) {
                             if (s.contains(UPLOAD_IMAGE_SUCCESS_CODE)) {
-                                Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
                                 changeActivityCompat(ProfileActivity.this);
                             } else {
-                                Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -1503,22 +1496,22 @@ public class ProfileActivity extends AppCompatActivity {
                     task.setEachExceptionsHandler(new EachExceptionsHandler() {
                         @Override
                         public void handleIOException(IOException e) {
-                            Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void handleMalformedURLException(MalformedURLException e) {
-                            Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void handleProtocolException(ProtocolException e) {
-                            Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
-                            Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
                         }
                     });
                 } catch (FileNotFoundException e) {
@@ -1562,10 +1555,10 @@ public class ProfileActivity extends AppCompatActivity {
                             @Override
                             public void processFinish(String s) {
                                 if (s.contains(UPLOAD_IMAGE_SUCCESS_CODE)) {
-                                    Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
                                     changeActivityCompat(ProfileActivity.this);
                                 } else {
-                                    Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -1584,22 +1577,22 @@ public class ProfileActivity extends AppCompatActivity {
                         task.setEachExceptionsHandler(new EachExceptionsHandler() {
                             @Override
                             public void handleIOException(IOException e) {
-                                Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void handleMalformedURLException(MalformedURLException e) {
-                                Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void handleProtocolException(ProtocolException e) {
-                                Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
-                                Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -1640,10 +1633,10 @@ public class ProfileActivity extends AppCompatActivity {
                             @Override
                             public void processFinish(String s) {
                                 if (s.contains(UPLOAD_IMAGE_SUCCESS_CODE)) {
-                                    Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(ProfileActivity.this, SUCCESS, Toast.LENGTH_SHORT).show();
                                     changeActivityCompat(ProfileActivity.this);
                                 } else {
-                                    Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(ProfileActivity.this, ERROR, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -1662,22 +1655,22 @@ public class ProfileActivity extends AppCompatActivity {
                         task.setEachExceptionsHandler(new EachExceptionsHandler() {
                             @Override
                             public void handleIOException(IOException e) {
-                                Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, ERROR_WITH_CONNECTION, Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void handleMalformedURLException(MalformedURLException e) {
-                                Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, ERROR_WITH_URL, Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void handleProtocolException(ProtocolException e) {
-                                Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, ERROR_WITH_PROTOCOL, Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
-                                Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(ProfileActivity.this, ERROR_WITH_ENCODING, Toast.LENGTH_SHORT).show();
                             }
                         });
 
